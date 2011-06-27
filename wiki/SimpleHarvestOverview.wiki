@@ -20,4 +20,4 @@ Here is the process of the tool:
   * Sending of a request (_"send me all your data"_) 
   * Retrieving of the software response
   * Parsing process (keep only the concepts that are interesting)
-  * Data saving in a database
+  * Data backup in a database
