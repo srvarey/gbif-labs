@@ -170,8 +170,10 @@ public class Harvester {
    * Issues a call to get a page of results
    */
   private void pageRange(String lower, String upper, int startAt) throws Exception {
+	templateParams.put("lower", lower);
+	templateParams.put("upper", upper);  
+	templateParams.put("startAt", Integer.toString(startAt));  
     LOG.info("Starting lower[" + lower + "] upper[" + upper + "] start[" + startAt + "]");
-    
     String query = TemplateUtils.getAndMerge(templateLocation, templateParams);
     String request = buildURL(url, "request", query);
     
@@ -182,7 +184,7 @@ public class Harvester {
     
     // store the request
     GZIPOutputStream gos = new GZIPOutputStream(new FileOutputStream(requestFile));
-    IOUtils.write(request, gos);
+    IOUtils.write(query, gos);
     gos.close();
 
     // issue request and store response
@@ -214,6 +216,12 @@ public class Harvester {
     
     
     LOG.info("Finished lower[" + lower + "] upper[" + upper + "] start[" + startAt + "]");
+    
+    if (results.size() >= 1000)
+    {
+    	results = null; // make eligible for garbage collection
+    	pageRange(lower, upper, startAt + 1000);
+    }
   }
   
   /**

@@ -5,5 +5,6 @@ CREATE TABLE occurrence (
   collection_code varchar(100) NOT NULL,
   catalogue_number varchar(100) NOT NULL,
   scientific_name varchar(255) NOT NULL,
+  locality varchar(1000),
   PRIMARY KEY (id)
 ) ENGINE=MyISAM AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;

@@ -34,7 +34,9 @@ public class ResponseToModelHandler {
     digester.addBeanPropertySetter("*/SourceID", "collectionCode");                                                                                         
     digester.addBeanPropertySetter("*/UnitID", "catalogueNumber");
     digester.addBeanPropertySetter("*/FullScientificNameString", "scientificName");
+    digester.addBeanPropertySetter("*/LocalityText", "locality");
     
+   
     // add the created Occurrence record to the list
     digester.addSetNext("*/Units/Unit", "add");
     try {
