@@ -11,7 +11,7 @@ The goal of the Simple Harvest is to provide a simple way to harvest data from G
   # Database: _jdbc:mysql://localhost/france?useUnicode=yes&characterEncoding=UTF-8_ 
   # Database login: _root_
   # Database password: _""_ 
-  #Temp folder: _/tmp/_
+  # Temp folder: _/tmp/_
 
 
 Here is the process of the tool:
