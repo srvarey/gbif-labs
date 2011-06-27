@@ -27,20 +27,21 @@ public class OccurrenceToDBHandler {
   }
   
   private void insert(Connection conn, Occurrence o) throws SQLException {
-    String query = "INSERT INTO occurrence(dataset_id, institution_code, collection_code, catalogue_number,scientific_name) " +
-      "values(?,?,?,?,?)";
+    String query = "INSERT INTO occurrence(dataset_id, institution_code, collection_code, catalogue_number,scientific_name, locality) " +
+      "values(?,?,?,?,?,?)";
     PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
     st.setInt(1, o.getDatasetId());
     st.setString(2, o.getInstitutionCode());
     st.setString(3, o.getCollectionCode());
     st.setString(4, o.getCatalogueNumber());
     st.setString(5, o.getScientificName());
+    st.setString(6, o.getLocality());
     st.executeUpdate();
   }
   
   private void update(Connection conn, Occurrence o) throws SQLException {
     String query = "Update occurrence " +
-    		"SET dataset_id=?, institution_code=?, collection_code=?, catalogue_number=?, scientific_name=? " +
+    		"SET dataset_id=?, institution_code=?, collection_code=?, catalogue_number=?, scientific_name=?, locality=? " +
     		"WHERE id=?";
     PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
     st.setInt(1, o.getDatasetId());
@@ -48,7 +49,8 @@ public class OccurrenceToDBHandler {
     st.setString(3, o.getCollectionCode());
     st.setString(4, o.getCatalogueNumber());
     st.setString(5, o.getScientificName());
-    st.setInt(6, o.getId());
+    st.setString(6, o.getLocality());
+    st.setInt(7, o.getId());
     st.executeUpdate();    
   }
   

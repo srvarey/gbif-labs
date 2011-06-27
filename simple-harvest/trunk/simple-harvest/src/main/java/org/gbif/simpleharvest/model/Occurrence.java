@@ -16,6 +16,7 @@ public class Occurrence {
   private String collectionCode;
   private String catalogueNumber;
   private String scientificName;
+  private String locality;
   
   public int getId() {
     return id;
@@ -57,4 +58,10 @@ public class Occurrence {
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
   }
+public void setLocality(String locality) {
+	this.locality = locality;
+}
+public String getLocality() {
+	return locality;
+}
 }
