@@ -1,0 +1,23 @@
+= Overview =
+
+The goal of the Simple Harvest is to provide a simple way to harvest data from GBIF Publishers whatever the protocol or software they use.
+
+
+== Simple description ==
+
+6 Arguments:
+  # Dataset Number: _1_ 
+  # URL: _http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=CameroonHerbarium_ 
+  # Database: _jdbc:mysql://localhost/france?useUnicode=yes&characterEncoding=UTF-8_ 
+  # Database login: _root_
+  # Database password: _""_ 
+  #Temp folder: _/tmp/_
+
+
+Here is the process of the tool:
+
+  * Connection to a dataset URL
+  * Sending of a request (_"send me all your data"_) 
+  * Retrieving of the software response
+  * Analyze of the response and parsing process (get only the data that we want)
+  * Data saving in a database
