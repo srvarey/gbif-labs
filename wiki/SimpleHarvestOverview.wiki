@@ -19,5 +19,5 @@ Here is the process of the tool:
   * Connection to a dataset URL
   * Sending of a request (_"send me all your data"_) 
   * Retrieving of the software response
-  * Analyze of the response and parsing process (get only the data that we want)
+  * Parsing process (keep only the concepts that are interesting)
   * Data saving in a database
