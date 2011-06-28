@@ -1,7 +1,7 @@
 #labels Featured
 = Overview =
 
-The goal of the Simple Harvest is to provide a simple way to harvest data from GBIF Publishers whatever the protocol or software they use.
+The goal of Simple-Harvest is to provide a simple way to harvest data from GBIF Publishers whatever the protocol or software they use.
 
 
 = Context =
