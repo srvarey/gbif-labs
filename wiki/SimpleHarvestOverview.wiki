@@ -4,21 +4,30 @@
 The goal of the Simple Harvest is to provide a simple way to harvest data from GBIF Publishers whatever the protocol or software they use.
 
 
-== Simple description ==
+= Context =
+GBIF France needs to develop his own national portal. The goal of this portal will be to allow the users to have a more detailled view of the data that has been published to GBIF.
+One of the main features of the portal will be to publish all concepts mapped during the data connection process and that are not showed at an international level.
+To answer this need, a harvesting tool has been developed: simple-harvest
 
-6 Arguments:
-  # Dataset Number: _1_ 
-  # URL: _http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=CameroonHerbarium_ 
-  # Database: _jdbc:mysql://localhost/france?useUnicode=yes&characterEncoding=UTF-8_ 
-  # Database login: _root_
-  # Database password: _""_ 
-  # Temp folder: _/tmp/_
+= Description =
+simple-harvest is a tool that has been firstly developed with the help of Tim Robertson from the Secretariat. 
+It’s actually a part of the HIT, simplified at extreme to be easily customisable for own purpose.
+This project will not only be use by the GBIF France portal but also be a lab project which will help the Secretariat to evaluate his new ‘decoupling components’ policy (http://gbif.blogspot.com/2011/05/decoupling-components.html). 
+Thus, the crawling/harvesting process will become independant of others aspects of the HIT.
+
+== Process ==
+The tool takes 6 arguments:
+  # Dataset Number: 1
+  # URL: http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=CameroonHerbarium?
+  # Database: jdbc:mysql://localhost/france?useUnicode=yes&characterEncoding=UTF-8
+  # Database login: root
+  # Database password: ""
+  # Temp folder: /tmp/
 
 
-Here is the process of the tool:
-
-  * Connection to a dataset URL
-  * Sending of a request (_"send me all your data"_) 
-  * Retrieving of the software response
-  * Parsing process (keep only the concepts that are interesting)
-  * Data backup in a database
+In a very simplified view, the general process is:
+  # Connection to a dataset URL
+  # Sending of a request ("send me all your data")
+  # Retrieving of the software response
+  # Parsing process (depends of the standard and software that is used)
+  # Data backup in a database
