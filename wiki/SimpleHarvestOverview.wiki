@@ -29,5 +29,5 @@ In a very simplified view, the general process is:
   # Connection to a dataset URL
   # Sending of a request ("send me all your data")
   # Retrieving of the software response
-  # Parsing process (depends of the standard and software that is used)
+  # Parsing process (depends of the standard and software that are used)
   # Data backup in a database
