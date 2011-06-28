@@ -1,11 +1,11 @@
 #labels Featured
 = Overview =
 
-The goal of Simple-Harvest is to provide a simple way to harvest data from GBIF Publishers whatever the protocol or software they use.
+simple-harvest provides a simple way to harvest data from GBIF Publishers whatever the protocol or software they use.
 
 
 = Context =
-GBIF France needs to develop his own national portal. The goal of this portal will be to allow the users to have a more detailled view of the data that has been published to GBIF.
+GBIF France needs to develop its own national portal. The goal of this portal will be to allow the users to have a more detailled view of the data that has been published to GBIF.
 One of the main features of the portal will be to publish all concepts mapped during the data connection process and that are not showed at an international level.
 To answer this need, a harvesting tool has been developed: simple-harvest
 
