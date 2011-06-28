@@ -1,7 +1,7 @@
 #labels Featured
 = Overview =
 
-simple-harvest provides a simple way to harvest data from GBIF Publishers whatever the protocol or software they use.
+simple-harvest provides a simple way to harvest data from GBIF Publishers whatever protocol or software they use.
 
 
 = Context =
