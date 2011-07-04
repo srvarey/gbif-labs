@@ -1,0 +1,59 @@
+1	threatened
+2	special concern
+3	threatened
+4	endangered
+5	endangered
+6	threatened
+7	special concern
+8	threatened
+9	endangered
+10	special concern
+11	special concern
+12	special concern
+13	special concern
+14	special concern
+15	threatened
+16	threatened
+17	special concern
+18	special concern
+19	threatened
+20	special concern
+21	special concern
+22	endangered
+23	special concern
+24	special concern
+25	special concern
+26	threatened
+27	threatened
+28	endangered
+29	special concern
+30	special concern
+31	special concern
+32	special concern
+33	threatened
+34	endangered
+35	threatened
+36	special concern
+37	special concern
+38	endangered
+39	special concern
+40	endangered
+41	threatened
+42	special concern
+43	threatened
+44	special concern
+45	special concern
+46	threatened
+47	endangered
+48	special concern
+49	threatened
+50	endangered
+51	special concern
+52	special concern
+53	threatened
+54	special concern
+55	special concern
+56	special concern
+57	endangered
+58	special concern
+59	threatened

@@ -1,7 +1,10 @@
 package org.gbif.simpleharvest.ipt;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +15,22 @@ import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+
 import org.apache.log4j.Logger;
+import org.gbif.dwc.record.StarRecord;
+import org.gbif.dwc.terms.DwcTerm;
+import org.gbif.dwc.text.Archive;
+import org.gbif.dwc.text.ArchiveFactory;
+import org.gbif.dwc.text.UnsupportedArchiveException;
+import org.gbif.simpleharvest.ipt.OccurrenceToDBHandler;
+import org.gbif.simpleharvest.model.Occurrence;
 
 public class Harvester 
 {
@@ -25,6 +43,11 @@ public class Harvester
   private String username;
   private String password;
   private String targetDirectory;
+  
+  public List<Occurrence> occurrences = new ArrayList<Occurrence>();
+  private OccurrenceToDBHandler databaseSync = new OccurrenceToDBHandler();
+  
+  final static int BUFFER = 2048;
 	
   public Harvester(int datasetId, String url, String databaseUrl, String username, String password, String targetDirectory) 
   {  
@@ -110,37 +133,43 @@ public class Harvester
    * Does the harvesting
  * @throws IOException 
  * @throws MalformedURLException 
+ * @throws UnsupportedArchiveException 
+ * @throws SQLException 
    */
-  private void harvest() throws MalformedURLException, IOException 
+  private void harvest() throws MalformedURLException, IOException, UnsupportedArchiveException, SQLException 
   {
-    //retrieve the archive  
+    //retrieves the archive and downloads it
 	File targetDirectoryFile = new File(targetDirectory);
-	downloadFile (url, targetDirectoryFile);  
-	//open it
-	//parse the content
-	//save it in a database
+	File fileName = downloadFile (url, targetDirectoryFile);  
+	//extracts the archive
+	File fileDirectory = extractFile(fileName, targetDirectory);
+	//parses the data
+	createOccurences(fileDirectory);
+	//saves it in a database
   }
   
-  /*
-   * Download the file
+  /**
+   * Downloads the archive
+ * @throws IOException 
    */
-  public static void downloadFile(String adresse) 
+  
+  public static void downloadFile(String address) 
   {
-
-		downloadFile(adresse, null);
+		downloadFile(address, null);
   }
 
-  public static void downloadFile(String adresse, File dest) 
+  public static File downloadFile(String address, File dest) 
   {
 	BufferedReader reader = null;
 	FileOutputStream fos = null;
 	InputStream in = null;
+	String fileName = null;
 	try 
 	{
       //Connection initialisation
-	  URL url = new URL(adresse);
+	  URL url = new URL(address);
 	  URLConnection conn = url.openConnection();
-	  LOG.info("Connection to the URL " + adresse);
+	  LOG.info("Connection to the URL " + url);
 	  
 	  String FileType = conn.getContentType();
 	  LOG.info("Type File : " + FileType);
@@ -154,10 +183,10 @@ public class Harvester
 	  in = conn.getInputStream();
 	  reader = new BufferedReader(new InputStreamReader(in));
 	  
-	  String FileName = url.getFile();
-	  FileName = dest + File.separator + FileName.substring(FileName.lastIndexOf('/') + 1);
-	  LOG.info ("File downloaded at " + FileName);
-	  dest = new File(FileName);
+	  fileName = url.getFile();
+	  fileName = dest + File.separator + fileName.substring(fileName.lastIndexOf('/') + 1);
+	  LOG.info ("File downloaded at " + fileName);
+	  dest = new File(fileName);
 	  
 	  fos = new FileOutputStream(dest);
 	  byte[] buff = new byte[1024];
@@ -192,8 +221,102 @@ public class Harvester
 		e.printStackTrace();
 	  }
 	}
+	return dest;
   }
 
+  /**
+   * Extracts the content of the archive in the specified directory
+ * @throws IOException 
+   */
+  
+  public static File extractFile(File file, String targetDirectory)
+  {
+	File fileDirectory = null;
+    try
+	{
+	  BufferedOutputStream dest = null;
+      FileInputStream fis = new FileInputStream(file);
+      ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+      ZipEntry entry;
+	  while ((entry = zis.getNextEntry()) != null)
+	  {
+		LOG.info("Extracting directory: " + entry.getName());  
+		int count;
+		byte data[] = new byte [BUFFER];
+		// write the files to the disk
+		String directory = file.getName().substring(0, file.getName().length() - 4);
+		fileDirectory = new File (targetDirectory + File.separator + directory);
+		if (!fileDirectory.exists()) 
+		{
+			fileDirectory.mkdirs();
+		}
+		FileOutputStream fos = new FileOutputStream(targetDirectory + File.separator + directory + File.separator + entry.getName());
+		dest = new BufferedOutputStream(fos, BUFFER);
+		while ((count = zis.read(data, 0, BUFFER)) != -1)
+		{
+			dest.write(data, 0, count);
+		}
+		dest.flush();
+		dest.close();
+	  }
+	  zis.close();
+	}
+    catch (Exception e)
+    {
+    	e.printStackTrace();
+    }
+    return fileDirectory;
+  }
+
+  public void createOccurences(File fileDirectory) throws IOException, UnsupportedArchiveException, SQLException 
+  {
+	// opens csv files with headers or dwc-a directories with a meta.xml descriptor
+	Archive arch = ArchiveFactory.openArchive(fileDirectory);
+	 
+	// does scientific name exist?
+	if (!arch.getCore().hasTerm(DwcTerm.scientificName))
+	{
+	  System.out.println("This application requires dwc-a with scientific names");
+	  System.exit(1);
+	}
+	 
+	// loop over star records. i.e. core with all linked extension records
+	for (StarRecord rec : arch)
+	{
+	  Occurrence occurrence = new Occurrence();
+	  //occurrence.setId(Integer.parseInt(rec.id()));
+	  occurrence.setDatasetId(2);
+	  occurrence.setInstitutionCode("test");
+	  occurrence.setCollectionCode("test");
+	  occurrence.setCatalogueNumber("test");
+	  occurrence.setScientificName(rec.value(DwcTerm.scientificName));
+	  occurrence.setLocality(rec.value(DwcTerm.locality));
+	  occurrences.add(occurrence);
+	  // print core ID + scientific name
+	  /*LOG.info(rec.id()+" - "+rec.value(DwcTerm.scientificName) + "-" + rec.value(DwcTerm.kingdom));
+	  if (rec.dataFile().hasTerm(DwcTerm.decimalLongitude) && rec.dataFile().hasTerm(DwcTerm.decimalLatitude))
+	  {
+	   LOG.info("Georeferenced: " + rec.value(DwcTerm.decimalLongitude)+","+rec.value(DwcTerm.decimalLatitude));;
+	  }*/  
+	}
+	
+	// now synchronise the results to the database
+    LOG.info("Number of results: " + occurrences.size());
+    for (Occurrence o : occurrences) 
+    {
+      try 
+      {
+        databaseSync.synchronize(conn, o);
+        LOG.info(o.getScientificName());
+      }
+      catch (RuntimeException e) 
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } 
+    }
+  }
+  
   /**
    * Closes the database connection
    */
