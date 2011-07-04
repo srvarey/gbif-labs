@@ -1,0 +1,102 @@
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" 
+    xmlns:md="eml://ecoinformatics.org/methods-2.1.1" 
+    xmlns:proj="eml://ecoinformatics.org/project-2.1.1" 
+    xmlns:d="eml://ecoinformatics.org/dataset-2.1.1" 
+    xmlns:res="eml://ecoinformatics.org/resource-2.1.1" 
+    xmlns:dc="http://purl.org/dc/terms/" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.0/eml.xsd"
+    packageId="http://ipt.gbif.org/resource.do?id=masswildlifetim/v2" system="http://gbif.org" scope="system" xml:lang="en">
+
+    <dataset>
+      <alternateIdentifier>8daa9f27-bfec-496f-93c5-47fdc4271e74</alternateIdentifier>    
+      <title xml:lang="en">Mass Wildlife</title>
+      <creator>
+    <individualName>
+      <givenName>Nikolas</givenName>
+      <surName>Ioannu</surName>
+    </individualName>
+    <organizationName>Zoological Museum</organizationName>
+    <positionName>Curator</positionName>
+    <address>
+      <deliveryPoint>Universitetsparken 15</deliveryPoint>
+      <city>Copenhagen</city>
+      <administrativeArea>Ø</administrativeArea>
+      <postalCode>2100</postalCode>
+      <country>us</country>
+    </address>
+    <phone>32301472</phone>
+    <electronicMailAddress>dremsen@gbif.org</electronicMailAddress>
+    <onlineUrl>http://www.gbif.org</onlineUrl>
+      </creator>
+      <metadataProvider>
+    <individualName>
+      <givenName>David</givenName>
+      <surName>Remsen</surName>
+    </individualName>
+    <address>
+      <deliveryPoint>19 Glendon Road</deliveryPoint>
+      <city>Woods Hole</city>
+      <administrativeArea>19 Glendon Road</administrativeArea>
+      <postalCode>02543</postalCode>
+      <country>us</country>
+    </address>
+    <electronicMailAddress>dremsen@gbif.org</electronicMailAddress>
+      </metadataProvider>
+      <associatedParty>
+    <individualName>
+      <givenName>Wayne</givenName>
+      <surName>MacCallam</surName>
+    </individualName>
+    <role>CUSTODIAN_STEWARD</role>
+      </associatedParty>
+	  <pubDate>
+      	2010-08-30
+      </pubDate>
+      <language>en</language>
+      <abstract>
+        <para>Version of Mass Wildlife</para>
+      </abstract>
+      <distribution scope="document">
+        <online>
+          <url function="information">http://www.mass.gov/dfwele/dfw/nhesp/species_info/town_lists/town_f.htm#falmouth</url>
+        </online>
+      </distribution>
+      <coverage>        
+        <geographicCoverage>
+          <boundingCoordinates>
+            <westBoundingCoordinate>-72.29</westBoundingCoordinate>
+            <eastBoundingCoordinate>-68.577</eastBoundingCoordinate>
+            <northBoundingCoordinate>42.8</northBoundingCoordinate>
+            <southBoundingCoordinate>40.852</southBoundingCoordinate>
+          </boundingCoordinates>
+        </geographicCoverage>
+      </coverage>
+      <contact>
+    <individualName>
+      <givenName>David</givenName>
+      <surName>Remsen</surName>
+    </individualName>
+    <organizationName>GBIFS</organizationName>
+    <positionName>Programme Officer</positionName>
+    <address>
+      <deliveryPoint>19 Glendon Road</deliveryPoint>
+      <city>Copenhagen</city>
+      <administrativeArea>Ø</administrativeArea>
+      <postalCode>02543</postalCode>
+      <country>us</country>
+    </address>
+    <phone>+45 28751472</phone>
+    <electronicMailAddress>dremsen@gbif.org</electronicMailAddress>
+      </contact>
+    </dataset>
+    <additionalMetadata>
+     <metadata>
+      <gbif>
+        <dateStamp>2011-02-15T04:17:43.754+01:00</dateStamp>
+        <hierarchyLevel>dataset</hierarchyLevel>
+        <dc:replaces>http://ipt.gbif.org/resource.do?id=masswildlifetim/v1.xml</dc:replaces>
+      </gbif>
+     </metadata>
+    </additionalMetadata>
+</eml:eml>

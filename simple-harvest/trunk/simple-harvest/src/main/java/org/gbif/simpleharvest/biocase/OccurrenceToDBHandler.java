@@ -66,7 +66,9 @@ public class OccurrenceToDBHandler {
     ResultSet rs = st.executeQuery();
     try {
       Integer id = null;
+      rs.last();
       while (rs.next()) {
+    	LOG.info(id);
         id = rs.getInt("id");
       }
       return id;
