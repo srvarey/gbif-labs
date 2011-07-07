@@ -30,13 +30,48 @@ public class ResponseToModelHandler {
     digester.addObjectCreate("*/Units/Unit", "org.gbif.simpleharvest.model.Occurrence");
     
     // extract the properties we are interested in
+    digester.addBeanPropertySetter("*/UnitGUID", "occurrenceId");
     digester.addBeanPropertySetter("*/SourceInstitutionID", "institutionCode");
-    digester.addBeanPropertySetter("*/SourceID", "collectionCode");                                                                                         
+    digester.addBeanPropertySetter("*/SourceID", "collectionId");
+    digester.addBeanPropertySetter("*/SourceID", "collectionCode");            
     digester.addBeanPropertySetter("*/UnitID", "catalogueNumber");
-    digester.addBeanPropertySetter("*/FullScientificNameString", "scientificName");
-    digester.addBeanPropertySetter("*/LocalityText", "locality");
+    digester.addBeanPropertySetter("*/Sex", "sex");
+    //digester.addBeanPropertySetter("", "kingdom");
+    //digester.addBeanPropertySetter("", "phylum");
+    //digester.addBeanPropertySetter("", "klass");                                                                                 
+    //digester.addBeanPropertySetter("", "order");
+    //digester.addBeanPropertySetter("", "family");
+    //digester.addBeanPropertySetter("", "genus");
+    //digester.addBeanPropertySetter("", "subgenus");
+    //digester.addBeanPropertySetter("", "specificEpithet");
+    //digester.addBeanPropertySetter("", "infraspecificEpithet");
+    digester.addBeanPropertySetter("*/ScientificName/FullScientificNameString", "scientificName");
+    //digester.addBeanPropertySetter("", "scientificNameAuthorship");
+    digester.addBeanPropertySetter("*/ScientificName/NameAtomised/Botanical/Rank", "taxonRank");
+    digester.addBeanPropertySetter("*/Date/DateText", "dateIdentified");
+    digester.addBeanPropertySetter("*/Identifications/Identification/Identifiers/IdentifiersText", "identifiedBy");
+    digester.addBeanPropertySetter("*/SpecimenUnit/NomenclaturalTypeDesignations/NomenclaturalTypeText", "typeStatus");
+    //digester.addBeanPropertySetter("", "continent");
+    //digester.addBeanPropertySetter("", "waterBody");
+    digester.addBeanPropertySetter("*/Gathering/Country/Name", "country");
+    //digester.addBeanPropertySetter("", "stateProvince");
+    digester.addBeanPropertySetter("*/Gathering/AreaDetail", "locality");
+    digester.addBeanPropertySetter("*/Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLon/LatitudeDecimal", "decimalLatitude");
+    digester.addBeanPropertySetter("*/Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLon/LongitudeDecimal", "decimalLongitude");
+    digester.addBeanPropertySetter("*/Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/AccuracyStatement", "coordinatePrecision");
+    digester.addBeanPropertySetter("*/Gathering/Altitude/MeasurementOrFactAtomised/LowerValue", "minimumElevationInMeters");
+    digester.addBeanPropertySetter("*/Gathering/Altitude/MeasurementOrFactAtomised/UpperValue", "maximumElevationInMeters");
+    digester.addBeanPropertySetter("*/Gathering/Depth/MeasurementOrFactAtomised/LowerValue", "minimumDepthInMeters");
+    digester.addBeanPropertySetter("*/Gathering/Depth/MeasurementOrFactAtomised/UpperValue", "maximumDepthInMeters");
     
-   
+ // extract the properties we are interested in
+    //digester.addBeanPropertySetter("*/SourceInstitutionID", "institutionCode");
+    //digester.addBeanPropertySetter("*/SourceID", "collectionCode");                                                                                         
+    //digester.addBeanPropertySetter("*/UnitID", "catalogueNumber");
+    //digester.addBeanPropertySetter("*/FullScientificNameString", "scientificName");
+    //digester.addBeanPropertySetter("*/LocalityText", "locality");
+    
+    
     // add the created Occurrence record to the list
     digester.addSetNext("*/Units/Unit", "add");
     try {

@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
  
-import org.gbif.dwc.*;
-import org.gbif.dwc.record.DarwinCoreRecord;
 import org.gbif.dwc.terms.DwcTerm;
 import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;

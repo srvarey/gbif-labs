@@ -16,11 +16,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
@@ -29,7 +28,8 @@ import org.gbif.dwc.terms.DwcTerm;
 import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;
 import org.gbif.dwc.text.UnsupportedArchiveException;
-import org.gbif.simpleharvest.ipt.OccurrenceToDBHandler;
+import org.gbif.simpleharvest.dataaccess.DBToDatasetHandler;
+import org.gbif.simpleharvest.dataaccess.OccurrenceToDBHandler;
 import org.gbif.simpleharvest.model.Occurrence;
 
 public class Harvester 
@@ -46,6 +46,7 @@ public class Harvester
   
   public List<Occurrence> occurrences = new ArrayList<Occurrence>();
   private OccurrenceToDBHandler databaseSync = new OccurrenceToDBHandler();
+  private static DBToDatasetHandler datasetSync = new DBToDatasetHandler();
   
   final static int BUFFER = 2048;
 	
@@ -75,24 +76,35 @@ public class Harvester
    *  database connection string
    *  database username
    *  database password
+ * @throws SQLException 
    */
-  public static void main(String[] args) 
+  public static void main(String[] args) throws SQLException 
   {
-    if (args.length!=6) 
+    if (args.length!=4) 
     {
-      LOG.error("Harvester takes 6 arguments");
+      LOG.error("Harvester takes 4 arguments");
       return;
     }
  
-    int datasetId = Integer.parseInt(args[0]);
-    String url = args[1];
-    String databaseUrl = args[2];
-    String username = args[3];
-    String password = args[4];
-    String targetDirectory = args[5];
+    String databaseUrl = args[0];
+    String username = args[1];
+    String password = args[2];
+    String targetDirectory = args[3];
     
-    Harvester app = new Harvester(datasetId, url, databaseUrl, username, password, targetDirectory);
-    app.run();
+    Map<Integer, String> datasetsList = new HashMap<Integer, String>();
+    
+    //The dataset table is in the same database as the occurence table
+    datasetSync.listDatasets(databaseUrl, username, password, datasetsList, "ipt");
+    int datasetId;
+    String url = null;
+    
+    for (Map.Entry<Integer, String> entry : datasetsList.entrySet())
+    {
+      datasetId = entry.getKey();
+      url = entry.getValue();
+      Harvester app = new Harvester(datasetId, url, databaseUrl, username, password, targetDirectory);
+      app.run();
+    }
   }
   
   /**
@@ -285,36 +297,54 @@ public class Harvester
 	{
 	  Occurrence occurrence = new Occurrence();
 	  //occurrence.setId(Integer.parseInt(rec.id()));
-	  occurrence.setDatasetId(2);
-	  occurrence.setInstitutionCode("test");
-	  occurrence.setCollectionCode("test");
-	  occurrence.setCatalogueNumber("test");
+	  occurrence.setDatasetId(this.datasetId);
+	  occurrence.setOccurrenceId(rec.id());
+	  occurrence.setInstitutionCode(rec.value(DwcTerm.institutionCode));
+	  occurrence.setCollectionId(rec.value(DwcTerm.collectionID));
+	  occurrence.setCollectionCode(rec.value(DwcTerm.collectionCode));
+	  occurrence.setCatalogueNumber(rec.value(DwcTerm.catalogNumber));
+	  occurrence.setSex(rec.value(DwcTerm.sex));
+	  occurrence.setKingdom(rec.value(DwcTerm.kingdom));
+	  occurrence.setPhylum(rec.value(DwcTerm.phylum));
+	  occurrence.setKlass(rec.value(DwcTerm.classs));
+	  occurrence.setOrder(rec.value(DwcTerm.order));
+	  occurrence.setFamily(rec.value(DwcTerm.family));
+	  occurrence.setGenus(rec.value(DwcTerm.genus));
+	  occurrence.setSubgenus(rec.value(DwcTerm.subgenus));
+	  occurrence.setSpecificEpithet(rec.value(DwcTerm.specificEpithet));
+	  occurrence.setInfraSpecificEpithet(rec.value(DwcTerm.infraspecificEpithet));
 	  occurrence.setScientificName(rec.value(DwcTerm.scientificName));
+	  occurrence.setScientificNameAuthorship(rec.value(DwcTerm.scientificNameAuthorship));
+	  occurrence.setTaxonRank(rec.value(DwcTerm.taxonRank));
+	  occurrence.setDateIdentified(rec.value(DwcTerm.dateIdentified));
+	  occurrence.setIdentifiedBy(rec.value(DwcTerm.identifiedBy));
+	  occurrence.setTypeStatus(rec.value(DwcTerm.typeStatus));
+	  occurrence.setContinent(rec.value(DwcTerm.continent));
+	  occurrence.setWaterBody(rec.value(DwcTerm.waterBody));
+	  occurrence.setCountry(rec.value(DwcTerm.country));
+	  occurrence.setStateProvince(rec.value(DwcTerm.stateProvince));
 	  occurrence.setLocality(rec.value(DwcTerm.locality));
+	  occurrence.setDecimalLatitude(rec.value(DwcTerm.decimalLatitude));
+	  occurrence.setDecimalLongitude(rec.value(DwcTerm.decimalLongitude));
+	  occurrence.setCoordinatePrecision(rec.value(DwcTerm.coordinatePrecision));
+	  occurrence.setMinimumElevationInMeters(rec.value(DwcTerm.minimumElevationInMeters));
+	  occurrence.setMaximumElevationInMeters(rec.value(DwcTerm.maximumElevationInMeters));
+	  occurrence.setMinimumDepthInMeters(rec.value(DwcTerm.minimumDepthInMeters));
+	  occurrence.setMaximumDepthInMeters(rec.value(DwcTerm.maximumDepthInMeters));
 	  occurrences.add(occurrence);
-	  // print core ID + scientific name
-	  /*LOG.info(rec.id()+" - "+rec.value(DwcTerm.scientificName) + "-" + rec.value(DwcTerm.kingdom));
-	  if (rec.dataFile().hasTerm(DwcTerm.decimalLongitude) && rec.dataFile().hasTerm(DwcTerm.decimalLatitude))
-	  {
-	   LOG.info("Georeferenced: " + rec.value(DwcTerm.decimalLongitude)+","+rec.value(DwcTerm.decimalLatitude));;
-	  }*/  
 	}
 	
 	// now synchronise the results to the database
     LOG.info("Number of results: " + occurrences.size());
-    for (Occurrence o : occurrences) 
+    try 
     {
-      try 
-      {
-        databaseSync.synchronize(conn, o);
-        LOG.info(o.getScientificName());
-      }
-      catch (RuntimeException e) 
-      {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } 
+      databaseSync.synchronize(conn, occurrences);
     }
+    catch (RuntimeException e) 
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } 
   }
   
   /**
