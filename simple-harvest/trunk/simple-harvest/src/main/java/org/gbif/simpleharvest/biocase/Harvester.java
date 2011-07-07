@@ -28,6 +28,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.log4j.Logger;
+import org.gbif.simpleharvest.dataaccess.DBToDatasetHandler;
+import org.gbif.simpleharvest.dataaccess.OccurrenceToDBHandler;
 import org.gbif.simpleharvest.model.Occurrence;
 import org.gbif.simpleharvest.util.TemplateUtils;
 
@@ -63,7 +65,8 @@ public class Harvester {
   private String templateLocation = "template/biocase/search.vm";
   private HttpClient httpClient = new DefaultHttpClient(connectionManager, params);
   private ResponseToModelHandler modelFactory = new ResponseToModelHandler();
-  private OccurrenceToDBHandler databaseSync = new OccurrenceToDBHandler();
+  private OccurrenceToDBHandler occurenceSync = new OccurrenceToDBHandler();
+  private static DBToDatasetHandler datasetSync = new DBToDatasetHandler();
   
   /**
    * Creates the class 
@@ -97,22 +100,33 @@ public class Harvester {
    *  database connection string
    *  database username
    *  database password
+ * @throws SQLException 
    */
-  public static void main(String[] args) {
-    if (args.length!=6) {
-      LOG.error("Harvester takes 6 arguments");
+  public static void main(String[] args) throws SQLException {
+    if (args.length!=4) {
+      LOG.error("Harvester takes 4 arguments");
       return;
     }
  
-    int datasetId = Integer.parseInt(args[0]);
-    String url = args[1];
-    String databaseUrl = args[2];
-    String username = args[3];
-    String password = args[4];
-    String targetDirectory = args[5];
+    String databaseUrl = args[0];
+    String username = args[1];
+    String password = args[2];
+    String targetDirectory = args[3];
     
-    Harvester app = new Harvester(datasetId, url, databaseUrl, username, password, targetDirectory);
-    app.run();
+    Map<Integer, String> datasetsList = new HashMap<Integer, String>();
+    
+    //The dataset table is in the same database as the occurence table
+    datasetSync.listDatasets(databaseUrl, username, password, datasetsList, "biocase");
+    int datasetId;
+    String url = null;
+    
+    for (Map.Entry<Integer, String> entry : datasetsList.entrySet())
+    {
+      datasetId = entry.getKey();
+      url = entry.getValue();
+      Harvester app = new Harvester(datasetId, url, databaseUrl, username, password, targetDirectory);
+      app.run();
+    }
   }
 
   /**
@@ -206,13 +220,15 @@ public class Harvester {
     // now synchronise the results to the database
     LOG.info("Number of results: " + results.size());
     for (Occurrence o : results) {
-      try {
-        databaseSync.synchronize(conn, o);
-      } catch (RuntimeException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } 
+    	o.setDatasetId(this.datasetId);
     }
+    try {
+      occurenceSync.synchronize(conn, results);
+    } catch (RuntimeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } 
+    //}
     
     
     LOG.info("Finished lower[" + lower + "] upper[" + upper + "] start[" + startAt + "]");
