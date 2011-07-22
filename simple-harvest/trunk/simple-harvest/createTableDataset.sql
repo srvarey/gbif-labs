@@ -36,11 +36,14 @@ INSERT INTO `dataset` (`name`, `url`, `type`) VALUES
 ('guadeloupe_insectes', 'http://www.gbif.fr:8080/ipt/eml.do?r=guadeloupe_insectes', 'ipt'),
 ('herbierdestrasbourg', 'http://www.gbif.fr:8080/ipt/eml.do?r=herbierdestrasbourg', 'ipt'),
 ('quadrige', 'http://www.gbif.fr:8080/ipt/eml.do?r=quadrige', 'ipt'),
+('test_tapir', 'http://www.sib.gov.ar/tapirlink-0.7.0/www/tapir.php/APN-CHORDATA', 'tapir'),
 ('cel', 'http://www.tela-botanica.org/tapirlink/tapir.php/cel', 'tapir'),
 ('chorodep', 'http://www.tela-botanica.org/tapirlink/tapir.php/chorodep', 'tapir'),
-('legumino', 'http://www.tela-botanica.org/tapirlink/tapir.php/legumino', 'tapir'),
-('pterido', 'http://www.tela-botanica.org/tapirlink/tapir.php/pterido', 'tapir'),
-('biocean', 'http://www.ifremer.fr/digir/DiGIR.php', 'digir'),
 ('Gicim', 'http://dsibib.mnhn.fr/ici/digir', 'digir'),
 ('Hemipteres', 'http://dsibib.mnhn.fr/ici/digir', 'digir'),
 ('Ensiferes', 'http://dsibib.mnhn.fr/ici/digir', 'digir')
+
+/*('legumino', 'http://www.tela-botanica.org/tapirlink/tapir.php/legumino', 'tapir'),
+('pterido', 'http://www.tela-botanica.org/tapirlink/tapir.php/pterido', 'tapir'),
+('biocean', 'http://www.ifremer.fr/digir/DiGIR.php', 'digir'),
+('comarge', 'http://www.ifremer.fr/digir/DiGIR.php', 'digir')*/
