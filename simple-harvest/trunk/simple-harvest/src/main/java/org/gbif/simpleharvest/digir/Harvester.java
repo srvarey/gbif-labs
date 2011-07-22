@@ -1,4 +1,4 @@
-package org.gbif.simpleharvest.biocase;
+package org.gbif.simpleharvest.digir;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,8 +61,8 @@ public class Harvester {
   private String username;
   private String password;
   private String targetDirectory;
-  private Map<String, String> templateParams = new HashMap<String, String>();
-  private String templateLocation = "template/biocase/search.vm";
+  private static Map<String, String> templateParams = new HashMap<String, String>();
+  private String templateLocation = "template/digir/search.vm";
   private HttpClient httpClient = new DefaultHttpClient(connectionManager, params);
   private ResponseToModelHandler modelFactory = new ResponseToModelHandler();
   private OccurrenceToDBHandler occurenceSync = new OccurrenceToDBHandler();
@@ -85,11 +85,7 @@ public class Harvester {
     }
     this.targetDirectory = f.getAbsolutePath() + File.separator;
     
-    // set up the template that will be used to issue biocase requests
-    templateParams.put("destination", url);
-    templateParams.put("hostAddress", "127.0.0.1");
-    templateParams.put("contentNamespace", "http://www.tdwg.org/schemas/abcd/2.06");
-    templateParams.put("subject", "/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString");
+    
   }
 
   /**
@@ -116,16 +112,21 @@ public class Harvester {
     HashMap<Integer, ArrayList<String>> datasetsList = new HashMap<Integer, ArrayList<String>>();
     
     //The dataset table is in the same database as the occurence table
-    datasetSync.listDatasets(databaseUrl, username, password, datasetsList, "biocase");
+    datasetSync.listDatasets(databaseUrl, username, password, datasetsList, "digir");
     int datasetId;
     String url = null;
-    //String name = null;
+    String name = null;
     
     for (Map.Entry<Integer, ArrayList<String>> entry : datasetsList.entrySet())
     {
       datasetId = entry.getKey();
-      //name = entry.getValue().get(0);
+      name = entry.getValue().get(0);
       url = entry.getValue().get(1);
+      // set up the template that will be used to issue digir requests
+      templateParams.put("destination", url);
+      templateParams.put("maxResults", "1000");
+      templateParams.put("resource", name);
+      LOG.info("URL: " + url + " name: " + name);
       Harvester app = new Harvester(datasetId, url, databaseUrl, username, password, targetDirectory);
       app.run();
     }
@@ -188,7 +189,7 @@ public class Harvester {
   private void pageRange(String lower, String upper, int startAt) throws Exception {
 	templateParams.put("lower", lower);
 	templateParams.put("upper", upper);  
-	templateParams.put("startAt", Integer.toString(startAt));  
+	templateParams.put("startAt", Integer.toString(startAt)); 
     LOG.info("Starting lower[" + lower + "] upper[" + upper + "] start[" + startAt + "]");
     String query = TemplateUtils.getAndMerge(templateLocation, templateParams);
     String request = buildURL(url, "request", query);
