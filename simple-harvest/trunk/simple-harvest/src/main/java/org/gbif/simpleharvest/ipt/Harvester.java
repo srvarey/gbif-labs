@@ -91,17 +91,19 @@ public class Harvester
     String password = args[2];
     String targetDirectory = args[3];
     
-    Map<Integer, String> datasetsList = new HashMap<Integer, String>();
+    HashMap<Integer, ArrayList<String>> datasetsList = new HashMap<Integer, ArrayList<String>>();
     
     //The dataset table is in the same database as the occurence table
     datasetSync.listDatasets(databaseUrl, username, password, datasetsList, "ipt");
     int datasetId;
     String url = null;
+    //String name = null;
     
-    for (Map.Entry<Integer, String> entry : datasetsList.entrySet())
+    for (Map.Entry<Integer, ArrayList<String>> entry : datasetsList.entrySet())
     {
       datasetId = entry.getKey();
-      url = entry.getValue();
+      //name = entry.getValue().get(0);
+      url = entry.getValue().get(1);
       Harvester app = new Harvester(datasetId, url, databaseUrl, username, password, targetDirectory);
       app.run();
     }
@@ -186,11 +188,6 @@ public class Harvester
 	  String FileType = conn.getContentType();
 	  LOG.info("Type File : " + FileType);
 
-	  int FileLenght = conn.getContentLength();
-	  if (FileLenght == -1) 
-	  {
-	    throw new IOException("Invalid File");
-	  }
 	  // Response Reader
 	  in = conn.getInputStream();
 	  reader = new BufferedReader(new InputStreamReader(in));
