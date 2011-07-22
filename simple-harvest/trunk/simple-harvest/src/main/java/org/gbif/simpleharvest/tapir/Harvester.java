@@ -1,4 +1,4 @@
-package org.gbif.simpleharvest.digir;
+package org.gbif.simpleharvest.tapir;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,12 +62,13 @@ public class Harvester {
   private String password;
   private String targetDirectory;
   private static Map<String, String> templateParams = new HashMap<String, String>();
-  private String templateLocation = "template/digir/search.vm";
+  private String templateLocation = "template/tapir/search.vm";
   private HttpClient httpClient = new DefaultHttpClient(connectionManager, params);
   private ResponseToModelHandler modelFactory = new ResponseToModelHandler();
   private OccurrenceToDBHandler occurenceSync = new OccurrenceToDBHandler();
   private static DBToDatasetHandler datasetSync = new DBToDatasetHandler();
-  private static int maxResults = 1000;
+  private static int maxResults = 200;
+   
   /**
    * Creates the class 
    */
@@ -112,7 +113,7 @@ public class Harvester {
     HashMap<Integer, ArrayList<String>> datasetsList = new HashMap<Integer, ArrayList<String>>();
     
     //The dataset table is in the same database as the occurence table
-    datasetSync.listDatasets(databaseUrl, username, password, datasetsList, "digir");
+    datasetSync.listDatasets(databaseUrl, username, password, datasetsList, "tapir");
     int datasetId;
     String url = null;
     String name = null;

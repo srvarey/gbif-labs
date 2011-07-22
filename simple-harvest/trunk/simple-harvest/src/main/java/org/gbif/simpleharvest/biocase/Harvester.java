@@ -67,6 +67,7 @@ public class Harvester {
   private ResponseToModelHandler modelFactory = new ResponseToModelHandler();
   private OccurrenceToDBHandler occurenceSync = new OccurrenceToDBHandler();
   private static DBToDatasetHandler datasetSync = new DBToDatasetHandler();
+  private static int maxResults = 1000;
   
   /**
    * Creates the class 
@@ -235,10 +236,10 @@ public class Harvester {
     
     LOG.info("Finished lower[" + lower + "] upper[" + upper + "] start[" + startAt + "]");
     
-    if (results.size() >= 1000)
+    if (results.size() >= maxResults)
     {
     	results = null; // make eligible for garbage collection
-    	pageRange(lower, upper, startAt + 1000);
+    	pageRange(lower, upper, startAt + maxResults);
     }
   }
   
