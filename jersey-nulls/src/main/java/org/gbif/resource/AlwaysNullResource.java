@@ -34,7 +34,6 @@ public class AlwaysNullResource {
     return null;
   }
 
-
   /**
    * The NullResponseFilter gets the null response and throws a NotFoundException
    * @return

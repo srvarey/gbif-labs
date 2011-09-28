@@ -45,5 +45,4 @@ public class JerseyListener extends GuiceServletContextListener {
       serve("/*").with(GuiceContainer.class, params);
     }
   }
-
 }
