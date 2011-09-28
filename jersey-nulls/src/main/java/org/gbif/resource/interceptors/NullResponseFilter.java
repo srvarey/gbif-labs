@@ -7,7 +7,6 @@ import com.sun.jersey.spi.container.ContainerResponseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This filter will process all the responses of Jersey services
  * Every response will be analyzed to evaluate if the response content is null,
