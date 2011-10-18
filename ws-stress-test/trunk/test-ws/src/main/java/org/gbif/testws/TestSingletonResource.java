@@ -11,7 +11,7 @@ public class TestSingletonResource {
 
   @GET
   public String test() {
-    return "SINGLETON";
+    return "{\"id\":1}";
   }
 
 }
