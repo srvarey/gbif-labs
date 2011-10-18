@@ -8,7 +8,7 @@ public class TestResource {
 
   @GET
   public String test() {
-    return "TEST";
+    return "{\"id\":1}";
   }
 
 }
