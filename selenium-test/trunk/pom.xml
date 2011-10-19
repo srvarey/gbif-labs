@@ -107,6 +107,15 @@
                   <xauthEnabled>false</xauthEnabled>
                 </configuration>
               </execution>
+              <execution>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start-server</goal>
+                </goals>
+                <configuration>
+                  <background>true</background>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
         </plugins>
