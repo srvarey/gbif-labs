@@ -24,7 +24,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-public class SeleniumTest {
+public class SeleniumIT {
 
   private WebDriver driver;
   private final String baseUrl = "http://staging.gbif.org:8080/portal-web-dynamic";
