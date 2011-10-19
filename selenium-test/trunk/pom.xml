@@ -103,6 +103,9 @@
                 <goals>
                   <goal>xvfb</goal>
                 </goals>
+                <configuration>
+                  <xauthEnabled>false</xauthEnabled>
+                </configuration>
               </execution>
             </executions>
           </plugin>
