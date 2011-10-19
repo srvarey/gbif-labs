@@ -45,6 +45,7 @@
         <executions>
           <execution>
             <phase>pre-integration-test</phase>
+            <id>start-server</id>
             <goals>
               <goal>start-server</goal>
             </goals>
@@ -109,6 +110,7 @@
               </execution>
               <execution>
                 <phase>pre-integration-test</phase>
+                <id>start-server</id>
                 <goals>
                   <goal>start-server</goal>
                 </goals>
