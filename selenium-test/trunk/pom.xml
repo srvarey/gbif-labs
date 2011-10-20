@@ -80,6 +80,10 @@
                 </goals>
                 <configuration>
                   <xauthEnabled>false</xauthEnabled>
+                  <options>
+                    <option>-auth</option>
+                    <option>/dev/null</option>
+                  </options>
                 </configuration>
               </execution>
               <execution>
