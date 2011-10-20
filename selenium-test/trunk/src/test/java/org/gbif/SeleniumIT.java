@@ -1,5 +1,6 @@
 package org.gbif;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -18,7 +19,8 @@ public class SeleniumIT {
   @Before
   public void setUp() throws Exception {
     DesiredCapabilities capabilities = new DesiredCapabilities();
-    driver = new RemoteWebDriver(capabilities);
+    capabilities.setBrowserName("firefox");
+    driver = new RemoteWebDriver(new URL("http://127.0.0.1:4444/wd/hub/"), capabilities);
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
