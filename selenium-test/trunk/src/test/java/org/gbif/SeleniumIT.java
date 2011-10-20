@@ -7,7 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class SeleniumIT {
 
@@ -17,7 +18,8 @@ public class SeleniumIT {
   @Before
   public void setUp() throws Exception {
     System.out.println("Setting up driver");
-    driver = new LoggingFirefoxDriver();
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    driver = new RemoteWebDriver(capabilities);
     System.out.println("Driver set up");
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
