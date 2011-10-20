@@ -17,16 +17,13 @@ public class SeleniumIT {
 
   @Before
   public void setUp() throws Exception {
-    System.out.println("Setting up driver");
     DesiredCapabilities capabilities = new DesiredCapabilities();
     driver = new RemoteWebDriver(capabilities);
-    System.out.println("Driver set up");
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
   @Test
   public void testFoo() throws Exception {
-    System.out.println("Getting URL");
     driver.get(baseUrl);
     driver.findElement(By.linkText("Datasets")).click();
     driver.findElement(By.cssSelector("button.search_button")).click();
@@ -35,7 +32,9 @@ public class SeleniumIT {
 
   @After
   public void tearDown() throws Exception {
-    driver.quit();
+    if (driver != null) {
+      driver.quit();
+    }
   }
 
 }
