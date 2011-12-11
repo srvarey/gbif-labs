@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="models/occurrence/harvest/model/|org/gbif/simpleharvest/digir/|org/gbif/simpleharvest/ipt/|org/gbif/simpleharvest/model/|org/gbif/simpleharvest/tapir/|views/**" including="controllers/|models/|org/gbif/portal/harvest/taxonomy/|org/gbif/simpleharvest/|org/gbif/simpleharvest/biocase/|org/gbif/simpleharvest/dataaccess/|org/gbif/simpleharvest/util/|resources/" kind="src" path="app"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="lib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Play Framework Library"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/GBIF France Harvest Library"/>
+	<classpathentry kind="output" path="eclipse/classes"/>
+</classpath>
