@@ -1,0 +1,4 @@
+Listening for transport dt_socket at address: 45771
+[ecat-common] INFO [main] play.info(282) | Starting /home/michael/Dropbox/workspace/gbiffrance-harvest
+[ecat-common] WARN [main] play.warn(337) | You're running Play! in DEV mode
+[ecat-common] ERROR [main] play.error(392) | Could not bind on port 9000

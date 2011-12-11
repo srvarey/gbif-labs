@@ -1,0 +1,148 @@
+Dataset(mola):
+    name: mola
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=mola
+    type: biocase
+    
+Dataset(guadeloupe_insectes):
+    name: guadeloupe_insectes
+    url: http://www.gbif.fr:8080/ipt/archive.do?r=guadeloupe_insectes
+    type: ipt
+    
+Dataset(Hemipteres):
+    name: Hemipteres
+    url: http://dsibib.mnhn.fr/ici/digir
+    type: digir
+    
+Dataset(cel):
+    name: cel
+    url: http://www.tela-botanica.org/tapirlink/tapir.php/cel
+    type: tapir 
+ 
+Dataset(crbip):
+    name: crbip
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=crbip
+    type: biocase  
+    
+Dataset(cal):
+    name: cal
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=cal
+    type: biocase      
+ 
+Dataset(wal_fut):
+    name: wal_fut
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=wal_fut
+    type: biocase
+    
+Dataset(palbot):
+    name: palbot
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=palbot
+    type: biocase
+    
+Dataset(guy):
+    name: guy
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=guy
+    type: biocase      
+    
+Dataset(cirm):
+    name: cirm
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=cirm
+    type: biocase
+    
+Dataset(cbnfc):
+    name: cbnfc
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=cbnfc
+    type: biocase
+    
+Dataset(floraine):
+    name: floraine
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=floraine
+    type: biocase              
+
+Dataset(cfbp):
+    name: cfbp
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=cfbp
+    type: biocase              
+    
+Dataset(mzs_po):
+    name: mzs_po
+    url: http://www.gbif.fr/biocase/pywrapper.cgi?dsa=mzs_po
+    type: biocase              
+    
+Dataset(aublet):
+    name: aublet
+    url: http://ceperou.cayenne.ird.fr/biocase/pywrapper.cgi?dsa=aublet
+    type: biocase              
+    
+Dataset(arachne):
+    name: floraine
+    url: http://dsibib.mnhn.fr/biocase/pywrapper.cgi?dsa=arachne
+    type: biocase   
+    
+Dataset(coleoptere):
+    name: floraine
+    url: http://dsibib.mnhn.fr/biocase/pywrapper.cgi?dsa=coleoptere
+    type: biocase  
+    
+Dataset(invmar):
+    name: invmar
+    url: http://dsibib.mnhn.fr/biocase/pywrapper.cgi?dsa=invmar
+    type: biocase
+    
+Dataset(mycobase):
+    name: mycobase
+    url: http://dsibib.mnhn.fr/biocase/pywrapper.cgi?dsa=mycobase
+    type: biocase  
+    
+Dataset(reptamph):
+    name: reptamph
+    url: http://dsibib.mnhn.fr/biocase/pywrapper.cgi?dsa=reptamph
+    type: biocase  
+    
+Dataset(cbnbp):
+    name: cbnbp
+    url: http://dsimap.mnhn.fr/biocase/pywrapper.cgi?dsa=cbnbp
+    type: biocase  
+    
+Dataset(inpn):
+    name: inpn
+    url: http://dsimap.mnhn.fr/biocase/pywrapper.cgi?dsa=inpn
+    type: biocase                    
+    
+Dataset(ecoscope):
+    name: ecoscope
+    url: http://vmirdgbif-proto.mpl.ird.fr:8080/ipt/archive.do?r=ecoscope_observation_database
+    type: ipt   
+    
+Dataset(cnidariamzs):
+    name: cnidariamzs
+    url: http://www.gbif.fr:8080/ipt/archive.do?r=cnidariamzs
+    type: ipt 
+    
+Dataset(herbierdestrasbourg):
+    name: ecoscope
+    url: http://www.gbif.fr:8080/ipt/archive.do?r=herbierdestrasbourg
+    type: ipt 
+    
+Dataset(quadrige):
+    name: quadrige
+    url: http://www.gbif.fr:8080/ipt/eml.do?r=quadrige
+    type: ipt    
+    
+Dataset(chorodep):
+    name: chorodep
+    url: http://www.tela-botanica.org/tapirlink/tapir.php/chorodep
+    type: tapir
+    
+Dataset(Gicim):
+    name: Gicim
+    url: http://dsibib.mnhn.fr/ici/digir
+    type: digir
+    
+Dataset(Ensiferes):
+    name: Ensiferes
+    url: http://dsibib.mnhn.fr/ici/digir
+    type: digir
+                                      
+      
+
+

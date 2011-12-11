@@ -1,0 +1,17 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+<h1>GBIF France Harvester</h1>
+<table>
+#{list items:datasets, as:'dataset'}
+    <tr>
+      <td>
+        Dataset name: ${dataset.name}
+        <br>
+        Dataset url: ${dataset.url} 
+      </td>
+      <td>${dataset.done}</td>
+      <td><a href="harvest/${dataset.type}/${dataset.id}">go!</a></td>  
+    </tr>
+#{/list}
+</table>
