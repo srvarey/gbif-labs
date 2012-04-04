@@ -27,50 +27,41 @@ public class RorSplitCounter {
 
   private static Logger log = LoggerFactory.getLogger(RorSplitCounter.class);
 
-  private void generateSplits(String rorTable, int splitSize, String fileName) {
+  private void generateSplits(String targDb, int splitSize, String fileName) {
     Connection con = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    FileOutputStream fos = null;
+    OutputStreamWriter writer = null;
     try {
       File outFile = new File(fileName);
       outFile.delete();
       outFile.createNewFile();
-      FileOutputStream fos = new FileOutputStream(outFile);
-      OutputStreamWriter writer = new OutputStreamWriter(fos, "UTF-8");
+      fos = new FileOutputStream(outFile);
+      writer = new OutputStreamWriter(fos, "UTF-8");
+      String driver = "com.mysql.jdbc.Driver";
+      Class.forName(driver);
+      con = DriverManager.getConnection("jdbc:mysql://mogo.gbif.org:3306/" + targDb, "hbase", "hbasepassword");
+      stmt = con.createStatement();
+      stmt = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+      stmt.setFetchSize(Integer.MIN_VALUE);
 
-      con = DriverManager.getConnection("jdbc:mysql://mogo.gbif.org:3306/" + rorTable, "hbase", "hbasepassword");
-      Statement stmt = con.createStatement();
-
-      ResultSet rs = stmt.executeQuery("SELECT MAX(id) as max_id FROM raw_occurrence_record");
-      rs.next();
-      int maxId = rs.getInt("max_id");
-      log.info("Found max id from table [" + rorTable + "] of [" + maxId + "]");
-      rs.close();
-
-      boolean finished = false;
+      rs = stmt.executeQuery("SELECT id FROM raw_occurrence_record");
       int splitCount = 0;
-      while (!finished) {
-        rs = stmt
-          .executeQuery("SELECT id FROM raw_occurrence_record LIMIT " + (splitCount * splitSize) + ", " + splitSize);
-        if (rs.next()) {
-          rs.last();
-          int id = rs.getInt("id");
-          if (id == maxId) {
-            log.info("Reached maxId of [{}] - quitting", maxId);
-            finished = true;
-          } else {
-            splitCount++;
-            log.info("Split # [{}] at id [{}]", splitCount, id);
-            writer.write(id + "\n");
-            writer.flush();
-          }
-        } else {
-          log.info("Got empty resultset - assuming we're done.");
-          finished = true;
+      int rowCount = 0;
+      while (rs.next()) {
+        rowCount++;
+        int id = rs.getInt("id");
+        if (rowCount % splitSize == 0) {
+          splitCount++;
+          log.info("Split # [{}] at id [{}]", splitCount, id);
+          writer.write(id + "\n");
+          writer.flush();
         }
-        rs.close();
       }
+      rs.close();
       stmt.close();
       con.close();
-
       writer.close();
       fos.close();
     } catch (SQLException e) {
@@ -83,17 +74,31 @@ public class RorSplitCounter {
       System.exit(1);
     } catch (IOException e) {
       log.warn("IOException when writing to file", e);
+    } catch (ClassNotFoundException e) {
+      log.error("Couldn't find mysql driver - aborting", e);
+      System.exit(1);
+    } finally {
+      try {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        if (con != null) con.close();
+        if (writer != null) writer.close();
+        if (fos != null) fos.close();
+      } catch (SQLException e) {
+        log.warn("Couldn't close db connections", e);
+      } catch (IOException e) {
+        log.warn("Couldn't close file connections", e);
+      }
     }
   }
 
   public static void main(String[] args) {
     RorSplitCounter instance = new RorSplitCounter();
     if (args.length < 3) {
-      System.out.println("Usage: RorSplitCounter <ror_table_on_mogo> <num_rows_between_splits> <output_filename>");
+      System.out.println("Usage: RorSplitCounter <ror_db_on_mogo> <num_rows_between_splits> <output_filename>");
       System.exit(1);
     }
     instance.generateSplits(args[0], Integer.valueOf(args[1]), args[2]);
-//    instance.generateSplits(1000000, "/tmp/ror_splits.txt");
-//    instance.generateSplits(2725000, "/tmp/ror_120_splits.txt"); // produces 120 regions
+    //    instance.generateSplits("portal_rollover", 1000000, "/tmp/ror_splits.txt");
   }
 }
