@@ -1,0 +1,8 @@
+import-avro
+-----------
+This is a hacked up version of ImportTsv meant to be used with Avro files. Easiest way to figure out using it
+is to read the dev wiki at http://dev.gbif.org/wiki/display/DEV/Populating+HBase+occurrences+from+MySQL.
+
+A sample command line is:
+
+java -jar import-avro-0.1-SNAPSHOT-jar-with-dependencies.jar -Dhfile.compression=snappy -Dimportavro.bulk.output=/hdfs/dir/avro_hfiles -Dimportavro.columns=HBASE_ROW_KEY,v:data_provider_id,v:data_resource_id,v:resource_access_point_id,v:institution_code,v:collection_code,v:catalogue_number,v:scientific_name,v:author,v:rank,v:kingdom,v:phylum,v:class_rank,v:order_rank,v:family,v:genus,v:species,v:subspecies,v:latitude,v:longitude,v:lat_long_precision,v:max_altitude,v:min_altitude,v:altitude_precision,v:min_depth,v:max_depth,v:depth_precision,v:continent_ocean,v:country,v:state_province,v:county,v:collector_name,v:locality,v:year,v:month,v:day,v:basis_of_record,v:identifier_name,v:identification_date,v:unit_qualifier,v:created,v:modified,v:deleted /local/dir/avro_schema.txt hbase_table_name /hdfs/dir/avro_files/
