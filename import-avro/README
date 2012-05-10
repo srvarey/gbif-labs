@@ -1,7 +1,8 @@
 import-avro
 -----------
 This is a hacked up version of ImportTsv meant to be used with Avro files. Easiest way to figure out using it
-is to read the dev wiki at http://dev.gbif.org/wiki/display/DEV/Populating+HBase+occurrences+from+MySQL.
+is to read the dev wiki at http://dev.gbif.org/wiki/display/DEV/Populating+HBase+occurrences+from+MySQL. Be sure to
+check that the *-site.xml files point to the right places for your install.
 
 A sample command line is:
 
