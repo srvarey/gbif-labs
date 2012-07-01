@@ -1,0 +1,58 @@
+This is an example of a backfill process to build a DataCube for occurrence data. 
+See https://github.com/urbanairship/datacube
+
+All cube tables are backed by HBase tables, and thus to run this you need to have access to the HBase cluster.
+There are example configurations in the src/main/resources, which require network access (e.g. VPN).
+
+Table names are currently hardcoded so run this at your own risk.
+
+The input HBase table is expected to be an HBase occurrence table, which is not currently available.  
+
+The following steps describe how this was created for this evaluation.
+
+a) On cluster 1, create a table with our desired data using Hive:
+hive> CREATE TABLE tim_occurrence AS
+SELECT o.id, tn.canonical AS kingdom, o.iso_country_code,o.cell_id
+FROM 
+  rollover_portal_taxon_name tn 
+  JOIN rollover_portal_taxon_concept tc ON tc.taxon_name_id=tn.id
+  JOIN rollover_portal_occurrence_record o ON o.kingdom_concept_id=tc.id;
+      
+b) copy the table from cluster 1 to cluster 4
+$  hadoop distcp hdfs://c1n1.gbif.org:8020/user/hive/warehouse/tim_occurrence hdfs://c1n4.gbif.org:8020/user/tim/tim_occurrence
+
+c) in Hive (0.9) mounted an hdfs_occurrence_record table on it as follows:
+
+hive> DROP TABLE IF EXISTS hdfs_occurrence_record;
+hive> CREATE TABLE hdfs_occurrence_record (
+  id INT,
+  kingdom STRING,
+  iso_country_code STRING,
+  cell_id INT
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\001';  
+
+d) Loaded the copied file into the Hive table as follows:
+
+LOAD DATA INPATH '/user/tim/tim_occurrence' 
+INTO TABLE hdfs_occurrence_record;
+
+e) Creates an HBase source table with:
+hbase(main):003:0>  create 'dc_occurrence', {NAME => 'o', VERSIONS => 1, COMPRESSION => 'SNAPPY'}
+ 
+f) mount a Hive table on the HBase table as follows:
+
+$ hive -hiveconf hbase.zookeeper.quorum=c1n1.gbif.org
+hive> ADD JAR /Users/tim/dev/hadoop/hive-0.9.0-gbif/lib/zookeeper-3.4.3.jar;
+hive> ADD JAR /Users/tim/dev/hadoop/hive-0.9.0-gbif/lib/hbase-0.90.4.jar;
+hive> ADD JAR /Users/tim/dev/hadoop/hive-0.9.0-gbif/lib/hive-hbase-handler-0.9.0-hbase-0.90-compat-2.jar;
+hive> ADD JAR /Users/tim/dev/hadoop/hive-0.9.0-gbif/lib/guava-r09.jar;
+hive> DROP TABLE IF EXISTS dc_occurrence;
+CREATE EXTERNAL TABLE dc_occurrence (id int, kingdom string, iso_country_code string, cell_id bigint) 
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key#b,o:ik#b,o:icc#b,o:icell")
+TBLPROPERTIES("hbase.table.name"="dc_occurrence", "hbase.table.default.storage.type"="binary");
+
+g) Populate hbase using the Hive tables (this method fails on nulls and there are null values, so skip them for this test)
+hive> INSERT OVERWRITE TABLE dc_occurrence SELECT id, kingdom, iso_country_code, cell_id FROM hdfs_occurrence_record
+WHERE cell_id IS NOT NULL AND iso_country_code IS NOT NULL AND kingdom IS NOT NULL AND id IS NOT NULL;
