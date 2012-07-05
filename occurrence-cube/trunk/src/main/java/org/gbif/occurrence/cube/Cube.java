@@ -22,9 +22,8 @@ import com.urbanairship.datacube.ops.LongOp;
  * <li>Country and kingdom (e.g. number of plant records in the US)</li>
  * <li>Country and georeferenced (e.g. number of records with coordinates in the UK)</li>
  * <li>Country and kingdom and georeferenced (e.g. number of bacteria records with coordinates in Spain)</li>
- * <ol>
- * 
- * @todo write public utility exposing a simple API enabling validated read/write access to cube.
+ * </ol>
+ * TODO: write public utility exposing a simple API enabling validated read/write access to cube.
  */
 class Cube {
 
@@ -36,13 +35,10 @@ class Cube {
   static final Dimension<Boolean> GEOREFERENCED = new Dimension<Boolean>("gbif:georeferenced", new BooleanBucketer(), false, 1);
 
   // Singleton instance if accessed through the instance() method
-  private static DataCube<LongOp> instance;
+  static final DataCube<LongOp> INSTANCE = newInstance();
 
-  static synchronized DataCube<LongOp> instance() {
-    if (instance == null) {
-      instance = newInstance();
-    }
-    return instance;
+  // Not for instantiation
+  private Cube() {
   }
 
   /**

@@ -37,8 +37,8 @@
 
   <repositories>
     <repository>
-      <id>gbif-public</id>
-      <url>http://repository.gbif.org/content/groups/public</url>
+      <id>gbif-thirdparty</id>
+      <url>http://repository.gbif.org/content/repositories/thirdparty</url>
     </repository>
     <repository>
       <id>gbif-all</id>
@@ -73,7 +73,7 @@
         <!-- 
           Overwrite the version of HBase 
           DataCube does allow this using -DhbaseVersion, but we enforce it in the pom explicitly so 
-          it is truly transient safe.  (Nothing DataCube could do to further enable this)
+          it is truly transient safe.  
         -->
         <exclusion>
           <groupId>org.apache.hbase</groupId>

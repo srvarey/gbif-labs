@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.gbif.occurrence.cube;
 
 import java.io.IOException;
@@ -133,8 +130,8 @@ public class Backfill {
       DbHarness<LongOp> hbaseDbHarness =
         new HBaseDbHarness<LongOp>(pool, CubeWriterMapper.EMPTY_BYTE_ARRAY, CUBE_TABLE, CF, LongOp.DESERIALIZER, idService, CommitType.INCREMENT);
 
-      DataCubeIo<LongOp> cubeIo = new DataCubeIo<LongOp>(Cube.instance(), hbaseDbHarness, 0, Long.MAX_VALUE, SyncLevel.BATCH_SYNC);
-      DataCube<LongOp> cube = Cube.instance();
+      DataCubeIo<LongOp> cubeIo = new DataCubeIo<LongOp>(Cube.INSTANCE, hbaseDbHarness, 0, Long.MAX_VALUE, SyncLevel.BATCH_SYNC);
+      DataCube<LongOp> cube = Cube.INSTANCE;
       LOG.info("Records in DK: {}", getCount(cubeIo.get(new ReadBuilder(cube).at(Cube.COUNTRY, "DK"))));
       LOG.info("Records in ES: {}", getCount(cubeIo.get(new ReadBuilder(cube).at(Cube.COUNTRY, "ES"))));
       LOG.info("Animal records in DK: {}", getCount(cubeIo.get(new ReadBuilder(cube).at(Cube.COUNTRY, "DK").at(Cube.KINGDOM, "Animalia"))));
