@@ -84,7 +84,7 @@ public class CubeWriterMapper extends TableMapper<Text, Text> {
     String kingdom = getValueAsString(row, CF, KINGDOM);
     Integer cell = getValueAsInt(row, CF, CELL);
 
-    WriteBuilder b = new WriteBuilder(Cube.instance());
+    WriteBuilder b = new WriteBuilder(Cube.INSTANCE);
     if (country != null) {
       b.at(Cube.COUNTRY, country);
       context.getCounter(STATS, STAT_COUNTRY).increment(1);
@@ -121,7 +121,7 @@ public class CubeWriterMapper extends TableMapper<Text, Text> {
     DbHarness<LongOp> hbaseDbHarness =
       new HBaseDbHarness<LongOp>(pool, EMPTY_BYTE_ARRAY, table, cf, LongOp.DESERIALIZER, idService, CommitType.INCREMENT);
 
-    dataCubeIo = new DataCubeIo<LongOp>(Cube.instance(), hbaseDbHarness, CUBE_WRITE_BATCH_SIZE, Long.MAX_VALUE, SyncLevel.BATCH_SYNC);
+    dataCubeIo = new DataCubeIo<LongOp>(Cube.INSTANCE, hbaseDbHarness, CUBE_WRITE_BATCH_SIZE, Long.MAX_VALUE, SyncLevel.BATCH_SYNC);
 
   }
 }

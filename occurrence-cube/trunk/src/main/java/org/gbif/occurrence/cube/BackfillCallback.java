@@ -1,6 +1,5 @@
 package org.gbif.occurrence.cube;
 
-
 import java.io.IOException;
 
 import com.urbanairship.datacube.backfill.HBaseBackfillCallback;
@@ -21,7 +20,7 @@ public class BackfillCallback implements HBaseBackfillCallback {
   static final String TARGET_TABLE_KEY = "gbif:cubewriter:targetTable";
   static final String TARGET_CF_KEY = "gbif:cubewriter:targetCF";
   // Controls the scanner caching size for the source data scan (100-5000 is reasonable)
-  private final static int SCAN_CACHE = 200;
+  private static final int SCAN_CACHE = 200;
   // The source data table
   private static final String SOURCE_TABLE = "dc_occurrence";
 

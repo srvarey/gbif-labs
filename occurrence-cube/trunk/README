@@ -3,12 +3,19 @@ See https://github.com/urbanairship/datacube
 
 All cube tables are backed by HBase tables, and thus to run this you need to have access to the HBase cluster.
 There are example configurations in the src/main/resources, which require network access (e.g. VPN).
-
 Table names are currently hardcoded so run this at your own risk.
 
-The input HBase table is expected to be an HBase occurrence table, which is not currently available.  
+To run this, you should:
 
-The following steps describe how this was created for this evaluation.
+- mvn assmebly:assembly (to build a jar with all dependencies)
+- java -cp target/occurrence-cube-0.1-SNAPSHOT-jar-with-dependencies.jar org.gbif.occurrence.cube.Backfill
+
+Note that this will expect an Occurrence table in HBase named "dc_occurrence" holding the following fields:
+- o:icc  (Interpreted country code in Bytes but representing a 2 char iso country code)
+- o:ik (Interpreted kingdom in Bytes but representing the kingdom string)
+- o:icell (cellID in Bytes but representing the cell id as an int)
+
+Should you not have a table, then the following steps describe how one might be created.
 
 a) On cluster 1, create a table with our desired data using Hive:
 hive> CREATE TABLE tim_occurrence AS
