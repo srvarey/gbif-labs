@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Global Biodiversity Information Facility (GBIF)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.gbif</groupId>
+  <artifactId>occurrence-cube</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>occurrence-cube</name>
+  <description>Cube definition, builders and accessors</description>
+
+  <properties>
+    <hbase.version>0.90.4-cdh3u2</hbase.version>
+    <hadoop.version>0.20.2-cdh3u2</hadoop.version>
+    <junit.version>4.10</junit.version>
+    <guava.version>12.0</guava.version>
+    <!-- Fixed to the HBase version -->
+    <slf4j.version>1.5.8</slf4j.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>gbif-thirdparty</id>
+      <url>http://repository.gbif.org/content/repositories/thirdparty</url>
+    </repository>
+    <repository>
+      <id>gbif-all</id>
+      <url>http://repository.gbif.org/content/groups/all</url>
+    </repository>
+  </repositories>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+         <descriptorRefs>
+           <descriptorRef>jar-with-dependencies</descriptorRef>
+         </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>  
+  
+  <dependencies>
+    <!--  
+      Note: this is in the GBIF repository referenced above
+      See https://github.com/urbanairship/datacube/issues/21
+    -->
+    <dependency>
+      <groupId>com.urbanairship</groupId>
+      <artifactId>datacube</artifactId>
+      <version>1.1.8</version>
+      <exclusions>
+        <!-- 
+          Overwrite the version of HBase 
+          DataCube does allow this using -DhbaseVersion, but we enforce it in the pom explicitly so 
+          it is truly transient safe.  
+        -->
+        <exclusion>
+          <groupId>org.apache.hbase</groupId>
+          <artifactId>hbase</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Overwrite the one from datacube -->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase</artifactId>
+      <version>${hbase.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-core</artifactId>
+      <version>${hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit-dep</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
