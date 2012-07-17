@@ -27,12 +27,18 @@
   <description>Cube definition, builders and accessors</description>
 
   <properties>
+    <datacube.version>1.2.0-GIT-20120717</datacube.version>  
     <hbase.version>0.90.4-cdh3u2</hbase.version>
     <hadoop.version>0.20.2-cdh3u2</hadoop.version>
+    <hbaseVersion>0.90.4-cdh3u2</hbaseVersion>
+    <hadoopVersion>0.20.2-cdh3u2</hadoopVersion>
     <junit.version>4.10</junit.version>
     <guava.version>12.0</guava.version>
     <!-- Fixed to the HBase version -->
     <slf4j.version>1.5.8</slf4j.version>
+    <commons-lang.version>2.6</commons-lang.version>
+    <logback.version>1.0.6</logback.version>
+    <avro.version>1.7.0</avro.version>
   </properties>
 
   <repositories>
@@ -40,9 +46,10 @@
       <id>gbif-thirdparty</id>
       <url>http://repository.gbif.org/content/repositories/thirdparty</url>
     </repository>
+    <!-- TODO: What should we use here? -->
     <repository>
       <id>gbif-all</id>
-      <url>http://repository.gbif.org/content/groups/all</url>
+      <url>http://repository.gbif.org/content/groups/public</url>
     </repository>
   </repositories>
   
@@ -57,6 +64,29 @@
          </descriptorRefs>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>${avro.version}</version>
+        <executions>
+          <execution>
+            <id>schemas</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/mapred/tether/**</exclude>
+              </excludes>
+              <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+              <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+              <testSourceDirectory>${project.basedir}/src/test/avro/</testSourceDirectory>
+              <testOutputDirectory>${project.basedir}/src/test/java/</testOutputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
     </plugins>
   </build>  
   
@@ -68,12 +98,12 @@
     <dependency>
       <groupId>com.urbanairship</groupId>
       <artifactId>datacube</artifactId>
-      <version>1.1.8</version>
+      <version>${datacube.version}</version>
+      <classifier>${hbase.version}</classifier>
       <exclusions>
         <!-- 
           Overwrite the version of HBase 
-          DataCube does allow this using -DhbaseVersion, but we enforce it in the pom explicitly so 
-          it is truly transient safe.  
+          DataCube has a profile always activated to 0.90.4
         -->
         <exclusion>
           <groupId>org.apache.hbase</groupId>
@@ -86,7 +116,7 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase</artifactId>
       <version>${hbase.version}</version>
-    </dependency>
+    </dependency>   
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -108,5 +138,21 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>${commons-lang.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>runtime</scope>
+    </dependency>    
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${avro.version}</version>
+    </dependency>    
   </dependencies>
 </project>
