@@ -1,0 +1,18 @@
+/**
+ * Defines a serialization format that allows a map of cells to count.
+ * A cell can be anything, so one could potentially key on the pixel itself
+ * or more commonly group to clusters of pixels.  It is up to the user to define
+ * the keying algorithm.
+ */
+[
+  {
+    "name": "DensityTileAvro",
+    "namespace": "org.gbif.cube.gmap.density.io",
+    "type": "record",
+    "type": "record",
+    "fields": [
+      {"name": "clusterSize", "type": "int"},
+      {"name": "cells", "type": {"type": "map", "values": "int"}}
+    ] 
+  }
+]
