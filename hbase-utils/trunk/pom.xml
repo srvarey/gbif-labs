@@ -12,6 +12,7 @@
     <hbase.version>0.90.4-cdh3u3</hbase.version>
     <hadoop.version>0.20.2-cdh3u3</hadoop.version>
     <logback.version>1.0.0</logback.version>
+    <junit.version>4.10</junit.version>
     <slf4j.version>1.6.4</slf4j.version>
   </properties>
 
@@ -24,9 +25,9 @@
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
           <!--<archive>-->
-            <!--<manifest>-->
-              <!--<mainClass>org.gbif.hbase.util.TableCreator</mainClass>-->
-            <!--</manifest>-->
+          <!--<manifest>-->
+          <!--<mainClass>org.gbif.hbase.util.TableCreator</mainClass>-->
+          <!--</manifest>-->
           <!--</archive>-->
         </configuration>
       </plugin>
@@ -102,6 +103,13 @@
           <groupId>org.slf4j</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit-dep</artifactId>
+      <version>${junit.version}</version>
     </dependency>
 
     <!-- logback is our preferred logging -->
