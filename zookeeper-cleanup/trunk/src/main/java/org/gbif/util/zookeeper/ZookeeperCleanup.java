@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 public class ZookeeperCleanup implements Watcher {
 
   private static final String ZK_HOST = "c1n1.gbif.org:2181";
-  private static Logger log = LoggerFactory.getLogger(ZookeeperCleanup.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ZookeeperCleanup.class);
 
   private ZooKeeper zk;
 
   private void init() throws IOException, KeeperException {
-    log.debug("Initiating ZooKeeper connection");
+    LOG.debug("Initiating ZooKeeper connection");
     zk = new ZooKeeper(ZK_HOST, 3000, this);
     // wait for zk to fully connect
     while (!zk.getState().isAlive()) {
@@ -32,7 +32,7 @@ public class ZookeeperCleanup implements Watcher {
         // do nothing
       }
     }
-    log.debug("ZooKeeper connection created");
+    LOG.debug("ZooKeeper connection created");
   }
 
   /**
@@ -48,7 +48,7 @@ public class ZookeeperCleanup implements Watcher {
     for (String path : paths) {
       String fullPath = parentPath + "/" + path;
       recursiveDelete(fullPath, zk.getChildren(fullPath, false));
-      log.debug("Deleting leaf [{}]", fullPath);
+      LOG.debug("Deleting leaf [{}]", fullPath);
       zk.delete(fullPath, -1);
     }
   }
@@ -60,10 +60,10 @@ public class ZookeeperCleanup implements Watcher {
    * First and only arg needs to be the node whose content should be deleted, e.g. "/hbase".
    */
   public static void main(String[] args) throws Exception {
-    log.debug("ZookeeperCleanup starting");
+    LOG.debug("ZookeeperCleanup starting");
     ZookeeperCleanup instance = new ZookeeperCleanup();
     instance.init();
     instance.clean(args[0]);
-    log.debug("ZookeeperCleanup finished");
+    LOG.debug("ZookeeperCleanup finished");
   }
 }
