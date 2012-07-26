@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>7</version>
+    <version>9</version>
   </parent>
 
   <groupId>zookeeper-cleanup</groupId>
@@ -16,9 +16,36 @@
 
   <properties>
     <zookeeper.version>3.3.3</zookeeper.version>
-    <logback.version>1.0.0</logback.version>
-    <slf4j.version>1.6.4</slf4j.version>
+    <logback.version>1.0.6</logback.version>
+    <slf4j.version>1.6.5</slf4j.version>
   </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>org.gbif.util.zookeeper.ZookeeperCleanup</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <repositories>
     <repository>
