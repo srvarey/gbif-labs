@@ -68,95 +68,50 @@ public class ResultReaderTest {
 
   @Test
   public void testString() {
-    ResultReader rr = new ResultReader(result, CF1_NAME);
-    String test = rr.getString(STRING_COL_NAME, null);
+
+    String test = ResultReader.getString(result, CF1_NAME, STRING_COL_NAME, null);
     assertTrue(STRING_VAL_1.equals(test));
 
-    test = rr.getString(CF1, STRING_COL_NAME, null);
-    assertTrue(STRING_VAL_1.equals(test));
-
-    test = rr.getString(CF1_NAME, STRING_COL_NAME, null);
-    assertTrue(STRING_VAL_1.equals(test));
-
-    test = rr.getString(CF1_NAME, "fake col", "a default value");
+    test = ResultReader.getString(result, CF1_NAME, "fake col", "a default value");
     assertTrue("a default value".equals(test));
 
-    test = rr.getString(CF2_NAME, STRING_COL_NAME, null);
+    test = ResultReader.getString(result, CF2_NAME, STRING_COL_NAME, null);
     assertTrue(STRING_VAL_2.equals(test));
   }
 
   @Test
   public void testDouble() {
-    ResultReader rr = new ResultReader(result, CF1_NAME);
-
-    Double test = rr.getDouble(DOUBLE_COL_NAME, null);
+    Double test = ResultReader.getDouble(result, CF1_NAME, DOUBLE_COL_NAME, null);
     assertEquals(DOUBLE_VAL_1, test);
 
-    test = rr.getDouble(CF1, DOUBLE_COL_NAME, null);
-    assertEquals(DOUBLE_VAL_1, test);
-
-    test = rr.getDouble(CF1_NAME, DOUBLE_COL_NAME, null);
-    assertEquals(DOUBLE_VAL_1, test);
-
-    test = rr.getDouble(CF1_NAME, "fake col", 123456.789d);
+    test = ResultReader.getDouble(result, CF1_NAME, "fake col", 123456.789d);
     assertEquals(Double.valueOf(123456.789), test);
 
-    test = rr.getDouble(CF2_NAME, DOUBLE_COL_NAME, null);
+    test = ResultReader.getDouble(result, CF2_NAME, DOUBLE_COL_NAME, null);
     assertEquals(DOUBLE_VAL_2, test);
   }
 
   @Test
   public void testInteger() {
-    ResultReader rr = new ResultReader(result, CF1_NAME);
-
-    Integer test = rr.getInteger(INT_COL_NAME, null);
+    Integer test = ResultReader.getInteger(result, CF1_NAME, INT_COL_NAME, null);
     assertEquals(INT_VAL_1, test.intValue());
 
-    test = rr.getInteger(CF1, INT_COL_NAME, null);
-    assertEquals(INT_VAL_1, test.intValue());
-
-    test = rr.getInteger(CF1_NAME, INT_COL_NAME, null);
-    assertEquals(INT_VAL_1, test.intValue());
-
-    test = rr.getInteger(CF1_NAME, "fake col", 123456);
+    test = ResultReader.getInteger(result, CF1_NAME, "fake col", 123456);
     assertEquals(Integer.valueOf(123456), test);
 
-    test = rr.getInteger(CF2_NAME, INT_COL_NAME, null);
+    test = ResultReader.getInteger(result, CF2_NAME, INT_COL_NAME, null);
     assertEquals(INT_VAL_2, test.intValue());
   }
 
   @Test
   public void testLong() {
-    ResultReader rr = new ResultReader(result, CF1_NAME);
-
-    Long test = rr.getLong(LONG_COL_NAME, null);
+    Long test = ResultReader.getLong(result, CF1_NAME, LONG_COL_NAME, null);
     assertEquals(LONG_VAL_1, test.longValue());
 
-    test = rr.getLong(CF1, LONG_COL_NAME, null);
-    assertEquals(LONG_VAL_1, test.longValue());
-
-    test = rr.getLong(CF1_NAME, LONG_COL_NAME, null);
-    assertEquals(LONG_VAL_1, test.longValue());
-
-    test = rr.getLong(CF1_NAME, "fake col", 1234567890l);
+    test = ResultReader.getLong(result, CF1_NAME, "fake col", 1234567890l);
     assertEquals(Long.valueOf(1234567890l), test);
 
-    test = rr.getLong(CF2_NAME, LONG_COL_NAME, null);
-    assertEquals(LONG_VAL_2, test.longValue());
-  }
-
-  @Test
-  public void testNoDefaultCf() {
-    ResultReader rr = new ResultReader(result);
-
-    // no cf specified
-    Long test = rr.getLong(LONG_COL_NAME, 123456l);
-    assertEquals(Long.valueOf(123456l), test);
-
-    test = rr.getLong(CF1, LONG_COL_NAME, null);
-    assertEquals(LONG_VAL_1, test.longValue());
-
-    test = rr.getLong(CF2, LONG_COL_NAME, null);
+    test = ResultReader.getLong(result, CF2_NAME, LONG_COL_NAME, null);
     assertEquals(LONG_VAL_2, test.longValue());
   }
 }
