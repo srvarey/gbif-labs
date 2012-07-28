@@ -1,7 +1,7 @@
 package org.gbif.occurrence.cube.gmap;
 
-import org.gbif.cube.gmap.density.Cube;
-import org.gbif.cube.gmap.density.ops.DensityTileOp;
+import org.gbif.cube.gmap.density.DensityCube;
+import org.gbif.cube.gmap.density.DensityTile;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -28,11 +28,10 @@ public class CubeTest {
   public void testCube() {
     IdService idService = new CachingIdService(5, new MapIdService());
     ConcurrentMap<BoxedByteArray, byte[]> backingMap = new ConcurrentHashMap<BoxedByteArray, byte[]>();
-    DbHarness<DensityTileOp> dbHarness =
-      new MapDbHarness<DensityTileOp>(backingMap, DensityTileOp.DESERIALIZER, CommitType.READ_COMBINE_CAS, idService);
+    DbHarness<DensityTile> dbHarness = new MapDbHarness<DensityTile>(backingMap, DensityTile.DESERIALIZER, CommitType.READ_COMBINE_CAS, idService);
 
-    DataCube<DensityTileOp> cube = Cube.INSTANCE;
-    DataCubeIo<DensityTileOp> cubeIo = new DataCubeIo<DensityTileOp>(cube, dbHarness, 1, Long.MAX_VALUE, SyncLevel.FULL_SYNC);
+    DataCube<DensityTile> cube = DensityCube.INSTANCE;
+    DataCubeIo<DensityTile> cubeIo = new DataCubeIo<DensityTile>(cube, dbHarness, 1, Long.MAX_VALUE, SyncLevel.FULL_SYNC);
 
     /*
      * DensityTileOp op = new DensityTileOp(10.0d, 10.0d, 1, 1);

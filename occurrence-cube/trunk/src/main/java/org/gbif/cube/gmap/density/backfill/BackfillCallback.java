@@ -1,8 +1,8 @@
 package org.gbif.cube.gmap.density.backfill;
 
 
-import org.gbif.cube.gmap.density.backfill.io.TileKeyWritable;
-import org.gbif.cube.gmap.density.backfill.io.TileValueWritable;
+import org.gbif.cube.gmap.io.LatLngWritable;
+import org.gbif.cube.gmap.io.TileKeyWritable;
 
 import java.io.IOException;
 
@@ -11,7 +11,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 
@@ -20,36 +19,25 @@ import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
  */
 public class BackfillCallback implements HBaseBackfillCallback {
 
-  // Property keys passed in on the job conf to the Mapper
-  static final String TARGET_TABLE_KEY = "gbif:cubewriter:targetTable";
-  static final String TARGET_CF_KEY = "gbif:cubewriter:targetCF";
-  // Controls the scanner caching size for the source data scan (100-5000 is reasonable)
-  private static final int SCAN_CACHE = 200;
-  // The source data table
-  // private static final String SOURCE_TABLE = "uat_occurrence";
-  private static final String SOURCE_TABLE = "tim_occurrence";
-
-  // private static final String SOURCE_TABLE = "tim_occurrence";
-
   @Override
   public void backfillInto(Configuration conf, byte[] table, byte[] cf, long snapshotFinishMs) throws IOException {
-    conf = HBaseConfiguration.create();
-    conf.set(TARGET_TABLE_KEY, Bytes.toString(table));
-    conf.set(TARGET_CF_KEY, Bytes.toString(cf));
-    Job job = new Job(conf, "CubeWriterMapper");
+    conf = HBaseConfiguration.create(conf);
+    Job job = new Job(conf, "density-cube backfill");
+    job.setJarByClass(TileCollectorMapper.class); // required to set up MR classpaths
 
-    job.setJarByClass(TileCollectMapper.class);
+    // Set up efficient source table scanning
     Scan scan = new Scan();
-    scan.setCaching(SCAN_CACHE);
+    scan.setCaching(conf.getInt(Backfill.KEY_SCANNER_CACHE, Backfill.DEFAULT_SCANNER_CACHE));
     scan.setCacheBlocks(false);
 
     // we do not want to get bad counts in the cube!
     job.getConfiguration().set("mapred.map.tasks.speculative.execution", "false");
     job.getConfiguration().set("mapred.reduce.tasks.speculative.execution", "false");
-    // TODO make configurable, but this is effectively controls load on cube puts
-    job.setNumReduceTasks(120);
-    TableMapReduceUtil.initTableMapperJob(SOURCE_TABLE, scan, TileCollectMapper.class, TileKeyWritable.class, TileValueWritable.class, job);
-    job.setReducerClass(CubeWriteReducer.class);
+
+    job.setNumReduceTasks(conf.getInt(Backfill.KEY_NUM_REDUCERS, Backfill.DEFAULT_NUM_REDUCERS));
+    TableMapReduceUtil.initTableMapperJob(conf.get(Backfill.KEY_SOURCE_TABLE), scan, TileCollectorMapper.class, TileKeyWritable.class,
+      LatLngWritable.class, job);
+    job.setReducerClass(CubeWriterReducer.class);
     job.setOutputFormatClass(NullOutputFormat.class);
     try {
       boolean b = job.waitForCompletion(true);

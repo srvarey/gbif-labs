@@ -27,17 +27,20 @@
   <description>Cube definition, builders and accessors</description>
 
   <properties>
-    <datacube.version>1.2.0-GIT-20120717</datacube.version>  
+    <datacube.version>1.2.0-GIT-20120717</datacube.version>
+    <occurrence-persistence.version>0.1-SNAPSHOT</occurrence-persistence.version>  
     <hbase.version>0.90.4-cdh3u2</hbase.version>
     <hadoop.version>0.20.2-cdh3u2</hadoop.version>
     <hbaseVersion>0.90.4-cdh3u2</hbaseVersion>
     <hadoopVersion>0.20.2-cdh3u2</hadoopVersion>
     <junit.version>4.10</junit.version>
     <guava.version>12.0</guava.version>
+    <guice.version>3.0</guice.version>
     <!-- Fixed to the HBase version -->
     <slf4j.version>1.5.8</slf4j.version>
     <commons-lang.version>2.6</commons-lang.version>
-    <logback.version>1.0.6</logback.version>
+    <!--  Important: 0.9.21 and after use SLF4J API 1.6+ -->
+    <logback.version>0.9.20</logback.version>
     <avro.version>1.7.0</avro.version>
   </properties>
 
@@ -46,10 +49,16 @@
       <id>gbif-thirdparty</id>
       <url>http://repository.gbif.org/content/repositories/thirdparty</url>
     </repository>
-    <!-- TODO: What should we use here? -->
     <repository>
       <id>gbif-all</id>
-      <url>http://repository.gbif.org/content/groups/public</url>
+      <url>http://repository.gbif.org/content/groups/gbif</url>
+    </repository>
+    <repository>
+      <id>repository.cloudera.com</id>
+      <url>https://repository.cloudera.com/content/repositories/releases/</url>	
+      <snapshots>	
+        <enabled>false</enabled>	
+      </snapshots>
     </repository>
   </repositories>
   
@@ -91,6 +100,22 @@
   </build>  
   
   <dependencies>
+    <dependency>
+      <groupId>org.gbif.occurrence</groupId>
+      <artifactId>occurrence-persistence</artifactId>
+      <version>${occurrence-persistence.version}</version>
+      <!--  These are incompatible with our HBase -->
+      <exclusions>
+        <!-- exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion-->
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <!--  
       Note: this is in the GBIF repository referenced above
       See https://github.com/urbanairship/datacube/issues/21
@@ -111,6 +136,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>${guice.version}</version>
+    </dependency>
     <!-- Overwrite the one from datacube -->
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -122,6 +152,18 @@
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>   
+    <!--dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency-->   
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-core</artifactId>
