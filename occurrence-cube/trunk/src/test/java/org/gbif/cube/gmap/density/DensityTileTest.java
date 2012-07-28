@@ -1,4 +1,6 @@
-package org.gbif.cube.gmap.density.model;
+package org.gbif.cube.gmap.density;
+
+import org.gbif.cube.gmap.density.DensityTile;
 
 import java.io.IOException;
 

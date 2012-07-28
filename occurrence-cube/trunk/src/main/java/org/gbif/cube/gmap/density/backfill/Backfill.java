@@ -1,8 +1,10 @@
 package org.gbif.cube.gmap.density.backfill;
 
-import org.gbif.cube.gmap.density.ops.DensityTileOp;
+import org.gbif.cube.gmap.density.DensityTile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import com.urbanairship.datacube.backfill.HBaseBackfill;
 import org.apache.hadoop.conf.Configuration;
@@ -23,28 +25,80 @@ import org.slf4j.LoggerFactory;
 public class Backfill {
 
   private static final Logger LOG = LoggerFactory.getLogger(Backfill.class);
-  // Live cube table (gmap prefix for all tables)
-  static final byte[] CUBE_TABLE = "gmap_cube".getBytes();
-  // Snapshot of the live table used during backfill
-  static final byte[] SNAPSHOT_TABLE = "gmap_snapshot".getBytes();
-  // Backfill table built from the source
-  static final byte[] BACKFILL_TABLE = "gmap_backfill".getBytes();
-  // Utility table to provide a running count for the identifier service
-  static final byte[] COUNTER_TABLE = "gmap_counter".getBytes();
-  // Utility table to provide a mapping from source values to assigned identifiers
-  static final byte[] LOOKUP_TABLE = "gmap_lookup".getBytes();
-  // All DataCube tables use a single column family
-  static final byte[] CF = "c".getBytes();
+  private static final String APPLICATION_PROPERTIES = "/cube.properties";
 
-  // Entry point for the time being.
-  // TODO: How do we expect to launch this really? (Oozie workflow?)
+  // Configuration that is read from the APPLICATION_PROPERTIES
+  // We use bytes as they are most commonly used but some APIs require
+  // them to be converted back to Strings. This is out of our hands though.
+  private final byte[] cubeTable;
+  private final byte[] snapshotTable;
+  private final byte[] backfillTable;
+  private final byte[] counterTable;
+  private final byte[] lookupTable;
+  private final byte[] cf;
+  private final byte[] sourceTable;
+  private final int scannerCache;
+  private final int numReducers;
+  private final int numZooms;
+  private final int writeBatchSize;
+  private final int pixelsPerCluster;
+
+  // sensible defaults when omitted
+  final static int DEFAULT_SCANNER_CACHE = 200;
+  final static int DEFAULT_NUM_REDUCERS = 12;
+  final static int DEFAULT_WRITE_BATCH_SIZE = 1000;
+  final static int DEFAULT_PIXELS_PER_CLUSTER = 4;
+  final static int DEFAULT_NUM_ZOOMS = 4;
+
+  // Keys used for the application properties, and in the Hadoop context,
+  // since that is the only way to pass things to the launched MR tasks.
+  public static final String KEY_CUBE_TABLE = "density-cube.cubeTable";
+  public static final String KEY_SNAPSHOT_TABLE = "density-cube.snapshotTable";
+  public static final String KEY_BACKFILL_TABLE = "density-cube.backfillTable";
+  public static final String KEY_COUNTER_TABLE = "density-cube.counterTable";
+  public static final String KEY_LOOKUP_TABLE = "density-cube.lookupTable";
+  public static final String KEY_CF = "density-cube.columnFamily";
+  public static final String KEY_SOURCE_TABLE = "density-cube.backfillSourceTable";
+  public static final String KEY_SCANNER_CACHE = "density-cube.backfillScannerCaching";
+  public static final String KEY_NUM_REDUCERS = "density-cube.backfillNumReduceTasks";
+  public static final String KEY_NUM_ZOOMS = "density-cube.numZooms";
+  public static final String KEY_WRITE_BATCH_SIZE = "density-cube.writeBatchSize";
+  public static final String KEY_PIXELS_PER_CLUSTER = "density-cube.tilePixelsPerCluster";
+
+
+  public Backfill(Properties p) throws IllegalArgumentException {
+    cubeTable = propertyAsBytes(p, KEY_CUBE_TABLE);
+    snapshotTable = propertyAsBytes(p, KEY_SNAPSHOT_TABLE);
+    backfillTable = propertyAsBytes(p, KEY_BACKFILL_TABLE);
+    counterTable = propertyAsBytes(p, KEY_COUNTER_TABLE);
+    lookupTable = propertyAsBytes(p, KEY_LOOKUP_TABLE);
+    cf = propertyAsBytes(p, KEY_CF);
+    sourceTable = propertyAsBytes(p, KEY_SOURCE_TABLE);
+    scannerCache = propertyAsInt(p, KEY_SCANNER_CACHE, DEFAULT_SCANNER_CACHE);
+    numReducers = propertyAsInt(p, KEY_NUM_REDUCERS, DEFAULT_NUM_REDUCERS);
+    writeBatchSize = propertyAsInt(p, KEY_WRITE_BATCH_SIZE);
+    pixelsPerCluster = propertyAsInt(p, KEY_PIXELS_PER_CLUSTER);
+    numZooms = propertyAsInt(p, KEY_NUM_ZOOMS);
+  }
+
   public static void main(String[] args) {
-    Backfill app = new Backfill();
-    app.backfill();
+    Properties p = new Properties();
+    InputStream is = Backfill.class.getResourceAsStream(APPLICATION_PROPERTIES);
+    if (is != null) {
+      try {
+        p.load(is);
+        Backfill app = new Backfill(p);
+        app.backfill();
+      } catch (IOException e) {
+        throw new IllegalArgumentException("Unable to backfill.  Cannot read " + APPLICATION_PROPERTIES);
+      }
+    } else {
+      throw new IllegalArgumentException("Unable to backfill.  Missing " + APPLICATION_PROPERTIES);
+    }
   }
 
   /**
-   * Runs the backfil process.
+   * Runs the backfill process.
    * 
    * @throws IOException On any HBase communication errors
    */
@@ -53,7 +107,7 @@ public class Backfill {
     try {
       setup(conf);
       HBaseBackfill backfill =
-        new HBaseBackfill(conf, new BackfillCallback(), CUBE_TABLE, SNAPSHOT_TABLE, BACKFILL_TABLE, CF, DensityTileOp.DensityTileOpDeserializer.class);
+        new HBaseBackfill(conf, new BackfillCallback(), cubeTable, snapshotTable, backfillTable, cf, DensityTile.DensityTileDeserializer.class);
 
       backfill.runWithCheckedExceptions();
       cleanup(conf);
@@ -73,15 +127,15 @@ public class Backfill {
    * Removes the existing snapshot and backfill tables if present.
    */
   private void cleanup(HBaseAdmin admin) throws IOException {
-    if (admin.tableExists(SNAPSHOT_TABLE)) {
-      LOG.info("Deleting table {}", Bytes.toString(SNAPSHOT_TABLE));
-      admin.disableTable(SNAPSHOT_TABLE);
-      admin.deleteTable(SNAPSHOT_TABLE);
+    if (admin.tableExists(snapshotTable)) {
+      LOG.info("Deleting table {}", Bytes.toString(snapshotTable));
+      admin.disableTable(snapshotTable);
+      admin.deleteTable(snapshotTable);
     }
-    if (admin.tableExists(BACKFILL_TABLE)) {
-      LOG.info("Deleting table {}", Bytes.toString(BACKFILL_TABLE));
-      admin.disableTable(BACKFILL_TABLE);
-      admin.deleteTable(BACKFILL_TABLE);
+    if (admin.tableExists(backfillTable)) {
+      LOG.info("Deleting table {}", Bytes.toString(backfillTable));
+      admin.disableTable(backfillTable);
+      admin.deleteTable(backfillTable);
     }
   }
 
@@ -94,7 +148,7 @@ public class Backfill {
   private void createIfMissing(HBaseAdmin admin, byte[] t, byte[] startKey, byte[] endKey, int numRegions) throws IOException {
     if (!admin.tableExists(t)) {
       LOG.info("Creating table {}", Bytes.toString(t));
-      HColumnDescriptor cfDesc = new HColumnDescriptor(CF);
+      HColumnDescriptor cfDesc = new HColumnDescriptor(cf);
       cfDesc.setBloomFilterType(BloomType.NONE);
       cfDesc.setMaxVersions(1);
       cfDesc.setCompressionType(Algorithm.SNAPPY);
@@ -108,6 +162,42 @@ public class Backfill {
     }
   }
 
+  private byte[] propertyAsBytes(Properties p, String key) {
+    String v = p.getProperty(key);
+    if (v != null) {
+      return Bytes.toBytes(v);
+    } else {
+      throw new IllegalArgumentException("Missing property for " + key);
+    }
+  }
+
+  private int propertyAsInt(Properties p, String key) {
+    String v = p.getProperty(key);
+    if (v != null) {
+      try {
+        return Integer.parseInt(v);
+      } catch (NumberFormatException e) {
+        throw new IllegalArgumentException("Invalid value[" + v + "] supplied for " + key);
+      }
+    } else {
+      throw new IllegalArgumentException("Missing property for " + key);
+    }
+  }
+
+  private int propertyAsInt(Properties p, String key, int defaultValue) {
+    String v = p.getProperty(key);
+    if (v != null) {
+      try {
+        return Integer.parseInt(v);
+      } catch (NumberFormatException e) {
+        LOG.warn("Invalid value[" + v + "] supplied for " + key + ", using default[" + DEFAULT_SCANNER_CACHE + "]");
+        return defaultValue;
+      }
+    } else {
+      return defaultValue;
+    }
+  }
+
   /**
    * Removes the existing snapshot and backfill tables if present.
    * Creates the cube,counter and lookup tables if missing.
@@ -115,11 +205,22 @@ public class Backfill {
   private void setup(Configuration conf) throws IOException {
     HBaseAdmin admin = new HBaseAdmin(conf);
     cleanup(admin);
-    // presplit it to help the load
-    // TODO check this actually is a sane split strategy
-    // createIfMissing(admin, CUBE_TABLE, Bytes.toBytes(1000000), Bytes.toBytes(50000000), 50);
-    createIfMissing(admin, CUBE_TABLE);
-    createIfMissing(admin, COUNTER_TABLE);
-    createIfMissing(admin, LOOKUP_TABLE);
+    createIfMissing(admin, cubeTable);
+    createIfMissing(admin, counterTable);
+    createIfMissing(admin, lookupTable);
+
+    // unfortunately we need to use Strings again (Hadoop API)
+    conf.set(KEY_CUBE_TABLE, Bytes.toString(cubeTable));
+    conf.set(KEY_SNAPSHOT_TABLE, Bytes.toString(snapshotTable));
+    conf.set(KEY_BACKFILL_TABLE, Bytes.toString(backfillTable));
+    conf.set(KEY_COUNTER_TABLE, Bytes.toString(counterTable));
+    conf.set(KEY_LOOKUP_TABLE, Bytes.toString(lookupTable));
+    conf.set(KEY_CF, Bytes.toString(cf));
+    conf.set(KEY_SOURCE_TABLE, Bytes.toString(sourceTable));
+    conf.setInt(KEY_SCANNER_CACHE, scannerCache);
+    conf.setInt(KEY_NUM_REDUCERS, numReducers);
+    conf.setInt(KEY_WRITE_BATCH_SIZE, writeBatchSize);
+    conf.setInt(KEY_PIXELS_PER_CLUSTER, pixelsPerCluster);
+    conf.setInt(KEY_NUM_ZOOMS, numZooms);
   }
 }
