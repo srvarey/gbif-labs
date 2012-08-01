@@ -27,7 +27,7 @@
   <description>Cube definition, builders and accessors</description>
 
   <properties>
-    <datacube.version>1.2.0-GIT-20120717</datacube.version>
+    <datacube.version>1.2.2-GIT-20120729</datacube.version>
     <occurrence-persistence.version>0.1-SNAPSHOT</occurrence-persistence.version>  
     <hbase.version>0.90.4-cdh3u2</hbase.version>
     <hadoop.version>0.20.2-cdh3u2</hadoop.version>
@@ -40,7 +40,7 @@
     <slf4j.version>1.5.8</slf4j.version>
     <commons-lang.version>2.6</commons-lang.version>
     <!--  Important: 0.9.21 and after use SLF4J API 1.6+ -->
-    <logback.version>0.9.20</logback.version>
+    <logback.version>0.9.21</logback.version>
     <avro.version>1.7.0</avro.version>
   </properties>
 
@@ -106,10 +106,15 @@
       <version>${occurrence-persistence.version}</version>
       <!--  These are incompatible with our HBase -->
       <exclusions>
-        <!-- exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>log4j-over-slf4j</artifactId>
-        </exclusion-->
+        </exclusion>
+        <!--  The version in here brings in an incompatible slf4j -->
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>jcl-over-slf4j</artifactId>
@@ -124,16 +129,16 @@
       <groupId>com.urbanairship</groupId>
       <artifactId>datacube</artifactId>
       <version>${datacube.version}</version>
-      <classifier>${hbase.version}</classifier>
+      <classifier>hbase${hbase.version}-hadoop${hadoop.version}</classifier>      
       <exclusions>
         <!-- 
           Overwrite the version of HBase 
           DataCube has a profile always activated to 0.90.4
         -->
-        <exclusion>
+        <!-- exclusion>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase</artifactId>
-        </exclusion>
+        </exclusion>  -->
       </exclusions>
     </dependency>
     <dependency>
@@ -189,7 +194,7 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
-      <scope>runtime</scope>
+      <!-- scope>runtime</scope>  -->
     </dependency>    
     <dependency>
       <groupId>org.apache.avro</groupId>

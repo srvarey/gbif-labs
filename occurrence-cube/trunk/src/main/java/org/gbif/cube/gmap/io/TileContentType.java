@@ -19,6 +19,12 @@ public enum TileContentType {
         return TAXON;
       case 2:
         return DATASET;
+      case 3:
+        return PUBLISHER;
+      case 4:
+        return COUNTRY;
+      case 5:
+        return NETWORK;
       default:
         return ALL;
     }

@@ -47,4 +47,15 @@
    <name>hbase.client.scanner.caching</name>
    <value>200</value>
  </property>
+ <!-- 
+   Because we use combiners, the mappers can be busy for a long time, before calling 
+   next on the HBase client.  Increasing this lease, means that they don't time themselves
+   out, but rather will timeout in the same period Hadoop would time out the TT.
+  -->
+ <property>
+   <name>hbase.regionserver.lease.period</name>
+   <value>600000</value>
+ </property>
+ 
+ 
 </configuration>
