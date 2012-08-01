@@ -25,7 +25,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
 /**
- * Collects the tile, and writes to the cube
+ * Collects the tile, and writes to the cube.
  */
 public class CubeWriterReducer extends Reducer<TileKeyWritable, LatLngWritable, NullWritable, NullWritable> {
 
@@ -42,57 +42,40 @@ public class CubeWriterReducer extends Reducer<TileKeyWritable, LatLngWritable, 
     // ensure we're all flushed since batch mode
     dataCubeIo.flush();
     dataCubeIo = null;
-    pool.closeTablePool(targetTable);
-    pool.getTable("").checkAndPut(null, null, null, null, null);
+    // close the pool to ensure flushing
+    try {
+      pool.closeTablePool(targetTable);
+    } catch (NullPointerException e) {
+      // thrown when the pool has never issued this table, indicating an error
+      throw new IOException("Attempt to close HBase pool, when table has not been written in this job.  Failing as very suspicious.");
+    }
   }
 
   /**
    * Builds the tile, and pushes to the cube.
    */
   @Override
-  protected void reduce(TileKeyWritable k, Iterable<LatLngWritable> locations, Context context) throws IOException, InterruptedException {
+  protected void reduce(TileKeyWritable k, Iterable<LatLngWritable> locations, Context context) throws IOException {
     DensityTile.Builder b = DensityTile.builder(k.getZ(), k.getX(), k.getY(), pixelsPerCluster);
     int count = 0;
     for (LatLngWritable l : locations) {
-      b.collect(l.getLat(), l.getLng(), 1); // 1 emitted per location, which gets rolled up the collect()
+      b.collect(l.getLat(), l.getLng(), l.getCount());
       count++;
     }
     DensityTile t = b.build();
 
-    context.setStatus("Key[" + k.getKey() + "], Z[" + k.getZ() + "], X[" + k.getX() + "], Y[" + k.getY() + "], Count[" + count + "], cells["
-      + t.cells().size() + "]");
+    context.setStatus("Type[" + k.getType() + "],  Key[" + k.getKey() + "], Z[" + k.getZ() + "], X[" + k.getX() + "], Y[" + k.getY() + "], Count["
+      + count + "], cells[" + t.cells().size() + "]");
 
     try {
 
       WriteBuilder wb =
-        new WriteBuilder(DensityCube.INSTANCE).at(DensityCube.ZOOM, k.getZ()).at(DensityCube.TILE_X, k.getX()).at(DensityCube.TILE_Y, k.getY());
-
-      switch (k.getType()) {
-        case TAXON:
-          wb.at(DensityCube.TAXON_ID, Integer.parseInt(String.valueOf(k.getKey())));
-          break;
-
-        case COUNTRY:
-          wb.at(DensityCube.COUNTRY_ISO_CODE, k.getKey());
-          break;
-
-        case DATASET:
-          wb.at(DensityCube.DATASET_KEY, k.getKey());
-          break;
-
-        case PUBLISHER:
-          wb.at(DensityCube.PUBLISHER_KEY, k.getKey());
-          break;
-
-        default:
-          // unsupported dimension
-          break;
-      }
+        new WriteBuilder(DensityCube.INSTANCE).at(DensityCube.ZOOM, k.getZ()).at(DensityCube.TILE_X, k.getX()).at(DensityCube.TILE_Y, k.getY())
+          .at(DensityCube.KEY, k.getKey()).at(DensityCube.TYPE, k.getType());
       dataCubeIo.writeAsync(t, wb);
 
-
     } catch (Exception e) {
-      context.getCounter("ERROR", "Cube write errors").increment(1);
+      throw new IOException(e);
     }
   }
 

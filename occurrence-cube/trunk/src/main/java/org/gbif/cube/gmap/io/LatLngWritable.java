@@ -14,32 +14,33 @@ import org.apache.hadoop.io.WritableComparable;
 public class LatLngWritable implements WritableComparable<LatLngWritable> {
 
   private double lat, lng;
+  private int count;
 
   public LatLngWritable() {
   }
 
-  public LatLngWritable(double lat, double lng) {
+  public LatLngWritable(double lat, double lng, int count) {
     this.lat = lat;
     this.lng = lng;
+    this.count = count;
   }
 
   @Override
   public int compareTo(LatLngWritable o) {
-    int c = Double.compare(lat, o.getLat());
-    if (c == 0) {
-      return Double.compare(lng, o.getLng());
-    } else {
-      return c;
-    }
+    return this.toString().compareTo(o.toString());
   }
 
   @Override
   public boolean equals(Object object) {
     if (object instanceof LatLngWritable) {
       LatLngWritable that = (LatLngWritable) object;
-      return Objects.equal(this.lat, that.lat) && Objects.equal(this.lng, that.lng);
+      return Objects.equal(this.lat, that.lat) && Objects.equal(this.lng, that.lng) && Objects.equal(this.count, that.count);
     }
     return false;
+  }
+
+  public int getCount() {
+    return count;
   }
 
   public double getLat() {
@@ -52,13 +53,18 @@ public class LatLngWritable implements WritableComparable<LatLngWritable> {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(lat, lng);
+    return Objects.hashCode(lat, lng, count);
   }
 
   @Override
   public void readFields(DataInput in) throws IOException {
     lat = in.readDouble();
     lng = in.readDouble();
+    count = in.readInt();
+  }
+
+  public void setCount(int count) {
+    this.count = count;
   }
 
   public void setLat(double lat) {
@@ -71,12 +77,13 @@ public class LatLngWritable implements WritableComparable<LatLngWritable> {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("lat", lat).add("lng", lng).toString();
+    return Objects.toStringHelper(this).add("lat", lat).add("lng", lng).add("count", count).toString();
   }
 
   @Override
   public void write(DataOutput out) throws IOException {
     out.writeDouble(lat);
     out.writeDouble(lng);
+    out.writeInt(count);
   }
 }

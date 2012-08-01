@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.io.hfile.Compression.Algorithm;
 import org.apache.hadoop.hbase.regionserver.StoreFile.BloomType;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * TODO make this generic
+ * Runs a backfill to populate the tile densities.
  */
 public class Backfill {
 
@@ -60,6 +59,7 @@ public class Backfill {
   public static final String KEY_CF = "density-cube.columnFamily";
   public static final String KEY_SOURCE_TABLE = "density-cube.backfillSourceTable";
   public static final String KEY_SCANNER_CACHE = "density-cube.backfillScannerCaching";
+  public static final String KEY_HBASE_SCANNER_CACHE = "hbase.client.scanner.caching"; // for HBase job conf
   public static final String KEY_NUM_REDUCERS = "density-cube.backfillNumReduceTasks";
   public static final String KEY_NUM_ZOOMS = "density-cube.numZooms";
   public static final String KEY_WRITE_BATCH_SIZE = "density-cube.writeBatchSize";
@@ -151,7 +151,7 @@ public class Backfill {
       HColumnDescriptor cfDesc = new HColumnDescriptor(cf);
       cfDesc.setBloomFilterType(BloomType.NONE);
       cfDesc.setMaxVersions(1);
-      cfDesc.setCompressionType(Algorithm.SNAPPY);
+      // cfDesc.setCompressionType(Algorithm.SNAPPY); // fails on the Snapshotter at the end
       HTableDescriptor tableDesc = new HTableDescriptor(t);
       tableDesc.addFamily(cfDesc);
       if (startKey != null && endKey != null && numRegions > 0) {
@@ -201,6 +201,7 @@ public class Backfill {
   /**
    * Removes the existing snapshot and backfill tables if present.
    * Creates the cube,counter and lookup tables if missing.
+   * Sets the configuration options in the Hadoop context.
    */
   private void setup(Configuration conf) throws IOException {
     HBaseAdmin admin = new HBaseAdmin(conf);
@@ -217,7 +218,7 @@ public class Backfill {
     conf.set(KEY_LOOKUP_TABLE, Bytes.toString(lookupTable));
     conf.set(KEY_CF, Bytes.toString(cf));
     conf.set(KEY_SOURCE_TABLE, Bytes.toString(sourceTable));
-    conf.setInt(KEY_SCANNER_CACHE, scannerCache);
+    conf.setInt(KEY_HBASE_SCANNER_CACHE, scannerCache);
     conf.setInt(KEY_NUM_REDUCERS, numReducers);
     conf.setInt(KEY_WRITE_BATCH_SIZE, writeBatchSize);
     conf.setInt(KEY_PIXELS_PER_CLUSTER, pixelsPerCluster);
