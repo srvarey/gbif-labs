@@ -1,6 +1,7 @@
 package org.gbif.hbase.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.hadoop.hbase.KeyValue;
@@ -26,17 +27,21 @@ public class ResultReaderTest {
   private static final byte[] LONG_COL = Bytes.toBytes(LONG_COL_NAME);
   private static final String STRING_COL_NAME = "d";
   private static final byte[] STRING_COL = Bytes.toBytes(STRING_COL_NAME);
+  private static final String BYTES_COL_NAME = "e";
+  private static final byte[] BYTES_COL = Bytes.toBytes(BYTES_COL_NAME);
   private static final byte[] KEY = Bytes.toBytes("12345");
 
   private static final int INT_VAL_1 = 1111;
   private static final double DOUBLE_VAL_1 = 2.2222222222222222222d;
   private static final long LONG_VAL_1 = 33333333333333l;
   private static final String STRING_VAL_1 = "not numbers";
+  private static final byte[] BYTES_VAL_1 = Bytes.toBytes("byte values");
 
   private static final int INT_VAL_2 = 4444;
   private static final double DOUBLE_VAL_2 = 5.55555555555555d;
   private static final long LONG_VAL_2 = 66666666666666666l;
   private static final String STRING_VAL_2 = "just a string";
+  private static final byte[] BYTES_VAL_2 = Bytes.toBytes("different byte values");
 
   private Result result = null;
 
@@ -53,6 +58,8 @@ public class ResultReaderTest {
     kvs.add(kv);
     kv = new KeyValue(KEY, CF1, STRING_COL, Bytes.toBytes(STRING_VAL_1));
     kvs.add(kv);
+    kv = new KeyValue(KEY, CF1, BYTES_COL, BYTES_VAL_1);
+    kvs.add(kv);
 
     // CF2
     kv = new KeyValue(KEY, CF2, INT_COL, Bytes.toBytes(INT_VAL_2));
@@ -62,6 +69,8 @@ public class ResultReaderTest {
     kv = new KeyValue(KEY, CF2, LONG_COL, Bytes.toBytes(LONG_VAL_2));
     kvs.add(kv);
     kv = new KeyValue(KEY, CF2, STRING_COL, Bytes.toBytes(STRING_VAL_2));
+    kvs.add(kv);
+    kv = new KeyValue(KEY, CF2, BYTES_COL, BYTES_VAL_2);
     kvs.add(kv);
     result = new Result(kvs);
   }
@@ -113,5 +122,17 @@ public class ResultReaderTest {
 
     test = ResultReader.getLong(result, CF2_NAME, LONG_COL_NAME, null);
     assertEquals(LONG_VAL_2, test.longValue());
+  }
+
+  @Test
+  public void testBytes() {
+    byte[] test = ResultReader.getBytes(result, CF1_NAME, BYTES_COL_NAME, null);
+    assertTrue(Arrays.equals(BYTES_VAL_1, test));
+
+    test = ResultReader.getBytes(result, CF1_NAME, "fake col", Bytes.toBytes(1234567890l));
+    assertTrue(Arrays.equals(Bytes.toBytes(1234567890l), test));
+
+    test = ResultReader.getBytes(result, CF2_NAME, BYTES_COL_NAME, null);
+    assertTrue(Arrays.equals(BYTES_VAL_2, test));
   }
 }

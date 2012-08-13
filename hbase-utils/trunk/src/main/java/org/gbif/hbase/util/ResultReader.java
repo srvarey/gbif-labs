@@ -83,4 +83,20 @@ public class ResultReader {
     return result;
   }
 
+  /**
+   * Read the value of this cell and return it uninterpreted as byte[].
+   *
+   * @param row          the HBase Result from which to read
+   * @param columnFamily column family that holds the column
+   * @param columnName   column or "qualifier"
+   * @param defaultValue returned if value at columnName is null
+   *
+   * @return the value from the specified column, or defaultValue if it's null/doesn't exist
+   */
+  public static byte[] getBytes(Result row, String columnFamily, String columnName, byte[] defaultValue) {
+    KeyValue raw = row.getColumnLatest(Bytes.toBytes(columnFamily), Bytes.toBytes(columnName));
+    byte[] result = (raw == null) ? defaultValue : raw.getValue();
+
+    return result;
+  }
 }
