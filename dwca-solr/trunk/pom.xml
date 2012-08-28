@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.gbif</groupId>
+    <artifactId>motherpom</artifactId>
+    <version>4</version>
+  </parent>
+
+  <groupId>org.gbif</groupId>
+  <artifactId>dwca-solr</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Darwin Core Archive Solr Request Handler</name>
+  <description>
+    This is an extension to solr that requires a couple of jars to exist and 2 extra lines to the default schema &amp;
+    configuration.
+    The handler will index all data files in an entire zipped dwc archives based on the meta.xml.
+  </description>
+  <url>http://sites.gbif.org/darwincore/dwca-solr</url>
+
+  <properties>
+    <jdkLevel>1.5</jdkLevel>
+
+    <commons-lang.version>2.6</commons-lang.version>
+    <dwca-reader.version>1.7.5</dwca-reader.version><!-- This is the last working version: 1.7.6 doesn't work -->
+    <gbif-common.version>0.3</gbif-common.version>
+    <junit.version>4.8.2</junit.version>
+    <solr.version>1.4.1</solr.version>
+  </properties>
+
+  <developers>
+    <developer>
+      <name>Markus Döring</name>
+      <email>mdoering@gbif.org</email>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:svn:http://darwincore.googlecode.com/svn/trunk/dwca-solr</connection>
+    <developerConnection>scm:svn:https://darwincore.googlecode.com/svn/trunk/dwca-solr</developerConnection>
+    <url>http://code.google.com/p/darwincore/source/browse/#svn/trunk/dwca-solr</url>
+  </scm>
+
+  <issueManagement>
+    <system>Google Code</system>
+    <url>http://code.google.com/p/darwincore/issues/list</url>
+  </issueManagement>
+
+  <distributionManagement>
+    <site>
+      <id>gbif-site</id>
+      <name>Site for the dwca-solr project</name>
+      <url>scp://tools.gbif.org:/var/www/html/sites/darwincore/dwca-solr</url>
+    </site>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>gbif-all</id>
+      <url>http://repository.gbif.org/content/groups/gbif</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- GBIF -->
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common</artifactId>
+      <version>${gbif-common.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>dwca-reader</artifactId>
+      <version>${dwca-reader.version}</version>
+    </dependency>
+
+    <!-- Other -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>${commons-lang.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-core</artifactId>
+      <version>${solr.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <version>${solr.version}</version>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
