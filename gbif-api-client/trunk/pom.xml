@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2011 Global Biodiversity Information Facility (GBIF)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.gbif</groupId>
+    <artifactId>motherpom</artifactId>
+    <version>8</version>
+  </parent>
+
+  <groupId>org.gbif</groupId>
+  <artifactId>gbif-api-client</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>GBIF API Client</name>
+  <description>A client to the complete GBIF API using its webservices.</description>
+  <url>http://sites.gbif.org/portal/gbif-api-client</url>
+
+  <properties>
+    <checklistbank.ws.url>http://staging.gbif.org:8080/checklistbank-ws/</checklistbank.ws.url>
+    <checklistbank.search.ws.url>http://staging.gbif.org:8080/checklistbank-search-ws/</checklistbank.search.ws.url>
+    <checklistbank.suggest.ws.url>http://staging.gbif.org:8080/checklistbank-search-ws/search/suggest</checklistbank.suggest.ws.url>
+    <registry.ws.url>http://staging.gbif.org:8080/registry-ws/</registry.ws.url>
+    <registry.search.ws.url>http://staging.gbif.org:8080/registry-search-ws/</registry.search.ws.url>
+    <occurrencestore.ws.url>http://staging.gbif.org:8080/occurrencestore-ws/</occurrencestore.ws.url>
+
+    <gbif-common-api.version>0.1-SNAPSHOT</gbif-common-api.version>
+    <checklistbank-api.version>0.1-SNAPSHOT</checklistbank-api.version>
+    <occurrencestore-api.version>0.1-SNAPSHOT</occurrencestore-api.version>
+    <registry-api.version>0.1-SNAPSHOT</registry-api.version>
+
+    <checklistbank-ws-client.version>0.1-SNAPSHOT</checklistbank-ws-client.version>
+    <registry-ws-client.version>0.1-SNAPSHOT</registry-ws-client.version>
+    <occurrencestore-ws-client.version>0.1-SNAPSHOT</occurrencestore-ws-client.version>
+
+    <guice.version>3.0</guice.version>
+    <jersey-apache-client4.version>1.9.1</jersey-apache-client4.version>
+    <jersey-json.version>1.11</jersey-json.version>
+    <jersey-client.version>1.11</jersey-client.version>
+    <junit.version>4.10</junit.version>
+    <guava.version>11.0.1</guava.version>
+    <logback.version>1.0.0</logback.version>
+    <mockito.version>1.9.0</mockito.version>
+    <slf4j.version>1.6.4</slf4j.version>
+  </properties>
+
+  <scm>
+    <connection>scm:svn:http://gbif-portal.googlecode.com/svn/gbif-api-client/trunk</connection>
+    <developerConnection>scm:svn:https://gbif-portal.googlecode.com/svn/gbif-api-client/trunk</developerConnection>
+    <url>http://code.google.com/p/gbif-portal/source/browse/#svn/gbif-api-client/trunk</url>
+  </scm>
+
+  <distributionManagement>
+    <site>
+      <id>gbif-site</id>
+      <name>Site for the GBIF API client project</name>
+      <url>scp://tools.gbif.org:/var/www/html/sites/portal/gbif-api-client</url>
+    </site>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>gbif-all</id>
+      <url>http://repository.gbif.org/content/groups/gbif</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- GBIF -->
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common-api</artifactId>
+      <version>${gbif-common-api.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>checklistbank-api</artifactId>
+      <version>${checklistbank-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>checklistbank-ws-client</artifactId>
+      <version>${checklistbank-ws-client.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>registry-api</artifactId>
+      <version>${registry-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>registry-ws-client</artifactId>
+      <version>${registry-ws-client.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>occurrencestore-api</artifactId>
+      <version>${occurrencestore-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>occurrencestore-ws-client</artifactId>
+      <version>${occurrencestore-ws-client.version}</version>
+    </dependency>
+    <!-- Google -->
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>${guice.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
+    <!-- For webservice guice modules -->
+    <dependency>
+      <groupId>com.sun.jersey.contribs</groupId>
+      <artifactId>jersey-apache-client4</artifactId>
+      <version>${jersey-apache-client4.version}</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+      <version>${jersey-json.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${jersey-client.version}</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Commons logging bridge for Struts2 & Selenium -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
