@@ -1,0 +1,21 @@
+<configuration scan="true">
+	<timestamp key="byMinute" datePattern="yyyyMMdd'T'HHmm"/>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		 <file>indexing-${byMinute}.log</file>
+		<append>true</append>
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
+		</encoder>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+	</root>
+	<logger name="org.apache.solr" level="WARN" />
+</configuration>

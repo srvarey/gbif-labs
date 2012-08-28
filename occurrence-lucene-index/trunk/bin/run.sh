@@ -1,0 +1,1 @@
+hadoop jar occurrence-lucene-index-1.0-job.jar /user/hive/warehouse/fede_occindex_occurrence_record_1m /user/fede/occindex/lucene/indexv2 5  /user/fede/occindex/lucene/mergedIndexv2
