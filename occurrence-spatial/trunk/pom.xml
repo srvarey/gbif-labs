@@ -1,0 +1,137 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.gbif</groupId>
+		<artifactId>motherpom</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>occurrence-spatial</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>Occurrence Spatial</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <logback-classic.version>0.9.29</logback-classic.version>
+    <slf4j.version>1.6.1</slf4j.version>
+  </properties>
+  
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<repositories>
+    <repository>
+      <id>gbif-all</id>
+      <url>http://repository.gbif.org/content/groups/gbif</url>
+    </repository>
+    <repository>
+      <id>gbif-thirdparty</id>
+      <url>http://repository.gbif.org/content/repositories/thirdparty</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>    
+		<repository>
+			<id>gbif</id>
+			<url>http://tools.gbif.org/maven/repository/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net repository</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+		<repository>
+			<id>osgeo</id>
+			<name>Open Source Geospatial Foundation Repository</name>
+			<url>http://download.osgeo.org/webdav/geotools/</url>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback-classic.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-core</artifactId>
+			<version>0.20.2+737</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop.hive</groupId>
+			<artifactId>hive-exec</artifactId>
+			<version>0.5.0+32</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>gnu.trove</groupId>
+			<artifactId>trove</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		
+		<!-- Very fast Java rTree implementation: http://sourceforge.net/projects/jsi -->
+		
+		<!-- mvn deploy:deploy-file -Dpackaging=jar -DrepositoryId=gbif -Durl=sftp://tools.gbif.org/var/www/html/tools/maven/repository/ -Dfile=/Users/timrobertson/.m2/repository/jsi/jsi/1.0b6/jsi-1.0b6.jar -DgroupId=jsi -DartifactId=jsi -Dversion=1.0b6 -Dpackaging=jar -DgeneratePom=true -->
+		<dependency>
+			<groupId>jsi</groupId>
+			<artifactId>jsi</artifactId>
+			<version>1.0b6</version>
+		</dependency>
+		<!-- Has a nice strtokenizer for CSV reading -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<!-- Simple XML Parsing -->
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>2.0</version>
+		</dependency>
+	</dependencies>
+	
+</project>
