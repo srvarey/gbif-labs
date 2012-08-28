@@ -1,0 +1,39 @@
+# Cluster Settings
+cluster:
+  name: occ
+
+# http://www.elasticsearch.com/docs/elasticsearch/modules/node/network/      
+network:
+  host:                    _local_  
+
+# http://www.elasticsearch.com/docs/elasticsearch/modules/transport/
+transport:
+  tcp:
+    port:                       9400-9500
+
+
+#http:
+  # # http.enabled: is this a query esnode (has http interface, dispatches/gathers queries)? Default true
+#   enabled:                    true
+#   port:                       9300-9400
+# Gateway Settings
+#gateway:
+#  recover_after_nodes: 1
+#  recover_after_time: 5m
+#  expected_nodes: 2
+
+#node:
+#    client:true
+
+# Force all memory to be locked, forcing JVM to never swap
+#  (make sure to set MIN and MAX mem to the same value)
+#bootstrap:
+#  mlockall: true
+
+# Unicast Discovery (disable multicast)
+discovery:
+    type:  zen
+    zen:
+       ping:          
+          unicast:
+                 hosts: 192.38.28.55:9300
