@@ -17,24 +17,27 @@ import javax.ws.rs.core.Context;
 import com.google.inject.Inject;
 
 @Path("node")
-public class NodeResource extends NetworkEntityResource<Node, WritableNode, NodeService> implements NodeService {
+public class NodeResource extends NetworkEntityResource<Node, WritableNode> implements NodeService {
+
+  private final NodeService nodeService;
 
   @Inject
   public NodeResource(NodeService nodeService) {
     super(nodeService);
+    this.nodeService = nodeService;
   }
 
   @GET
   @Path("{key}/organization")
   @Override
   public PagingResponse<Organization> organizationsEndorsedBy(@PathParam("key") UUID nodeKey, @Context Pageable page) {
-    return this.getService().organizationsEndorsedBy(nodeKey, page);
+    return nodeService.organizationsEndorsedBy(nodeKey, page);
   }
 
   @GET
   @Path("pendingEndorsement")
   @Override
   public PagingResponse<Organization> pendingEndorsements(@Context Pageable page) {
-    return this.getService().pendingEndorsements(page);
+    return nodeService.pendingEndorsements(page);
   }
 }

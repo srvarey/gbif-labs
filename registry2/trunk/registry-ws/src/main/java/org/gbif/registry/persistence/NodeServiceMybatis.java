@@ -18,7 +18,7 @@ import com.google.inject.Inject;
 /**
  * A MyBATIS implementation of the service.
  */
-public class NodeServiceMybatis extends NetworkEntityServiceMybatis<Node, WritableNode, NodeMapper> implements
+public class NodeServiceMybatis extends NetworkEntityServiceMybatis<Node, WritableNode> implements
   NodeService {
 
   private final OrganizationMapper organizationMapper;

@@ -34,16 +34,16 @@ import org.apache.bval.guice.Validate;
 
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
 @Consumes({MediaType.APPLICATION_JSON})
-public class NetworkEntityResource<READABLE extends NetworkEntity, WRITABLE extends WritableNetworkEntity, SERVICE extends NetworkEntityService<READABLE, WRITABLE>>
+public class NetworkEntityResource<READABLE extends NetworkEntity, WRITABLE extends WritableNetworkEntity>
   implements NetworkEntityService<READABLE, WRITABLE> {
 
-  private final SERVICE service;
+  private final NetworkEntityService<READABLE, WRITABLE> service;
 
-  protected NetworkEntityResource(SERVICE service) {
+  protected NetworkEntityResource(NetworkEntityService<READABLE, WRITABLE> service) {
     this.service = service;
   }
 
-  protected final SERVICE getService() {
+  protected final NetworkEntityService<READABLE, WRITABLE> getService() {
     return service;
   }
 

@@ -35,12 +35,13 @@ import static org.junit.Assert.assertTrue;
 /**
  * A generic test that runs against the registry interfaces.
  */
-public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, READABLE extends NetworkEntity, SERVICE extends NetworkEntityService<READABLE, WRITABLE>> {
+public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, READABLE extends NetworkEntity> {
 
   // Runs liquibase, and puts DB in a correct initial state for each test
   @Rule
-  public final DatabaseInitializer<SERVICE> initializer = new DatabaseInitializer<SERVICE>();
-  private final SERVICE service; // under test
+  public final DatabaseInitializer<NetworkEntityService<READABLE, WRITABLE>> initializer =
+    new DatabaseInitializer<NetworkEntityService<READABLE, WRITABLE>>();
+  private final NetworkEntityService<READABLE, WRITABLE> service; // under test
 
   /**
    * @return a new example instance
@@ -50,7 +51,7 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
   /**
    * @param service Under test
    */
-  public NetworkEntityTest(SERVICE service) {
+  public NetworkEntityTest(NetworkEntityService<READABLE, WRITABLE> service) {
     this.service = service;
   }
 
@@ -221,7 +222,7 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
     }
   }
 
-  protected SERVICE getService() {
+  protected NetworkEntityService<READABLE, WRITABLE> getService() {
     return service;
   }
 }

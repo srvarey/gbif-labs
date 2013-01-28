@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized.Parameters;
  * </ol>
  */
 @RunWith(value = Parameterized.class)
-public class NodeTest extends NetworkEntityTest<WritableNode, Node, NodeService> {
+public class NodeTest extends NetworkEntityTest<WritableNode, Node> {
 
   private static RegistryServer server = new RegistryServer();
 

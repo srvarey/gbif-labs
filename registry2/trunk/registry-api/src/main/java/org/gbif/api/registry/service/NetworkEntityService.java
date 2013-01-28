@@ -1,9 +1,10 @@
 package org.gbif.api.registry.service;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.registry.model.Contact;
 import org.gbif.api.registry.model.Tag;
 import org.gbif.api.registry.model.WritableContact;
-import org.gbif.api.service.common.CrudService;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +13,17 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 
-public interface NetworkEntityService<READABLE, WRITABLE> extends CrudService<READABLE, WRITABLE, UUID> {
+public interface NetworkEntityService<READABLE, WRITABLE> {
+
+  UUID create(WRITABLE entity);
+
+  void delete(UUID key);
+
+  READABLE get(UUID key);
+
+  PagingResponse<READABLE> list(@Nullable Pageable page);
+
+  void update(WRITABLE entity);
 
   int addTag(@NotNull UUID targetEntityKey, String value);
 
@@ -25,5 +36,4 @@ public interface NetworkEntityService<READABLE, WRITABLE> extends CrudService<RE
   void deleteContact(@NotNull UUID targetEntityKey, @NotNull int contactKey);
 
   List<Contact> listContacts(@NotNull UUID targetEntityKey);
-
 }
