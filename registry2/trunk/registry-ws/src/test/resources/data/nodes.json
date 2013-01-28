@@ -1,0 +1,16 @@
+{
+  "UK": 
+  {
+    "title":"The UK National Node",
+    "description":"The UK NBN is the national node of the United Kingdon located in...",
+    "language":"ENGLISH",
+    "country":"UNITED_KINGDOM"
+  },
+  "DK": 
+  {
+    "title":"The DK National Node",
+    "description":"DanBIF coordinates...",
+    "language":"DANISH",
+    "country":"DENMARK"
+  }  
+}

@@ -1,0 +1,16 @@
+{
+  "BGBM": 
+  {
+    "title":"The BGBM",
+    "description":"The Berlin Botanical...",
+    "language":"ENGLISH",
+    "country":"GERMANY"
+  },
+  "KEW": 
+  {
+    "title":"Kew Gardens",
+    "description":"Kew Gardens are a ...",
+    "language":"ENGLISH",
+    "country":"UNITED_KINGDOM"
+  }  
+}

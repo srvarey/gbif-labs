@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gbif.registry.persistence.mapper.NodeMapper">
+  
+  <!-- Auto-mapping and eager loading of sub resources  -->
+  <resultMap id="NODE_MAP" type="Node" autoMapping="true">
+    <id property="key" column="key"/>
+    <collection property="tags" column="key" select="listTags"/>
+    <collection property="contacts" column="key" select="listContacts"/>
+  </resultMap>
+
+  <sql id="WRITABLE_NODE_FIELDS">
+    key,title,alias,description,language,email,phone,homepage,logo_url,address,city,province,
+    country,postal_code,latitude,longitude,created,modified    
+  </sql>
+  
+  <sql id="NODE_FIELDS">
+    <include refid="WRITABLE_NODE_FIELDS"/>,deleted    
+  </sql>
+  
+  <!-- 
+    key, created and deleted are never changed
+   -->
+  <sql id="NODE_UPDATE">
+    title = #{title,jdbcType=VARCHAR},
+    alias = #{alias,jdbcType=VARCHAR},
+    description = #{description,jdbcType=VARCHAR}, <!-- TEXT? -->
+    language = #{language,jdbcType=VARCHAR},
+    email = #{email,jdbcType=VARCHAR},
+    phone = #{phone,jdbcType=VARCHAR},
+    homepage = #{homepage,jdbcType=VARCHAR},
+    logo_url = #{logoUrl,jdbcType=VARCHAR},
+    address = #{address,jdbcType=VARCHAR},
+    city = #{city,jdbcType=VARCHAR},
+    province = #{province,jdbcType=VARCHAR},
+    country = #{country,jdbcType=VARCHAR},
+    postal_code = #{postalCode,jdbcType=VARCHAR},
+    latitude = #{latitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    longitude = #{longitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    modified = now()
+  </sql>
+  
+  <sql id="WRITABLE_NODE_FIELD_TYPES">
+    #{key,jdbcType=CHAR},
+    #{title,jdbcType=VARCHAR},
+    #{alias,jdbcType=VARCHAR},
+    #{description,jdbcType=VARCHAR}, <!-- TEXT? -->
+    #{language,jdbcType=VARCHAR},
+    #{email,jdbcType=VARCHAR},
+    #{phone,jdbcType=VARCHAR},
+    #{homepage,jdbcType=VARCHAR},
+    #{logoUrl,jdbcType=VARCHAR},
+    #{address,jdbcType=VARCHAR},
+    #{city,jdbcType=VARCHAR},
+    #{province,jdbcType=VARCHAR},
+    #{country,jdbcType=VARCHAR},
+    #{postalCode,jdbcType=VARCHAR},
+    #{latitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    #{longitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    now(), <!-- created -->
+    now() <!-- modified -->
+  </sql>
+  
+  <!--  Note: you can get entities which are deleted -->
+  <select id="get" resultType="Node" resultMap="NODE_MAP">
+    SELECT <include refid="NODE_FIELDS"/>
+    FROM node 
+    WHERE key = #{key}
+  </select>
+  
+  <insert id="create" parameterType="WritableNode">
+    INSERT INTO node(<include refid="WRITABLE_NODE_FIELDS"/>)
+    VALUES(<include refid="WRITABLE_NODE_FIELD_TYPES"/>)
+  </insert>
+  
+  <!-- For safety, deleted entities are never modified -->
+  <update id="update" parameterType="WritableNode">
+    UPDATE node
+    SET <include refid="NODE_UPDATE"/>
+    WHERE key = #{key} AND deleted IS NULL
+  </update>
+  
+  <!-- For safety, should it be already deleted nothing is done -->
+  <update id="delete">
+    UPDATE node 
+    SET deleted = now()
+    WHERE key = #{key} AND deleted IS NULL
+  </update>
+  
+  <!-- Append safe ordering, omitting deleted entities -->
+  <select id="list" resultMap="NODE_MAP" parameterType="Pageable">
+    SELECT <include refid="NODE_FIELDS"/>
+    FROM node 
+    WHERE deleted IS NULL
+    ORDER BY created
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>
+  
+  <select id="count" resultType="Integer">
+    SELECT COUNT(*)
+    FROM node 
+    WHERE deleted IS NULL
+  </select>
+  
+  <insert id="addTag">
+    INSERT INTO node_tag(node_key,tag_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=CHAR},
+     #{tagKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listTags" resultType="Tag">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.TagMapper.TAG_FIELDS"/>
+    FROM tag INNER JOIN node_tag ON tag_key = key
+    WHERE node_key = #{targetEntityKey}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of tag to trigger cascade delete of the join table --> 
+  <delete id="deleteTag">
+    DELETE FROM tag USING node_tag 
+    WHERE
+      tag_key = tag.key AND 
+      node_key = #{targetEntityKey,jdbcType=CHAR} AND tag_key = #{tagKey,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="addContact">
+    INSERT INTO node_contact(node_key,contact_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=CHAR},
+     #{contactKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listContacts" resultType="Contact">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.ContactMapper.CONTACT_FIELDS"/>
+    FROM contact INNER JOIN node_contact ON contact_key = key
+    WHERE node_key = #{targetEntityKey}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of contact to trigger cascade delete of the join table --> 
+  <delete id="deleteContact">
+    DELETE FROM contact USING node_contact 
+    WHERE
+      contact_key = contact.key AND 
+      node_key = #{targetEntityKey,jdbcType=CHAR} AND contact_key = #{contactKey,jdbcType=INTEGER}
+  </delete>
+</mapper>
