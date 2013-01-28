@@ -23,14 +23,14 @@ import org.mybatis.guice.transactional.Transactional;
 /**
  * A MyBATIS implementation of the service.
  */
-abstract class NetworkEntityServiceMybatis<READABLE extends NetworkEntity, WRITABLE extends WritableNetworkEntity, MAPPER extends NetworkEntityMapper<READABLE, WRITABLE>>
+abstract class NetworkEntityServiceMybatis<READABLE extends NetworkEntity, WRITABLE extends WritableNetworkEntity>
   implements NetworkEntityService<READABLE, WRITABLE> {
 
-  private final MAPPER entityMapper;
+  private final NetworkEntityMapper<READABLE, WRITABLE> entityMapper;
   private final TagMapper tagMapper;
   private final ContactMapper contactMapper;
 
-  public NetworkEntityServiceMybatis(MAPPER entityMapper, TagMapper tagMapper,
+  public NetworkEntityServiceMybatis(NetworkEntityMapper<READABLE, WRITABLE> entityMapper, TagMapper tagMapper,
     ContactMapper contactMapper) {
     this.entityMapper = entityMapper;
     this.tagMapper = tagMapper;
@@ -116,7 +116,7 @@ abstract class NetworkEntityServiceMybatis<READABLE extends NetworkEntity, WRITA
   }
 
 
-  protected MAPPER getEntityMapper() {
+  protected NetworkEntityMapper<READABLE, WRITABLE> getEntityMapper() {
     return entityMapper;
   }
 }

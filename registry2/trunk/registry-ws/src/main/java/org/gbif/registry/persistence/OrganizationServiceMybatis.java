@@ -12,8 +12,7 @@ import com.google.inject.Inject;
 /**
  * A MyBATIS implementation of the service.
  */
-public class OrganizationServiceMybatis extends
-  NetworkEntityServiceMybatis<Organization, WritableOrganization, OrganizationMapper>
+public class OrganizationServiceMybatis extends NetworkEntityServiceMybatis<Organization, WritableOrganization>
   implements OrganizationService {
 
   @Inject

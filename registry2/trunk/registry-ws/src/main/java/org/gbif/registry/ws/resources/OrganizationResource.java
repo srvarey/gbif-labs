@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 
 @Path("organization")
 public class OrganizationResource extends
-  NetworkEntityResource<Organization, WritableOrganization, OrganizationService> implements OrganizationService {
+  NetworkEntityResource<Organization, WritableOrganization> implements OrganizationService {
 
   @Inject
   public OrganizationResource(OrganizationService organizationService) {

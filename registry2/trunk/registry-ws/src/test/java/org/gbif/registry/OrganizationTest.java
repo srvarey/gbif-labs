@@ -38,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
  * </ol>
  */
 @RunWith(value = Parameterized.class)
-public class OrganizationTest extends NetworkEntityTest<WritableOrganization, Organization, OrganizationService> {
+public class OrganizationTest extends NetworkEntityTest<WritableOrganization, Organization> {
 
   private static RegistryServer server = new RegistryServer();
   private final NodeService nodeService;
