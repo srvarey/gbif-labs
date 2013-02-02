@@ -98,11 +98,10 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
       service.list(new PagingRequest()).getResults().get(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
   public void testDoubleDelete() {
     NetworkEntity n1 = create(newWritable(), 1);
     service.delete(n1.getKey());
-    service.delete(n1.getKey()); // should fail
+    service.delete(n1.getKey()); // should just do nothing silently
   }
 
   /**

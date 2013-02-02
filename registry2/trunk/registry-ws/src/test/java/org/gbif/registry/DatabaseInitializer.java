@@ -1,6 +1,6 @@
 package org.gbif.registry;
 
-import org.gbif.registry.persistence.guice.RegistryServiceMyBatisModule;
+import org.gbif.registry.persistence.guice.RegistryMyBatisModule;
 import org.gbif.test.DatabaseDrivenTestRule;
 import org.gbif.utils.file.properties.PropertiesUtil;
 
@@ -25,8 +25,8 @@ class DatabaseInitializer<T> extends DatabaseDrivenTestRule<T> {
 
   public DatabaseInitializer() {
     super(
-      new RegistryServiceMyBatisModule(loadProperties()),
-      RegistryServiceMyBatisModule.InternalRegistryServiceMyBatisModule.DATASOURCE_BINDING_NAME,
+      new RegistryMyBatisModule(loadProperties()),
+      RegistryMyBatisModule.InternalRegistryServiceMyBatisModule.DATASOURCE_BINDING_NAME,
       null, // serviceClass is not used
       null, // dbUnitFileName,
       ImmutableMap.<String, Object>of() // dbUnitProperties

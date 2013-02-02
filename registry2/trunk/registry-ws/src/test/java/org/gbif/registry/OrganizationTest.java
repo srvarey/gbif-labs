@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import static org.gbif.registry.guice.RegistryTestModules.persistence;
 import static org.gbif.registry.guice.RegistryTestModules.webservice;
 import static org.gbif.registry.guice.RegistryTestModules.webserviceClient;
 
@@ -62,9 +61,6 @@ public class OrganizationTest extends NetworkEntityTest<WritableOrganization, Or
   public static Iterable<Object[]> data() {
     return ImmutableList
       .<Object[]>of(
-        new Object[] {
-          persistence().getInstance(OrganizationService.class),
-          persistence().getInstance(NodeService.class)},
         new Object[] {
           webservice().getInstance(OrganizationResource.class),
           webservice().getInstance(NodeResource.class)},

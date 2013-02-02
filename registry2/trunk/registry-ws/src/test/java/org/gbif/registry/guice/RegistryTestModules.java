@@ -1,7 +1,7 @@
 package org.gbif.registry.guice;
 
 import org.gbif.registry.RegistryServer;
-import org.gbif.registry.persistence.guice.RegistryServiceMyBatisModule;
+import org.gbif.registry.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
 import org.gbif.registry.ws.resources.NodeResource;
 import org.gbif.registry.ws.resources.OrganizationResource;
@@ -27,19 +27,6 @@ import org.apache.ibatis.io.Resources;
 public class RegistryTestModules {
 
   /**
-   * @return An injector that is bound for the persistence layer only
-   */
-  public static Injector persistence() {
-    try {
-      Properties p = new Properties();
-      p.load(Resources.getResourceAsStream("registry-test.properties"));
-      return Guice.createInjector(new RegistryServiceMyBatisModule(p));
-    } catch (IOException e) {
-      throw Throwables.propagate(e);
-    }
-  }
-
-  /**
    * @return An injector that is bound for the webservice layer.
    */
   public static Injector webservice() {
@@ -54,7 +41,7 @@ public class RegistryTestModules {
             bind(NodeResource.class);
             bind(OrganizationResource.class);
           }
-        }, new RegistryServiceMyBatisModule(p), new ValidationModule());
+        }, new RegistryMyBatisModule(p), new ValidationModule());
     } catch (IOException e) {
       throw Throwables.propagate(e);
     }

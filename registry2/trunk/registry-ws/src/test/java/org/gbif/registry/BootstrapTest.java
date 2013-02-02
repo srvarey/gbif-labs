@@ -32,7 +32,7 @@ public class BootstrapTest {
   public final DatabaseInitializer<Void> initializer = new DatabaseInitializer<Void>();
 
   public BootstrapTest() {
-    Injector i = RegistryTestModules.persistence();
+    Injector i = RegistryTestModules.webservice();
     this.nodeService = i.getInstance(NodeService.class);
     this.organizationService = i.getInstance(OrganizationService.class);
   }
@@ -66,7 +66,7 @@ public class BootstrapTest {
 
   @Test
   public void lots() {
-    for (int n = 0; n < 97; n++) {
+    for (int n = 0; n < 1000; n++) {
       Node n1 = Nodes.instanceOf(UK);
       n1.setTitle((n + 1) + ": " + n1.getTitle());
       n1.setKey(nodeService.create(n1));
