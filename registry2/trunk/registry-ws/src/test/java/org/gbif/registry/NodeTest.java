@@ -46,7 +46,6 @@ public class NodeTest extends NetworkEntityTest<WritableNode, Node> {
   @Parameters
   public static Iterable<Object[]> data() {
     return ImmutableList.<Object[]>of(
-      new Object[] {RegistryTestModules.persistence().getInstance(NodeService.class)},
       new Object[] {RegistryTestModules.webservice().getInstance(NodeResource.class)},
       new Object[] {RegistryTestModules.webserviceClient().getInstance(NodeService.class)}
       );

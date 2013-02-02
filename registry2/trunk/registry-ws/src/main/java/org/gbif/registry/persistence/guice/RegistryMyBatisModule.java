@@ -8,13 +8,9 @@ import org.gbif.api.registry.model.Tag;
 import org.gbif.api.registry.model.WritableContact;
 import org.gbif.api.registry.model.WritableNode;
 import org.gbif.api.registry.model.WritableOrganization;
-import org.gbif.api.registry.service.NodeService;
-import org.gbif.api.registry.service.OrganizationService;
 import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.mybatis.type.UriTypeHandler;
 import org.gbif.mybatis.type.UuidTypeHandler;
-import org.gbif.registry.persistence.NodeServiceMybatis;
-import org.gbif.registry.persistence.OrganizationServiceMybatis;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.NodeMapper;
 import org.gbif.registry.persistence.mapper.OrganizationMapper;
@@ -25,17 +21,16 @@ import java.net.URI;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 
 /**
  * Sets up the persistence layer using the properties supplied.
  */
-public class RegistryServiceMyBatisModule extends PrivateServiceModule {
+public class RegistryMyBatisModule extends PrivateServiceModule {
 
   private static final String PREFIX = "registry.db.";
 
-  public RegistryServiceMyBatisModule(Properties properties) {
+  public RegistryMyBatisModule(Properties properties) {
     super(PREFIX, properties);
   }
 
@@ -44,8 +39,13 @@ public class RegistryServiceMyBatisModule extends PrivateServiceModule {
     MyBatisModule internalModule = new InternalRegistryServiceMyBatisModule();
     install(internalModule); // the named parameters are already configured at this stage
     expose(internalModule.getDatasourceKey()); // to avoid clashes between multiple datasources
-    expose(NodeService.class);
-    expose(OrganizationService.class);
+    // The Mappers are exposed to be injected in the ws resources
+    expose(OrganizationMapper.class);
+    expose(NodeMapper.class);
+    expose(ContactMapper.class);
+    expose(TagMapper.class);
+
+
   }
 
   /**
@@ -62,8 +62,8 @@ public class RegistryServiceMyBatisModule extends PrivateServiceModule {
 
     @Override
     protected void bindManagers() {
-      bind(NodeService.class).to(NodeServiceMybatis.class).in(Scopes.SINGLETON);
-      bind(OrganizationService.class).to(OrganizationServiceMybatis.class).in(Scopes.SINGLETON);
+      // bind(NodeService.class).to(NodeResource.class).in(Scopes.SINGLETON);
+      // bind(OrganizationService.class).to(OrganizationResource.class).in(Scopes.SINGLETON);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.google.inject.Module;
 import com.google.inject.matcher.Matchers;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.bval.guice.Validate;
 import org.apache.bval.guice.ValidationModule;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
@@ -25,8 +26,8 @@ public class StringTrimInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-    Trim trim = invocation.getMethod().getAnnotation(Trim.class); // ensure it is annotated
-    if (trim != null) {
+    Validate validate = invocation.getMethod().getAnnotation(Validate.class); // ensure it is annotated
+    if (validate != null) {
       Annotation[][] paramAnnotations = invocation.getMethod().getParameterAnnotations();
       for (int i = 0; i < paramAnnotations.length; i++) {
         for (Annotation a : paramAnnotations[i]) {
@@ -50,7 +51,7 @@ public class StringTrimInterceptor implements MethodInterceptor {
         if (orig != null) {
           String trimmed = StringUtils.trimToNull(orig);
           if (!StringUtils.equals(orig, trimmed)) {
-            LOG.info("Overriding value of [{}] from [{}] with [{}]", new String[] {prop, orig, trimmed});
+            LOG.debug("Overriding value of [{}] from [{}] with [{}]", new String[] {prop, orig, trimmed});
             wrapped.set(prop, trimmed);
           }
         }
