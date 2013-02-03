@@ -14,8 +14,6 @@ import org.gbif.registry.ws.resources.NodeResource;
 import org.gbif.registry.ws.resources.OrganizationResource;
 
 import com.google.common.collect.ImmutableList;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -39,22 +37,11 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(value = Parameterized.class)
 public class OrganizationTest extends NetworkEntityTest<WritableOrganization, Organization> {
 
-  private static RegistryServer server = new RegistryServer();
   private final NodeService nodeService;
 
   public OrganizationTest(OrganizationService service, NodeService nodeService) {
     super(service);
     this.nodeService = nodeService;
-  }
-
-  @BeforeClass
-  public static void startServer() {
-    server.start();
-  }
-
-  @AfterClass
-  public static void stopServer() {
-    server.stop();
   }
 
   @Parameters

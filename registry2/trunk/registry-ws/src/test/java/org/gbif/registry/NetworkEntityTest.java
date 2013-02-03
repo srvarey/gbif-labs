@@ -10,6 +10,7 @@ import org.gbif.api.registry.model.Tag;
 import org.gbif.api.registry.model.WritableNetworkEntity;
 import org.gbif.api.registry.service.NetworkEntityService;
 import org.gbif.registry.data.Contacts;
+import org.gbif.registry.guice.RegistryTestModules;
 
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
@@ -17,12 +18,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.BigDecimalConverter;
 import org.apache.commons.beanutils.converters.DateConverter;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -38,15 +42,32 @@ import static org.junit.Assert.assertTrue;
 public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, READABLE extends NetworkEntity> {
 
   // Runs liquibase, and puts DB in a correct initial state for each test
+// @Rule
+// public final DatabaseInitializerOLD<NetworkEntityService<READABLE, WRITABLE>> initializer =
+// new DatabaseInitializerOLD<NetworkEntityService<READABLE, WRITABLE>>();
+  // Flushes the database on each run
+  @ClassRule
+  public static final LiquibaseInitializer liquibaseRule = new LiquibaseInitializer(getDatasource());
+
+  @ClassRule
+  public static final RegistryServer registryServer = new RegistryServer();
+
   @Rule
-  public final DatabaseInitializer<NetworkEntityService<READABLE, WRITABLE>> initializer =
-    new DatabaseInitializer<NetworkEntityService<READABLE, WRITABLE>>();
+  public final DatabaseInitializer databaseRule = new DatabaseInitializer(getDatasource());
+
   private final NetworkEntityService<READABLE, WRITABLE> service; // under test
 
   /**
    * @return a new example instance
    */
   protected abstract WRITABLE newWritable();
+
+  /**
+   * 
+   */
+  private static DataSource getDatasource() {
+    return RegistryTestModules.management().getInstance(DataSource.class);
+  }
 
   /**
    * @param service Under test

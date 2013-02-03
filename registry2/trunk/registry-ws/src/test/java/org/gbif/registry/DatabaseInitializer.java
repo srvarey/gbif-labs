@@ -1,74 +1,50 @@
 package org.gbif.registry;
 
-import org.gbif.registry.persistence.guice.RegistryMyBatisModule;
-import org.gbif.test.DatabaseDrivenTestRule;
-import org.gbif.utils.file.properties.PropertiesUtil;
-
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
+
+import javax.sql.DataSource;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
-import liquibase.Liquibase;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
+import org.junit.rules.ExternalResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Provides a JUnit {@link org.junit.rules.TestRule} to allow database driven integration tests in registry. This will
- * simply initialize an empty database using liquibase before each test.
- * See {@link NetworkEntityTest} to see how to use this class.
+ * A Rule that will truncate the tables ready for a new test. It is expected to do this before each test by using the
+ * following:
+ * 
+ * <pre>
+ * @Rule
+ * public DatabaseInitializer = new DatabaseInitializer(getDatasource()); // developer required to provide datasource
+ * </pre>
  */
-class DatabaseInitializer<T> extends DatabaseDrivenTestRule<T> {
+class DatabaseInitializer extends ExternalResource {
 
-  public DatabaseInitializer() {
-    super(
-      new RegistryMyBatisModule(loadProperties()),
-      RegistryMyBatisModule.InternalRegistryServiceMyBatisModule.DATASOURCE_BINDING_NAME,
-      null, // serviceClass is not used
-      null, // dbUnitFileName,
-      ImmutableMap.<String, Object>of() // dbUnitProperties
-    );
+  private static final Logger LOG = LoggerFactory.getLogger(DatabaseInitializer.class);
+  private final DataSource dataSource;
+
+  public DatabaseInitializer(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
-  // Only to handle the checked exception
-  private static Properties loadProperties() {
-    try {
-      return PropertiesUtil.loadProperties("registry-test.properties");
-    } catch (Exception e) {
-      throw Throwables.propagate(e);
-    }
-  }
-
-
-  /**
-   * Truncates the tables.
-   */
   @Override
-  protected void runFinally() {
+  protected void before() throws Throwable {
+    LOG.info("Truncating registry tables");
+    Connection connection = dataSource.getConnection();
     try {
+      connection.setAutoCommit(true);
       connection.createStatement().execute("TRUNCATE TABLE " +
         "node, node_tag, node_contact, " +
         "organization, organization_tag, organization_contact, " +
         "tag, contact");
-      connection.commit();
     } catch (SQLException e) {
       Throwables.propagate(e);
+    } finally {
+      if (connection != null) {
+        connection.close();
+      }
     }
-  }
-
-  @Override
-  protected void runLiquibase(Connection connection, String... fileNames) throws LiquibaseException {
-    log.debug("Updating database with liquibase");
-    for (String fileName : fileNames) {
-      Liquibase liquibase =
-        new Liquibase("liquibase" + File.separatorChar + fileName, new ClassLoaderResourceAccessor(),
-          new JdbcConnection(connection));
-      liquibase.forceReleaseLocks(); // often happens when tests are aborted for example
-      // liquibase.dropAll();
-      liquibase.update(null);
-    }
+    LOG.info("Registry tables truncated");
   }
 }
