@@ -9,6 +9,10 @@ import org.gbif.registry.data.Contacts;
 import org.gbif.registry.data.Nodes;
 import org.gbif.registry.data.Organizations;
 import org.gbif.registry.guice.RegistryTestModules;
+import org.gbif.registry.ws.resources.NodeResource;
+import org.gbif.registry.ws.resources.OrganizationResource;
+
+import javax.sql.DataSource;
 
 import com.google.inject.Injector;
 import org.junit.Ignore;
@@ -28,13 +32,17 @@ public class BootstrapTest {
   private final NodeService nodeService;
   private final OrganizationService organizationService;
 
+  /**
+   * Truncates the tables
+   */
   @Rule
-  public final DatabaseInitializer<Void> initializer = new DatabaseInitializer<Void>();
+  public final DatabaseInitializer initializer = new DatabaseInitializer(
+    RegistryTestModules.management().getInstance(DataSource.class));
 
   public BootstrapTest() {
     Injector i = RegistryTestModules.webservice();
-    this.nodeService = i.getInstance(NodeService.class);
-    this.organizationService = i.getInstance(OrganizationService.class);
+    this.nodeService = i.getInstance(NodeResource.class);
+    this.organizationService = i.getInstance(OrganizationResource.class);
   }
 
   @Test

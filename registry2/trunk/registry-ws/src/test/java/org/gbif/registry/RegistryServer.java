@@ -8,11 +8,18 @@ import com.google.common.base.Throwables;
 import com.google.inject.servlet.GuiceFilter;
 import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import com.sun.grizzly.http.servlet.ServletAdapter;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An embedded web server using Grizzly that run the registry ws application.
  */
-public class RegistryServer {
+public class RegistryServer implements TestRule {
+
+  private static final Logger LOG = LoggerFactory.getLogger(RegistryServer.class);
 
   /**
    * The system property one can set to override the port.
@@ -37,6 +44,7 @@ public class RegistryServer {
   }
 
   public void start() {
+    LOG.info("Starting registry WS for tests");
     try {
       webServer.start();
     } catch (IOException e) {
@@ -46,6 +54,7 @@ public class RegistryServer {
 
   public void stop() {
     webServer.stop();
+    LOG.info("Stopping test registry WS");
   }
 
   /**
@@ -59,5 +68,25 @@ public class RegistryServer {
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException(PORT_PROPERTY + " does not hold a valid port: " + port);
     }
+  }
+
+  /**
+   * Utility to allow this to be used as a rule that will start and stop a server around the statement base.
+   */
+  @Override
+  public Statement apply(final Statement base, Description description) {
+    return new Statement() {
+
+      @Override
+      public void evaluate() throws Throwable {
+        RegistryServer server = new RegistryServer();
+        server.start();
+        try {
+          base.evaluate();
+        } finally {
+          server.stop();
+        }
+      }
+    };
   }
 }

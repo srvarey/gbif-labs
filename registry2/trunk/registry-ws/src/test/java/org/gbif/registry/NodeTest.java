@@ -9,8 +9,6 @@ import org.gbif.registry.guice.RegistryTestModules;
 import org.gbif.registry.ws.resources.NodeResource;
 
 import com.google.common.collect.ImmutableList;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -27,20 +25,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(value = Parameterized.class)
 public class NodeTest extends NetworkEntityTest<WritableNode, Node> {
 
-  private static RegistryServer server = new RegistryServer();
-
   public NodeTest(NodeService service) {
     super(service);
-  }
-
-  @BeforeClass
-  public static void startServer() {
-    server.start();
-  }
-
-  @AfterClass
-  public static void stopServer() {
-    server.stop();
   }
 
   @Parameters
