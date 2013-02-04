@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A message listener for DatasetBasedMessages that serializes the incoming message and writes it to the specified
- * directory.
+ * directory. Note that the order of incoming messages is not preserved for future replays.
  *
  * @param <T> the message type to listen for
  */
@@ -37,8 +37,11 @@ public class FileWritingListener<T extends DatasetBasedMessage> implements Messa
     FileOutputStream fos = null;
     try {
       byte[] rawMsg = mapper.writeValueAsBytes(message);
-      File datasetDir = new File(this.writePath + File.separator + datasetKey);
-      datasetDir.mkdirs();
+      File datasetDir = new File(writePath + File.separator + datasetKey);
+      if (!datasetDir.mkdirs()) {
+        LOG.error("Could not make dirs for [{}], aborting.", datasetDir.getName());
+        return;
+      }
       String fileName = message.getClass().getName() + "-" + UUID.randomUUID();
       fos = new FileOutputStream(new File(datasetDir, fileName));
       fos.write(rawMsg);
