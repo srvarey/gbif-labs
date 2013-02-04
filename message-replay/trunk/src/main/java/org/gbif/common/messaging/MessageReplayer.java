@@ -34,7 +34,7 @@ public class MessageReplayer {
   private static final int THREADCOUNT = 10;
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
-  private MessagingService messagingService;
+  private final MessagingService messagingService;
 
   public MessageReplayer() throws IOException {
     ConnectionFactory factory = new ConnectionFactory();
@@ -44,27 +44,22 @@ public class MessageReplayer {
     factory.setHost(HOSTNAME);
     factory.setPort(PORT);
     Connection connection = factory.newConnection();
-
-    if (THREADCOUNT > 1) {
-      ExecutorService tp = Executors.newFixedThreadPool(THREADCOUNT);
-      messagingService = new MessagingService(connection, tp);
-    } else {
-      messagingService = new MessagingService(connection);
-    }
+    ExecutorService tp = Executors.newFixedThreadPool(THREADCOUNT);
+    messagingService = new MessagingService(connection, tp);
     messagingService.declareAllExchangesFromRegistry();
   }
 
   /**
    * Will replay messages found by searching the given filePath and one level below. If a datasetUuid is specified,
-   * only
-   * messages found for that dataset will be sent. If a msgClazz is specified only messages of those type will be sent.
+   * only messages found for that dataset will be sent. If a msgClazz is specified only messages of those type will be
+   * sent.
    *
    * @param filePath    the file path to search for messages
    * @param datasetUuid send messages for this dataset only - leave null for all datasets
    * @param msgClazz    send messages of this type only - leave null for all types
    */
-  public void replayMessages(String filePath, @Nullable String datasetUuid, @Nullable final Class msgClazz)
-    throws IOException, ClassNotFoundException {
+  public void replayMessages(String filePath, @Nullable String datasetUuid,
+    @Nullable final Class<?> msgClazz) throws IOException, ClassNotFoundException {
     File parentDir = new File(filePath);
 
     // get list of dirs to search
@@ -74,6 +69,11 @@ public class MessageReplayer {
     } else {
       dirsToSearch = new File[1];
       dirsToSearch[0] = new File(parentDir, datasetUuid);
+    }
+
+    if (dirsToSearch == null) {
+      LOG.warn("Could not find any directories to search, exiting");
+      return;
     }
 
     // either accept all files or just those for the given msgClazz
@@ -99,19 +99,29 @@ public class MessageReplayer {
       for (String fileName : fileNames) {
         String className = msgClazz == null ? fileName.substring(0, fileName.indexOf('-')) : msgClazz.getName();
         DatasetBasedMessage msg = readMessageFromFile(new File(dir, fileName), className);
-        messagingService.send(msg);
+        if (msg != null) {
+          messagingService.send(msg);
+        }
       }
     }
   }
 
+  @Nullable
   DatasetBasedMessage readMessageFromFile(File file, String className) throws ClassNotFoundException, IOException {
     LOG.debug("reading message file from [{}]", file.getAbsolutePath());
-    Class clazz = Class.forName(className);
-    FileInputStream fis = new FileInputStream(file);
-    byte[] rawMsg = new byte[(int) file.length()];
-    fis.read(rawMsg);
-
-    DatasetBasedMessage msg = (DatasetBasedMessage) MAPPER.readValue(rawMsg, clazz);
+    Class<?> clazz = Class.forName(className);
+    DatasetBasedMessage msg = null;
+    FileInputStream fis = null;
+    try {
+      fis = new FileInputStream(file);
+      byte[] rawMsg = new byte[(int) file.length()];
+      fis.read(rawMsg);
+      msg = (DatasetBasedMessage) MAPPER.readValue(rawMsg, clazz);
+    } finally {
+      if (fis != null) {
+        fis.close();
+      }
+    }
 
     return msg;
   }
@@ -145,7 +155,7 @@ public class MessageReplayer {
 
     // need message type to replay, or null for all
     String msgType = args[2].equals("null") ? null : args[2];
-    Class msgClass = (msgType == null) ? null : Class.forName(msgType);
+    Class<?> msgClass = msgType == null ? null : Class.forName(msgType);
 
     MessageReplayer instance = new MessageReplayer();
 

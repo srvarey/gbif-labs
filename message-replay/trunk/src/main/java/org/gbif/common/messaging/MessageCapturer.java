@@ -1,6 +1,6 @@
 package org.gbif.common.messaging;
 
-import org.gbif.common.messaging.api.MessageCallback;
+import org.gbif.common.messaging.api.DatasetBasedMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +21,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class MessageCapturer {
 
-  private MessagingService messagingService;
+  private final MessagingService messagingService;
 
   /**
    * Build the object with the rabbitMQ parameters. Call {@link #shutdown()} when finished to release resources.
+   * TODO: convert signature to take Connection rather than all the params
    *
    * @param threadcount the number of threads with which to pull messages off the queue
    *
@@ -54,7 +55,7 @@ public class MessageCapturer {
    * Begin capturing messages of the given type (must implement DatasetBasedMessage) using the given queue name.
    * Messages will be written to the given path, in directories for each dataset key.
    *
-   * @param messageType the class of message to capture
+   * @param messageType the class of message to capture (e.g. org.gbif.common.messaging.api.OccurrenceFragmentedMessage)
    * @param queue       name of the queue to create
    * @param path        local directory to write files to
    *
@@ -62,11 +63,10 @@ public class MessageCapturer {
    * @throws ClassNotFoundException if the messageType is not found
    */
   public void capture(String messageType, String queue, String path) throws IOException, ClassNotFoundException {
-    Class messageClass = Class.forName(messageType);
-    MessageCallback callback = new FileWritingListener(path);
-    messagingService.listen(messageClass, queue, callback);
+    // TODO: resolve generics without casts
+    messagingService.listen((Class<DatasetBasedMessage>) Class.forName(messageType), queue,
+      new FileWritingListener<DatasetBasedMessage>(path));
   }
-
 
   /**
    * Close the messagingService, releasing resources.
@@ -84,6 +84,7 @@ public class MessageCapturer {
     checkNotNull(args[1], "second argument must be the queue to listen on");
     checkNotNull(args[2], "third argument must be the message type to listen for");
 
+    // TODO: take the path to "application.properties" as the 4th command line arg; forget all the maven stuff
     InputStream in = MessageCapturer.class.getClassLoader().getResourceAsStream("application.properties");
     Properties props = new Properties();
     props.load(in);
@@ -91,12 +92,12 @@ public class MessageCapturer {
 
     System.out.println("Using properties:");
     for (String key : props.stringPropertyNames()) {
-      System.out.println("key [" + key + "] val [" + props.get(key) + "]");
+      System.out.println("key [" + key + "] val [" + props.getProperty(key) + "]");
     }
 
-    MessageCapturer instance = new MessageCapturer((String) props.get("username"), (String) props.get("password"),
-      (String) props.get("virtualhost"), (String) props.get("hostname"), Integer.valueOf((String) props.get("port")),
-      Integer.valueOf((String) props.get("threadcount")));
+    MessageCapturer instance = new MessageCapturer(props.getProperty("username"), props.getProperty("password"),
+      props.getProperty("virtualhost"), props.getProperty("hostname"), Integer.valueOf(props.getProperty("port")),
+      Integer.valueOf(props.getProperty("threadcount")));
 
     instance.capture(args[2], args[1], args[0]);
 
