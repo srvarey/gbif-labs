@@ -15,11 +15,15 @@
   <version>0.1-SNAPSHOT</version>
 
   <properties>
+    <findbugs.version>2.0.1</findbugs.version>
+    <gbif-api.version>0.1-SNAPSHOT</gbif-api.version>
     <gbif-postal-service.version>0.1-SNAPSHOT</gbif-postal-service.version>
+    <guava.version>13.0</guava.version>
     <jackson.version>1.9.9</jackson.version>
     <junit.version>4.10</junit.version>
-    <slf4j.version>1.7.2</slf4j.version>
     <logback.version>1.0.9</logback.version>
+    <slf4j.version>1.7.2</slf4j.version>
+    <rabbitmq.version>3.0.1</rabbitmq.version>
   </properties>
 
   <build>
@@ -40,6 +44,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-api</artifactId>
+      <version>${gbif-api.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.gbif.common</groupId>
       <artifactId>gbif-postal-service</artifactId>
       <version>${gbif-postal-service.version}</version>
@@ -49,6 +59,24 @@
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
       <version>${jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>${findbugs.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.rabbitmq</groupId>
+      <artifactId>amqp-client</artifactId>
+      <version>${rabbitmq.version}</version>
     </dependency>
 
     <dependency>
