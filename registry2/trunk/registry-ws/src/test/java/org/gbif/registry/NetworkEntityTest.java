@@ -138,7 +138,7 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
     // the expected number of records returned when paging at different page sizes
     int[][] expectedPages = new int[][] {
       {1, 1, 1, 1, 1, 0}, // page size of 1
-      {2, 2, 0}, // page size of 2
+      {2, 2, 1, 0}, // page size of 2
       {3, 2, 0}, // page size of 3
       {4, 1, 0}, // page size of 4
       {5, 0}, // page size of 5
@@ -146,14 +146,15 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
     };
 
     // test the various paging strategies (e.g. page size of 1,2,3 etc to verify they behave as outlined above)
-    for (int pageSize = 1; pageSize <= expectedPages.length - 1; pageSize++) {
-      int offset = 0;
-      for (int page = 0; page < expectedPages[pageSize].length - 1; page++, offset += pageSize) {
+    for (int pageSize = 1; pageSize <= expectedPages.length; pageSize++) {
+      int offset = 0; // always start at beginning
+      for (int page = 0; page < expectedPages[pageSize - 1].length; page++, offset += pageSize) {
         // request the page using the page size and offset
-        List<READABLE> results = service.list(new PagingRequest(offset, expectedPages[pageSize][page])).getResults();
+        List<READABLE> results =
+          service.list(new PagingRequest(offset, expectedPages[pageSize - 1][page])).getResults();
         // confirm it is the correct number of results as outlined above
         assertEquals("Paging is not operating as expected when requesting pages of size " + pageSize,
-          expectedPages[pageSize][page], results.size());
+          expectedPages[pageSize - 1][page], results.size());
       }
     }
   }
