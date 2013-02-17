@@ -17,9 +17,6 @@ import java.util.UUID;
 import com.google.common.base.Preconditions;
 import org.mybatis.guice.transactional.Transactional;
 
-/**
- * Static utility methods for common MyBatis operations supporting fluent style coding.
- */
 public class WithMyBatis {
 
   @Transactional
