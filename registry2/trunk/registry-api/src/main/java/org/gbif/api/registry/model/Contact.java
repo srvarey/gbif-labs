@@ -9,7 +9,8 @@ import com.google.common.base.Objects;
 
 public class Contact implements Address {
 
-  private Integer key; // primary key
+  // TODO add constraints
+  private Integer key;
   private String name;
   private String description;
   private String email;

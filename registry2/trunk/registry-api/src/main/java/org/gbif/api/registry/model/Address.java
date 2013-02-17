@@ -3,11 +3,11 @@ package org.gbif.api.registry.model;
 import org.gbif.api.vocabulary.Country;
 
 /**
- * A package visible interface to provide the commonality for addresses, including the constraint validations.
+ * A package visible providing the commonality for addresses, including the constraint validations.
  */
 interface Address {
 
-  // TODO validation on the Getters
+  // TODO add validations on the Getters
   String getEmail();
 
   void setEmail(String email);
