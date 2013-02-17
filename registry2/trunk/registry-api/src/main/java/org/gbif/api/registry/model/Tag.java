@@ -2,12 +2,17 @@ package org.gbif.api.registry.model;
 
 import java.util.Date;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import com.google.common.base.Objects;
 
 
 public class Tag {
 
-  private int key; // primary key
+  // TODO validations
+  private int key;
   private String value;
   private String creator;
   private Date created;
@@ -28,6 +33,8 @@ public class Tag {
     this.key = key;
   }
 
+  @NotNull
+  @Min(1)
   public String getValue() {
     return value;
   }
@@ -36,6 +43,7 @@ public class Tag {
     this.value = value;
   }
 
+  @Nullable
   public String getCreator() {
     return creator;
   }

@@ -24,8 +24,7 @@ import com.google.common.collect.Lists;
  */
 public class Organization implements NetworkEntity, Taggable, Contactable {
 
-
-  // TODO validations
+  // TODO move all validations to getters
   @Nullable
   private UUID key;
   @Nullable

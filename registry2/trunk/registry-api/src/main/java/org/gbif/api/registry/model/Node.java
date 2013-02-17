@@ -26,7 +26,6 @@ public class Node implements NetworkEntity, Taggable, Contactable {
 
   // TODO validations
 
-
   @Nullable
   private UUID key;
   @NotNull
