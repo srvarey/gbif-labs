@@ -9,13 +9,9 @@
     <collection property="contacts" column="key" select="listContacts"/>
   </resultMap>
 
-  <sql id="WRITABLE_NODE_FIELDS">
-    key,title,alias,description,language,email,phone,homepage,logo_url,address,city,province,
-    country,postal_code,latitude,longitude,created,modified    
-  </sql>
-  
   <sql id="NODE_FIELDS">
-    <include refid="WRITABLE_NODE_FIELDS"/>,deleted    
+    key,title,alias,description,language,email,phone,homepage,logo_url,address,city,province,
+    country,postal_code,latitude,longitude,created,modified,deleted    
   </sql>
   
   <!-- 
@@ -40,7 +36,7 @@
     modified = now()
   </sql>
   
-  <sql id="WRITABLE_NODE_FIELD_TYPES">
+  <sql id="NODE_FIELD_TYPES">
     #{key,jdbcType=CHAR},
     #{title,jdbcType=VARCHAR},
     #{alias,jdbcType=VARCHAR},
@@ -58,7 +54,8 @@
     #{latitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
     #{longitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
     now(), <!-- created -->
-    now() <!-- modified -->
+    now(), <!-- modified -->
+    NULL <!-- deleted -->
   </sql>
   
   <!--  Note: you can get entities which are deleted -->
@@ -69,8 +66,8 @@
   </select>
   
   <insert id="create" parameterType="Node">
-    INSERT INTO node(<include refid="WRITABLE_NODE_FIELDS"/>)
-    VALUES(<include refid="WRITABLE_NODE_FIELD_TYPES"/>)
+    INSERT INTO node(<include refid="NODE_FIELDS"/>)
+    VALUES(<include refid="NODE_FIELD_TYPES"/>)
   </insert>
   
   <!-- For safety, deleted entities are never modified -->
