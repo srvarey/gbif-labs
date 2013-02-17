@@ -4,7 +4,6 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.registry.model.Node;
 import org.gbif.api.registry.model.Organization;
-import org.gbif.api.registry.model.WritableNode;
 
 import java.util.UUID;
 
@@ -14,7 +13,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Actions on a GBIF node.
  */
-public interface NodeService extends NetworkEntityService<Node, WritableNode> {
+public interface NodeService extends NetworkEntityService<Node>, ContactService, TagService {
 
   /**
    * Provides access to the organizations endorsed by a single node.

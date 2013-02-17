@@ -1,4 +1,4 @@
-package org.gbif.registry;
+package org.gbif.registry.database;
 
 import java.io.File;
 import java.sql.Connection;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * public static LiquibaseInitializer = new LiquibaseInitializer(getDatasource()); // developer required to provide datasource
  * </pre>
  */
-class LiquibaseInitializer extends ExternalResource {
+public class LiquibaseInitializer extends ExternalResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(LiquibaseInitializer.class);
   private static final String[] LIQUIBASE_FILES = {"master.xml"};

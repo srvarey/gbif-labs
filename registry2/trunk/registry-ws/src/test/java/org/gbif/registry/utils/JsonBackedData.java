@@ -1,4 +1,4 @@
-package org.gbif.registry.data;
+package org.gbif.registry.utils;
 
 import java.io.IOException;
 
@@ -9,17 +9,19 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 
-public abstract class JsonBackedData<R, W> {
+/**
+ * Base class providing basic Jackson based factories for new object instances.
+ */
+abstract class JsonBackedData<T> {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
-  private final TypeReference<R> readableType;
-  private final TypeReference<W> writableType;
-  private final String json; // for reuse
+  private final TypeReference<T> type;
+  private final String json; // for reuse to save file IO
 
-  protected JsonBackedData(String file, TypeReference<R> readableType, TypeReference<W> writableType) {
+  // only for instantiation by subclasses, type references are required to keep typing at runtime
+  protected JsonBackedData(String file, TypeReference<T> type) {
     json = getJson(file);
-    this.readableType = readableType;
-    this.writableType = writableType;
+    this.type = type;
   }
 
   // utility method to read the file, and throw RTE if there is a problem
@@ -31,17 +33,9 @@ public abstract class JsonBackedData<R, W> {
     }
   }
 
-  protected R readable() {
+  protected T newTypedInstance() {
     try {
-      return MAPPER.readValue(json, readableType);
-    } catch (Exception e) {
-      throw Throwables.propagate(e);
-    }
-  }
-
-  protected R writable() {
-    try {
-      return MAPPER.readValue(json, writableType);
+      return MAPPER.readValue(json, type);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }

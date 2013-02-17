@@ -1,4 +1,4 @@
-package org.gbif.registry;
+package org.gbif.registry.grizzly;
 
 import org.gbif.registry.guice.TestRegistryWsServletListener;
 

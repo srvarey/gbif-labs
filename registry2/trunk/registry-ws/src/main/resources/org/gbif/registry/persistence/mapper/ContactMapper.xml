@@ -7,7 +7,7 @@
   </sql>
   
   <sql id="CONTACT_FIELDS">
-    key,<include refid="org.gbif.registry.persistence.mapper.ContactMapper.WRITABLE_CONTACT_FIELDS"/>
+    key,<include refid="org.gbif.registry.persistence.mapper.ContactMapper.WRITABLE_CONTACT_FIELDS"/>,created,modified
   </sql>
 
   <!-- 

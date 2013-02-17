@@ -27,6 +27,8 @@ public class RegistryWsServletListener extends GbifServletListener {
     return Lists.<Module>newArrayList(
       new RegistryMyBatisModule(props),
       StringTrimInterceptor.newMethodInterceptingModule(),
-      new ValidationModule());
+      new ValidationModule()
+      // ,new RegistrySolrModule()
+      );
   }
 }

@@ -2,18 +2,19 @@ package org.gbif.registry;
 
 import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.registry.model.Node;
 import org.gbif.api.registry.model.Organization;
-import org.gbif.api.registry.model.WritableNode;
-import org.gbif.api.registry.model.WritableOrganization;
 import org.gbif.api.registry.service.NodeService;
 import org.gbif.api.registry.service.OrganizationService;
-import org.gbif.registry.data.Nodes;
-import org.gbif.registry.data.Organizations;
-import org.gbif.registry.data.Organizations.TYPE;
+import org.gbif.registry.utils.Nodes;
+import org.gbif.registry.utils.Organizations;
 import org.gbif.registry.ws.resources.NodeResource;
 import org.gbif.registry.ws.resources.OrganizationResource;
 
+import java.util.UUID;
+
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Injector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,49 +36,61 @@ import static org.junit.Assert.assertNotNull;
  * </ol>
  */
 @RunWith(value = Parameterized.class)
-public class OrganizationTest extends NetworkEntityTest<WritableOrganization, Organization> {
+public class OrganizationTest extends NetworkEntityTest<Organization> {
 
+  private final OrganizationService service;
   private final NodeService nodeService;
 
   public OrganizationTest(OrganizationService service, NodeService nodeService) {
     super(service);
+    this.service = service;
     this.nodeService = nodeService;
   }
 
   @Parameters
   public static Iterable<Object[]> data() {
+    final Injector webservice = webservice();
+    final Injector client = webserviceClient();
     return ImmutableList
       .<Object[]>of(
-        new Object[] {
-          webservice().getInstance(OrganizationResource.class),
-          webservice().getInstance(NodeResource.class)},
-        new Object[] {
-          webserviceClient().getInstance(OrganizationService.class),
-          webserviceClient().getInstance(NodeService.class)}
+        new Object[] {webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class)},
+        new Object[] {client.getInstance(OrganizationService.class), client.getInstance(NodeService.class)}
       );
   }
 
+  @Test
+  public void testContacts() {
+    Organization organization = create(newEntity(), 1);
+    ContactTests.testAddDelete(service, organization);
+  }
+
+  @Test
+  public void testTags() {
+    Organization organization = create(newEntity(), 1);
+    TagTests.testAddDelete(service, organization);
+    organization = create(newEntity(), 2);
+    TagTests.testTagErroneousDelete(service, organization);
+  }
 
   @Override
-  protected WritableOrganization newWritable() {
-    WritableOrganization o = Organizations.writableInstanceOf(TYPE.BGBM);
-    WritableNode node = Nodes.writableInstanceOf(org.gbif.registry.data.Nodes.TYPE.UK);
-    nodeService.create(node);
-    node = nodeService.list(new PagingRequest()).getResults().get(0);
+  protected Organization newEntity() {
+    UUID key = nodeService.create(Nodes.newInstance());
+    Node node = nodeService.get(key);
+    Organization o = Organizations.newInstance();
     o.setEndorsingNodeKey(node.getKey());
     return o;
   }
 
   @Test
   public void testEndorsements() {
-    WritableNode node = Nodes.writableInstanceOf(org.gbif.registry.data.Nodes.TYPE.UK);
+    Node node = Nodes.newInstance();
     nodeService.create(node);
     node = nodeService.list(new PagingRequest()).getResults().get(0);
 
     assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 0);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 0);
 
-    WritableOrganization o = Organizations.writableInstanceOf(TYPE.BGBM);
+    Organization o = Organizations.newInstance();
     o.setEndorsingNodeKey(node.getKey());
     o.setKey(this.getService().create(o));
     assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 0);
@@ -89,9 +102,9 @@ public class OrganizationTest extends NetworkEntityTest<WritableOrganization, Or
     assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 1);
   }
 
-  private void assertResultsOfSize(PagingResponse<Organization> pendingEndorsements, int size) {
-    assertNotNull(pendingEndorsements);
-    assertNotNull(pendingEndorsements.getResults());
-    assertEquals("Unexpected result size for current test state", size, pendingEndorsements.getResults().size());
+  private void assertResultsOfSize(PagingResponse<Organization> results, int size) {
+    assertNotNull(results);
+    assertNotNull(results.getResults());
+    assertEquals("Unexpected result size for current test state", size, results.getResults().size());
   }
 }
