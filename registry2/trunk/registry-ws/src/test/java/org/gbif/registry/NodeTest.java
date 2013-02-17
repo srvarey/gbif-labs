@@ -1,14 +1,13 @@
 package org.gbif.registry;
 
 import org.gbif.api.registry.model.Node;
-import org.gbif.api.registry.model.WritableNode;
 import org.gbif.api.registry.service.NodeService;
-import org.gbif.registry.data.Nodes;
-import org.gbif.registry.data.Nodes.TYPE;
 import org.gbif.registry.guice.RegistryTestModules;
+import org.gbif.registry.utils.Nodes;
 import org.gbif.registry.ws.resources.NodeResource;
 
 import com.google.common.collect.ImmutableList;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -23,10 +22,13 @@ import org.junit.runners.Parameterized.Parameters;
  * </ol>
  */
 @RunWith(value = Parameterized.class)
-public class NodeTest extends NetworkEntityTest<WritableNode, Node> {
+public class NodeTest extends NetworkEntityTest<Node> {
+
+  private final NodeService service;
 
   public NodeTest(NodeService service) {
     super(service);
+    this.service = service;
   }
 
   @Parameters
@@ -37,8 +39,23 @@ public class NodeTest extends NetworkEntityTest<WritableNode, Node> {
       );
   }
 
+  @Test
+  public void testContacts() {
+    Node node = create(newEntity(), 1);
+    ContactTests.testAddDelete(service, node);
+  }
+
+  @Test
+  public void testTags() {
+    Node node = create(newEntity(), 1);
+    TagTests.testAddDelete(service, node);
+    node = create(newEntity(), 2);
+    TagTests.testTagErroneousDelete(service, node);
+  }
+
+
   @Override
-  protected WritableNode newWritable() {
-    return Nodes.writableInstanceOf(TYPE.UK);
+  protected Node newEntity() {
+    return Nodes.newInstance();
   }
 }

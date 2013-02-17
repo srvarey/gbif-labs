@@ -1,9 +1,9 @@
 package org.gbif.registry.persistence.mapper;
 
-import org.gbif.api.registry.model.WritableContact;
+import org.gbif.api.registry.model.Contact;
 
 
 public interface ContactMapper {
 
-  int createContact(WritableContact contact);
+  int createContact(Contact contact);
 }

@@ -5,8 +5,6 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.registry.model.Contact;
 import org.gbif.api.registry.model.Organization;
 import org.gbif.api.registry.model.Tag;
-import org.gbif.api.registry.model.WritableContact;
-import org.gbif.api.registry.model.WritableOrganization;
 import org.gbif.api.registry.service.OrganizationService;
 import org.gbif.registry.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
@@ -33,7 +31,7 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
   }
 
   @Override
-  public UUID create(WritableOrganization entity) {
+  public UUID create(Organization entity) {
     return super.post(UUID.class, entity, "/");
   }
 
@@ -56,7 +54,7 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
   }
 
   @Override
-  public void update(WritableOrganization entity) {
+  public void update(Organization entity) {
     super.put(entity, entity.getKey().toString());
   }
 
@@ -81,7 +79,7 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
   }
 
   @Override
-  public int addContact(UUID targetEntityKey, WritableContact contact) {
+  public int addContact(UUID targetEntityKey, Contact contact) {
     // post the contact to .../uuid/contact and expect an int back
     return super.post(Integer.class, contact, targetEntityKey.toString(), "contact");
   }

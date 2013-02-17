@@ -63,12 +63,12 @@ public class ValidationTest {
 // @Override
 // protected void configure() {
 // bind(NodeService.class).to(MockNodeService.class);
-// bind(NodeResource.class);
+// bind(NodeResourceOrig.class);
 // }
 // };
 // Injector i = Guice.createInjector(m, new ValidationModule());
 // try {
-// NodeResource nr = i.getInstance(NodeResource.class);
+// NodeResourceOrig nr = i.getInstance(NodeResourceOrig.class);
 // nr.create(new WritableNode());
 // // nr.print(new O());
 // } catch (ConstraintViolationException e) {

@@ -1,6 +1,6 @@
 package org.gbif.registry.guice;
 
-import org.gbif.registry.RegistryServer;
+import org.gbif.registry.grizzly.RegistryServer;
 import org.gbif.registry.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
 import org.gbif.registry.ws.resources.NodeResource;
@@ -67,9 +67,17 @@ public class RegistryTestModules {
   }
 
   /**
+   * @return A datasource that is for use in management activities such as Liquibase, or cleaning between tests.
+   */
+  public static DataSource database() {
+    return RegistryTestModules.management().getInstance(DataSource.class);
+  }
+
+
+  /**
    * @return An injector configured to issue a Datasource suitable for database management activities (Liquibase etc).
    */
-  public static Injector management() {
+  private static Injector management() {
     try {
       final Properties p = new Properties();
       p.load(Resources.getResourceAsStream("registry-test.properties"));

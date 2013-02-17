@@ -1,8 +1,7 @@
 package org.gbif.registry.persistence.mapper;
 
 import org.gbif.api.model.common.paging.Pageable;
-import org.gbif.api.registry.model.Contact;
-import org.gbif.api.registry.model.Tag;
+import org.gbif.api.registry.model.NetworkEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,32 +14,19 @@ import org.apache.ibatis.annotations.Param;
 /**
  * Mappers that perform operations on network entities.
  * 
- * @param <READABLE> The object type returned on reads
- * @param <WRITABLE> The object type used on writes
+ * @param <T>
  */
-public interface NetworkEntityMapper<READABLE, WRITABLE> {
+public interface NetworkEntityMapper<T extends NetworkEntity> {
 
-  READABLE get(@Param("key") UUID key);
+  T get(@Param("key") UUID key);
 
-  void create(WRITABLE entity);
+  void create(T entity);
 
   void delete(@Param("key") UUID key);
 
-  void update(WRITABLE entity);
+  void update(T entity);
 
-  List<READABLE> list(@Nullable @Param("page") Pageable page);
+  List<T> list(@Nullable @Param("page") Pageable page);
 
   int count();
-
-  int addTag(@Param("targetEntityKey") UUID entityKey, @Param("tagKey") int tagKey);
-
-  int deleteTag(@Param("targetEntityKey") UUID entityKey, @Param("tagKey") int tagKey);
-
-  List<Tag> listTags(@Param("targetEntityKey") UUID targetEntityKey);
-
-  int addContact(@Param("targetEntityKey") UUID entityKey, @Param("contactKey") int contactKey);
-
-  int deleteContact(@Param("targetEntityKey") UUID entityKey, @Param("contactKey") int contactKey);
-
-  List<Contact> listContacts(@Param("targetEntityKey") UUID targetEntityKey);
 }

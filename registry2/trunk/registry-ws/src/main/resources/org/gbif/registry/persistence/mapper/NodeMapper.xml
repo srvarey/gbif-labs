@@ -68,13 +68,13 @@
     WHERE key = #{key}
   </select>
   
-  <insert id="create" parameterType="WritableNode">
+  <insert id="create" parameterType="Node">
     INSERT INTO node(<include refid="WRITABLE_NODE_FIELDS"/>)
     VALUES(<include refid="WRITABLE_NODE_FIELD_TYPES"/>)
   </insert>
   
   <!-- For safety, deleted entities are never modified -->
-  <update id="update" parameterType="WritableNode">
+  <update id="update" parameterType="Node">
     UPDATE node
     SET <include refid="NODE_UPDATE"/>
     WHERE key = #{key} AND deleted IS NULL

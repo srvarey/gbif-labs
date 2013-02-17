@@ -1,6 +1,6 @@
 package org.gbif.registry.todo;
 
-import org.gbif.api.registry.model.WritableNode;
+import org.gbif.api.registry.model.Node;
 
 import java.util.Set;
 
@@ -21,9 +21,9 @@ public class ValidationTest2 {
 
     Validator validator = validatorFactory.getValidator();
 
-    WritableNode n = new WritableNode();
+    Node n = new Node();
     n.setTitle("1");
-    Set<ConstraintViolation<WritableNode>> violations = validator.validate(n);
+    Set<ConstraintViolation<Node>> violations = validator.validate(n);
     for (ConstraintViolation<?> cv : violations) {
       System.out.println(cv.getPropertyPath());
       System.out.println(cv.getMessage());

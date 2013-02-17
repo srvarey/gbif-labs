@@ -107,6 +107,10 @@
     </dependency>
     <dependency>
       <groupId>org.gbif</groupId>
+      <artifactId>gbif-common-search</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
       <artifactId>gbif-common-ws</artifactId>
       <exclusions>
         <exclusion>
@@ -139,6 +143,21 @@
       <groupId>com.sun.grizzly</groupId>
       <artifactId>grizzly-servlet-webserver</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mrbean</artifactId>
+      <version>1.9.7</version>
+    </dependency>
+    
+    
     
   </dependencies>
 </project>

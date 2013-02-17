@@ -6,8 +6,6 @@ import org.gbif.api.registry.model.Contact;
 import org.gbif.api.registry.model.Node;
 import org.gbif.api.registry.model.Organization;
 import org.gbif.api.registry.model.Tag;
-import org.gbif.api.registry.model.WritableContact;
-import org.gbif.api.registry.model.WritableNode;
 import org.gbif.api.registry.service.NodeService;
 import org.gbif.registry.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
@@ -35,7 +33,7 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   }
 
   @Override
-  public UUID create(WritableNode entity) {
+  public UUID create(Node entity) {
     return super.post(UUID.class, entity, "/");
   }
 
@@ -58,7 +56,7 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   }
 
   @Override
-  public void update(WritableNode entity) {
+  public void update(Node entity) {
     Preconditions.checkArgument(entity.getKey() != null, "An entity must have a key to be updated");
     super.put(entity, entity.getKey().toString());
   }
@@ -84,7 +82,7 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   }
 
   @Override
-  public int addContact(UUID targetEntityKey, WritableContact contact) {
+  public int addContact(UUID targetEntityKey, Contact contact) {
     // post the contact to .../uuid/contact and expect an int back
     return super.post(Integer.class, contact, targetEntityKey.toString(), "contact");
   }

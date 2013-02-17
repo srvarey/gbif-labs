@@ -1,4 +1,4 @@
-package org.gbif.registry;
+package org.gbif.registry.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * public DatabaseInitializer = new DatabaseInitializer(getDatasource()); // developer required to provide datasource
  * </pre>
  */
-class DatabaseInitializer extends ExternalResource {
+public class DatabaseInitializer extends ExternalResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(DatabaseInitializer.class);
   private final DataSource dataSource;

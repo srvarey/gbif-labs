@@ -75,13 +75,13 @@
     WHERE o.key = #{key}
   </select>
   
-  <insert id="create" parameterType="WritableOrganization">
+  <insert id="create" parameterType="Organization">
     INSERT INTO organization(<include refid="WRITABLE_ORGANIZATION_FIELDS"/>)
     VALUES(<include refid="WRITABLE_ORGANIZATION_FIELD_TYPES"/>)
   </insert>
   
   <!-- For safety, deleted entities are never modified -->
-  <update id="update" parameterType="WritableOrganization">
+  <update id="update" parameterType="Organization">
     UPDATE organization
     SET <include refid="ORGANIZATION_UPDATE"/>
     WHERE key = #{key} AND deleted IS NULL

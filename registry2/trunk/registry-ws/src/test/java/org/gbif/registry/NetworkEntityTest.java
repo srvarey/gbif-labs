@@ -4,28 +4,19 @@
 package org.gbif.registry;
 
 import org.gbif.api.model.common.paging.PagingRequest;
-import org.gbif.api.registry.model.Contact;
 import org.gbif.api.registry.model.NetworkEntity;
-import org.gbif.api.registry.model.Tag;
-import org.gbif.api.registry.model.WritableNetworkEntity;
 import org.gbif.api.registry.service.NetworkEntityService;
-import org.gbif.registry.data.Contacts;
+import org.gbif.registry.database.DatabaseInitializer;
+import org.gbif.registry.database.LiquibaseInitializer;
+import org.gbif.registry.grizzly.RegistryServer;
 import org.gbif.registry.guice.RegistryTestModules;
 
-import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import javax.sql.DataSource;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.converters.BigDecimalConverter;
-import org.apache.commons.beanutils.converters.DateConverter;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,59 +30,45 @@ import static org.junit.Assert.assertTrue;
 /**
  * A generic test that runs against the registry interfaces.
  */
-public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, READABLE extends NetworkEntity> {
+public abstract class NetworkEntityTest<T extends NetworkEntity> {
 
-  // Runs liquibase, and puts DB in a correct initial state for each test
-// @Rule
-// public final DatabaseInitializerOLD<NetworkEntityService<READABLE, WRITABLE>> initializer =
-// new DatabaseInitializerOLD<NetworkEntityService<READABLE, WRITABLE>>();
   // Flushes the database on each run
   @ClassRule
-  public static final LiquibaseInitializer liquibaseRule = new LiquibaseInitializer(getDatasource());
+  public static final LiquibaseInitializer liquibaseRule = new LiquibaseInitializer(RegistryTestModules.database());
 
   @ClassRule
   public static final RegistryServer registryServer = new RegistryServer();
 
   @Rule
-  public final DatabaseInitializer databaseRule = new DatabaseInitializer(getDatasource());
+  public final DatabaseInitializer databaseRule = new DatabaseInitializer(RegistryTestModules.database());
 
-  private final NetworkEntityService<READABLE, WRITABLE> service; // under test
+  private final NetworkEntityService<T> service; // under test
 
   /**
    * @return a new example instance
    */
-  protected abstract WRITABLE newWritable();
+  protected abstract T newEntity();
 
-  /**
-   * 
-   */
-  private static DataSource getDatasource() {
-    return RegistryTestModules.management().getInstance(DataSource.class);
-  }
-
-  /**
-   * @param service Under test
-   */
-  public NetworkEntityTest(NetworkEntityService<READABLE, WRITABLE> service) {
+  public NetworkEntityTest(NetworkEntityService<T> service) {
     this.service = service;
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createWithKey() {
-    WRITABLE e = newWritable();
+    T e = newEntity();
     e.setKey(UUID.randomUUID()); // illegal to provide a key
     service.create(e);
   }
 
   @Test
   public void testCreate() {
-    create(newWritable(), 1);
-    create(newWritable(), 2);
+    create(newEntity(), 1);
+    create(newEntity(), 2);
   }
 
   @Test
   public void testUpdate() {
-    READABLE n1 = create(newWritable(), 1);
+    T n1 = create(newEntity(), 1);
     n1.setTitle("New title");
     service.update(asWritable(n1));
     NetworkEntity n2 = service.get(n1.getKey());
@@ -106,10 +83,10 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
 
   @Test
   public void testDelete() {
-    NetworkEntity n1 = create(newWritable(), 1);
-    NetworkEntity n2 = create(newWritable(), 2);
+    NetworkEntity n1 = create(newEntity(), 1);
+    NetworkEntity n2 = create(newEntity(), 2);
     service.delete(n1.getKey());
-    READABLE n4 = service.get(n1.getKey()); // one can get a deleted entity
+    T n4 = service.get(n1.getKey()); // one can get a deleted entity
     n1.setDeleted(n4.getDeleted());
     assertEquals("Persisted does not reflect original after a deletion", n1, n4);
     // check that one cannot see the deleted entity in a list
@@ -120,7 +97,7 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
   }
 
   public void testDoubleDelete() {
-    NetworkEntity n1 = create(newWritable(), 1);
+    NetworkEntity n1 = create(newEntity(), 1);
     service.delete(n1.getKey());
     service.delete(n1.getKey()); // should just do nothing silently
   }
@@ -132,7 +109,7 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
   @Test
   public void testPaging() {
     for (int i = 1; i <= 5; i++) {
-      create(newWritable(), i);
+      create(newEntity(), i);
     }
 
     // the expected number of records returned when paging at different page sizes
@@ -150,7 +127,7 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
       int offset = 0; // always start at beginning
       for (int page = 0; page < expectedPages[pageSize - 1].length; page++, offset += pageSize) {
         // request the page using the page size and offset
-        List<READABLE> results =
+        List<T> results =
           service.list(new PagingRequest(offset, expectedPages[pageSize - 1][page])).getResults();
         // confirm it is the correct number of results as outlined above
         assertEquals("Paging is not operating as expected when requesting pages of size " + pageSize,
@@ -159,91 +136,48 @@ public abstract class NetworkEntityTest<WRITABLE extends WritableNetworkEntity, 
     }
   }
 
-  @Test
-  public void testTags() {
-    NetworkEntity n1 = create(newWritable(), 1);
-    List<Tag> tags = service.listTags(n1.getKey(), null);
-    assertNotNull("Tag list should be empty, not null when no tags exist", tags);
-    assertTrue("Tags should be empty when none added", tags.isEmpty());
-    service.addTag(n1.getKey(), "tag1");
-    service.addTag(n1.getKey(), "tag2");
-    tags = service.listTags(n1.getKey(), null);
-    assertNotNull(tags);
-    assertEquals("2 tags have been added", 2, tags.size());
-    service.deleteTag(n1.getKey(), tags.get(0).getKey());
-    tags = service.listTags(n1.getKey(), null);
-    assertNotNull(tags);
-    assertEquals("1 tag should remain after the deletion", 1, tags.size());
-  }
-
-  @Test
-  public void testTagErroneousDelete() {
-    NetworkEntity n1 = create(newWritable(), 1);
-    int tagKey = service.addTag(n1.getKey(), "tag1");
-    service.deleteTag(UUID.randomUUID(), tagKey); // wrong parent UUID
-    // nothing happens - expected?
-  }
-
-  @Test
-  public void testContacts() {
-    NetworkEntity n1 = create(newWritable(), 1);
-    List<Contact> contacts = service.listContacts(n1.getKey());
-    assertNotNull("Contact list should be empty, not null when no contacts exist", contacts);
-    assertTrue("Contact should be empty when none added", contacts.isEmpty());
-    service.addContact(n1.getKey(), Contacts.newInstance());
-    service.addContact(n1.getKey(), Contacts.newInstance());
-    contacts = service.listContacts(n1.getKey());
-    assertNotNull(contacts);
-    assertEquals("2 contacts have been added", 2, contacts.size());
-    service.deleteContact(n1.getKey(), contacts.get(0).getKey());
-    contacts = service.listContacts(n1.getKey());
-    assertNotNull(contacts);
-    assertEquals("1 contact should remain after the deletion", 1, contacts.size());
-    Contact expected = Contacts.newInstance();
-    Contact created = contacts.get(0);
-    expected.setKey(created.getKey());
-    expected.setCreated(created.getCreated());
-    expected.setModified(created.getModified());
-    assertEquals("Created contact does not read as expected", expected, created);
-  }
-
   // Repeatable entity creation with verification tests
-  protected READABLE create(WRITABLE entity, int expectedCount) {
-    Preconditions.checkNotNull(entity, "Cannot create a non existing entity");
-    UUID key = service.create(entity);
-    entity.setKey(key);
-    READABLE written = service.get(key);
-    assertNotNull(written.getCreated());
-    assertNotNull(written.getModified());
-    assertNull(written.getDeleted());
-    assertEquals("Persisted does not reflect original", entity, asWritable(written));
-    assertEquals("List service does not reflect the number of created entities", expectedCount,
-      service.list(new PagingRequest()).getResults().size());
-    return written;
-  }
-
-  /**
-   * Creates a new instance of the supplied entity in it's writable form, to allow type safe comparison.
-   * Note, that this will be a lossy transformation.
-   */
-  protected WRITABLE asWritable(READABLE source) {
+  protected T create(T orig, int expectedCount) {
     try {
-      // use reflection to create a new instance of the generic specified class
-      ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
       @SuppressWarnings("unchecked")
-      Class<WRITABLE> t1 = (Class<WRITABLE>) type.getActualTypeArguments()[0]; // WRITABLE is the first generic type
-      WRITABLE r = t1.newInstance();
-
-      ConvertUtils.register(new BigDecimalConverter(null), BigDecimal.class);
-      ConvertUtils.register(new DateConverter(null), Date.class);
-      BeanUtils.copyProperties(r, source);
-      return r;
+      T entity = (T) BeanUtils.cloneBean(orig);
+      Preconditions.checkNotNull(entity, "Cannot create a non existing entity");
+      UUID key = service.create(entity);
+      entity.setKey(key);
+      T written = service.get(key);
+      assertNotNull(written.getCreated());
+      assertNotNull(written.getModified());
+      assertNull(written.getDeleted());
+      assertEquals("Persisted does not reflect original", entity, asWritable(written));
+      assertEquals("List service does not reflect the number of created entities", expectedCount,
+        service.list(new PagingRequest()).getResults().size());
+      return written;
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
   }
 
-  protected NetworkEntityService<READABLE, WRITABLE> getService() {
+  /**
+   * Creates a new instance of the supplied entity clearing all fields that are out of scope for external clients.
+   * TODO: should we consider clearing contacts, tags etc? (would need to increase visibility of those interfaces to
+   * make so)
+   * TODO: think of a better name for this. Perhaps consider refactoring so one calls assertEquivalent() instead of
+   * this.
+   */
+  protected T asWritable(T source) {
+    try {
+      @SuppressWarnings("unchecked")
+      T copy = (T) BeanUtils.cloneBean(source);
+      copy.setCreated(null);
+      copy.setModified(null);
+      copy.setDeleted(null);
+      return copy;
+    } catch (Exception e) {
+      throw Throwables.propagate(e);
+    }
+  }
+
+  protected NetworkEntityService<T> getService() {
     return service;
   }
 }

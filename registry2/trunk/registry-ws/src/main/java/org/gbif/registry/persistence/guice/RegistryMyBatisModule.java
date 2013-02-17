@@ -5,9 +5,6 @@ import org.gbif.api.registry.model.Contact;
 import org.gbif.api.registry.model.Node;
 import org.gbif.api.registry.model.Organization;
 import org.gbif.api.registry.model.Tag;
-import org.gbif.api.registry.model.WritableContact;
-import org.gbif.api.registry.model.WritableNode;
-import org.gbif.api.registry.model.WritableOrganization;
 import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.mybatis.type.UriTypeHandler;
 import org.gbif.mybatis.type.UuidTypeHandler;
@@ -44,8 +41,6 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     expose(NodeMapper.class);
     expose(ContactMapper.class);
     expose(TagMapper.class);
-
-
   }
 
   /**
@@ -62,8 +57,6 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
 
     @Override
     protected void bindManagers() {
-      // bind(NodeService.class).to(NodeResource.class).in(Scopes.SINGLETON);
-      // bind(OrganizationService.class).to(OrganizationResource.class).in(Scopes.SINGLETON);
     }
 
     @Override
@@ -81,13 +74,10 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
       addMapperClass(TagMapper.class);
 
       // reduce mapper verboseness with aliases
-      addAlias("WritableNode").to(WritableNode.class);
       addAlias("Node").to(Node.class);
-      addAlias("WritableOrganization").to(WritableOrganization.class);
       addAlias("Organization").to(Organization.class);
       addAlias("Pageable").to(Pageable.class);
       addAlias("Tag").to(Tag.class);
-      addAlias("WritableContact").to(WritableContact.class);
       addAlias("Contact").to(Contact.class);
     }
 
