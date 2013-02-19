@@ -50,14 +50,14 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
   @Path("{key}/organization")
   @Override
   public PagingResponse<Organization> organizationsEndorsedBy(@PathParam("key") UUID nodeKey, @Context Pageable page) {
-    return PagingResponse.of(page, organizationMapper.organizationsEndorsedBy(nodeKey, page));
+    return new PagingResponse<Organization>(page, null, organizationMapper.organizationsEndorsedBy(nodeKey, page));
   }
 
   @GET
   @Path("pendingEndorsement")
   @Override
   public PagingResponse<Organization> pendingEndorsements(@Context Pageable page) {
-    return PagingResponse.of(page, organizationMapper.pendingEndorsements(page));
+    return new PagingResponse<Organization>(page, null, organizationMapper.pendingEndorsements(page));
   }
 
   @Override
