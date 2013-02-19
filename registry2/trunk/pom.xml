@@ -79,10 +79,11 @@
   <properties>
     <gbif-api.version>0.1-SNAPSHOT</gbif-api.version>
     <gbif-common.version>0.7</gbif-common.version>
-    <gbif-common-mybatis.version>0.4-SNAPSHOT</gbif-common-mybatis.version>
-    <gbif-common-ws.version>0.5-SNAPSHOT</gbif-common-ws.version>
-    <gbif-common-test.version>0.4-SNAPSHOT</gbif-common-test.version>
-    <gbif-common-service.version>0.3-SNAPSHOT</gbif-common-service.version>
+    <gbif-common-mybatis.version>0.5-SNAPSHOT</gbif-common-mybatis.version>
+    <gbif-common-ws.version>0.5</gbif-common-ws.version>
+    <gbif-common-test.version>0.4</gbif-common-test.version>
+    <gbif-common-service.version>0.3</gbif-common-service.version>
+    <gbif-common-search.version>0.4</gbif-common-search.version>
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
     <guava.version>12.0</guava.version>
     <guice.version>3.0</guice.version>
@@ -101,6 +102,10 @@
     <junit.version>4.11</junit.version>
     <bval.version>0.5</bval.version>
     <grizzly-servlet-webserver.version>1.9.50</grizzly-servlet-webserver.version>
+    <!--solrj.version>4.1.0</solrj.version>
+    <solr-core.version>4.1.0</solr-core.version-->
+    <solrj.version>4.0.0</solrj.version>
+    <solr-core.version>4.0.0</solr-core.version>
   </properties>
 
   <!--
@@ -161,6 +166,11 @@
         <groupId>org.gbif</groupId>
         <artifactId>gbif-common-service</artifactId>
         <version>${gbif-common-service.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common-search</artifactId>
+        <version>${gbif-common-search.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
@@ -326,6 +336,16 @@
         <groupId>org.apache.bval</groupId>
         <artifactId>bval-jsr303</artifactId>
         <version>${bval.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>${solrj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-core</artifactId>
+        <version>${solr-core.version}</version>
       </dependency>
       <dependency>
         <groupId>com.sun.grizzly</groupId>
