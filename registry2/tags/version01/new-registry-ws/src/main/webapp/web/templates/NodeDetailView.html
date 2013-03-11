@@ -1,0 +1,67 @@
+<span class="lead">Node detail: <%=title%></span>
+<p class="muted">...or cancel and <a href="#node-search">go back to node search</a></p>
+
+<hr/>
+<div class="row">
+  <div class="span2"><span class="lead">Details</span></div>
+  <div class="span10">
+    <dl>
+      <%= _.eval(obj, "title", "<dt>Title</dt><dd>{{value}}</dd>") %>
+      <%= _.eval(obj, "description", "<dt>Description</dt><dd>{{value}}</dd>") %>
+      <small class="muted"><a href="#nodeEdit" data-toggle="modal">edit</a> | <a href="#">delete</a></small>
+    </dl>
+  </div>
+</div>
+
+
+<!-- Modal edit of the node details -->
+<div id="nodeEdit" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="Node Edit" aria-hidden="true">
+  <form class="editNode modal-form">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <span class="lead">Edit node details</span>
+    </div>
+    <div class="modal-body">
+      <label>Title</label>
+      <input type="hidden" name="key" value="<%= key %>"></input>
+      <input type="text" name="title" placeholder="Title..." value="<%= title %>"></input>
+      <label>Description</label>
+      <textarea name="description" placeholder="Description..."><%= description %></textarea>
+      <label>Language</label>
+      <input type="text" name="language" placeholder="Language..." value="ENGLISH"></input>
+      <label>Country</label>
+      <input type="text" name="country" placeholder="Country..." value="UNITED_KINGDOM"></input>
+    </div>
+    <div class="modal-footer">
+      <!-- Must be a and not button or else return closes not submits -->
+      <a href="#" class="btn" data-dismiss="modal">Close</a> 
+      <button type="submit" id="save" class="btn btn-primary">Save changes</button>
+    </div>
+  </form>  
+</div>
+
+<hr/>
+<div class="row contacts"/>
+
+<hr/>
+<div class="row tags"/>
+
+<hr/>
+<div class="row machinetags">
+  <div class="span2"><span class="lead">Machine Tags</span></div>
+  <div class="span10">
+    <div class="row">    
+      <form class="form-search tag">
+        <div class="input-append">
+          <input type="text" class="span2 search-query" id="tagInput" placeholder="namespace"/>
+          <input type="text" class="span2 input-multi-inline" id="tagInput" placeholder="name"/>
+          <input type="text" class="span2 input-multi-inline" id="tagInput" placeholder="value"/>
+          <button type="submit" class="btn submit">Add machine tag</button>
+        </div>
+      </form>      
+    </div> 
+    <div class="row" id="machineTagContainer"/>    
+  </div>
+</div>
+
+<hr/>

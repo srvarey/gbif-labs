@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gbif.registry.persistence.mapper.CommentMapper">
+  
+  <sql id="WRITABLE_COMMENT_FIELDS">
+    content,created_by,modified_by,created,modified
+  </sql>
+  
+  <sql id="COMMENT_FIELDS">
+    key,<include refid="org.gbif.registry.persistence.mapper.CommentMapper.WRITABLE_COMMENT_FIELDS"/>
+  </sql>
+
+  <!-- 
+    key is never changed
+   -->
+  <sql id="COMMENT_UPDATE">
+    content = #{content},
+    modified_by = #{modifiedBy},
+    modified = now()
+  </sql>
+  
+  <sql id="WRITABLE_COMMENT_FIELD_TYPES">
+    #{content},
+    #{createdBy},
+    #{modifiedBy},
+    now(), <!-- created -->
+    now() <!-- modified -->
+  </sql>
+
+  <insert id="createComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="key">
+    INSERT INTO comment(<include refid="WRITABLE_COMMENT_FIELDS"/>)
+    VALUES(<include refid="WRITABLE_COMMENT_FIELD_TYPES"/>)
+  </insert>
+</mapper>
