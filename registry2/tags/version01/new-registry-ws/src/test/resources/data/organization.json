@@ -1,0 +1,18 @@
+{
+  "title":"The BGBM",
+  "abbreviation":"BGBM",
+  "password":"password",
+  "description":"The Berlin Botanical...",
+  "language":"GERMAN",
+  "country":"GERMANY",
+  "postalCode":"1408",
+  "province":"BERLIN",
+  "city":"BERLIN",
+  "address":"Berliner",
+  "logoUrl":"http://www.example.org",
+  "homepage":"http://www.example.org",
+  "email":"http://www.example.org",
+  "phone":"2920202",  
+  "createdBy":"GBIF_ADMIN",
+  "modifiedBy":"GBIF_ADMIN"  
+}

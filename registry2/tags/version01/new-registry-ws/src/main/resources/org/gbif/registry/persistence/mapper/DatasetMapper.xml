@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gbif.registry.persistence.mapper.DatasetMapper">
+  
+  <!-- Auto-mapping and eager loading of sub resources  -->
+  <resultMap id="DATASET_MAP" type="Dataset" autoMapping="true">
+    <id property="key" column="key"/>
+    <collection property="contacts" column="key" select="listContacts"/>
+    <collection property="endpoints" column="key" select="listEndpoints"/>
+    <collection property="machineTags" column="key" select="listMachineTags"/>
+    <collection property="tags" column="key" select="listTags"/>
+    <collection property="identifiers" column="key" select="listIdentifiers"/>
+    <collection property="comments" column="key" select="listComments"/>
+  </resultMap>
+
+  <sql id="WRITABLE_DATASET_FIELDS">
+    key,parent_dataset_key,duplicate_of_dataset_key,installation_key,owning_organization_key,
+    external,type,sub_type,title,alias,abbreviation,description,language,
+    homepage,logo_url,citation,citation_identifier,rights,locked_for_auto_update,created_by,modified_by,
+    created,modified
+  </sql>
+  
+  <sql id="DATASET_FIELDS">
+    d.key,d.parent_dataset_key,d.duplicate_of_dataset_key,d.installation_key,d.owning_organization_key,
+    d.external,d.type,d.sub_type,d.title,d.alias,d.abbreviation,d.description,d.language,
+    d.homepage,d.logo_url,d.citation,d.citation_identifier,d.rights,d.locked_for_auto_update,d.created_by,d.modified_by,
+    d.created,d.modified,d.deleted  
+  </sql>
+  
+  <!-- 
+    key, created and deleted are never changed
+   -->
+  <sql id="DATASET_UPDATE">
+    parent_dataset_key = #{parentDatasetKey,jdbcType=OTHER},
+    duplicate_of_dataset_key = #{duplicateOfDatasetKey,jdbcType=OTHER},
+    installation_key = #{installationKey,jdbcType=OTHER},
+    owning_organization_key = #{owningOrganizationKey,jdbcType=OTHER},
+    external = #{external,jdbcType=BOOLEAN},
+    type = #{type,jdbcType=OTHER},
+    sub_type = #{subType,jdbcType=OTHER},
+    title = #{title,jdbcType=VARCHAR},
+    alias = #{alias,jdbcType=VARCHAR},
+    abbreviation = #{abbreviation,jdbcType=CHAR},
+    description = #{description,jdbcType=VARCHAR},
+    language = #{language,jdbcType=CHAR},
+    homepage = #{homepage,jdbcType=VARCHAR},
+    logo_url = #{logoUrl,jdbcType=VARCHAR},
+    citation = #{citation,jdbcType=VARCHAR},
+    citation_identifier = #{citationIdentifier,jdbcType=VARCHAR},
+    rights = #{rights,jdbcType=VARCHAR},
+    locked_for_auto_update = #{lockedForAutoUpdate,jdbcType=BOOLEAN},
+    modified_by = #{modifiedBy},
+    modified = now()
+  </sql>
+  
+  <sql id="WRITABLE_DATASET_FIELD_TYPES">
+    #{key,jdbcType=OTHER},
+    #{parentDatasetKey,jdbcType=OTHER},
+    #{duplicateOfDatasetKey,jdbcType=OTHER},
+    #{installationKey,jdbcType=OTHER},
+    #{owningOrganizationKey,jdbcType=OTHER},
+    #{external,jdbcType=BOOLEAN},
+    #{type,jdbcType=OTHER},
+    #{subType,jdbcType=OTHER},
+    #{title,jdbcType=VARCHAR},
+    #{alias,jdbcType=VARCHAR},
+    #{abbreviation,jdbcType=CHAR},
+    #{description,jdbcType=VARCHAR},
+    #{language,jdbcType=CHAR},
+    #{homepage,jdbcType=VARCHAR},
+    #{logoUrl,jdbcType=VARCHAR},
+    #{citation,jdbcType=VARCHAR},
+    #{citationIdentifier,jdbcType=VARCHAR},
+    #{rights,jdbcType=VARCHAR},
+    #{lockedForAutoUpdate,jdbcType=BOOLEAN},
+    #{createdBy},
+    #{modifiedBy},
+    now(), <!-- created -->
+    now() <!-- modified -->
+  </sql>
+  
+  <!--  Note: you can get entities which are deleted -->
+  <select id="get" resultMap="DATASET_MAP">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    WHERE d.key = #{key,jdbcType=OTHER}
+  </select>  
+  
+  <insert id="create" parameterType="Dataset">
+    INSERT INTO dataset(<include refid="WRITABLE_DATASET_FIELDS"/>)
+    VALUES(<include refid="WRITABLE_DATASET_FIELD_TYPES"/>)
+  </insert>  
+  
+  <!-- For safety, deleted entities are never modified -->
+  <update id="update" parameterType="Dataset">
+    UPDATE dataset
+    SET <include refid="DATASET_UPDATE"/>
+    WHERE key = #{key,jdbcType=OTHER} AND deleted IS NULL
+  </update>  
+
+  <!-- For safety, should it be already deleted nothing is done -->
+  <update id="delete">
+    UPDATE dataset 
+    SET deleted = now()
+    WHERE key = #{key,jdbcType=OTHER} AND deleted IS NULL
+  </update>
+  
+  <!-- Append safe ordering, omitting deleted entities -->
+  <select id="list" resultType="Dataset"  resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    WHERE d.deleted IS NULL
+    ORDER BY d.created
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  
+  <select id="count" resultType="Integer">
+    SELECT COUNT(*)
+    FROM dataset 
+    WHERE deleted IS NULL
+  </select>  
+  
+  <!-- TAGS -->
+  <insert id="addTag">
+    INSERT INTO dataset_tag(dataset_key,tag_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{tagKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listTags" resultType="Tag">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.TagMapper.TAG_FIELDS"/>
+    FROM tag INNER JOIN dataset_tag ON tag_key = key
+    WHERE dataset_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of tag to trigger cascade delete of the join table --> 
+  <delete id="deleteTag">
+    DELETE FROM tag USING dataset_tag 
+    WHERE
+      tag_key = tag.key AND 
+      dataset_key = #{targetEntityKey,jdbcType=OTHER} AND tag_key = #{tagKey,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- CONTACTS -->
+  <insert id="addContact">
+    INSERT INTO dataset_contact(dataset_key,contact_key, type, is_primary)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{contactKey,jdbcType=INTEGER},
+     #{type,jdbcType=OTHER},
+     #{isPrimary,jdbcType=BOOLEAN}
+    )
+  </insert>
+  
+  <select id="listContacts" resultType="Contact">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.ContactMapper.CONTACT_FIELDS"/>
+    FROM contact INNER JOIN dataset_contact ON contact_key = key
+    WHERE dataset_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of contact to trigger cascade delete of the join table --> 
+  <delete id="deleteContact">
+    DELETE FROM contact USING dataset_contact 
+    WHERE
+      contact_key = contact.key AND 
+      dataset_key = #{targetEntityKey,jdbcType=OTHER} AND contact_key = #{contactKey,jdbcType=INTEGER}
+  </delete>  
+  
+  <!-- ENDPOINTS -->
+  <insert id="addEndpoint">
+    INSERT INTO dataset_endpoint(dataset_key,endpoint_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{endpointKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listEndpoints" resultType="Endpoint">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.EndpointMapper.ENDPOINT_FIELDS"/>
+    FROM endpoint INNER JOIN dataset_endpoint ON endpoint_key = key
+    WHERE dataset_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of endpoint to trigger cascade delete of the join table --> 
+  <delete id="deleteEndpoint">
+    DELETE FROM endpoint USING dataset_endpoint
+    WHERE
+      endpoint_key = endpoint.key AND 
+      dataset_key = #{targetEntityKey,jdbcType=OTHER} AND endpoint_key = #{endpointKey,jdbcType=INTEGER}
+  </delete>    
+  
+  <!-- IDENTIFIERS -->
+  <insert id="addIdentifier">
+    INSERT INTO dataset_identifier(dataset_key,identifier_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{identifierKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listIdentifiers" resultType="Identifier">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.IdentifierMapper.IDENTIFIER_FIELDS"/>
+    FROM identifier INNER JOIN dataset_identifier ON identifier_key = key
+    WHERE dataset_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of identifier to trigger cascade delete of the join table --> 
+  <delete id="deleteIdentifier">
+    DELETE FROM identifier USING dataset_identifier
+    WHERE
+      identifier_key = identifier.key AND 
+      dataset_key = #{targetEntityKey,jdbcType=OTHER} AND identifier_key = #{identifierKey,jdbcType=INTEGER}
+  </delete>    
+  
+  <!-- MACHINE TAGS -->
+  <insert id="addMachineTag">
+    INSERT INTO dataset_machine_tag(dataset_key,machine_tag_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{machineTagKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listMachineTags" resultType="MachineTag">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.MachineTagMapper.MACHINETAG_FIELDS"/>
+    FROM machine_tag INNER JOIN dataset_machine_tag ON machine_tag_key = key
+    WHERE dataset_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY namespace
+  </select>
+  
+  <!-- Joined delete of machine_tag to trigger cascade delete of the join table --> 
+  <delete id="deleteMachineTag">
+    DELETE FROM machine_tag USING dataset_machine_tag 
+    WHERE
+      machine_tag_key = machine_tag.key AND 
+      dataset_key = #{targetEntityKey,jdbcType=OTHER} AND machine_tag_key = #{machineTagKey,jdbcType=INTEGER}
+  </delete>  
+  
+  <!-- COMMENTS -->
+  <insert id="addComment">
+    INSERT INTO dataset_comment(dataset_key,comment_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{commentKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listComments" resultType="Comment">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.CommentMapper.COMMENT_FIELDS"/>
+    FROM comment INNER JOIN dataset_comment ON comment_key = key
+    WHERE dataset_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of comment to trigger cascade delete of the join table --> 
+  <delete id="deleteComment">
+    DELETE FROM comment USING dataset_comment
+    WHERE
+      comment_key = comment.key AND 
+      dataset_key = #{targetEntityKey,jdbcType=OTHER} AND comment_key = #{commentKey,jdbcType=INTEGER}
+  </delete>  
+  
+  <!-- METADATA -->
+  <select id="getMetadata" resultType="Metadata">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.MetadataMapper.METADATA_FIELDS"/>
+    FROM metadata 
+    WHERE dataset_key = #{datasetKey,jdbcType=OTHER}
+  </select>  
+  
+  <!-- Datasets that are part of a network -->
+  <select id="listDatasetsInNetwork" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d INNER JOIN dataset_network dn ON dn.dataset_key = d.key
+    WHERE dn.network_key = #{networkKey,jdbcType=OTHER} AND d.deleted IS NULL 
+    ORDER BY d.created
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>    
+</mapper>
