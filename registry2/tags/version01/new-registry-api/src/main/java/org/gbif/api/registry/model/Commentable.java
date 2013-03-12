@@ -3,6 +3,7 @@ package org.gbif.api.registry.model;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Generic comment interface for entities.
@@ -10,7 +11,8 @@ import javax.validation.Valid;
 interface Commentable {
 
   @Valid
+  @NotNull
   List<Comment> getComments();
 
-  public void setComments(List<Comment> comments);
+  void setComments(List<Comment> comments);
 }

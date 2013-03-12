@@ -4,7 +4,7 @@
   
 
   <sql id="WRITABLE_ENDPOINT_FIELDS">
-    type,url,description,created_by,modified_by,created,modified
+    type,url,description,created,created_by,modified,modified_by
   </sql>
   
   <sql id="ENDPOINT_FIELDS">
@@ -17,19 +17,19 @@
   <sql id="ENDPOINT_UPDATE">
     type = #{type, jdbcType=OTHER},
     url = #{url, jdbcType=VARCHAR}, 
-    description = #{description, jdbcType=VARCHAR}, 
-    modified_by = #{modifiedBy},  
-    modified = now()
+    description = #{description, jdbcType=VARCHAR},
+    modified = now(),
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_ENDPOINT_FIELD_TYPES">
     #{type, jdbcType=OTHER},
     #{url, jdbcType=VARCHAR}, 
     #{description, jdbcType=VARCHAR},
+    now(), <!-- created -->    
     #{createdBy},  
-    #{modifiedBy}, 
-    now(), <!-- created -->
-    now() <!-- modified -->
+    now(), <!-- modified -->    
+    #{modifiedBy}
   </sql>
 
   <insert id="createEndpoint" parameterType="Endpoint" useGeneratedKeys="true" keyProperty="key">

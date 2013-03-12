@@ -5,6 +5,7 @@ import org.gbif.api.registry.vocabulary.MetadataType;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,7 +24,7 @@ public class Metadata {
   private Date created;
   private Date modified;
 
-  @NotNull
+  @Min(1)
   public Integer getKey() {
     return key;
   }

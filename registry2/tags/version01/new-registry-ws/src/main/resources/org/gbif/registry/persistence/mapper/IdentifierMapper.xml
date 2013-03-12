@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.registry.persistence.mapper.IdentifierMapper">
   
   <sql id="WRITABLE_IDENTIFIER_FIELDS">
-    type,identifier,created_by,created
+    type,identifier,created,created_by
   </sql>
   
   <sql id="IDENTIFIER_FIELDS">
@@ -13,8 +13,8 @@
   <sql id="WRITABLE_IDENTIFIER_FIELD_TYPES">
     #{type,jdbcType=OTHER},
     #{identifier},
-    #{createdBy},
-    now() <!-- created -->
+    now(), <!-- created -->    
+    #{createdBy}
   </sql>
 
   <insert id="createIdentifier" parameterType="Identifier" useGeneratedKeys="true" keyProperty="key">

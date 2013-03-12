@@ -3,6 +3,7 @@ package org.gbif.api.registry.model;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Generic contact interface for entities.
@@ -10,7 +11,8 @@ import javax.validation.Valid;
 interface Contactable {
 
   @Valid
-  public List<Contact> getContacts();
+  @NotNull
+  List<Contact> getContacts();
 
-  public void setContacts(List<Contact> contacts);
+  void setContacts(List<Contact> contacts);
 }

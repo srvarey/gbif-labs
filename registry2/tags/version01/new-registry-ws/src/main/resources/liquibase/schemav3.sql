@@ -1,29 +1,14 @@
 --
 -- Returns true if the input text is equal or exceeds the provided length following validation which includes: 
 -- i. Trimming of whitespace 
+-- *Note*: PostgreSQL's JDBC driver needs to parse the function in a single line
 --
---CREATE FUNCTION assert_min_length(input text, minlength integer) RETURNS boolean AS $$
---BEGIN
---    IF (char_length(trim(input))) >= minlength THEN
---         RETURN TRUE;
---    ELSE
---         RETURN FALSE;
---    END IF;
---END;
---$$ LANGUAGE plpgsql;
+CREATE FUNCTION assert_min_length(input text, minlength integer) RETURNS boolean AS $$ BEGIN IF (char_length(trim(input))) >= minlength THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql; 
 
 --
 -- Returns true if the URL comforms with the HTTP protocol.  
 --
---CREATE FUNCTION assert_is_http(input text) RETURNS boolean AS $$
---BEGIN 
---    IF (position('http://' in trim(input)) = 0) OR (position('https://' in trim(input)) = 0) THEN
---         RETURN TRUE;
---    ELSE
---         RETURN FALSE;
---    END IF;
---END;
---$$ LANGUAGE plpgsql;
+CREATE FUNCTION assert_is_http(input text) RETURNS boolean AS $$ BEGIN IF (position('http://' in trim(input)) = 0) OR (position('https://' in trim(input)) = 0) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql;
 
 -- 
 --  node

@@ -2,6 +2,7 @@ package org.gbif.api.registry.model;
 
 import java.util.Date;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,7 +24,7 @@ public class Tag {
     this.createdBy = createdBy;
   }
 
-  @NotNull
+  @Min(1)
   public Integer getKey() {
     return key;
   }

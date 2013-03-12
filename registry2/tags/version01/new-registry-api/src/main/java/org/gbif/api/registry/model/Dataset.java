@@ -47,7 +47,6 @@ public class Dataset implements NetworkEntity, Contactable, Accessible, MachineT
   private Date created;
   private Date modified;
   private Date deleted;
-  private Metadata metadata;
   private List<Contact> contacts = Lists.newArrayList();
   private List<Endpoint> endpoints = Lists.newArrayList();
   private List<MachineTag> machineTags = Lists.newArrayList();
@@ -282,15 +281,6 @@ public class Dataset implements NetworkEntity, Contactable, Accessible, MachineT
     this.deleted = deleted;
   }
 
-  @Nullable
-  public Metadata getMetadata() {
-    return metadata;
-  }
-
-  public void setMetadata(Metadata metadata) {
-    this.metadata = metadata;
-  }
-
   @Override
   public List<Contact> getContacts() {
     return contacts;
@@ -360,17 +350,17 @@ public class Dataset implements NetworkEntity, Contactable, Accessible, MachineT
       .add("description", description).add("language", language).add("homepage", homepage).add("logoUrl", logoUrl)
       .add("citation", citation).add("citationIdentifier", citationIdentifier).add("rights", rights)
       .add("lockedForAutoUpdate", lockedForAutoUpdate).add("createdBy", createdBy).add("modifiedBy", modifiedBy)
-      .add("created", created).add("modified", modified).add("deleted", deleted).add("metadata", metadata)
-      .add("contacts", contacts).add("endpoints", endpoints).add("machineTags", machineTags).add("tags", tags)
-      .add("identifiers", identifiers).add("comments", comments).toString();
+      .add("created", created).add("modified", modified).add("deleted", deleted).add("contacts", contacts)
+      .add("endpoints", endpoints).add("machineTags", machineTags).add("tags", tags).add("identifiers", identifiers)
+      .add("comments", comments).toString();
   }
 
   @Override
   public int hashCode() {
     return Objects.hashCode(key, parentDatasetKey, duplicateOfDatasetKey, installationKey, owningOrganizationKey,
       external, type, subType, title, alias, abbreviation, description, language, homepage, logoUrl, citation,
-      citationIdentifier, rights, lockedForAutoUpdate, createdBy, modifiedBy, created, modified, deleted, metadata,
-      contacts, endpoints, machineTags, tags, identifiers, comments);
+      citationIdentifier, rights, lockedForAutoUpdate, createdBy, modifiedBy, created, modified, deleted, contacts,
+      endpoints, machineTags, tags, identifiers, comments);
   }
 
   @Override
@@ -391,10 +381,10 @@ public class Dataset implements NetworkEntity, Contactable, Accessible, MachineT
         && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
         && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.modifiedBy, that.modifiedBy)
         && Objects.equal(this.created, that.created) && Objects.equal(this.modified, that.modified)
-        && Objects.equal(this.deleted, that.deleted) && Objects.equal(this.metadata, that.metadata)
-        && Objects.equal(this.contacts, that.contacts) && Objects.equal(this.endpoints, that.endpoints)
-        && Objects.equal(this.machineTags, that.machineTags) && Objects.equal(this.tags, that.tags)
-        && Objects.equal(this.identifiers, that.identifiers) && Objects.equal(this.comments, that.comments);
+        && Objects.equal(this.deleted, that.deleted) && Objects.equal(this.contacts, that.contacts)
+        && Objects.equal(this.endpoints, that.endpoints) && Objects.equal(this.machineTags, that.machineTags)
+        && Objects.equal(this.tags, that.tags) && Objects.equal(this.identifiers, that.identifiers)
+        && Objects.equal(this.comments, that.comments);
     }
     return false;
   }

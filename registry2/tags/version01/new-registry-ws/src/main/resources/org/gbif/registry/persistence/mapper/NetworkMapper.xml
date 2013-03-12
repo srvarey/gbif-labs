@@ -14,12 +14,12 @@
 
   <sql id="WRITABLE_NETWORK_FIELDS">
     key,title,description,language,email,phone,homepage,logo_url,address,city,province,country,postal_code,
-    created_by,modified_by,created,modified
+    created,created_by,modified,modified_by
   </sql>
   
   <sql id="NETWORK_FIELDS">
     n.key,n.title,n.description,n.language,n.email,n.phone,n.homepage,n.logo_url,n.address,n.city,n.province,
-    n.country,n.postal_code,n.created_by,n.modified_by,n.created,n.modified,n.deleted
+    n.country,n.postal_code,n.created,n.created_by,n.modified,n.modified_by,n.deleted
   </sql>
   
   <!-- 
@@ -38,8 +38,8 @@
     province = #{province,jdbcType=VARCHAR},
     country = #{country,jdbcType=CHAR},
     postal_code = #{postalCode,jdbcType=VARCHAR},
-    modified_by = #{modifiedBy},
-    modified = now()
+    modified = now(),    
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_NETWORK_FIELD_TYPES">
@@ -56,10 +56,10 @@
     #{province,jdbcType=VARCHAR},
     #{country,jdbcType=CHAR},
     #{postalCode,jdbcType=VARCHAR},
+    now(), <!-- created -->    
     #{createdBy},
-    #{modifiedBy},
-    now(), <!-- created -->
-    now() <!-- modified -->
+    now(), <!-- modified -->    
+    #{modifiedBy}
   </sql>
   
   <!--  Note: you can get entities which are deleted -->

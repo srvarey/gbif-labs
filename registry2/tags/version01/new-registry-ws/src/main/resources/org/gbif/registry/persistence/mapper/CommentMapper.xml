@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.registry.persistence.mapper.CommentMapper">
   
   <sql id="WRITABLE_COMMENT_FIELDS">
-    content,created_by,modified_by,created,modified
+    content,created,created_by,modified,modified_by
   </sql>
   
   <sql id="COMMENT_FIELDS">
@@ -15,16 +15,16 @@
    -->
   <sql id="COMMENT_UPDATE">
     content = #{content},
-    modified_by = #{modifiedBy},
-    modified = now()
+    modified = now(),    
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_COMMENT_FIELD_TYPES">
     #{content},
-    #{createdBy},
-    #{modifiedBy},
-    now(), <!-- created -->
-    now() <!-- modified -->
+    now(), <!-- created -->       
+    #{createdBy}, 
+    now(), <!-- modified -->    
+    #{modifiedBy}
   </sql>
 
   <insert id="createComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="key">

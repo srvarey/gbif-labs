@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.registry.persistence.mapper.MachineTagMapper">
   
   <sql id="WRITABLE_MACHINETAG_FIELDS">
-    namespace,name,value,created_by,created
+    namespace,name,value,created,created_by
   </sql>
   
   <sql id="MACHINETAG_FIELDS">
@@ -14,8 +14,8 @@
     #{namespace},
     #{name}, 
     #{value},
-    #{createdBy},
-    now() <!-- created -->
+    now(), <!-- created -->    
+    #{createdBy}
   </sql>
 
   <insert id="createMachineTag" parameterType="MachineTag" useGeneratedKeys="true" keyProperty="key">
