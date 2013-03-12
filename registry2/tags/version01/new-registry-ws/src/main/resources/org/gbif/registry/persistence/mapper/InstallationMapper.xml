@@ -13,11 +13,11 @@
   </resultMap>
 
   <sql id="WRITABLE_INSTALLATION_FIELDS">
-    key,organization_key,type,title,description,created_by,modified_by,created,modified
+    key,organization_key,type,title,description,created,created_by,modified,modified_by
   </sql>
   
   <sql id="INSTALLATION_FIELDS">
-    i.key,i.organization_key,i.type,i.title,i.description,i.created_by,i.modified_by,i.created,i.modified,i.deleted
+    i.key,i.organization_key,i.type,i.title,i.description,i.created,i.created_by,i.modified,i.modified_by,i.deleted
   </sql>
   
   <!-- 
@@ -28,8 +28,8 @@
     type = #{type,jdbcType=OTHER},
     title = #{title,jdbcType=VARCHAR},
     description = #{description,jdbcType=VARCHAR},
-    modified_by = #{modifiedBy},
-    modified = now()
+    modified = now(),
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_INSTALLATION_FIELD_TYPES">
@@ -38,10 +38,10 @@
     #{type,jdbcType=OTHER},
     #{title,jdbcType=VARCHAR},
     #{description,jdbcType=VARCHAR},
+    now(), <!-- created -->    
     #{createdBy},
-    #{modifiedBy},
-    now(), <!-- created -->
-    now() <!-- modified -->
+    now(), <!-- modified -->    
+    #{modifiedBy}
   </sql>
   
   <!--  Note: you can get entities which are deleted -->

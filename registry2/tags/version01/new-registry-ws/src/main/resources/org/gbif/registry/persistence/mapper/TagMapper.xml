@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.registry.persistence.mapper.TagMapper">
   
   <sql id="WRITABLE_TAG_FIELDS">
-    value,created_by,created
+    value,created,created_by
   </sql>
   
   <sql id="TAG_FIELDS">
@@ -12,8 +12,8 @@
   
   <sql id="WRITABLE_TAG_FIELD_TYPES">
     #{value},
-    #{createdBy},
-    now() <!-- created -->
+    now(),<!-- created -->    
+    #{createdBy}
   </sql>
 
   <insert id="createTag" parameterType="Tag" useGeneratedKeys="true" keyProperty="key">

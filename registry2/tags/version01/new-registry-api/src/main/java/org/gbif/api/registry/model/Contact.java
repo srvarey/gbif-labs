@@ -5,6 +5,7 @@ import org.gbif.api.vocabulary.Country;
 import java.util.Date;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -29,7 +30,7 @@ public class Contact implements Address {
   private Date created;
   private Date modified;
 
-  @NotNull
+  @Min(1)
   public Integer getKey() {
     return key;
   }

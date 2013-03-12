@@ -3,6 +3,7 @@ package org.gbif.api.registry.model;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Generic tag interface for entities.
@@ -10,7 +11,8 @@ import javax.validation.Valid;
 interface Taggable {
 
   @Valid
+  @NotNull
   List<Tag> getTags();
 
-  public void setTags(List<Tag> tags);
+  void setTags(List<Tag> tags);
 }

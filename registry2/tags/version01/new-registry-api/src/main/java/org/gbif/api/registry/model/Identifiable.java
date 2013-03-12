@@ -3,6 +3,7 @@ package org.gbif.api.registry.model;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Generic identifier interface for entities.
@@ -10,7 +11,8 @@ import javax.validation.Valid;
 interface Identifiable {
 
   @Valid
+  @NotNull
   List<Identifier> getIdentifiers();
 
-  public void setIdentifiers(List<Identifier> identifiers);
+  void setIdentifiers(List<Identifier> identifiers);
 }

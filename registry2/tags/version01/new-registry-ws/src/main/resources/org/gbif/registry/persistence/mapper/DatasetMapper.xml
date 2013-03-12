@@ -16,15 +16,15 @@
   <sql id="WRITABLE_DATASET_FIELDS">
     key,parent_dataset_key,duplicate_of_dataset_key,installation_key,owning_organization_key,
     external,type,sub_type,title,alias,abbreviation,description,language,
-    homepage,logo_url,citation,citation_identifier,rights,locked_for_auto_update,created_by,modified_by,
-    created,modified
+    homepage,logo_url,citation,citation_identifier,rights,locked_for_auto_update,created,created_by,
+    modified,modified_by
   </sql>
   
   <sql id="DATASET_FIELDS">
     d.key,d.parent_dataset_key,d.duplicate_of_dataset_key,d.installation_key,d.owning_organization_key,
     d.external,d.type,d.sub_type,d.title,d.alias,d.abbreviation,d.description,d.language,
-    d.homepage,d.logo_url,d.citation,d.citation_identifier,d.rights,d.locked_for_auto_update,d.created_by,d.modified_by,
-    d.created,d.modified,d.deleted  
+    d.homepage,d.logo_url,d.citation,d.citation_identifier,d.rights,d.locked_for_auto_update,d.created,d.created_by,
+    d.modified,d.modified_by,d.deleted  
   </sql>
   
   <!-- 
@@ -49,8 +49,8 @@
     citation_identifier = #{citationIdentifier,jdbcType=VARCHAR},
     rights = #{rights,jdbcType=VARCHAR},
     locked_for_auto_update = #{lockedForAutoUpdate,jdbcType=BOOLEAN},
-    modified_by = #{modifiedBy},
-    modified = now()
+    modified = now(),
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_DATASET_FIELD_TYPES">
@@ -73,10 +73,10 @@
     #{citationIdentifier,jdbcType=VARCHAR},
     #{rights,jdbcType=VARCHAR},
     #{lockedForAutoUpdate,jdbcType=BOOLEAN},
+    now(), <!-- created -->    
     #{createdBy},
-    #{modifiedBy},
-    now(), <!-- created -->
-    now() <!-- modified -->
+    now(), <!-- modified -->    
+    #{modifiedBy}
   </sql>
   
   <!--  Note: you can get entities which are deleted -->

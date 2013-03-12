@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,7 +25,7 @@ public class Endpoint {
   private Date modified;
   private List<MachineTag> machineTags = Lists.newArrayList();
 
-  @NotNull
+  @Min(1)
   public Integer getKey() {
     return key;
   }

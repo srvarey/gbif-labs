@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.registry.persistence.mapper.ContactMapper">
   
   <sql id="WRITABLE_CONTACT_FIELDS">
-    name,description,position,email,phone,organization,address,city,province,country,postal_code,created_by,modified_by,created,modified
+    name,description,position,email,phone,organization,address,city,province,country,postal_code,created,created_by,modified,modified_by
   </sql>
   
   <sql id="CONTACT_FIELDS">
@@ -25,8 +25,8 @@
     province = #{province, jdbcType=VARCHAR}, 
     country = #{country, jdbcType=CHAR}, 
     postalCode = #{postalCode, jdbcType=VARCHAR},
-    modified_by = #{modifiedBy},  
-    modified = now()
+    modified = now(),    
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_CONTACT_FIELD_TYPES">
@@ -41,10 +41,10 @@
     #{province, jdbcType=VARCHAR}, 
     #{country, jdbcType=CHAR}, 
     #{postalCode, jdbcType=VARCHAR},
-    #{createdBy},  
-    #{modifiedBy}, 
     now(), <!-- created -->
-    now() <!-- modified -->
+    #{createdBy},
+    now(), <!-- modified -->
+    #{modifiedBy}
   </sql>
 
   <insert id="createContact" parameterType="Contact" useGeneratedKeys="true" keyProperty="key">

@@ -13,7 +13,7 @@
 
   <sql id="NODE_FIELDS">
     key,type,participation_status,gbif_region,continent,title,description,language,email,phone,homepage,logo_url,address,city,province,
-    country,postal_code,created_by,modified_by,created,modified,deleted    
+    country,postal_code,created,created_by,modified,modified_by,deleted    
   </sql>  
   
   <!-- 
@@ -36,8 +36,8 @@
     province = #{province,jdbcType=VARCHAR},
     country = #{country,jdbcType=CHAR},
     postal_code = #{postalCode,jdbcType=VARCHAR},
-    modified_by = #{modifiedBy},
-    modified = now()
+    modified = now(),    
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="NODE_FIELD_TYPES">
@@ -58,10 +58,10 @@
     #{province,jdbcType=VARCHAR},
     #{country,jdbcType=CHAR},
     #{postalCode,jdbcType=VARCHAR},
-    #{createdBy},    
-    #{modifiedBy},
-    now(), <!-- created -->
+    now(), <!-- created -->    
+    #{createdBy}, 
     now(), <!-- modified -->
+    #{modifiedBy},
     NULL <!-- deleted -->
   </sql>
   

@@ -15,14 +15,14 @@
 
   <sql id="WRITABLE_ORGANIZATION_FIELDS">
     key,endorsing_node_key,endorsement_approved,password,title,abbreviation,description,language,email,
-    phone,homepage,logo_url,address,city,province,country,postal_code,latitude,longitude,created_by,modified_by,
-    created,modified    
+    phone,homepage,logo_url,address,city,province,country,postal_code,latitude,longitude,created,created_by,
+    modified,modified_by    
   </sql>
   
   <sql id="ORGANIZATION_FIELDS">
     o.key,o.endorsing_node_key,o.endorsement_approved,o.password,o.title,o.abbreviation,o.description,o.language,o.email,
     o.phone,o.homepage,o.logo_url,o.address,o.city,o.province,o.country,o.postal_code,o.latitude,o.longitude,
-    o.created_by,o.modified_by,o.created,o.modified,o.deleted    
+    o.created,o.created_by,o.modified,o.modified_by,o.deleted    
   </sql>
   
   <!-- 
@@ -47,8 +47,8 @@
     postal_code = #{postalCode,jdbcType=VARCHAR},
     latitude = #{latitude,jdbcType=DOUBLE},
     longitude = #{longitude,jdbcType=DOUBLE},
-    modified_by = #{modifiedBy},
-    modified = now()
+    modified = now(),    
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_ORGANIZATION_FIELD_TYPES">
@@ -71,10 +71,10 @@
     #{postalCode,jdbcType=VARCHAR},
     #{latitude,jdbcType=DOUBLE},
     #{longitude,jdbcType=DOUBLE},
+    now(), <!-- created -->    
     #{createdBy},
-    #{modifiedBy},
-    now(), <!-- created -->
-    now() <!-- modified -->
+    now(), <!-- modified -->    
+    #{modifiedBy}
   </sql>
   
   <!--  Note: you can get entities which are deleted -->

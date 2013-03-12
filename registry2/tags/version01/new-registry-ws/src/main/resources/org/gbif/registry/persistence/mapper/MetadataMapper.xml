@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.registry.persistence.mapper.MetadataMapper">
   
   <sql id="WRITABLE_METADATA_FIELDS">
-    dataset_key,type,version,content,created,modified
+    dataset_key,type,version,content,created,created_by,modified,modified_by
   </sql>
   
   <sql id="METADATA_FIELDS">
@@ -17,9 +17,11 @@
     dataset_key = #{datasetKey},
     type = #{type}, 
     version = #{version}, 
-    content = #{content}, 
-    modified_by = #{modifiedBy},  
-    modified = now()
+    content = #{content},
+    created = now(), 
+    created_by = #{modifiedBy},  
+    modified = now(),    
+    modified_by = #{modifiedBy}
   </sql>
   
   <sql id="WRITABLE_METADATA_FIELD_TYPES">
@@ -28,8 +30,8 @@
     version = #{version}, 
     content = #{content},     
     #{createdBy},  
+    now(), <!-- created -->    
     #{modifiedBy}, 
-    now(), <!-- created -->
     now() <!-- modified -->
   </sql>
 

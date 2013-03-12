@@ -3,6 +3,7 @@ package org.gbif.api.registry.model;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Generic machine tag interface for entities.
@@ -10,7 +11,8 @@ import javax.validation.Valid;
 interface MachineTaggable {
 
   @Valid
+  @NotNull
   List<MachineTag> getMachineTags();
 
-  public void setMachineTags(List<MachineTag> machineTags);
+  void setMachineTags(List<MachineTag> machineTags);
 }
