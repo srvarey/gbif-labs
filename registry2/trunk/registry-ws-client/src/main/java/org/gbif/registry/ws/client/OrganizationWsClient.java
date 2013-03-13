@@ -1,6 +1,27 @@
 package org.gbif.registry.ws.client;
 
 import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.registry.model.Comment;
+import org.gbif.api.registry.model.Contact;
+import org.gbif.api.registry.model.Endpoint;
+import org.gbif.api.registry.model.Identifier;
+import org.gbif.api.registry.model.MachineTag;
+import org.gbif.api.registry.model.Organization;
+import org.gbif.api.registry.model.Tag;
+import org.gbif.api.registry.service.OrganizationService;
+import org.gbif.registry.ws.client.guice.RegistryWs;
+import org.gbif.ws.client.BaseWsGetClient;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.google.inject.Inject;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 
 /**

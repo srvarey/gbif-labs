@@ -1,6 +1,21 @@
 package org.gbif.registry.ws.client;
 
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.registry.model.Comment;
+import org.gbif.api.registry.model.Contact;
+import org.gbif.api.registry.model.Dataset;
+import org.gbif.api.registry.model.Endpoint;
+import org.gbif.api.registry.model.Identifier;
+import org.gbif.api.registry.model.Installation;
+import org.gbif.api.registry.model.MachineTag;
+import org.gbif.api.registry.model.Network;
+import org.gbif.api.registry.model.Node;
+import org.gbif.api.registry.model.Organization;
+import org.gbif.api.registry.model.Tag;
+
+import java.util.List;
+
+import com.sun.jersey.api.client.GenericType;
 
 /**
  * Package access utility to provide generic types.
