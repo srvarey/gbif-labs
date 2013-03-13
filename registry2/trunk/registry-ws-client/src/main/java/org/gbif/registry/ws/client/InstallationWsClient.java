@@ -1,20 +1,40 @@
 package org.gbif.registry.ws.client;
 
 import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.registry.model.Comment;
+import org.gbif.api.registry.model.Contact;
+import org.gbif.api.registry.model.Endpoint;
+import org.gbif.api.registry.model.Installation;
+import org.gbif.api.registry.model.MachineTag;
+import org.gbif.api.registry.model.Tag;
+import org.gbif.api.registry.service.InstallationService;
+import org.gbif.registry.ws.client.guice.RegistryWs;
+import org.gbif.ws.client.BaseWsGetClient;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.google.inject.Inject;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 
 /**
- * Client-side implementation to the NodeService.
+ * Client-side implementation to the InstallationService.
  */
-public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeService {
+public class InstallationWsClient extends BaseWsGetClient<Installation, UUID> implements InstallationService {
 
   @Inject
-  public NodeWsClient(@RegistryWs WebResource resource) {
-    super(Node.class, resource.path("node"), (ClientFilter) null);
+  public InstallationWsClient(@RegistryWs WebResource resource) {
+    super(Installation.class, resource.path("installation"), (ClientFilter) null);
   }
 
   @Override
-  public UUID create(Node entity) {
+  public UUID create(Installation entity) {
     return super.post(UUID.class, entity, "/");
   }
 
@@ -24,21 +44,17 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   }
 
   @Override
-  public Node get(UUID key) {
+  public Installation get(UUID key) {
     return super.get(key.toString());
   }
 
   @Override
-  public PagingResponse<Node> list(Pageable page) {
-    return super.get(GenericTypes.PAGING_NODE,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null,
-      page);
+  public PagingResponse<Installation> list(Pageable page) {
+    return super.get(GenericTypes.PAGING_INSTALLATION, (Locale) null, (MultivaluedMap<String, String>) null, page);
   }
 
   @Override
-  public void update(Node entity) {
-    Preconditions.checkArgument(entity.getKey() != null, "An entity must have a key to be updated");
+  public void update(Installation entity) {
     super.put(entity, entity.getKey().toString());
   }
 
@@ -55,10 +71,9 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
 
   @Override
   public List<Tag> listTags(UUID targetEntityKey, String owner) {
-    return super.get(GenericTypes.LIST_TAG,
-      (Locale) null,
+    return super.get(GenericTypes.LIST_TAG, (Locale) null, 
       (MultivaluedMap<String, String>) null, // TODO add owner here
-      (Pageable) null,
+      (Pageable) null, 
       targetEntityKey.toString(), "tag");
   }
 
@@ -75,11 +90,29 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
 
   @Override
   public List<Contact> listContacts(UUID targetEntityKey) {
-    return super.get(GenericTypes.LIST_CONTACT,
-      (Locale) null,
+    return super.get(GenericTypes.LIST_CONTACT, (Locale) null, 
       (MultivaluedMap<String, String>) null, // TODO: type on contact?
-      (Pageable) null,
+      (Pageable) null, 
       targetEntityKey.toString(), "contact");
+  }
+
+  @Override
+  public int addEndpoint(UUID targetEntityKey, Endpoint component) {
+    return super.post(Integer.class, component, targetEntityKey.toString(), "endpoint");
+  }
+
+  @Override
+  public void deleteEndpoint(UUID targetEntityKey, int componentKey) {
+    super.delete(targetEntityKey.toString(), "endpoint", String.valueOf(componentKey));
+  }
+
+  @Override
+  public List<Endpoint> listEndpoints(UUID targetEntityKey) {
+    return super.get(GenericTypes.LIST_ENDPOINT,
+      (Locale) null,
+      (MultivaluedMap<String, String>) null, // TODO: type on endpoint?
+      (Pageable) null,
+      targetEntityKey.toString(), "endpoint");
   }
 
   @Override
@@ -89,14 +122,14 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
 
   @Override
   public void deleteMachineTag(UUID targetEntityKey, int componentKey) {
-    super.delete(targetEntityKey.toString(), "machinetag", String.valueOf(componentKey));    
+    super.delete(targetEntityKey.toString(), "machinetag", String.valueOf(componentKey));
   }
 
   @Override
   public List<MachineTag> listMachineTags(UUID targetEntityKey) {
     return super.get(GenericTypes.LIST_MACHINETAG,
       (Locale) null,
-      (MultivaluedMap<String, String>) null,
+      (MultivaluedMap<String, String>) null, 
       (Pageable) null,
       targetEntityKey.toString(), "machinetag");
   }
@@ -108,33 +141,15 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
 
   @Override
   public void deleteComment(UUID targetEntityKey, int componentKey) {
-    super.delete(targetEntityKey.toString(), "comment", String.valueOf(componentKey));  
+    super.delete(targetEntityKey.toString(), "comment", String.valueOf(componentKey));
   }
 
   @Override
   public List<Comment> listComments(UUID targetEntityKey) {
     return super.get(GenericTypes.LIST_COMMENT,
       (Locale) null,
-      (MultivaluedMap<String, String>) null,
+      (MultivaluedMap<String, String>) null, 
       (Pageable) null,
       targetEntityKey.toString(), "comment");
   }
-  
-  @Override
-  public PagingResponse<Organization> organizationsEndorsedBy(UUID nodeKey, Pageable page) {
-    return super.get(GenericTypes.PAGING_ORGANIZATION,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null,
-      page,
-      nodeKey.toString(), "organization");
-  }
-
-  @Override
-  public PagingResponse<Organization> pendingEndorsements(Pageable page) {
-    return super.get(GenericTypes.PAGING_ORGANIZATION,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null,
-      page,
-      "pendingEndorsement");
-  }  
 }

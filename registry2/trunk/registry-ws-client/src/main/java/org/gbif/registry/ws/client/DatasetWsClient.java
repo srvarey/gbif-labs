@@ -1,20 +1,41 @@
 package org.gbif.registry.ws.client;
 
 import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.registry.model.Comment;
+import org.gbif.api.registry.model.Contact;
+import org.gbif.api.registry.model.Dataset;
+import org.gbif.api.registry.model.Endpoint;
+import org.gbif.api.registry.model.Identifier;
+import org.gbif.api.registry.model.MachineTag;
+import org.gbif.api.registry.model.Tag;
+import org.gbif.api.registry.service.DatasetService;
+import org.gbif.registry.ws.client.guice.RegistryWs;
+import org.gbif.ws.client.BaseWsGetClient;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.google.inject.Inject;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 
 /**
- * Client-side implementation to the OrganizationService.
+ * Client-side implementation to the DatasetService.
  */
-public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> implements OrganizationService {
+public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements DatasetService {
 
   @Inject
-  public OrganizationWsClient(@RegistryWs WebResource resource) {
-    super(Organization.class, resource.path("organization"), (ClientFilter) null);
+  public DatasetWsClient(@RegistryWs WebResource resource) {
+    super(Dataset.class, resource.path("dataset"), (ClientFilter) null);
   }
 
   @Override
-  public UUID create(Organization entity) {
+  public UUID create(Dataset entity) {
     return super.post(UUID.class, entity, "/");
   }
 
@@ -24,20 +45,17 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
   }
 
   @Override
-  public Organization get(UUID key) {
+  public Dataset get(UUID key) {
     return super.get(key.toString());
   }
 
   @Override
-  public PagingResponse<Organization> list(Pageable page) {
-    return super.get(GenericTypes.PAGING_ORGANIZATION,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null,
-      page);
+  public PagingResponse<Dataset> list(Pageable page) {
+    return super.get(GenericTypes.PAGING_DATASET, (Locale) null, (MultivaluedMap<String, String>) null, page);
   }
 
   @Override
-  public void update(Organization entity) {
+  public void update(Dataset entity) {
     super.put(entity, entity.getKey().toString());
   }
 
@@ -54,10 +72,9 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
 
   @Override
   public List<Tag> listTags(UUID targetEntityKey, String owner) {
-    return super.get(GenericTypes.LIST_TAG,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null, // TODO add owner here
-      (Pageable) null,
+    return super.get(GenericTypes.LIST_TAG, 
+      (Locale) null, (MultivaluedMap<String, String>) null, // TODO add owner here
+      (Pageable) null, 
       targetEntityKey.toString(), "tag");
   }
 
@@ -74,13 +91,12 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
 
   @Override
   public List<Contact> listContacts(UUID targetEntityKey) {
-    return super.get(GenericTypes.LIST_CONTACT,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null, // TODO: type on contact?
-      (Pageable) null,
+    return super.get(GenericTypes.LIST_CONTACT, 
+      (Locale) null, (MultivaluedMap<String, String>) null, // TODO: type on contact?
+      (Pageable) null, 
       targetEntityKey.toString(), "contact");
   }
-
+  
   @Override
   public int addEndpoint(UUID targetEntityKey, Endpoint component) {
     return super.post(Integer.class, component, targetEntityKey.toString(), "endpoint");
@@ -93,10 +109,9 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
 
   @Override
   public List<Endpoint> listEndpoints(UUID targetEntityKey) {
-    return super.get(GenericTypes.LIST_ENDPOINT,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null, // TODO: type on endpoint?
-      (Pageable) null,
+    return super.get(GenericTypes.LIST_ENDPOINT, 
+      (Locale) null, (MultivaluedMap<String, String>) null, // TODO: endpoint type
+      (Pageable) null, 
       targetEntityKey.toString(), "endpoint");
   }
 
@@ -112,10 +127,9 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
 
   @Override
   public List<MachineTag> listMachineTags(UUID targetEntityKey) {
-    return super.get(GenericTypes.LIST_MACHINETAG,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null,
-      (Pageable) null,
+    return super.get(GenericTypes.LIST_MACHINETAG, 
+      (Locale) null, (MultivaluedMap<String, String>) null,
+      (Pageable) null, 
       targetEntityKey.toString(), "machinetag");
   }
 
@@ -131,10 +145,9 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
 
   @Override
   public List<Identifier> listIdentifiers(UUID targetEntityKey) {
-    return super.get(GenericTypes.LIST_IDENTIFIER,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null, // TODO: identifier type?
-      (Pageable) null,
+    return super.get(GenericTypes.LIST_IDENTIFIER, 
+      (Locale) null, (MultivaluedMap<String, String>) null, // TODO: identifier type
+      (Pageable) null, 
       targetEntityKey.toString(), "identifier");
   }
 
@@ -150,10 +163,9 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
 
   @Override
   public List<Comment> listComments(UUID targetEntityKey) {
-    return super.get(GenericTypes.LIST_COMMENT,
-      (Locale) null,
-      (MultivaluedMap<String, String>) null,
-      (Pageable) null,
+    return super.get(GenericTypes.LIST_COMMENT, 
+      (Locale) null, (MultivaluedMap<String, String>) null, 
+      (Pageable) null, 
       targetEntityKey.toString(), "comment");
   }
 }
