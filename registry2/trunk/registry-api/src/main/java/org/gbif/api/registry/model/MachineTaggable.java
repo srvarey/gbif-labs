@@ -6,13 +6,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Generic tag interface for entities.
+ * Generic machine tag interface for entities.
  */
-interface Taggable {
+interface MachineTaggable {
 
   @Valid
   @NotNull
-  List<Tag> getTags();
+  List<MachineTag> getMachineTags();
 
-  void setTags(List<Tag> tags);
+  void setMachineTags(List<MachineTag> machineTags);
 }

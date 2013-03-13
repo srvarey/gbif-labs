@@ -9,20 +9,14 @@ import javax.validation.constraints.Size;
 import com.google.common.base.Objects;
 
 
-public class Tag {
+public class MachineTag {
 
   private Integer key;
+  private String namespace;
+  private String name;
   private String value;
   private String createdBy;
   private Date created;
-
-  public Tag() {
-  }
-
-  public Tag(String value, String createdBy) {
-    this.value = value;
-    this.createdBy = createdBy;
-  }
 
   @Min(1)
   public Integer getKey() {
@@ -34,7 +28,27 @@ public class Tag {
   }
 
   @NotNull
-  @Size(min = 1)
+  @Size(min = 1, max = 255)
+  public String getNamespace() {
+    return namespace;
+  }
+
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
+
+  @NotNull
+  @Size(min = 1, max = 255)
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @NotNull
+  @Size(min = 1, max = 255)
   public String getValue() {
     return value;
   }
@@ -64,20 +78,21 @@ public class Tag {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("value", value).add("createdBy", createdBy)
-      .add("created", created).toString();
+    return Objects.toStringHelper(this).add("key", key).add("namespace", namespace).add("name", name)
+      .add("value", value).add("createdBy", createdBy).add("created", created).toString();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(key, value, createdBy, created);
+    return Objects.hashCode(key, namespace, name, value, createdBy, created);
   }
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof Tag) {
-      Tag that = (Tag) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.value, that.value)
+    if (object instanceof MachineTag) {
+      MachineTag that = (MachineTag) object;
+      return Objects.equal(this.key, that.key) && Objects.equal(this.namespace, that.namespace)
+        && Objects.equal(this.name, that.name) && Objects.equal(this.value, that.value)
         && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.created, that.created);
     }
     return false;

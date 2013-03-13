@@ -6,13 +6,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Generic tag interface for entities.
+ * Generic comment interface for entities.
  */
-interface Taggable {
+interface Commentable {
 
   @Valid
   @NotNull
-  List<Tag> getTags();
+  List<Comment> getComments();
 
-  void setTags(List<Tag> tags);
+  void setComments(List<Comment> comments);
 }
