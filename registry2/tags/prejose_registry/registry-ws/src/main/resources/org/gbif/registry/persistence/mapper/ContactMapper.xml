@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gbif.registry.persistence.mapper.ContactMapper">
+  
+  <sql id="WRITABLE_CONTACT_FIELDS">
+    name,description,email,phone,organization,address,city,province,country,postal_code,created,modified
+  </sql>
+  
+  <sql id="CONTACT_FIELDS">
+    key,<include refid="org.gbif.registry.persistence.mapper.ContactMapper.WRITABLE_CONTACT_FIELDS"/>,created,modified
+  </sql>
+
+  <!-- 
+    key, created and deleted are never changed
+   -->
+  <sql id="CONTACT_UPDATE">
+    name = #{name, jdbcType=VARCHAR}, 
+    description = #{description, jdbcType=VARCHAR}, 
+    email = #{email, jdbcType=VARCHAR}, 
+    phone = #{phone, jdbcType=VARCHAR}, 
+    organization = #{organization, jdbcType=VARCHAR}, 
+    address = #{address, jdbcType=VARCHAR}, 
+    city = #{city, jdbcType=VARCHAR}, 
+    province = #{province, jdbcType=VARCHAR}, 
+    country = #{country, jdbcType=VARCHAR}, 
+    postalCode = #{postalCode, jdbcType=VARCHAR}, 
+    modified = now()
+  </sql>
+  
+  <sql id="WRITABLE_CONTACT_FIELD_TYPES">
+    #{name, jdbcType=VARCHAR}, 
+    #{description, jdbcType=VARCHAR}, 
+    #{email, jdbcType=VARCHAR}, 
+    #{phone, jdbcType=VARCHAR}, 
+    #{organization, jdbcType=VARCHAR}, 
+    #{address, jdbcType=VARCHAR}, 
+    #{city, jdbcType=VARCHAR}, 
+    #{province, jdbcType=VARCHAR}, 
+    #{country, jdbcType=VARCHAR}, 
+    #{postalCode, jdbcType=VARCHAR}, 
+    now(), <!-- created -->
+    now() <!-- modified -->
+  </sql>
+
+  <insert id="createContact" parameterType="Contact" useGeneratedKeys="true" keyProperty="key">
+    INSERT INTO contact(<include refid="WRITABLE_CONTACT_FIELDS"/>)
+    VALUES(<include refid="WRITABLE_CONTACT_FIELD_TYPES"/>)
+  </insert>
+</mapper>

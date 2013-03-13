@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gbif.registry.persistence.mapper.OrganizationMapper">
+  
+  <!-- Auto-mapping and eager loading of sub resources  -->
+  <resultMap id="ORGANIZATION_MAP" type="Organization" autoMapping="true">
+    <id property="key" column="key"/>
+    <collection property="tags" column="key" select="listTags"/>
+    <collection property="contacts" column="key" select="listContacts"/>
+  </resultMap>
+
+  <sql id="WRITABLE_ORGANIZATION_FIELDS">
+    key,endorsing_node_key,endorsement_approved,title,alias,description,language,email,
+    phone,homepage,logo_url,address,city,province,country,postal_code,latitude,longitude,
+    created,modified    
+  </sql>
+  
+  <sql id="ORGANIZATION_FIELDS">
+    o.key,o.endorsing_node_key,o.endorsement_approved,o.title,o.alias,o.description,o.language,o.email,
+    o.phone,o.homepage,o.logo_url,o.address,o.city,o.province,o.country,o.postal_code,o.latitude,o.longitude,
+    o.created,o.modified,o.deleted    
+  </sql>
+  
+  <!-- 
+    key, created and deleted are never changed
+   -->
+  <sql id="ORGANIZATION_UPDATE">
+    endorsing_node_key = #{endorsingNodeKey,jdbcType=CHAR},
+    endorsement_approved = #{endorsementApproved,jdbcType=BOOLEAN},
+    title = #{title,jdbcType=VARCHAR},
+    alias = #{alias,jdbcType=VARCHAR},
+    description = #{description,jdbcType=VARCHAR}, <!-- TEXT? -->
+    language = #{language,jdbcType=VARCHAR},
+    email = #{email,jdbcType=VARCHAR},
+    phone = #{phone,jdbcType=VARCHAR},
+    homepage = #{homepage,jdbcType=VARCHAR},
+    logo_url = #{logoUrl,jdbcType=VARCHAR},
+    address = #{address,jdbcType=VARCHAR},
+    city = #{city,jdbcType=VARCHAR},
+    province = #{province,jdbcType=VARCHAR},
+    country = #{country,jdbcType=VARCHAR},
+    postal_code = #{postalCode,jdbcType=VARCHAR},
+    latitude = #{latitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    longitude = #{longitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    modified = now()
+  </sql>
+  
+  <sql id="WRITABLE_ORGANIZATION_FIELD_TYPES">
+    #{key,jdbcType=CHAR},
+    #{endorsingNodeKey,jdbcType=CHAR},
+    #{endorsementApproved,jdbcType=BOOLEAN},
+    #{title,jdbcType=VARCHAR},
+    #{alias,jdbcType=VARCHAR},
+    #{description,jdbcType=VARCHAR}, <!-- TEXT? -->
+    #{language,jdbcType=VARCHAR},
+    #{email,jdbcType=VARCHAR},
+    #{phone,jdbcType=VARCHAR},
+    #{homepage,jdbcType=VARCHAR},
+    #{logoUrl,jdbcType=VARCHAR},
+    #{address,jdbcType=VARCHAR},
+    #{city,jdbcType=VARCHAR},
+    #{province,jdbcType=VARCHAR},
+    #{country,jdbcType=VARCHAR},
+    #{postalCode,jdbcType=VARCHAR},
+    #{latitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    #{longitude,jdbcType=DOUBLE}, <!-- DECIMAL? -->
+    now(), <!-- created -->
+    now() <!-- modified -->
+  </sql>
+  
+  <!--  Note: you can get entities which are deleted -->
+  <select id="get" resultMap="ORGANIZATION_MAP">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o
+    WHERE o.key = #{key}
+  </select>
+  
+  <insert id="create" parameterType="Organization">
+    INSERT INTO organization(<include refid="WRITABLE_ORGANIZATION_FIELDS"/>)
+    VALUES(<include refid="WRITABLE_ORGANIZATION_FIELD_TYPES"/>)
+  </insert>
+  
+  <!-- For safety, deleted entities are never modified -->
+  <update id="update" parameterType="Organization">
+    UPDATE organization
+    SET <include refid="ORGANIZATION_UPDATE"/>
+    WHERE key = #{key} AND deleted IS NULL
+  </update>
+  
+  <!-- For safety, should it be already deleted nothing is done -->
+  <update id="delete">
+    UPDATE organization 
+    SET deleted = now()
+    WHERE key = #{key} AND deleted IS NULL
+  </update>
+  
+  <!-- Append safe ordering, omitting deleted entities -->
+  <select id="list" resultType="Organization"  resultMap="ORGANIZATION_MAP" parameterType="Pageable">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o
+    WHERE o.deleted IS NULL
+    ORDER BY o.created
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>
+  
+  <select id="count" resultType="Integer">
+    SELECT COUNT(*)
+    FROM organization 
+    WHERE deleted IS NULL
+  </select>
+  
+  
+  <insert id="addTag">
+    INSERT INTO organization_tag(organization_key,tag_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=CHAR},
+     #{tagKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listTags" resultType="Tag">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.TagMapper.TAG_FIELDS"/>
+    FROM tag INNER JOIN organization_tag ON tag_key = key
+    WHERE organization_key = #{targetEntityKey}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of tag to trigger cascade delete of the join table --> 
+  <delete id="deleteTag">
+    DELETE FROM tag USING organization_tag 
+    WHERE
+      tag_key = tag.key AND 
+      organization_key = #{targetEntityKey,jdbcType=CHAR} AND tag_key = #{tagKey,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="addContact">
+    INSERT INTO organization_contact(organization_key,contact_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=CHAR},
+     #{contactKey,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <select id="listContacts" resultType="Contact">
+    SELECT <include refid="org.gbif.registry.persistence.mapper.ContactMapper.CONTACT_FIELDS"/>
+    FROM contact INNER JOIN organization_contact ON contact_key = key
+    WHERE organization_key = #{targetEntityKey}
+    ORDER BY created
+  </select>
+  
+  <!-- Joined delete of contact to trigger cascade delete of the join table --> 
+  <delete id="deleteContact">
+    DELETE FROM contact USING organization_contact 
+    WHERE
+      contact_key = contact.key AND 
+      organization_key = #{targetEntityKey,jdbcType=CHAR} AND contact_key = #{contactKey,jdbcType=INTEGER}
+  </delete>  
+  
+  <!-- Append safe ordering, omitting deleted entities -->
+  <select id="organizationsEndorsedBy" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o
+    INNER JOIN node n ON o.endorsing_node_key = n.key 
+    WHERE o.deleted IS NULL AND n.deleted IS NULL AND n.key = #{nodeKey} AND o.endorsement_approved = true 
+    ORDER BY o.created
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  
+  <!-- Append safe ordering, omitting deleted entities -->
+  <select id="pendingEndorsements" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o
+    WHERE o.deleted IS NULL AND o.endorsement_approved = false 
+    ORDER BY o.created
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+</mapper>

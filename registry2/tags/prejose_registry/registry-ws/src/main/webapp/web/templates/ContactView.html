@@ -1,0 +1,15 @@
+					<div class="span3">
+  					<address>
+						  <%= _.eval(obj, "name", "<strong>{{value}}</strong><br>") %>
+						  <%= _.eval(obj, "description", "{{value}}<br>") %>
+						  <%= _.eval(obj, "email", "<a href='mailto:{{value}}'>{{value}}</a><br>") %>
+						  <%= _.eval(obj, "organization", "{{value}}<br>") %>
+						  <%= _.eval(obj, "address", "{{value}}<br>") %>
+					  	<%= _.eval(obj, "city", "{{value}}<br>") %>
+						  <%= _.eval(obj, "province", "{{value}}<br>") %>
+						  <%= _.eval(obj, "country", "{{value}}<br>") %>
+						  <%= _.eval(obj, "postalCode", "{{value}}<br>") %>
+							<%= _.eval(obj, "phone", "<abbr title='Phone'>P:</abbr> {{value}}<br>") %>
+							<small class="muted"><a href="#">edit</a> | <a href="#">delete</a></small>
+  					</address>
+					</div>
