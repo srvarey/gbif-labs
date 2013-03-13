@@ -1,6 +1,27 @@
 package org.gbif.registry.ws.client.guice;
 
 import org.gbif.api.registry.service.DatasetService;
+import org.gbif.api.registry.service.InstallationService;
+import org.gbif.api.registry.service.NetworkService;
+import org.gbif.api.registry.service.NodeService;
+import org.gbif.api.registry.service.OrganizationService;
+import org.gbif.registry.ws.client.DatasetWsClient;
+import org.gbif.registry.ws.client.InstallationWsClient;
+import org.gbif.registry.ws.client.NetworkWsClient;
+import org.gbif.registry.ws.client.NodeWsClient;
+import org.gbif.registry.ws.client.OrganizationWsClient;
+import org.gbif.service.guice.PrivateServiceModule;
+import org.gbif.ws.client.guice.AnonymousAuthModule;
+import org.gbif.ws.client.guice.GbifApplicationAuthModule;
+import org.gbif.ws.client.guice.GbifWsClientModule;
+
+import java.util.Properties;
+
+import com.google.inject.Provides;
+import com.google.inject.Scopes;
+import com.google.inject.name.Named;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 
 /**
