@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gbif.registry.persistence.mapper.TagMapper">
+  
+  <sql id="TAG_FIELDS">
+    key, value, creator, created
+  </sql>
+
+  <insert id="createTag" parameterType="Tag" useGeneratedKeys="true" keyProperty="key">
+    INSERT INTO tag(value,creator,created)
+    VALUES(
+      #{value,jdbcType=VARCHAR},
+      #{creator,jdbcType=VARCHAR},
+      now()
+    )
+  </insert>
+</mapper>
