@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Global Biodiversity Information Facility (GBIF)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.gbif</groupId>
+    <artifactId>motherpom</artifactId>
+    <version>9</version>
+  </parent>
+
+  <groupId>org.gbif.registry</groupId>
+  <artifactId>registry-motherpom</artifactId>
+  <version>2.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Registry :: Mother POM</name>
+  <description>The projects to provide the registry, web services and client </description>
+  <url>http://sites.gbif.org/registry</url>
+
+  <scm>
+    <connection>scm:svn:http://gbif-registry.googlecode.com/svn/registry/trunk</connection>
+    <developerConnection>scm:svn:https://gbif-registry.googlecode.com/svn/registry/trunk</developerConnection>
+    <url>http://code.google.com/p/gbif-registry/source/browse/#svn/registry/trunk</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://dev.gbif.org/issues/browse/REG</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>jenkins</system>
+    <url>http://builds.gbif.org/job/registry</url>
+  </ciManagement>
+
+  <distributionManagement>
+    <site>
+      <id>gbif-site</id>
+      <name>Site for the project</name>
+      <url>scp://tools.gbif.org:/var/www/html/sites/registry</url>
+    </site>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>gbif-all</id>
+      <url>http://repository.gbif.org/content/groups/gbif</url>
+    </repository>
+  </repositories>
+
+  <modules>
+    <module>registry-api</module>
+    <module>registry-ws-client</module>
+    <module>registry-ws</module>
+  </modules>
+
+  <!--
+    Note to devs: prefer released versions unless SNAPSHOT functionality is *needed*.
+    Releasing registry artifacts can only be done when dependencies are released.
+    [Consider that relying on an external dependency snapshot therefore ties our release
+    to the release of that dependency]
+  -->
+  <properties>
+    <gbif-api.version>0.1-SNAPSHOT</gbif-api.version>
+    <gbif-common.version>0.7</gbif-common.version>
+    <gbif-common-mybatis.version>0.5-SNAPSHOT</gbif-common-mybatis.version>
+    <gbif-common-ws.version>0.5</gbif-common-ws.version>
+    <gbif-common-test.version>0.4</gbif-common-test.version>
+    <gbif-common-service.version>0.3</gbif-common-service.version>
+    <bonecp.version>0.7.1.RELEASE</bonecp.version>
+    <guava.version>12.0</guava.version>
+    <guice.version>3.0</guice.version>
+    <logback.version>1.0.7</logback.version>
+    <mybatis.version>3.1.1</mybatis.version>
+    <mybatis-guice.version>3.3</mybatis-guice.version>
+    <mybatis-ehcache.version>1.0.0</mybatis-ehcache.version>
+    <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
+    <slf4j.version>1.6.5</slf4j.version>
+    <jackson.version>1.9.7</jackson.version>
+    <jersey.version>1.12</jersey.version>
+    <jsr311-api.version>1.0</jsr311-api.version>
+    <servlet-api.version>2.5</servlet-api.version>
+    <!--<validation-api.version>1.0.0.GA</validation-api.version>-->
+    <validation-api.version>1.1.0.Beta2</validation-api.version>
+    <junit.version>4.11</junit.version>
+    <bval.version>0.5</bval.version>
+    <grizzly-servlet-webserver.version>1.9.50</grizzly-servlet-webserver.version>
+  </properties>
+
+  <!--
+    Fix versions of certain dependencies here, which can be included
+    by sub modules by declaring only the groupId and artifactId. The
+    version can be overridden if needed, but not encouraged without good reason.
+  -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.gbif.registry</groupId>
+        <artifactId>registry-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif.registry</groupId>
+        <artifactId>registry-ws</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif.registry</groupId>
+        <artifactId>registry-ws-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-api</artifactId>
+        <version>${gbif-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common</artifactId>
+        <version>${gbif-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common-mybatis</artifactId>
+        <version>${gbif-common-mybatis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common-test</artifactId>
+        <version>${gbif-common-test.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <artifactId>junit-dep</artifactId>
+            <groupId>junit</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common-ws</artifactId>
+        <version>${gbif-common-ws.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common-service</artifactId>
+        <version>${gbif-common-service.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+        <artifactId>guice-servlet</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-asl</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.ws.rs</groupId>
+        <artifactId>jsr311-api</artifactId>
+        <version>${jsr311-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-core</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey.contribs</groupId>
+        <artifactId>jersey-guice</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-json</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.beust</groupId>
+        <artifactId>jcommander</artifactId>
+        <version>${jcommander.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey.contribs</groupId>
+        <artifactId>jersey-apache-client4</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>${servlet-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
+        <version>${powermock-mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito</artifactId>
+        <version>${powermock-mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgresql.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>${mybatis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis-guice</artifactId>
+        <version>${mybatis-guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.jolbox</groupId>
+        <artifactId>bonecp-provider</artifactId>
+        <version>${bonecp.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis-ehcache</artifactId>
+        <version>${mybatis-ehcache.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${validation-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.bval</groupId>
+        <artifactId>bval-guice</artifactId>
+        <version>${bval.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.bval</groupId>
+        <artifactId>bval-jsr303</artifactId>
+        <version>${bval.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.grizzly</groupId>
+        <artifactId>grizzly-servlet-webserver</artifactId>
+        <version>${grizzly-servlet-webserver.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
