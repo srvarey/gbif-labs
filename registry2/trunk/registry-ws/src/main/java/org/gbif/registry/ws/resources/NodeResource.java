@@ -2,18 +2,24 @@ package org.gbif.registry.ws.resources;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.registry.model.Comment;
 import org.gbif.api.registry.model.Contact;
+import org.gbif.api.registry.model.MachineTag;
 import org.gbif.api.registry.model.Node;
 import org.gbif.api.registry.model.Organization;
 import org.gbif.api.registry.model.Tag;
 import org.gbif.api.registry.service.NodeService;
 import org.gbif.registry.persistence.WithMyBatis;
+import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
+import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.NodeMapper;
 import org.gbif.registry.persistence.mapper.OrganizationMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
 import org.gbif.registry.ws.resources.rest.AbstractNetworkEntityResource;
+import org.gbif.registry.ws.resources.rest.CommentRest;
 import org.gbif.registry.ws.resources.rest.ContactRest;
+import org.gbif.registry.ws.resources.rest.MachineTagRest;
 import org.gbif.registry.ws.resources.rest.TagRest;
 
 import java.util.List;
@@ -29,21 +35,26 @@ import com.google.inject.Singleton;
 
 @Singleton
 @Path("node")
-public class NodeResource extends AbstractNetworkEntityResource<Node> implements NodeService, ContactRest, TagRest {
+public class NodeResource extends AbstractNetworkEntityResource<Node> implements NodeService, ContactRest,
+  MachineTagRest, CommentRest, TagRest {
 
   private final NodeMapper nodeMapper;
   private final OrganizationMapper organizationMapper;
   private final ContactMapper contactMapper;
+  private final MachineTagMapper machineTagMapper;
   private final TagMapper tagMapper;
+  private final CommentMapper commentMapper;
 
   @Inject
   public NodeResource(NodeMapper nodeMapper, OrganizationMapper organizationMapper, ContactMapper contactMapper,
-    TagMapper tagMapper) {
+    MachineTagMapper machineTagMapper, TagMapper tagMapper, CommentMapper commentMapper) {
     super(nodeMapper);
     this.nodeMapper = nodeMapper;
     this.organizationMapper = organizationMapper;
     this.contactMapper = contactMapper;
+    this.machineTagMapper = machineTagMapper;
     this.tagMapper = tagMapper;
+    this.commentMapper = commentMapper;
   }
 
   @GET
@@ -60,6 +71,7 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
     return new PagingResponse<Organization>(page, null, organizationMapper.pendingEndorsements(page));
   }
 
+  // CONTACTS
   @Override
   public int addContact(UUID targetEntityKey, Contact contact) {
     return WithMyBatis.addContact(contactMapper, nodeMapper, targetEntityKey, contact);
@@ -75,6 +87,23 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
     return WithMyBatis.listContacts(nodeMapper, targetEntityKey);
   }
 
+  // MACHINE TAGS
+  @Override
+  public int addMachineTag(UUID targetEntityKey, MachineTag machineTag) {
+    return WithMyBatis.addMachineTag(machineTagMapper, nodeMapper, targetEntityKey, machineTag);
+  }
+
+  @Override
+  public void deleteMachineTag(UUID targetEntityKey, int machineTagKey) {
+    WithMyBatis.deleteMachineTag(nodeMapper, targetEntityKey, machineTagKey);
+  }
+
+  @Override
+  public List<MachineTag> listMachineTags(UUID targetEntityKey) {
+    return WithMyBatis.listMachineTags(nodeMapper, targetEntityKey);
+  }
+
+  // TAGS
   @Override
   public int addTag(UUID targetEntityKey, String value) {
     return WithMyBatis.addTag(tagMapper, nodeMapper, targetEntityKey, value);
@@ -88,5 +117,21 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
   @Override
   public List<Tag> listTags(UUID targetEntityKey, String owner) {
     return WithMyBatis.listTags(nodeMapper, targetEntityKey, owner);
+  }
+
+  // COMMENTS
+  @Override
+  public int addComment(UUID targetEntityKey, Comment comment) {
+    return WithMyBatis.addComment(commentMapper, nodeMapper, targetEntityKey, comment);
+  }
+
+  @Override
+  public void deleteComment(UUID targetEntityKey, int commentKey) {
+    WithMyBatis.deleteComment(nodeMapper, targetEntityKey, commentKey);
+  }
+
+  @Override
+  public List<Comment> listComments(UUID targetEntityKey) {
+    return WithMyBatis.listComments(nodeMapper, targetEntityKey);
   }
 }

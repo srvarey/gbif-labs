@@ -33,16 +33,20 @@ public class NodeTest extends NetworkEntityTest<Node> {
 
   @Parameters
   public static Iterable<Object[]> data() {
-    return ImmutableList.<Object[]>of(
-      new Object[] {RegistryTestModules.webservice().getInstance(NodeResource.class)},
-      new Object[] {RegistryTestModules.webserviceClient().getInstance(NodeService.class)}
-      );
+    return ImmutableList.<Object[]>of(new Object[] {RegistryTestModules.webservice().getInstance(NodeResource.class)},
+      new Object[] {RegistryTestModules.webserviceClient().getInstance(NodeService.class)});
   }
 
   @Test
   public void testContacts() {
     Node node = create(newEntity(), 1);
     ContactTests.testAddDelete(service, node);
+  }
+
+  @Test
+  public void testMachineTags() {
+    Node node = create(newEntity(), 1);
+    MachineTagTests.testAddDelete(service, node);
   }
 
   @Test
@@ -53,6 +57,11 @@ public class NodeTest extends NetworkEntityTest<Node> {
     TagTests.testTagErroneousDelete(service, node);
   }
 
+  @Test
+  public void testComments() {
+    Node node = create(newEntity(), 1);
+    CommentTests.testAddDelete(service, node);
+  }
 
   @Override
   protected Node newEntity() {

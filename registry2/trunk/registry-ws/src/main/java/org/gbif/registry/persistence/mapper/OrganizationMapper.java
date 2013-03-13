@@ -10,8 +10,8 @@ import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
 
-public interface OrganizationMapper
-  extends NetworkEntityMapper<Organization>, ContactableMapper, TaggableMapper {
+public interface OrganizationMapper extends NetworkEntityMapper<Organization>, ContactableMapper, AccessibleMapper,
+  MachineTaggableMapper, TaggableMapper, IdentifiableMapper, CommentableMapper {
 
   /**
    * At higher levels this appears on the NodeService, but it makes a cleaner MyBatis implementation on this mapper.

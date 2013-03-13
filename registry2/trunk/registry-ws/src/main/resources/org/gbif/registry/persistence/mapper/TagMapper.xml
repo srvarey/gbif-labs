@@ -2,16 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.gbif.registry.persistence.mapper.TagMapper">
   
+  <sql id="WRITABLE_TAG_FIELDS">
+    value,created,created_by
+  </sql>
+  
   <sql id="TAG_FIELDS">
-    key, value, creator, created
+    key,<include refid="org.gbif.registry.persistence.mapper.TagMapper.WRITABLE_TAG_FIELDS"/>
+  </sql>
+  
+  <sql id="WRITABLE_TAG_FIELD_TYPES">
+    #{value},
+    now(),<!-- created -->    
+    #{createdBy}
   </sql>
 
   <insert id="createTag" parameterType="Tag" useGeneratedKeys="true" keyProperty="key">
-    INSERT INTO tag(value,creator,created)
-    VALUES(
-      #{value,jdbcType=VARCHAR},
-      #{creator,jdbcType=VARCHAR},
-      now()
-    )
+    INSERT INTO tag(<include refid="WRITABLE_TAG_FIELDS"/>)
+    VALUES(<include refid="WRITABLE_TAG_FIELD_TYPES"/>)
   </insert>
 </mapper>
