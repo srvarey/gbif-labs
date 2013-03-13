@@ -1,19 +1,6 @@
 package org.gbif.registry.ws.client.guice;
 
-import org.gbif.api.registry.service.NodeService;
-import org.gbif.api.registry.service.OrganizationService;
-import org.gbif.registry.ws.client.NodeWsClient;
-import org.gbif.registry.ws.client.OrganizationWsClient;
-import org.gbif.service.guice.PrivateServiceModule;
-import org.gbif.ws.client.guice.GbifWsClientModule;
-
-import java.util.Properties;
-
-import com.google.inject.Provides;
-import com.google.inject.Scopes;
-import com.google.inject.name.Named;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
+import org.gbif.api.registry.service.DatasetService;
 
 
 /**
@@ -36,6 +23,10 @@ public class RegistryWsClientModule extends GbifWsClientModule {
     install(new InternalRegistryWsClientModule(getProperties()));
     expose(NodeService.class);
     expose(OrganizationService.class);
+    expose(InstallationService.class);
+    expose(DatasetService.class);
+    expose(NetworkService.class);
+
   }
 
 // @Override
@@ -57,9 +48,15 @@ public class RegistryWsClientModule extends GbifWsClientModule {
 
       bind(NodeService.class).to(NodeWsClient.class).in(Scopes.SINGLETON);
       bind(OrganizationService.class).to(OrganizationWsClient.class).in(Scopes.SINGLETON);
+      bind(InstallationService.class).to(InstallationWsClient.class).in(Scopes.SINGLETON);
+      bind(DatasetService.class).to(DatasetWsClient.class).in(Scopes.SINGLETON);
+      bind(NetworkService.class).to(NetworkWsClient.class).in(Scopes.SINGLETON);
 
       expose(NodeService.class);
       expose(OrganizationService.class);
+      expose(InstallationService.class);
+      expose(DatasetService.class);
+      expose(NetworkService.class);
     }
 
     @Provides
