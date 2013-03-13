@@ -3,15 +3,12 @@ package org.gbif.api.registry.model;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.Language;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,17 +17,12 @@ import com.google.common.collect.Lists;
 
 
 /**
- * A GBIF data publisher.
+ * A GBIF network.
  */
-public class Organization implements NetworkEntity, Contactable, Accessible, MachineTaggable, Taggable, Identifiable,
-  Commentable {
+public class Network implements NetworkEntity, Contactable, Accessible, MachineTaggable, Taggable, Commentable {
 
   private UUID key;
-  private UUID endorsingNodeKey;
-  private boolean endorsementApproved;
-  private String password;
   private String title;
-  private String abbreviation;
   private String description;
   private Language language;
   private String email;
@@ -42,8 +34,6 @@ public class Organization implements NetworkEntity, Contactable, Accessible, Mac
   private String province;
   private Country country;
   private String postalCode;
-  private BigDecimal latitude;
-  private BigDecimal longitude;
   private String createdBy;
   private String modifiedBy;
   private Date created;
@@ -53,9 +43,8 @@ public class Organization implements NetworkEntity, Contactable, Accessible, Mac
   private List<Endpoint> endpoints = Lists.newArrayList();
   private List<MachineTag> machineTags = Lists.newArrayList();
   private List<Tag> tags = Lists.newArrayList();
-  private List<Identifier> identifiers = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
-
+  private List<Dataset> constituentDatasets = Lists.newArrayList();
 
   @Override
   public UUID getKey() {
@@ -67,32 +56,6 @@ public class Organization implements NetworkEntity, Contactable, Accessible, Mac
     this.key = key;
   }
 
-  @NotNull
-  public UUID getEndorsingNodeKey() {
-    return endorsingNodeKey;
-  }
-
-  public void setEndorsingNodeKey(UUID endorsingNodeKey) {
-    this.endorsingNodeKey = endorsingNodeKey;
-  }
-
-  public boolean isEndorsementApproved() {
-    return endorsementApproved;
-  }
-
-  public void setEndorsementApproved(boolean endorsementApproved) {
-    this.endorsementApproved = endorsementApproved;
-  }
-
-  @Nullable
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
   @Override
   public String getTitle() {
     return title;
@@ -101,16 +64,6 @@ public class Organization implements NetworkEntity, Contactable, Accessible, Mac
   @Override
   public void setTitle(String title) {
     this.title = title;
-  }
-
-  @Nullable
-  @Size(min = 1, max = 10)
-  public String getAbbreviation() {
-    return abbreviation;
-  }
-
-  public void setAbbreviation(String abbreviation) {
-    this.abbreviation = abbreviation;
   }
 
   @Override
@@ -219,28 +172,6 @@ public class Organization implements NetworkEntity, Contactable, Accessible, Mac
     this.postalCode = postalCode;
   }
 
-  @Nullable
-  @Min(-90)
-  @Max(90)
-  public BigDecimal getLatitude() {
-    return latitude;
-  }
-
-  public void setLatitude(BigDecimal latitude) {
-    this.latitude = latitude;
-  }
-
-  @Nullable
-  @Min(-180)
-  @Max(180)
-  public BigDecimal getLongitude() {
-    return longitude;
-  }
-
-  public void setLongitude(BigDecimal longitude) {
-    this.longitude = longitude;
-  }
-
   @NotNull
   @Size(min = 3)
   public String getCreatedBy() {
@@ -331,17 +262,6 @@ public class Organization implements NetworkEntity, Contactable, Accessible, Mac
     this.tags = tags;
   }
 
-
-  @Override
-  public List<Identifier> getIdentifiers() {
-    return identifiers;
-  }
-
-  @Override
-  public void setIdentifiers(List<Identifier> identifiers) {
-    this.identifiers = identifiers;
-  }
-
   @Override
   public List<Comment> getComments() {
     return comments;
@@ -352,46 +272,49 @@ public class Organization implements NetworkEntity, Contactable, Accessible, Mac
     this.comments = comments;
   }
 
+  public List<Dataset> getConstituentDatasets() {
+    return constituentDatasets;
+  }
+
+  public void setConstituentDatasets(List<Dataset> constituentDatasets) {
+    this.constituentDatasets = constituentDatasets;
+  }
+
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("endorsingNodeKey", endorsingNodeKey)
-      .add("endorsementApproved", endorsementApproved).add("password", password).add("title", title)
-      .add("abbreviation", abbreviation).add("description", description).add("language", language).add("email", email)
-      .add("phone", phone).add("homepage", homepage).add("logoUrl", logoUrl).add("address", address).add("city", city)
-      .add("province", province).add("country", country).add("postalCode", postalCode).add("latitude", latitude)
-      .add("longitude", longitude).add("createdBy", createdBy).add("modifiedBy", modifiedBy).add("created", created)
-      .add("modified", modified).add("deleted", deleted).add("contacts", contacts).add("endpoints", endpoints)
-      .add("machineTags", machineTags).add("tags", tags).add("identifiers", identifiers).add("comments", comments)
-      .toString();
+    return Objects.toStringHelper(this).add("key", key).add("title", title).add("description", description)
+      .add("language", language).add("email", email).add("phone", phone).add("homepage", homepage)
+      .add("logoUrl", logoUrl).add("address", address).add("city", city).add("province", province)
+      .add("country", country).add("postalCode", postalCode).add("createdBy", createdBy).add("modifiedBy", modifiedBy)
+      .add("created", created).add("modified", modified).add("deleted", deleted).add("contacts", contacts)
+      .add("endpoints", endpoints).add("machineTags", machineTags).add("tags", tags).add("comments", comments)
+      .add("constituentDatasets", constituentDatasets).toString();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(key, endorsingNodeKey, endorsementApproved, password, title, abbreviation, description,
-      language, email, phone, homepage, logoUrl, address, city, province, country, postalCode, latitude, longitude,
-      createdBy, modifiedBy, created, modified, deleted, contacts, endpoints, machineTags, tags, identifiers, comments);
+    return Objects.hashCode(key, title, description, language, email, phone, homepage, logoUrl, address, city,
+      province, country, postalCode, createdBy, modifiedBy, created, modified, deleted, contacts, endpoints,
+      machineTags, tags, comments, constituentDatasets);
   }
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof Organization) {
-      Organization that = (Organization) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.endorsingNodeKey, that.endorsingNodeKey)
-        && Objects.equal(this.endorsementApproved, that.endorsementApproved)
-        && Objects.equal(this.password, that.password) && Objects.equal(this.title, that.title)
-        && Objects.equal(this.abbreviation, that.abbreviation) && Objects.equal(this.description, that.description)
-        && Objects.equal(this.language, that.language) && Objects.equal(this.email, that.email)
-        && Objects.equal(this.phone, that.phone) && Objects.equal(this.homepage, that.homepage)
-        && Objects.equal(this.logoUrl, that.logoUrl) && Objects.equal(this.address, that.address)
-        && Objects.equal(this.city, that.city) && Objects.equal(this.province, that.province)
-        && Objects.equal(this.country, that.country) && Objects.equal(this.postalCode, that.postalCode)
-        && Objects.equal(this.latitude, that.latitude) && Objects.equal(this.longitude, that.longitude)
-        && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.modifiedBy, that.modifiedBy)
-        && Objects.equal(this.created, that.created) && Objects.equal(this.modified, that.modified)
-        && Objects.equal(this.deleted, that.deleted) && Objects.equal(this.contacts, that.contacts)
-        && Objects.equal(this.endpoints, that.endpoints) && Objects.equal(this.machineTags, that.machineTags)
-        && Objects.equal(this.tags, that.tags) && Objects.equal(this.identifiers, that.identifiers)
-        && Objects.equal(this.comments, that.comments);
+    if (object instanceof Network) {
+      Network that = (Network) object;
+      return Objects.equal(this.key, that.key) && Objects.equal(this.title, that.title)
+        && Objects.equal(this.description, that.description) && Objects.equal(this.language, that.language)
+        && Objects.equal(this.email, that.email) && Objects.equal(this.phone, that.phone)
+        && Objects.equal(this.homepage, that.homepage) && Objects.equal(this.logoUrl, that.logoUrl)
+        && Objects.equal(this.address, that.address) && Objects.equal(this.city, that.city)
+        && Objects.equal(this.province, that.province) && Objects.equal(this.country, that.country)
+        && Objects.equal(this.postalCode, that.postalCode) && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy) && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified) && Objects.equal(this.deleted, that.deleted)
+        && Objects.equal(this.contacts, that.contacts) && Objects.equal(this.endpoints, that.endpoints)
+        && Objects.equal(this.machineTags, that.machineTags) && Objects.equal(this.tags, that.tags)
+        && Objects.equal(this.comments, that.comments)
+        && Objects.equal(this.constituentDatasets, that.constituentDatasets);
     }
     return false;
   }

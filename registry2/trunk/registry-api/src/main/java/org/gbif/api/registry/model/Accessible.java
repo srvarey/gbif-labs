@@ -6,13 +6,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Generic tag interface for entities.
+ * Generic endpoint interface for entities.
  */
-interface Taggable {
+interface Accessible {
 
   @Valid
   @NotNull
-  List<Tag> getTags();
+  List<Endpoint> getEndpoints();
 
-  void setTags(List<Tag> tags);
+  public void setEndpoints(List<Endpoint> endpoints);
 }

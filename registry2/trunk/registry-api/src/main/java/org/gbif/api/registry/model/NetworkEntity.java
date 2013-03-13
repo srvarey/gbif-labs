@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * This interface provides a minimal contract that all network entities (The readable version) will adhere to. It is
@@ -12,27 +14,29 @@ import javax.annotation.Nullable;
  */
 public interface NetworkEntity {
 
-  @Nullable
+  @NotNull
   public UUID getKey();
 
   public void setKey(UUID key);
 
-  @Nullable
+  @NotNull
+  @Size(min = 2, max = 255)
   String getTitle();
 
   void setTitle(String title);
 
   @Nullable
+  @Size(min = 10)
   String getDescription();
 
   void setDescription(String description);
 
-  @Nullable
+  @NotNull
   Date getCreated();
 
   void setCreated(Date created);
 
-  @Nullable
+  @NotNull
   Date getModified();
 
   void setModified(Date modified);
