@@ -3,6 +3,9 @@ package org.gbif.registry.guice;
 import org.gbif.registry.grizzly.RegistryServer;
 import org.gbif.registry.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
+import org.gbif.registry.ws.resources.DatasetResource;
+import org.gbif.registry.ws.resources.InstallationResource;
+import org.gbif.registry.ws.resources.NetworkResource;
 import org.gbif.registry.ws.resources.NodeResource;
 import org.gbif.registry.ws.resources.OrganizationResource;
 
@@ -43,15 +46,17 @@ public class RegistryTestModules {
     try {
       Properties p = new Properties();
       p.load(Resources.getResourceAsStream("registry-test.properties"));
-      return Guice.createInjector(
-        new AbstractModule() {
+      return Guice.createInjector(new AbstractModule() {
 
-          @Override
-          protected void configure() {
-            bind(NodeResource.class);
-            bind(OrganizationResource.class);
-          }
-        }, new RegistryMyBatisModule(p), new ValidationModule());
+        @Override
+        protected void configure() {
+          bind(NodeResource.class);
+          bind(OrganizationResource.class);
+          bind(InstallationResource.class);
+          bind(DatasetResource.class);
+          bind(NetworkResource.class);
+        }
+      }, new RegistryMyBatisModule(p), new ValidationModule());
     } catch (IOException e) {
       throw Throwables.propagate(e);
     }
@@ -110,8 +115,8 @@ public class RegistryTestModules {
 
     @Inject
     public ManagementProvider(@Named("registry.db.JDBC.driver") String driver,
-      @Named("registry.db.JDBC.url") String url,
-      @Named("registry.db.JDBC.username") String username, @Named("registry.db.JDBC.password") String password) {
+      @Named("registry.db.JDBC.url") String url, @Named("registry.db.JDBC.username") String username,
+      @Named("registry.db.JDBC.password") String password) {
       this.url = url;
       this.username = username;
       this.password = password;
