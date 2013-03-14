@@ -7,15 +7,12 @@ import org.gbif.registry.utils.MachineTags;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class MachineTagTests {
 
-  @Test
   public static <T extends NetworkEntity> void testAddDelete(MachineTagService service, T entity) {
 
     // check there are none on a newly created entity

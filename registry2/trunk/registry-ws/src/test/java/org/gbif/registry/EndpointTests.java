@@ -7,15 +7,12 @@ import org.gbif.registry.utils.Endpoints;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class EndpointTests {
 
-  @Test
   public static <T extends NetworkEntity> void testAddDelete(EndpointService service, T entity) {
 
     // check there are none on a newly created entity
