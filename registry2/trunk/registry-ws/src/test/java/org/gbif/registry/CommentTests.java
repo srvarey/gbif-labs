@@ -7,20 +7,17 @@ import org.gbif.registry.utils.Comments;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class CommentTests {
 
-  @Test
   public static <T extends NetworkEntity> void testAddDelete(CommentService service, T entity) {
 
     // check there are none on a newly created entity
     List<Comment> comments = service.listComments(entity.getKey());
-    assertNotNull("Comment list should be empty, not null when no machine tags exist", comments);
+    assertNotNull("Comment list should be empty, not null when no comments exist", comments);
     assertTrue("Comment should be empty when none added", comments.isEmpty());
 
     // test additions

@@ -69,6 +69,7 @@ public class BootstrapTest {
   }
 
   @Test
+  @Ignore
   public void lots() {
     for (int n = 0; n < 1000; n++) {
       Node n1 = Nodes.newInstance();

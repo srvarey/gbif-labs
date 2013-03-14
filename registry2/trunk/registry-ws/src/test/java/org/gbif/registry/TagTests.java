@@ -7,22 +7,18 @@ import org.gbif.api.registry.service.TagService;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class TagTests {
 
-  @Test
   public static <T extends NetworkEntity> void testTagErroneousDelete(TagService service, T entity) {
     int tagKey = service.addTag(entity.getKey(), "tag1");
     service.deleteTag(UUID.randomUUID(), tagKey); // wrong parent UUID
     // nothing happens - expected?
   }
 
-  @Test
   public static <T extends NetworkEntity> void testAddDelete(TagService service, T entity) {
     List<Tag> tags = service.listTags(entity.getKey(), null);
     assertNotNull("Tag list should be empty, not null when no tags exist", tags);
