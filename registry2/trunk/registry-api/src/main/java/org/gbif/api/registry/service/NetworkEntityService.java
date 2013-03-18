@@ -6,17 +6,18 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 
 public interface NetworkEntityService<T> {
 
-  UUID create(T entity);
+  UUID create(@NotNull T entity);
 
-  void delete(UUID key);
+  void delete(@NotNull UUID key);
 
-  T get(UUID key);
+  T get(@NotNull UUID key);
 
   PagingResponse<T> list(@Nullable Pageable page);
 
-  void update(T entity);
+  void update(@NotNull T entity);
 }

@@ -16,7 +16,7 @@ import com.google.common.collect.Lists;
 /**
  * A technical installation which can serve dataset(s).
  */
-public class Installation implements NetworkEntity, Contactable, Accessible, MachineTaggable, Taggable, Commentable {
+public class Installation implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable {
 
   private UUID key;
   private UUID organizationKey;

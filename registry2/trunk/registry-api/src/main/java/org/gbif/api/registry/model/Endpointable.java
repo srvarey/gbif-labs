@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Generic endpoint interface for entities.
  */
-interface Accessible {
+interface Endpointable {
 
   @Valid
   @NotNull

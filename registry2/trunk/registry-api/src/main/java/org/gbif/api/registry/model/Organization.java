@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 /**
  * A GBIF data publisher.
  */
-public class Organization implements NetworkEntity, Contactable, Accessible, MachineTaggable, Taggable, Identifiable,
+public class Organization implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable,
   Commentable {
 
   private UUID key;

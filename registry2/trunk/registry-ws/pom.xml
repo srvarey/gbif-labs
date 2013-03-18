@@ -139,5 +139,54 @@
       <groupId>com.sun.grizzly</groupId>
       <artifactId>grizzly-servlet-webserver</artifactId>
     </dependency>
+    <!-- dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+    </dependency> 
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-core</artifactId>
+    </dependency>  -->
+    <!--  dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mrbean</artifactId>
+      <version>1.9.7</version>
+    </dependency> 
+    
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>0.20.5</version>
+    </dependency> -->
+    <!-- dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>3.6.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers</artifactId>
+      <version>3.6.2</version>
+      <scope>compile</scope>
+    </dependency>   
+        <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queries</artifactId>
+      <version>3.6.2</version>
+      <scope>compile</scope>
+    </dependency>   
+ <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-memory</artifactId>
+      <version>3.6.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-highlighter</artifactId>
+      <version>3.6.2</version>
+      <scope>compile</scope>
+    </dependency -->      
   </dependencies>
 </project>

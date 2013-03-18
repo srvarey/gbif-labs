@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 /**
  * A GBIF network.
  */
-public class Network implements NetworkEntity, Contactable, Accessible, MachineTaggable, Taggable, Commentable {
+public class Network implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable {
 
   private UUID key;
   private String title;

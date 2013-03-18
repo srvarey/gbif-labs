@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
 
 public interface EndpointService {
 
-  int addEndpoint(@NotNull UUID targetEntityKey, Endpoint endpoint);
+  int addEndpoint(@NotNull UUID targetEntityKey, @NotNull Endpoint endpoint);
 
-  void deleteEndpoint(@NotNull UUID targetEntityKey, @NotNull int endpointKey);
+  void deleteEndpoint(@NotNull UUID targetEntityKey, int endpointKey);
 
   List<Endpoint> listEndpoints(@NotNull UUID targetEntityKey);
 }

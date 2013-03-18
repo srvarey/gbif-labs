@@ -9,9 +9,9 @@ import javax.validation.constraints.NotNull;
 
 public interface IdentifierService {
 
-  int addIdentifier(@NotNull UUID targetEntityKey, Identifier identifier);
+  int addIdentifier(@NotNull UUID targetEntityKey, @NotNull Identifier identifier);
 
-  void deleteIdentifier(@NotNull UUID targetEntityKey, @NotNull int identifierKey);
+  void deleteIdentifier(@NotNull UUID targetEntityKey, int identifierKey);
 
   List<Identifier> listIdentifiers(@NotNull UUID targetEntityKey);
 }

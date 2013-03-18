@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.apache.ibatis.annotations.Param;
 
-public interface AccessibleMapper {
+public interface EndpointableMapper {
 
   int addEndpoint(@Param("targetEntityKey") UUID entityKey, @Param("endpointKey") int endpointKey);
 

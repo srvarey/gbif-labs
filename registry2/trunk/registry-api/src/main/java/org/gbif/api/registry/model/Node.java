@@ -52,7 +52,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   private List<Tag> tags = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
 
-
   @Override
   public UUID getKey() {
     return key;

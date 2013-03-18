@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
 
 public interface ContactService {
 
-  int addContact(@NotNull UUID targetEntityKey, Contact contact);
+  int addContact(@NotNull UUID targetEntityKey, @NotNull Contact contact);
 
-  void deleteContact(@NotNull UUID targetEntityKey, @NotNull int contactKey);
+  void deleteContact(@NotNull UUID targetEntityKey, int contactKey);
 
   List<Contact> listContacts(@NotNull UUID targetEntityKey);
 }
