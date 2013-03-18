@@ -9,9 +9,9 @@ import javax.validation.constraints.NotNull;
 
 public interface CommentService {
 
-  int addComment(@NotNull UUID targetEntityKey, Comment comment);
+  int addComment(@NotNull UUID targetEntityKey, @NotNull Comment comment);
 
-  void deleteComment(@NotNull UUID targetEntityKey, @NotNull int commentKey);
+  void deleteComment(@NotNull UUID targetEntityKey, int commentKey);
 
   List<Comment> listComments(@NotNull UUID targetEntityKey);
 }

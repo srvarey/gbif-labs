@@ -10,7 +10,7 @@ import org.gbif.api.registry.model.MachineTag;
 import org.gbif.api.registry.model.NetworkEntity;
 import org.gbif.api.registry.model.Tag;
 import org.gbif.api.registry.vocabulary.ContactType;
-import org.gbif.registry.persistence.mapper.AccessibleMapper;
+import org.gbif.registry.persistence.mapper.EndpointableMapper;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.CommentableMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
@@ -81,20 +81,20 @@ public class WithMyBatis {
   }
 
   @Transactional
-  public static int addEndpoint(EndpointMapper endpointMapper, AccessibleMapper accessibleMapper, UUID targetEntityKey,
+  public static int addEndpoint(EndpointMapper endpointMapper, EndpointableMapper endpointableMapper, UUID targetEntityKey,
     Endpoint endpoint) {
     Preconditions.checkArgument(endpoint.getKey() == null, "Unable to create an entity which already has a key");
     endpointMapper.createEndpoint(endpoint);
-    accessibleMapper.addEndpoint(targetEntityKey, endpoint.getKey());
+    endpointableMapper.addEndpoint(targetEntityKey, endpoint.getKey());
     return endpoint.getKey();
   }
 
-  public static void deleteEndpoint(AccessibleMapper accessibleMapper, UUID targetEntityKey, int endpointKey) {
-    accessibleMapper.deleteEndpoint(targetEntityKey, endpointKey);
+  public static void deleteEndpoint(EndpointableMapper endpointableMapper, UUID targetEntityKey, int endpointKey) {
+    endpointableMapper.deleteEndpoint(targetEntityKey, endpointKey);
   }
 
-  public static List<Endpoint> listEndpoints(AccessibleMapper accessibleMapper, UUID targetEntityKey) {
-    return accessibleMapper.listEndpoints(targetEntityKey);
+  public static List<Endpoint> listEndpoints(EndpointableMapper endpointableMapper, UUID targetEntityKey) {
+    return endpointableMapper.listEndpoints(targetEntityKey);
   }
 
   public static int addMachineTag(MachineTagMapper machineTagMapper, MachineTaggableMapper machineTaggableMapper,

@@ -57,13 +57,11 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     install(internalModule); // the named parameters are already configured at this stage
     expose(internalModule.getDatasourceKey()); // to avoid clashes between multiple datasources
     // The Mappers are exposed to be injected in the ws resources
-    // network entities
     expose(NodeMapper.class);
     expose(OrganizationMapper.class);
     expose(InstallationMapper.class);
     expose(DatasetMapper.class);
     expose(NetworkMapper.class);
-    // components
     expose(ContactMapper.class);
     expose(EndpointMapper.class);
     expose(MachineTagMapper.class);

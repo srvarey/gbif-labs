@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
 /**
  * A GBIF dataset which provides occurrence data, checklist data or metadata.
  */
-public class Dataset implements NetworkEntity, Contactable, Accessible, MachineTaggable, Taggable, Identifiable,
+public class Dataset implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable,
   Commentable {
 
   private UUID key;

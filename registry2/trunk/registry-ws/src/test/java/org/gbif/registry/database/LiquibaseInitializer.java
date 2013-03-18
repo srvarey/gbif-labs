@@ -44,7 +44,6 @@ public class LiquibaseInitializer extends ExternalResource {
     LOG.info("Liquibase finished successfully");
   }
 
-
   protected void runLiquibase(Connection connection, String... fileNames) throws LiquibaseException {
     for (String fileName : fileNames) {
       Liquibase liquibase =

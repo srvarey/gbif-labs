@@ -36,67 +36,88 @@ import org.apache.ibatis.io.Resources;
  * <li>The WS service client layer</li>
  * <li>A management configuration to allow utilities to manipulate the database (Liquibase etc)</li>
  * </ol>
+ * Everything is cached, and reused on subsequent calls.
  */
 public class RegistryTestModules {
+
+  // cache everything, for reuse in repeated calls (e.g. eclipse IDE test everything)
+  private static Injector webservice;
+  private static Injector webserviceClient;
+  private static Injector management;
+  private static DataSource managementDatasource;
 
   /**
    * @return An injector that is bound for the webservice layer.
    */
-  public static Injector webservice() {
-    try {
-      Properties p = new Properties();
-      p.load(Resources.getResourceAsStream("registry-test.properties"));
-      return Guice.createInjector(new AbstractModule() {
+  public static synchronized Injector webservice() {
+    if (webservice == null) {
+      try {
+        final Properties p = new Properties();
+        p.load(Resources.getResourceAsStream("registry-test.properties"));
+        webservice = Guice.createInjector(new AbstractModule() {
 
-        @Override
-        protected void configure() {
-          bind(NodeResource.class);
-          bind(OrganizationResource.class);
-          bind(InstallationResource.class);
-          bind(DatasetResource.class);
-          bind(NetworkResource.class);
-        }
-      }, new RegistryMyBatisModule(p), new ValidationModule());
-    } catch (IOException e) {
-      throw Throwables.propagate(e);
+          @Override
+          protected void configure() {
+            bind(NodeResource.class);
+            bind(OrganizationResource.class);
+            bind(InstallationResource.class);
+            bind(DatasetResource.class);
+            bind(NetworkResource.class);
+          }
+        }, new RegistryMyBatisModule(p), new ValidationModule());
+      } catch (IOException e) {
+        throw Throwables.propagate(e);
+      }
+
     }
+    return webservice;
   }
 
   /**
    * @return An injector that is bound for the webservice client layer.
    */
-  public static Injector webserviceClient() {
-    Properties props = new Properties();
-    props.put("registry.ws.url", "http://localhost:" + RegistryServer.getPort());
-    return Guice.createInjector(new RegistryWsClientModule(props));
+  public static synchronized Injector webserviceClient() {
+    if (webserviceClient == null) {
+      Properties props = new Properties();
+      props.put("registry.ws.url", "http://localhost:" + RegistryServer.getPort());
+      webserviceClient = Guice.createInjector(new RegistryWsClientModule(props));
+    }
+    return webserviceClient;
   }
 
   /**
    * @return A datasource that is for use in management activities such as Liquibase, or cleaning between tests.
    */
   public static DataSource database() {
-    return RegistryTestModules.management().getInstance(DataSource.class);
+    if (managementDatasource == null) {
+      managementDatasource = RegistryTestModules.management().getInstance(DataSource.class);
+    }
+    return managementDatasource;
+
   }
 
 
   /**
    * @return An injector configured to issue a Datasource suitable for database management activities (Liquibase etc).
    */
-  private static Injector management() {
-    try {
-      final Properties p = new Properties();
-      p.load(Resources.getResourceAsStream("registry-test.properties"));
-      return Guice.createInjector(new AbstractModule() {
+  private static synchronized Injector management() {
+    if (management == null) {
+      try {
+        final Properties p = new Properties();
+        p.load(Resources.getResourceAsStream("registry-test.properties"));
+        management = Guice.createInjector(new AbstractModule() {
 
-        @Override
-        protected void configure() {
-          Names.bindProperties(binder(), p);
-          bind(DataSource.class).toProvider(ManagementProvider.class);
-        }
-      });
-    } catch (Exception e) {
-      throw Throwables.propagate(e);
+          @Override
+          protected void configure() {
+            Names.bindProperties(binder(), p);
+            bind(DataSource.class).toProvider(ManagementProvider.class);
+          }
+        });
+      } catch (Exception e) {
+        throw Throwables.propagate(e);
+      }
     }
+    return management;
   }
 
   /**

@@ -11,9 +11,9 @@ import javax.validation.constraints.NotNull;
 
 public interface TagService {
 
-  int addTag(@NotNull UUID targetEntityKey, String value);
+  int addTag(@NotNull UUID targetEntityKey, @NotNull String value);
 
-  void deleteTag(@NotNull UUID taggedEntityKey, @NotNull int tagKey);
+  void deleteTag(@NotNull UUID taggedEntityKey, int tagKey);
 
   List<Tag> listTags(@NotNull UUID taggedEntityKey, @Nullable String owner);
 }

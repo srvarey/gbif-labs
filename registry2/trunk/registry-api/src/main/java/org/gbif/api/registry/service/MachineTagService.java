@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
 
 public interface MachineTagService {
 
-  int addMachineTag(@NotNull UUID targetEntityKey, MachineTag machineTag);
+  int addMachineTag(@NotNull UUID targetEntityKey, @NotNull MachineTag machineTag);
 
-  void deleteMachineTag(@NotNull UUID targetEntityKey, @NotNull int machineTagKey);
+  void deleteMachineTag(@NotNull UUID targetEntityKey, int machineTagKey);
 
   List<MachineTag> listMachineTags(@NotNull UUID targetEntityKey);
 }

@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
 
-public interface OrganizationMapper extends NetworkEntityMapper<Organization>, ContactableMapper, AccessibleMapper,
+public interface OrganizationMapper extends NetworkEntityMapper<Organization>, ContactableMapper, EndpointableMapper,
   MachineTaggableMapper, TaggableMapper, IdentifiableMapper, CommentableMapper {
 
   /**
