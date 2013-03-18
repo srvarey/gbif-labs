@@ -17,22 +17,22 @@ public class CountryTypeHandler implements TypeHandler<Country> {
 
   @Override
   public Country getResult(ResultSet rs, String columnName) throws SQLException {
-    return Country.valueOf(rs.getString(columnName));
+    return Country.fromIsoCode(rs.getString(columnName));
   }
 
   @Override
   public Country getResult(CallableStatement cs, int columnIndex) throws SQLException {
-    return Country.valueOf(cs.getString(columnIndex));
+    return Country.fromIsoCode(cs.getString(columnIndex));
   }
 
   @Override
   public Country getResult(ResultSet rs, int columnIndex) throws SQLException {
-    return Country.valueOf(rs.getString(columnIndex));
+    return Country.fromIsoCode(rs.getString(columnIndex));
   }
 
   @Override
   public void setParameter(PreparedStatement ps, int i, Country parameter, JdbcType jdbcType) throws SQLException {
-    ps.setObject(i, parameter.toString(), Types.OTHER);
+    ps.setObject(i, parameter.getIso2LetterCode(), Types.CHAR);
 
   }
 }
