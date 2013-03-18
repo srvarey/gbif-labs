@@ -15,6 +15,7 @@ public class Nodes extends JsonBackedData<Node> {
   }
 
   public static Node newInstance() {
-    return INSTANCE.newTypedInstance();
+    Node n = INSTANCE.newTypedInstance();
+    return n;
   }
 }

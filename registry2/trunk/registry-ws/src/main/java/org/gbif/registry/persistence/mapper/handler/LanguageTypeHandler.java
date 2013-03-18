@@ -32,7 +32,7 @@ public class LanguageTypeHandler implements TypeHandler<Language> {
 
   @Override
   public void setParameter(PreparedStatement ps, int i, Language parameter, JdbcType jdbcType) throws SQLException {
-    ps.setObject(i, parameter.getIso2LetterCode(), Types.OTHER);
+    ps.setObject(i, parameter.getIso2LetterCode(), Types.CHAR);
 
   }
 }
