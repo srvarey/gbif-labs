@@ -7,16 +7,35 @@
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
      
 	<script connection-id="new-registry">
-		<dialect name="MySql">
+		<dialect name="postgresql">
 			<include href="schemav4.sql"/>
 		</dialect>
 	</script>
 
 	<query id="nodes" connection-id="old-registry">
-		SELECT uuid,name,description,language,iso_country_code,homepage,logoURL,address,city,email,phone,created,modified,deleted FROM agent WHERE type=14000
+		SELECT uuid,
+		  name,
+		  description,
+		  CASE WHEN language IS NULL THEN 'en' ELSE language END AS language,
+          CASE WHEN char_length(trim(iso_country_code))&lt;2 THEN null ELSE iso_country_code END AS iso_country_code,
+          homepage,
+          logoURL,
+          CASE WHEN char_length(trim(address))&lt;1 THEN null ELSE address END AS address,
+          CASE WHEN char_length(trim(city))&lt;1 THEN null ELSE city END AS city,
+          CASE WHEN char_length(trim(email))&lt;5 THEN null ELSE email END AS email,
+          CASE WHEN char_length(trim(phone))&lt;5 THEN null ELSE phone END AS phone,
+          created,
+          modified,
+          deleted 
+        FROM agent WHERE type=14000
+        <!-- In here we have some hardcoded values, but were necessary cause this fields are NOT NULL but on the live DB they are either NULL or empty.
 		<script connection-id="new-registry">
-			INSERT INTO node(key,title,description,language,email,phone,homepage,logo_url,address,city,country,created,modified,deleted)
-            VALUES (?uuid,?name,?description,?language,?email,?phone,?homepage,?logoURL,?address,?city,?iso_country_code,?created,?modified,?deleted);
+			INSERT INTO node(key,title,description,language,email,phone,homepage,logo_url,address,city,country,
+              created,modified,deleted,type,participation_status,
+              continent, created_by, modified_by )
+            VALUES(?uuid::uuid,?name,?description,?language,?email,?phone,?homepage,?logoURL,?address,?city,?iso_country_code,
+              ?created,?modified,?deleted,?{"COUNTRY"}::enum_node_type,?{"VOTING"}::enum_node_participation_status,
+              ?{"AFRICA"}::enum_node_continent, ?{"ADMIN"}, ?{"ADMIN"});
 		</script>
 	</query>
 </etl>

@@ -1,4 +1,4 @@
-package org.gbif.registry.migration.etl;
+package org.gbif.registry.migration;
 
 import java.io.File;
 
@@ -21,10 +21,8 @@ public class RegistryMigrationExecutor {
       ExecutionStatistics statics = null;
 
       System.out.println("Starting nodes creation...");
-      statics =
-        execute("src/main/resources/registry-to-registry.xml",
-          "Registry node");
-      System.out.println("Technical installations created in " + statics.getTotalTime() + " milliseconds");
+      statics = execute("src/main/resources/registry-to-registry.xml", "Registry node");
+      System.out.println("Nodes created in " + statics.getTotalTime() + " milliseconds");
 
     } catch (EtlExecutorException e) {
       e.printStackTrace();
