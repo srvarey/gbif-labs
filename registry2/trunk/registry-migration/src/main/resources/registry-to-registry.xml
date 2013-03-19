@@ -13,10 +13,10 @@
 	</script>
 
 	<query id="nodes" connection-id="old-registry">
-		SELECT uuid,
-		  name,
-		  description,
-		  CASE WHEN language IS NULL THEN 'en' ELSE language END AS language,
+        SELECT uuid,
+          name,
+          description,
+          CASE WHEN language IS NULL THEN 'en' ELSE language END AS language,
           CASE WHEN char_length(trim(iso_country_code))&lt;2 THEN null ELSE iso_country_code END AS iso_country_code,
           homepage,
           logoURL,
@@ -28,7 +28,7 @@
           modified,
           deleted 
         FROM agent WHERE type=14000
-        <!-- In here we have some hardcoded values, but were necessary cause this fields are NOT NULL but on the live DB they are either NULL or empty.
+        <!-- In here we have some hardcoded values, but were necessary cause this fields are NOT NULL but on the live DB they are either NULL or empty.-->
 		<script connection-id="new-registry">
 			INSERT INTO node(key,title,description,language,email,phone,homepage,logo_url,address,city,country,
               created,modified,deleted,type,participation_status,
