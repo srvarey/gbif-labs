@@ -57,7 +57,7 @@ CREATE TABLE organization
   description text CHECK (assert_min_length(description, 10)),
   language char(2) NOT NULL CHECK (assert_min_length(language, 2)),
   email varchar(254) CHECK (assert_min_length(email, 5)),
-  phone varchar(50) CHECK (assert_min_length(phone, 5)),
+  phone varchar(100) CHECK (assert_min_length(phone, 5)),
   homepage text CHECK (assert_is_http(homepage)),
   logo_url text CHECK (assert_is_http(logo_url)),
   address text CHECK (assert_min_length(address, 1)),
