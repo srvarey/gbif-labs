@@ -21,9 +21,9 @@ public class RegistryMigrationExecutor {
       ExecutionStatistics statics = null;
 
       System.out.println("Starting migration...");
-      // statics = execute("src/main/resources/startup.xml", "Registry node");
+      statics = execute("src/main/resources/startup.xml", "Registry node");
 
-/*      System.out.println("Starting nodes creation...");
+      System.out.println("Starting nodes creation...");
       statics = execute("src/main/resources/migrate-nodes.xml", "Registry node");
       System.out.println("Nodes created in " + statics.getTotalTime() + " milliseconds");
 
@@ -33,7 +33,7 @@ public class RegistryMigrationExecutor {
 
       System.out.println("Starting installations creation...");
       statics = execute("src/main/resources/migrate-installations.xml", "Registry installation");
-      System.out.println("Installations created in " + statics.getTotalTime() + " milliseconds");*/
+      System.out.println("Installations created in " + statics.getTotalTime() + " milliseconds");
 
       System.out.println("Starting datasets creation...");
       statics = execute("src/main/resources/migrate-datasets.xml", "Registry dataset");

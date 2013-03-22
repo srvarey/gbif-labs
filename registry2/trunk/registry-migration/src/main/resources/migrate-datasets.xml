@@ -22,10 +22,12 @@
           CASE WHEN char_length(trim(ep.citation_text))&lt;10 THEN null ELSE ep.citation_text END AS citation,
           CASE WHEN char_length(trim(ep.citation_identifier))&lt;1 THEN null ELSE ep.citation_identifier END AS citation_identifier,
           CASE WHEN char_length(trim(ep.rights))&lt;1 THEN null ELSE ep.rights END AS rights,
-          a.admin_override AS locked_for_auto_update,
+          CASE WHEN a.admin_override IS NULL THEN FALSE ELSE a.admin_override END AS locked_for_auto_update,
           CASE WHEN a.created IS NULL THEN now() ELSE a.created END AS created,
           CASE WHEN a.modified IS NULL THEN now() ELSE a.modified END AS modified,
-          a.deleted 
+          a.deleted,
+          'ADMIN' AS created_by,
+          'ADMIN' AS modified_by
         FROM agent a
         JOIN agent_relation arOwning ON a.id=arOwning.to_agent_id
         JOIN agent_relation arHosting ON a.id=arHosting.to_agent_id
@@ -47,7 +49,7 @@
               rights,locked_for_auto_update,created,modified,deleted,created_by,modified_by)
             VALUES(?uuid_key::uuid,?installation_key::uuid,?owning_organization_key::uuid,
               ?type::enum_dataset_type,?title,?alias,?description,?language,?homepage,?logo_url,?citation,?citation_identifier,
-              ?rights,?locked_for_auto_update,?created,?modified,?deleted,?{"ADMIN"}, ?{"ADMIN"});
+              ?rights,?locked_for_auto_update::boolean,?created,?modified,?deleted,?created_by,?modified_by);
         </script>
          
     </query>
