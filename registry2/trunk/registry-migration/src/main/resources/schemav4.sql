@@ -3,11 +3,11 @@
 -- i. Trimming of whitespace 
 -- *Note*: PostgreSQL's JDBC driver needs to parse the function in a single line
 --
--- CREATE FUNCTION assert_min_length(input text, minlength integer) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (length >= minlength) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql; 
+--CREATE FUNCTION assert_min_length(input text, minlength integer) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (length >= minlength) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql; 
 --
 -- Returns true if the URL comforms with the HTTP protocol.  
 --
--- CREATE FUNCTION assert_is_http(input text) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (position('http://' in trim(input)) = 0) OR (position('https://' in trim(input)) = 0) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql;
+--CREATE FUNCTION assert_is_http(input text) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (position('http://' in trim(input)) = 0) OR (position('https://' in trim(input)) = 0) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql;
 
 -- 
 --  node
@@ -28,7 +28,7 @@ CREATE TABLE node
   description text CHECK (assert_min_length(description, 10)),
   language char(2) NOT NULL CHECK (assert_min_length(language, 2)),
   email varchar(254) CHECK (assert_min_length(email, 5)),
-  phone varchar(50) CHECK (assert_min_length(phone, 5)),
+  phone text CHECK (assert_min_length(phone, 5)),
   homepage text CHECK (assert_is_http(homepage)),
   logo_url text CHECK (assert_is_http(logo_url)),
   address text CHECK (assert_min_length(address, 1)),
@@ -57,7 +57,7 @@ CREATE TABLE organization
   description text CHECK (assert_min_length(description, 10)),
   language char(2) NOT NULL CHECK (assert_min_length(language, 2)),
   email varchar(254) CHECK (assert_min_length(email, 5)),
-  phone varchar(100) CHECK (assert_min_length(phone, 5)),
+  phone text CHECK (assert_min_length(phone, 5)),
   homepage text CHECK (assert_is_http(homepage)),
   logo_url text CHECK (assert_is_http(logo_url)),
   address text CHECK (assert_min_length(address, 1)),
@@ -137,7 +137,7 @@ CREATE TABLE network
   description text CHECK (assert_min_length(description, 10)),
   language char(2) NOT NULL CHECK (assert_min_length(language, 2)),
   email varchar(254) CHECK (assert_min_length(email, 5)),
-  phone varchar(50) CHECK (assert_min_length(phone, 5)),
+  phone text CHECK (assert_min_length(phone, 5)),
   homepage text CHECK (assert_is_http(homepage)),
   logo_url text CHECK (assert_is_http(logo_url)),
   address text CHECK (assert_min_length(address, 1)),
@@ -289,7 +289,7 @@ CREATE TABLE contact
   description text CHECK (assert_min_length(description, 10)),
   position text CHECK (assert_min_length(position, 2)),
   email varchar(254) CHECK (assert_min_length(email, 5)),
-  phone varchar(50) CHECK (assert_min_length(phone, 5)),
+  phone text CHECK (assert_min_length(phone, 5)),
   organization text CHECK (assert_min_length(organization, 2)), 
   address text CHECK (assert_min_length(address, 1)),
   city text CHECK (assert_min_length(city, 1)),

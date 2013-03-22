@@ -23,7 +23,9 @@
           CASE WHEN char_length(trim(a.iso_country_code))&lt;2 THEN null ELSE a.iso_country_code END AS country,
           a.created,
           a.modified,
-          a.deleted 
+          a.deleted,
+          'ADMIN' AS created_by,
+          'ADMIN' AS modified_by          
         FROM agent a
         JOIN agent_relation ar ON a.id=ar.to_agent_id
         JOIN agent aNode ON aNode.id=ar.from_agent_id
@@ -35,7 +37,7 @@
               created,modified,deleted,created_by,modified_by)
             VALUES(?uuid_key::uuid,?endorsing_node_key::uuid,?endorsement_approved::boolean,?password,
               ?title,?description,?language,?email,?phone,?homepage,?logo_url,?address,?city,?country,
-              ?created,?modified,?deleted,?{"ADMIN"}, ?{"ADMIN"});
+              ?created,?modified,?deleted,?created_by,?modified_by);
         </script>
     </query>
 </etl>
