@@ -16,8 +16,8 @@
 
   <properties>
     <findbugs.version>2.0.1</findbugs.version>
-    <gbif-api.version>0.1-SNAPSHOT</gbif-api.version>
-    <gbif-postal-service.version>0.1-SNAPSHOT</gbif-postal-service.version>
+    <gbif-api.version>0.3-SNAPSHOT</gbif-api.version>
+    <gbif-postal-service.version>0.4-SNAPSHOT</gbif-postal-service.version>
     <guava.version>13.0</guava.version>
     <jackson.version>1.9.9</jackson.version>
     <junit.version>4.10</junit.version>

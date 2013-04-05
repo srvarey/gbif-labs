@@ -1,6 +1,7 @@
 package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.DatasetBasedMessage;
+import org.gbif.common.messaging.api.OccurrenceFragmentedMessage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +32,7 @@ public class MessageReplayer {
   private static final String VIRTUALHOST = "/";
   private static final String HOSTNAME = "localhost";
   private static final int PORT = 5672;
-  private static final int THREADCOUNT = 10;
+  private static final int THREADCOUNT = 500;
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
   private final MessagingService messagingService;
@@ -101,6 +102,7 @@ public class MessageReplayer {
         DatasetBasedMessage msg = readMessageFromFile(new File(dir, fileName), className);
         if (msg != null) {
           messagingService.send(msg);
+          OccurrenceFragmentedMessage frag = (OccurrenceFragmentedMessage)msg;
         }
       }
     }
