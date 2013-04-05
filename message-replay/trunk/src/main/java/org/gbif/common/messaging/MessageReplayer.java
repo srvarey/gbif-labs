@@ -1,7 +1,6 @@
 package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.DatasetBasedMessage;
-import org.gbif.common.messaging.api.OccurrenceFragmentedMessage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -102,7 +101,6 @@ public class MessageReplayer {
         DatasetBasedMessage msg = readMessageFromFile(new File(dir, fileName), className);
         if (msg != null) {
           messagingService.send(msg);
-          OccurrenceFragmentedMessage frag = (OccurrenceFragmentedMessage)msg;
         }
       }
     }
