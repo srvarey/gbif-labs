@@ -22,7 +22,7 @@ public class FileWritingListenerTest {
     UUID datasetKey = UUID.randomUUID();
     System.out.println("Writing to dataset [" + datasetKey + "]");
     OccurrenceFragmentedMessage msg =
-      new OccurrenceFragmentedMessage(datasetKey, 1, "bytes".getBytes(), OccurrenceSchemaType.DWC_1_4);
+      new OccurrenceFragmentedMessage(datasetKey, 1, "bytes".getBytes(), OccurrenceSchemaType.DWC_1_4, null);
 
     listener.handleMessage(msg);
 

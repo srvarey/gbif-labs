@@ -62,7 +62,7 @@ public class MessageCapturer {
    * @throws IOException            if there are errors reading or writing msgs
    * @throws ClassNotFoundException if the messageType is not found
    */
-  public void capture(String messageType, String queue, String path) throws IOException, ClassNotFoundException {
+  public void capture(String path, String queue, String messageType) throws IOException, ClassNotFoundException {
     // TODO: resolve generics without casts
     messagingService.listen((Class<DatasetBasedMessage>) Class.forName(messageType), queue,
       new FileWritingListener<DatasetBasedMessage>(path));
@@ -99,7 +99,7 @@ public class MessageCapturer {
       props.getProperty("virtualhost"), props.getProperty("hostname"), Integer.valueOf(props.getProperty("port")),
       Integer.valueOf(props.getProperty("threadcount")));
 
-    instance.capture(args[2], args[1], args[0]);
+    instance.capture(args[0], args[1], args[2]);
 
     System.out.println("Hit any key + enter to quit.");
     Scanner input = new Scanner(System.in);

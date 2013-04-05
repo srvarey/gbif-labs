@@ -38,7 +38,7 @@ public class FileWritingListener<T extends DatasetBasedMessage> implements Messa
     try {
       byte[] rawMsg = mapper.writeValueAsBytes(message);
       File datasetDir = new File(writePath + File.separator + datasetKey);
-      if (!datasetDir.mkdirs()) {
+      if (!datasetDir.isDirectory() && !datasetDir.mkdirs()) {
         LOG.error("Could not make dirs for [{}], aborting.", datasetDir.getName());
         return;
       }
