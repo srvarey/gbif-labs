@@ -7,9 +7,12 @@
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
     
     <query id="network" connection-id="old-registry">
-    	SELECT uudi AS uuid_key,
+    	SELECT uuid AS uuid_key,
     		name AS title,
-    		description,
+    		CASE
+    			WHEN length(description)&gt;1000 THEN substring(description,1,1000)
+    			ELSE description
+    		END AS description,
     		CASE 
     			WHEN language IS NULL THEN 'en' 
     			ELSE language 
@@ -39,7 +42,7 @@
     		CASE 
     			WHEN char_length(trim(zip))&lt;1 THEN NULL
     			ELSE zip
-    		END AS postal_code
+    		END AS postal_code,
     		created,
     		modified,
     		deleted
