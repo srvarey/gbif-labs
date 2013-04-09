@@ -52,7 +52,7 @@
         <script connection-id="new-registry">
             INSERT INTO network(key,title,description,language,email,phone,homepage,logo_url,address,city,country,postal_code,
               created,modified,deleted,created_by,modified_by)
-            VALUES(?uuid_key::uuid,?title,?description,?language,?email,?phone,?homepage,?logo_url,?address,?city,?country,?postal_code
+            VALUES(?uuid_key::uuid,?title,?description,?language,?email,?phone,?homepage,?logo_url,?address,?city,?country,?postal_code,
               ?created,?modified,?deleted,?{"ADMIN"}, ?{"ADMIN"});
         </script>
          
