@@ -6,7 +6,7 @@
     <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
     
-    <query id="network" connection-id="old-registry">
+    <query id="networks" connection-id="old-registry">
     	SELECT uuid AS uuid_key,
     		name AS title,
     		CASE
