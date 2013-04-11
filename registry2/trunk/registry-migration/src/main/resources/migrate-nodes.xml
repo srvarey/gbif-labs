@@ -18,23 +18,18 @@
           CASE WHEN char_length(trim(city))&lt;1 THEN null ELSE city END AS city,
           CASE WHEN char_length(trim(email))&lt;5 THEN null ELSE email END AS email,
           CASE WHEN char_length(trim(phone))&lt;5 THEN null ELSE phone END AS phone,
+          CASE WHEN char_length(trim(zip))&lt;1 THEN null ELSE zip END AS postal_code,
           created,
           modified,
-          deleted,
-          <!-- hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
-          'COUNTRY' AS type,
-          'VOTING' AS participation_status,
-          'AFRICA' AS continent,
-          'ADMIN' AS created_by,
-          'ADMIN' AS modified_by     
+          deleted 
         FROM agent WHERE type=14000
+        <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
         <script connection-id="new-registry">
-            INSERT INTO node(key,title,description,language,email,phone,homepage,logo_url,address,city,country,
-              created,modified,deleted,type,participation_status,
-              continent, created_by, modified_by )
-            VALUES(?uuid_key::uuid,?title,?description,?language,?email,?phone,?homepage,?logo_url,?address,?city,?country,
-              ?created,?modified,?deleted,?type::enum_node_type,?participation_status::enum_node_participation_status,
-              ?continent::enum_node_continent,?created_by,?modified_by);
+            INSERT INTO node(key,title,description,language,email,phone,homepage,logo_url,address,city,country,postal_code,
+              created,modified,deleted,type,participation_status,continent, created_by, modified_by )
+            VALUES(?uuid_key::uuid,?title,?description,?language,?email,?phone,?homepage,?logo_url,?address,?city,?country,?postal_code,
+              ?created,?modified,?deleted,?{"COUNTRY"}::enum_node_type,?{"VOTING"}::enum_node_participation_status,
+              ?{"AFRICA"}::enum_node_continent, ?{"ADMIN"}, ?{"ADMIN"});
         </script>
     </query>
 </etl>
