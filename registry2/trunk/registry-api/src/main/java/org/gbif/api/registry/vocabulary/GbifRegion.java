@@ -30,13 +30,12 @@ public enum GbifRegion {
   LATIN_AMERICA;
 
   /**
-   * @param GBIF's region name
+   * @param region GBIF's region name
    *
    * @return the matching GBIF region or null
    */
   public static GbifRegion fromString(String region) {
     return (GbifRegion) VocabularyUtils.lookupEnum(region, GbifRegion.class);
   }
-
 
 }

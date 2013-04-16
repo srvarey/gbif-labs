@@ -27,9 +27,7 @@ public enum DatasetType {
   METADATA;
 
   /**
-   * @param dataset type
-   *
-   * @return the matching {@link DatasetType} or null
+   * @return the matching DatasetType or null
    */
   public static DatasetType fromString(String datasetType) {
     return (DatasetType) VocabularyUtils.lookupEnum(datasetType, DatasetType.class);

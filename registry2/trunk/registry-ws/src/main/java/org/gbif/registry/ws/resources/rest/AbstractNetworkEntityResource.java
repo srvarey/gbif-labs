@@ -6,11 +6,9 @@ import org.gbif.api.registry.model.NetworkEntity;
 import org.gbif.registry.persistence.WithMyBatis;
 import org.gbif.registry.persistence.mapper.NetworkEntityMapper;
 import org.gbif.registry.ws.guice.Trim;
-import org.gbif.ws.annotation.NullForNotFound;
 import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,7 +22,7 @@ import org.mybatis.guice.transactional.Transactional;
 
 /**
  * Provides a skeleton implementation of the core CRUD operations.
- * 
+ *
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
@@ -44,7 +42,7 @@ public class AbstractNetworkEntityResource<T extends NetworkEntity> implements N
     return WithMyBatis.create(mapper, entity);
   }
 
-  @NullForNotFound
+  @Nullable
   @Override
   public T get(UUID key) {
     return WithMyBatis.get(mapper, key);

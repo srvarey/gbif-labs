@@ -18,7 +18,7 @@ package org.gbif.api.registry.vocabulary;
 import org.gbif.api.util.VocabularyUtils;
 
 /**
- * Enumeration for all GBIF's regions.
+ * Enumeration for all of GBIF's participation statuses.
  */
 public enum ParticipationStatus {
 
@@ -26,7 +26,7 @@ public enum ParticipationStatus {
   ASSOCIATE;
 
   /**
-   * @param GBIF node's participation status
+   * @param participationStatus GBIF node's participation status
    *
    * @return the matching participation status
    */

@@ -15,9 +15,9 @@ import javax.validation.constraints.Size;
 public interface NetworkEntity {
 
   @NotNull
-  public UUID getKey();
+  UUID getKey();
 
-  public void setKey(UUID key);
+  void setKey(UUID key);
 
   @NotNull
   @Size(min = 2, max = 255)

@@ -42,9 +42,7 @@ public enum ContactType {
   SYSTEM_ADMINISTRATOR;
 
   /**
-   * @param contact type
-   *
-   * @return the matching {@link ContactType} or null
+   * @return the matching ContactType or null
    */
   public static ContactType fromString(String contactType) {
     return (ContactType) VocabularyUtils.lookupEnum(contactType, ContactType.class);

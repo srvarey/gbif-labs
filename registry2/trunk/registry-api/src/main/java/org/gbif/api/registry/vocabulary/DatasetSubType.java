@@ -32,9 +32,7 @@ public enum DatasetSubType {
   OBSERVATION;
 
   /**
-   * @param dataset subtype
-   *
-   * @return the matching {@link DatasetSubType} or null
+   * @return the matching DatasetSubType or null
    */
   public static DatasetSubType fromString(String datasetSubType) {
     return (DatasetSubType) VocabularyUtils.lookupEnum(datasetSubType, DatasetSubType.class);

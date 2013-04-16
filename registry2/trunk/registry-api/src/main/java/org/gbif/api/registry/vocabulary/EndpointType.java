@@ -39,9 +39,7 @@ public enum EndpointType {
   OTHER;
 
   /**
-   * @param endpoint type
-   *
-   * @return the matching {@link EndpointType} or null
+   * @return the matching EndpointType or null
    */
   public static EndpointType fromString(String endpointType) {
     return (EndpointType) VocabularyUtils.lookupEnum(endpointType, EndpointType.class);
