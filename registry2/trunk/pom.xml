@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>9</version>
+    <version>10</version>
   </parent>
 
   <groupId>org.gbif.registry</groupId>
@@ -77,27 +77,31 @@
     to the release of that dependency]
   -->
   <properties>
-    <gbif-api.version>0.1-SNAPSHOT</gbif-api.version>
-    <gbif-common.version>0.7</gbif-common.version>
-    <gbif-common-mybatis.version>0.5-SNAPSHOT</gbif-common-mybatis.version>
-    <gbif-common-ws.version>0.5</gbif-common-ws.version>
-    <gbif-common-test.version>0.4</gbif-common-test.version>
-    <gbif-common-service.version>0.3</gbif-common-service.version>
+    <gbif-api.version>0.2</gbif-api.version>
+    <gbif-common.version>0.10</gbif-common.version>
+    <gbif-common-mybatis.version>0.5</gbif-common-mybatis.version>
+    <gbif-common-ws.version>0.6</gbif-common-ws.version>
+    <gbif-common-test.version>0.5</gbif-common-test.version>
+    <gbif-common-service.version>0.4</gbif-common-service.version>
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
-    <guava.version>12.0</guava.version>
+    <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
+    <guava.version>14.0.1</guava.version>
     <guice.version>3.0</guice.version>
-    <logback.version>1.0.7</logback.version>
+    <jackson.version>1.9.11</jackson.version>
+    <jersey.version>1.12</jersey.version>
+    <jsr311-api.version>1.0</jsr311-api.version>
+    <logback.version>1.0.11</logback.version>
+    <mockito.version>1.9.5</mockito.version>
     <mybatis.version>3.1.1</mybatis.version>
     <mybatis-guice.version>3.3</mybatis-guice.version>
     <mybatis-ehcache.version>1.0.0</mybatis-ehcache.version>
     <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
-    <slf4j.version>1.6.5</slf4j.version>
-    <jackson.version>1.9.7</jackson.version>
-    <jersey.version>1.12</jersey.version>
-    <jsr311-api.version>1.0</jsr311-api.version>
+    <powermock-mockito.version>1.5</powermock-mockito.version>
+    <slf4j.version>1.7.5</slf4j.version>
     <servlet-api.version>2.5</servlet-api.version>
+    <!-- TODO:Why use the new version? -->
     <!--<validation-api.version>1.0.0.GA</validation-api.version>-->
-    <validation-api.version>1.1.0.Beta2</validation-api.version>
+    <validation-api.version>1.1.0.Final</validation-api.version>
     <junit.version>4.11</junit.version>
     <bval.version>0.5</bval.version>
     <grizzly-servlet-webserver.version>1.9.50</grizzly-servlet-webserver.version>
@@ -196,6 +200,11 @@
         <groupId>javax.ws.rs</groupId>
         <artifactId>jsr311-api</artifactId>
         <version>${jsr311-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>${findbugs-jsr305.version}</version>
       </dependency>
       <dependency>
         <groupId>com.sun.jersey</groupId>

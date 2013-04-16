@@ -22,8 +22,7 @@ public enum MetadataType {
   EML;
 
   /**
-   * @param metadata type
-   * @return the matching {@link MetadataType} or null
+   * @return the matching MetadataType or null
    */
   public static MetadataType fromString(String metadataType) {
     return (MetadataType) VocabularyUtils.lookupEnum(metadataType, MetadataType.class);

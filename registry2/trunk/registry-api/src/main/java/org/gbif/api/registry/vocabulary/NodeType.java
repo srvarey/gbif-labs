@@ -26,9 +26,7 @@ public enum NodeType {
   ORGANIZATION;
 
   /**
-   * @param node type
-   *
-   * @return the matching {@link NodeType} or null
+   * @return the matching NodeType or null
    */
   public static NodeType fromString(String nodeType) {
     return (NodeType) VocabularyUtils.lookupEnum(nodeType, NodeType.class);

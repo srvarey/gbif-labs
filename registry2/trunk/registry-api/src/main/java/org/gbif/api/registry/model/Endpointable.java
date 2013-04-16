@@ -14,5 +14,5 @@ interface Endpointable {
   @NotNull
   List<Endpoint> getEndpoints();
 
-  public void setEndpoints(List<Endpoint> endpoints);
+  void setEndpoints(List<Endpoint> endpoints);
 }

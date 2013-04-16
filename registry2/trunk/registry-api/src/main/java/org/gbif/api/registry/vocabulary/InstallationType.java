@@ -29,9 +29,7 @@ public enum InstallationType {
   HTTP_INSTALLATION;
 
   /**
-   * @param installation type
-   *
-   * @return the matching {@link InstallationType} or null
+   * @return the matching InstallationType or null
    */
   public static InstallationType fromString(String installationType) {
     return (InstallationType) VocabularyUtils.lookupEnum(installationType, InstallationType.class);

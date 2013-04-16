@@ -4,10 +4,8 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.registry.service.NetworkEntityService;
 import org.gbif.registry.ws.guice.Trim;
-import org.gbif.ws.annotation.NullForNotFound;
 
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -28,13 +26,13 @@ public interface NetworkEntityRest<T> extends NetworkEntityService<T> {
   @Validate
   @Transactional
   @Override
-  public UUID create(@NotNull @Valid @Trim T entity);
+  UUID create(@NotNull @Valid @Trim T entity);
 
   @GET
   @Path("{key}")
-  @NullForNotFound
+  @Nullable
   @Override
-  public T get(@PathParam("key") UUID key);
+  T get(@PathParam("key") UUID key);
 
   /**
    * Method exists only to allow validation that the path key equals the entity key.
@@ -42,20 +40,20 @@ public interface NetworkEntityRest<T> extends NetworkEntityService<T> {
   @PUT
   @Path("{key}")
   @Validate
-  public void update(@PathParam("key") UUID key, @NotNull @Valid @Trim T entity);
+  void update(@PathParam("key") UUID key, @NotNull @Valid @Trim T entity);
 
   @Validate
   @Transactional
   @Override
-  public void update(@Valid @Trim T entity);
+  void update(@Valid @Trim T entity);
 
   @DELETE
   @Path("{key}")
   @Transactional
   @Override
-  public void delete(@PathParam("key") UUID key);
+  void delete(@PathParam("key") UUID key);
 
   @GET
   @Override
-  public PagingResponse<T> list(@Nullable @Context Pageable page);
+  PagingResponse<T> list(@Nullable @Context Pageable page);
 }
