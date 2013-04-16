@@ -18,6 +18,12 @@ import javax.ws.rs.PathParam;
 import org.apache.bval.guice.Validate;
 import org.mybatis.guice.transactional.Transactional;
 
+/**
+ * Defines the URL structure for all comment APIS.
+ * Note: while validation annotations are included here, they will not be inherited unless used in a framework that
+ * supports this (Guice validation module does not). Therefore implementations must repeat the validation annotations,
+ * as shown here. Jackson annotations are inherited.
+ */
 public interface CommentRest extends CommentService {
 
   @POST

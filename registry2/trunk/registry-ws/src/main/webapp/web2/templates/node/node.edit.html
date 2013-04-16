@@ -1,8 +1,12 @@
 <h4>Overview</h4>
 <p class="muted">This information appears on the node profile, organization pages, search results, and beyond.</p>
 <hr/>
-<form class="form-horizontal">
+<form id="nodeEdit" novalidate class="form-horizontal">
   <fieldset class="control-group">
+    <div class="alert alert-error" ng-show="errorMessage!=null">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Error!</strong><p>{{errorMessage}}</p>
+    </div>
     <label class="control-label" for="title">Title</label>
     <div class="controls">
       <input id="title" maxlength="255" type="text" name="title" ng-model="node.title" value="{{node.title}}">
