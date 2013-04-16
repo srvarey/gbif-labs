@@ -1,0 +1,26 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+     
+    <query id="node_contacts" connection-id="old-registry">
+
+		SELECT a.uuid AS node_key, 
+		c.id AS contact_key,
+		CASE c.type WHEN 17001 THEN 'TECHNICAL_POINT_OF_CONTACT' WHEN 17000 THEN 'ADMINISTRATIVE_POINT_OF_CONTACT' WHEN 17010 THEN 'POINT_OF_CONTACT' WHEN 17008 THEN 'ORIGINATOR' WHEN 17007 THEN 'METADATA_AUTHOR' WHEN 17011 THEN 'PRINCIPAL_INVESTIGATOR' WHEN 17002 THEN 'AUTHOR' WHEN 17003 THEN 'CONTENT_PROVIDER' WHEN 17004 THEN 'CUSTODIAN_STEWARD' WHEN 17005 THEN 'DISTRIBUTOR' WHEN 17006 THEN 'EDITOR' WHEN 17009 THEN 'OWNER' WHEN 17012 THEN 'PROCESSOR' WHEN 17014 THEN 'PUBLISHER' WHEN 17015 THEN 'USER' WHEN 17013 THEN 'PROGRAMMER' WHEN 17016 THEN 'DATA_ADMINISTRATOR' WHEN 17017 THEN 'SYSTEM_ADMINISTRATOR'  
+		END AS type,
+		c.is_primary_contact AS is_primary 
+		FROM contact c , agent a 
+		WHERE c.agent_id = a.id AND a.type = 14000
+				 
+        <script connection-id="new-registry">
+            INSERT INTO node_contact(node_key,contact_key,
+              type,is_primary)
+            VALUES(?node_key::uuid,?contact_key,
+              ?type::enum_contact_type,?is_primary);
+        </script>
+    </query>
+</etl>    
