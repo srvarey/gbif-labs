@@ -11,20 +11,9 @@ import com.google.common.collect.Sets;
 import org.apache.bval.jsr303.ApacheValidationProvider;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TagTest {
-
-  @Test
-  public void testEquals() {
-    Tag t1 = new Tag("aa", "aa");
-    Tag t2 = new Tag("aa", "aa");
-    assertEquals("Tags are equal", t1, t2);
-    assertEquals("Tags are equal", t2, t1);
-    t2.setKey(1);
-    assertTrue("Tags are equal", !t2.equals(t1));
-  }
+public class NodeTest {
 
   @Test
   public void testValidations() {
@@ -32,12 +21,13 @@ public class TagTest {
       Validation.byProvider(ApacheValidationProvider.class).configure().buildValidatorFactory();
     Validator validator = validatorFactory.getValidator();
 
-    Tag tag = new Tag("", null);
-    Set<ConstraintViolation<Tag>> violations = validator.validate(tag);
+    Node node = new Node();
+    node.setTitle("a"); // too short
+    Set<ConstraintViolation<Node>> violations = validator.validate(node);
     assertTrue("Violations were expected", !violations.isEmpty());
 
     // ensure all expected properties are caught
-    Set<String> propertiesInViolation = Sets.newHashSet("value");
+    Set<String> propertiesInViolation = Sets.newHashSet("title");
     for (ConstraintViolation<?> cv : violations) {
       propertiesInViolation.remove(cv.getPropertyPath().toString());
     }

@@ -1,9 +1,9 @@
 
 // The node routing module
-var nodeApp = angular.module('registry.node', ['ngResource', 'ui.bootstrap.dropdownToggle']);
+var nodeModule = angular.module('registry.node', ['ngResource', 'ui.bootstrap.dropdownToggle']);
 
 // The state machine
-nodeApp.initializeState = function (stateProvider) {
+nodeModule.initializeState = function (stateProvider) {
   stateProvider.state('nodeSearch', {
     url: '/nodeSearch',
     templateUrl: 'templates/node/search.html',
@@ -43,7 +43,7 @@ nodeApp.initializeState = function (stateProvider) {
 }
 
 // RESTfully backed Node resource 
-nodeApp.factory('Node', function($resource) {
+nodeModule.factory('Node', function($resource) {
   // Node using key as the ID, and PUT on save (TODO change save to create)
   return $resource('/node/:nodeKey', {nodeKey : '@key'}, {
     save : {method:'PUT'}
@@ -51,7 +51,7 @@ nodeApp.factory('Node', function($resource) {
 });
 
 // Search nodes control  
-nodeApp.controller('NodeSearch', function($scope, $state, Node) {
+nodeModule.controller('NodeSearch', function($scope, $state, Node) {
   $scope.nodes = Node.get();
   
   $scope.nodeDetail = function(node) {
@@ -60,13 +60,16 @@ nodeApp.controller('NodeSearch', function($scope, $state, Node) {
 });
 
 // Single node detail / update control  
-nodeApp.controller('NodeDetail', function($scope, $state, $stateParams, Node) {
+nodeModule.controller('NodeDetail', function($scope, $state, $stateParams, Node) {
   $scope.node = Node.get({nodeKey: $stateParams.nodeKey});  	  
   
   $scope.save = function(node) {
     // if (node.key) TODO: check if null and save or create
-    Node.save(node);
-    $state.transitionTo('node.detail', { nodeKey: node.key }); 
+    Node.save(node, 
+      function(response, headers) {
+        $state.transitionTo('node.detail', { nodeKey: node.key })}, 
+      function(response, headers) {
+        $scope.errorMessage=response});
   }
   
   $scope.cancelEdit = function(node) {
@@ -79,7 +82,7 @@ nodeApp.controller('NodeDetail', function($scope, $state, $stateParams, Node) {
 });
 
 // Inspired from http://stackoverflow.com/questions/14774486/use-jquery-timeago-and-angularjs-together
-nodeApp.filter('timeAgo', function() {
+nodeModule.filter('timeAgo', function() {
   return function(date) {
     return moment(date).fromNow();
   }

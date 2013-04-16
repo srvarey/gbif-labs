@@ -16,7 +16,7 @@ var registryApp = angular.module('registry.app', ['ui.compat', 'registry.node'])
         });
       
       // delegate to modules to add their states
-      nodeApp.initializeState($stateProvider);
+      nodeModule.initializeState($stateProvider);
     }])
   .run (
       ['$rootScope', '$state', '$stateParams', function ($rootScope,   $state,   $stateParams) {

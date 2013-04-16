@@ -81,6 +81,16 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
       service.list(new PagingRequest()).getResults().size());
   }
 
+  // @Test(expected = ConstraintViolationException.class)
+  // TODO: the validation exception is mapping to illegal argument on Jersey, but that is not desirable behavior
+  @Test(expected = IllegalArgumentException.class)
+  public void testUpdateFailingValidation() {
+    T n1 = create(newEntity(), 1);
+    n1.setTitle("A"); // should fail as it is too short
+    service.update(asWritable(n1));
+    System.out.println("it worked");
+  }
+
   @Test
   public void testDelete() {
     NetworkEntity n1 = create(newEntity(), 1);

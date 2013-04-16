@@ -16,6 +16,7 @@ import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.NodeMapper;
 import org.gbif.registry.persistence.mapper.OrganizationMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
+import org.gbif.registry.ws.guice.Trim;
 import org.gbif.registry.ws.resources.rest.AbstractNetworkEntityResource;
 import org.gbif.registry.ws.resources.rest.CommentRest;
 import org.gbif.registry.ws.resources.rest.ContactRest;
@@ -25,6 +26,9 @@ import org.gbif.registry.ws.resources.rest.TagRest;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,6 +36,8 @@ import javax.ws.rs.core.Context;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.bval.guice.Validate;
+import org.mybatis.guice.transactional.Transactional;
 
 @Singleton
 @Path("node")
@@ -71,7 +77,8 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
     return new PagingResponse<Organization>(page, null, organizationMapper.pendingEndorsements(page));
   }
 
-  // CONTACTS
+  @Validate
+  @Transactional
   @Override
   public int addContact(UUID targetEntityKey, Contact contact) {
     return WithMyBatis.addContact(contactMapper, nodeMapper, targetEntityKey, contact);
@@ -87,9 +94,10 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
     return WithMyBatis.listContacts(nodeMapper, targetEntityKey);
   }
 
-  // MACHINE TAGS
+  @Validate
+  @Transactional
   @Override
-  public int addMachineTag(UUID targetEntityKey, MachineTag machineTag) {
+  public int addMachineTag(UUID targetEntityKey, @NotNull @Valid @Trim MachineTag machineTag) {
     return WithMyBatis.addMachineTag(machineTagMapper, nodeMapper, targetEntityKey, machineTag);
   }
 
@@ -103,9 +111,10 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
     return WithMyBatis.listMachineTags(nodeMapper, targetEntityKey);
   }
 
-  // TAGS
+  @Validate
+  @Transactional
   @Override
-  public int addTag(UUID targetEntityKey, String value) {
+  public int addTag(UUID targetEntityKey, @NotNull @Size(min = 1) String value) {
     return WithMyBatis.addTag(tagMapper, nodeMapper, targetEntityKey, value);
   }
 
@@ -119,9 +128,10 @@ public class NodeResource extends AbstractNetworkEntityResource<Node> implements
     return WithMyBatis.listTags(nodeMapper, targetEntityKey, owner);
   }
 
-  // COMMENTS
+  @Validate
+  @Transactional
   @Override
-  public int addComment(UUID targetEntityKey, Comment comment) {
+  public int addComment(UUID targetEntityKey, @NotNull @Valid @Trim Comment comment) {
     return WithMyBatis.addComment(commentMapper, nodeMapper, targetEntityKey, comment);
   }
 

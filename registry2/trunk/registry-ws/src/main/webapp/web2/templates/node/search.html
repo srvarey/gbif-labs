@@ -16,8 +16,7 @@ Results matching <strong><em>UK</em></strong>
 
 <div class="btn-group pull-right">
       <a class="btn dropdown-toggle">
-        Setup
-        <span class="caret"></span>
+        <i class="search-toggle"></i>
       </a>
       <ul class="dropdown-menu">
           <li><a>Most recently modified first</a></li>
@@ -32,7 +31,7 @@ Results matching <strong><em>UK</em></strong>
 <ul class="unstyled list-hover">
 <div data-ng-repeat="node in nodes.results">
 <li ng-click="nodeDetail(node)">
-  <strong><a href="">{{node.title}}</a></strong> <span class="muted"><small>a {{node.participationStatus | lowercase}} {{node.type | lowercase}} participant</small></span> <span class="muted pull-right"><small>{{node.modified | timeAgo}}</small></span><br/>
+  <strong><a href="">{{node.title}}</a></strong> <span class="muted"><small>a {{node.participationStatus | lowercase}} {{node.type | lowercase}} participant</small></span> <span class="muted pull-right"><small>Edited {{node.modified | timeAgo}}</small></span><br/>
    {{node.description}}<br/>
    <span class="muted"><small>Created {{node.created | timeAgo}} by {{node.creator || "anonymous"}}</small></span>
 </li>

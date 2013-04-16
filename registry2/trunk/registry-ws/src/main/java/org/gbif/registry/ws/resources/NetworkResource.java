@@ -14,6 +14,7 @@ import org.gbif.registry.persistence.mapper.EndpointMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
+import org.gbif.registry.ws.guice.Trim;
 import org.gbif.registry.ws.resources.rest.AbstractNetworkEntityResource;
 import org.gbif.registry.ws.resources.rest.CommentRest;
 import org.gbif.registry.ws.resources.rest.ContactRest;
@@ -24,10 +25,15 @@ import org.gbif.registry.ws.resources.rest.TagRest;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.Path;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.bval.guice.Validate;
+import org.mybatis.guice.transactional.Transactional;
 
 /**
  * A MyBATIS implementation of the service.
@@ -56,8 +62,10 @@ public class NetworkResource extends AbstractNetworkEntityResource<Network> impl
     this.commentMapper = commentMapper;
   }
 
+  @Validate
+  @Transactional
   @Override
-  public int addContact(UUID targetEntityKey, Contact contact) {
+  public int addContact(UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
     return WithMyBatis.addContact(contactMapper, networkMapper, targetEntityKey, contact);
   }
 
@@ -71,8 +79,10 @@ public class NetworkResource extends AbstractNetworkEntityResource<Network> impl
     return WithMyBatis.listContacts(networkMapper, targetEntityKey);
   }
 
+  @Validate
+  @Transactional
   @Override
-  public int addTag(UUID targetEntityKey, String value) {
+  public int addTag(UUID targetEntityKey, @NotNull @Size(min = 1) String value) {
     return WithMyBatis.addTag(tagMapper, networkMapper, targetEntityKey, value);
   }
 
@@ -86,8 +96,10 @@ public class NetworkResource extends AbstractNetworkEntityResource<Network> impl
     return WithMyBatis.listTags(networkMapper, targetEntityKey, owner);
   }
 
+  @Validate
+  @Transactional
   @Override
-  public int addEndpoint(UUID targetEntityKey, Endpoint endpoint) {
+  public int addEndpoint(UUID targetEntityKey, @NotNull @Valid @Trim Endpoint endpoint) {
     return WithMyBatis.addEndpoint(endpointMapper, networkMapper, targetEntityKey, endpoint);
   }
 
@@ -101,8 +113,10 @@ public class NetworkResource extends AbstractNetworkEntityResource<Network> impl
     return WithMyBatis.listEndpoints(networkMapper, targetEntityKey);
   }
 
+  @Validate
+  @Transactional
   @Override
-  public int addMachineTag(UUID targetEntityKey, MachineTag machineTag) {
+  public int addMachineTag(UUID targetEntityKey, @NotNull @Valid @Trim MachineTag machineTag) {
     return WithMyBatis.addMachineTag(machineTagMapper, networkMapper, targetEntityKey, machineTag);
   }
 
@@ -116,8 +130,10 @@ public class NetworkResource extends AbstractNetworkEntityResource<Network> impl
     return WithMyBatis.listMachineTags(networkMapper, targetEntityKey);
   }
 
+  @Validate
+  @Transactional
   @Override
-  public int addComment(UUID targetEntityKey, Comment comment) {
+  public int addComment(UUID targetEntityKey, @NotNull @Valid @Trim Comment comment) {
     return WithMyBatis.addComment(commentMapper, networkMapper, targetEntityKey, comment);
   }
 
