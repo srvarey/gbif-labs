@@ -2,7 +2,6 @@ package org.gbif.api.registry.model;
 
 import java.util.Date;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,7 +17,6 @@ public class Comment {
   private Date created;
   private Date modified;
 
-  @Min(1)
   public Integer getKey() {
     return key;
   }
@@ -57,7 +55,6 @@ public class Comment {
     this.modifiedBy = modifiedBy;
   }
 
-  @NotNull
   public Date getCreated() {
     return created;
   }
@@ -66,7 +63,6 @@ public class Comment {
     this.created = created;
   }
 
-  @NotNull
   public Date getModified() {
     return modified;
   }

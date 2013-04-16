@@ -21,6 +21,7 @@ import org.junit.Test;
 /**
  * A test that will populate a sample registry database.
  * This class should be removed when development progresses.
+ * This is only used to help those developing the web console.
  */
 public class BootstrapTest {
 
@@ -44,16 +45,13 @@ public class BootstrapTest {
   public void run() {
     Node n1 = Nodes.newInstance();
     n1.setKey(nodeService.create(n1));
-    Organization o1 = Organizations.newInstance();
-    o1.setEndorsingNodeKey(n1.getKey());
+    Organization o1 = Organizations.newInstance(n1.getKey());
     organizationService.create(o1);
 
     Node n2 = Nodes.newInstance();
     n2.setTitle("The US Node");
     n2.setKey(nodeService.create(n2));
-    Organization o2 = Organizations.newInstance();
-
-    o2.setEndorsingNodeKey(n2.getKey());
+    Organization o2 = Organizations.newInstance(n2.getKey());
     o2.setEndorsementApproved(true);
     organizationService.create(o2);
 
@@ -69,13 +67,13 @@ public class BootstrapTest {
   }
 
   @Test
+  @Ignore
   public void lots() {
     for (int n = 0; n < 100; n++) {
       Node n1 = Nodes.newInstance();
       n1.setTitle((n + 1) + ": " + n1.getTitle());
       n1.setKey(nodeService.create(n1));
-      Organization o1 = Organizations.newInstance();
-      o1.setEndorsingNodeKey(n1.getKey());
+      Organization o1 = Organizations.newInstance(n1.getKey());
       organizationService.create(o1);
       for (int i = 0; i < 5; i++) {
         nodeService.addContact(n1.getKey(), newContact(i + ": "));

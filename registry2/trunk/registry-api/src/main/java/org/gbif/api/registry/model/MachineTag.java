@@ -2,7 +2,6 @@ package org.gbif.api.registry.model;
 
 import java.util.Date;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,7 +17,6 @@ public class MachineTag {
   private String createdBy;
   private Date created;
 
-  @Min(1)
   public Integer getKey() {
     return key;
   }
@@ -67,7 +65,6 @@ public class MachineTag {
     this.createdBy = createdBy;
   }
 
-  @NotNull
   public Date getCreated() {
     return created;
   }

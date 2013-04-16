@@ -58,7 +58,6 @@ public class Identifier {
     this.createdBy = createdBy;
   }
 
-  @NotNull
   public Date getCreated() {
     return created;
   }

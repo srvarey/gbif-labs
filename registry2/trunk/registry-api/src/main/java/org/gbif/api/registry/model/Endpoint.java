@@ -83,7 +83,6 @@ public class Endpoint {
     this.modifiedBy = modifiedBy;
   }
 
-  @NotNull
   public Date getCreated() {
     return created;
   }
@@ -92,7 +91,6 @@ public class Endpoint {
     this.created = created;
   }
 
-  @NotNull
   public Date getModified() {
     return modified;
   }

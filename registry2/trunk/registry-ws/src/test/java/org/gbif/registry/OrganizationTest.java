@@ -98,8 +98,7 @@ public class OrganizationTest extends NetworkEntityTest<Organization> {
   protected Organization newEntity() {
     UUID key = nodeService.create(Nodes.newInstance());
     Node node = nodeService.get(key);
-    Organization o = Organizations.newInstance();
-    o.setEndorsingNodeKey(node.getKey());
+    Organization o = Organizations.newInstance(node.getKey());
     return o;
   }
 
@@ -112,8 +111,7 @@ public class OrganizationTest extends NetworkEntityTest<Organization> {
     assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 0);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 0);
 
-    Organization o = Organizations.newInstance();
-    o.setEndorsingNodeKey(node.getKey());
+    Organization o = Organizations.newInstance(node.getKey());
     o.setKey(this.getService().create(o));
     assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 0);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 1);

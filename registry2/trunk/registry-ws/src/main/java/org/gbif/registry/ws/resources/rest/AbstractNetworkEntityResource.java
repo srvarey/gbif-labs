@@ -1,6 +1,7 @@
 package org.gbif.registry.ws.resources.rest;
 
 import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.registry.model.NetworkEntity;
 import org.gbif.registry.persistence.WithMyBatis;
@@ -75,6 +76,7 @@ public class AbstractNetworkEntityResource<T extends NetworkEntity> implements N
 
   @Override
   public PagingResponse<T> list(@Nullable Pageable page) {
+    page = page == null ? new PagingRequest() : page;
     return WithMyBatis.list(mapper, page);
   }
 }
