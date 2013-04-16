@@ -10,12 +10,12 @@ import org.gbif.api.registry.model.MachineTag;
 import org.gbif.api.registry.model.NetworkEntity;
 import org.gbif.api.registry.model.Tag;
 import org.gbif.api.registry.vocabulary.ContactType;
-import org.gbif.registry.persistence.mapper.EndpointableMapper;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.CommentableMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.ContactableMapper;
 import org.gbif.registry.persistence.mapper.EndpointMapper;
+import org.gbif.registry.persistence.mapper.EndpointableMapper;
 import org.gbif.registry.persistence.mapper.IdentifiableMapper;
 import org.gbif.registry.persistence.mapper.IdentifierMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
@@ -81,7 +81,8 @@ public class WithMyBatis {
   }
 
   @Transactional
-  public static int addEndpoint(EndpointMapper endpointMapper, EndpointableMapper endpointableMapper, UUID targetEntityKey,
+  public static int addEndpoint(EndpointMapper endpointMapper, EndpointableMapper endpointableMapper,
+    UUID targetEntityKey,
     Endpoint endpoint) {
     Preconditions.checkArgument(endpoint.getKey() == null, "Unable to create an entity which already has a key");
     endpointMapper.createEndpoint(endpoint);

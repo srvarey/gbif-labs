@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
  */
 public interface NetworkEntity {
 
-  @NotNull
+  @Nullable
   UUID getKey();
 
   void setKey(UUID key);
@@ -31,12 +31,12 @@ public interface NetworkEntity {
 
   void setDescription(String description);
 
-  @NotNull
+  @Nullable
   Date getCreated();
 
   void setCreated(Date created);
 
-  @NotNull
+  @Nullable
   Date getModified();
 
   void setModified(Date modified);

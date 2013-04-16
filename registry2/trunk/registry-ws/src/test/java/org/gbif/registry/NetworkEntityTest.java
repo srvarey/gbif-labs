@@ -14,6 +14,8 @@ import org.gbif.registry.guice.RegistryTestModules;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.ValidationException;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import org.apache.commons.beanutils.BeanUtils;
@@ -81,9 +83,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
       service.list(new PagingRequest()).getResults().size());
   }
 
-  // @Test(expected = ConstraintViolationException.class)
-  // TODO: the validation exception is mapping to illegal argument on Jersey, but that is not desirable behavior
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = ValidationException.class)
   public void testUpdateFailingValidation() {
     T n1 = create(newEntity(), 1);
     n1.setTitle("A"); // should fail as it is too short

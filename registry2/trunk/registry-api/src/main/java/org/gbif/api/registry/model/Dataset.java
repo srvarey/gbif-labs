@@ -82,7 +82,6 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
     this.duplicateOfDatasetKey = duplicateOfDatasetKey;
   }
 
-  @NotNull
   public UUID getInstallationKey() {
     return installationKey;
   }
@@ -204,7 +203,7 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
   }
 
   @Nullable
-  @Size(min = 10, max = 100)
+  @Size(min = 1, max = 100)
   public String getCitationIdentifier() {
     return citationIdentifier;
   }
@@ -231,7 +230,6 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
     this.lockedForAutoUpdate = lockedForAutoUpdate;
   }
 
-  @NotNull
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -241,7 +239,6 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
     this.createdBy = createdBy;
   }
 
-  @NotNull
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;

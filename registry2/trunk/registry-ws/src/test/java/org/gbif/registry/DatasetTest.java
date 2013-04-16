@@ -75,14 +75,14 @@ public class DatasetTest extends NetworkEntityTest<Dataset> {
   public void testEndpoints() {
     Dataset dataset = create(newEntity(), 1);
     EndpointTests.testAddDelete(service, dataset);
-  }  
-  
+  }
+
   @Test
   public void testMachineTags() {
     Dataset dataset = create(newEntity(), 1);
     MachineTagTests.testAddDelete(service, dataset);
-  }  
-  
+  }
+
   @Test
   public void testTags() {
     Dataset dataset = create(newEntity(), 1);
@@ -90,35 +90,32 @@ public class DatasetTest extends NetworkEntityTest<Dataset> {
     dataset = create(newEntity(), 2);
     TagTests.testTagErroneousDelete(service, dataset);
   }
-  
+
   @Test
   public void testIdentifiers() {
     Dataset dataset = create(newEntity(), 1);
     IdentifierTests.testAddDelete(service, dataset);
-  }  
-  
+  }
+
   @Test
   public void testComments() {
     Dataset dataset = create(newEntity(), 1);
     CommentTests.testAddDelete(service, dataset);
-  }  
+  }
 
   @Override
   protected Dataset newEntity() {
     // endorsing node for the organization
     UUID nodeKey = nodeService.create(Nodes.newInstance());
     // owning organization (required field)
-    Organization o = Organizations.newInstance();
-    o.setEndorsingNodeKey(nodeKey);
+    Organization o = Organizations.newInstance(nodeKey);
     UUID organizationKey = organizationService.create(o);
     // hosting technical installation (required field)
-    Installation i = Installations.newInstance();
-    i.setOrganizationKey(organizationKey);
+    Installation i = Installations.newInstance(organizationKey);
     UUID installationKey = installationService.create(i);
 
     // the dataset
-    Dataset d = Datasets.newInstance();
-    d.setOwningOrganizationKey(organizationKey);
+    Dataset d = Datasets.newInstance(organizationKey);
     d.setInstallationKey(installationKey);
     return d;
   }
