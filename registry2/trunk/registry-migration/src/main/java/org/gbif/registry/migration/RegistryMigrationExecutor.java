@@ -67,6 +67,11 @@ public class RegistryMigrationExecutor {
       statics = execute("src/main/resources/migrate-installation_contacts.xml", "Registry installation_contact");
       System.out.println("Installation_contacts created in " + statics.getTotalTime() + " milliseconds");
             
+      System.out.println("Starting network_contacts creation...");
+      statics = execute("src/main/resources/migrate-network_contacts.xml", "Registry network_contact");
+      System.out.println("Network_contacts created in " + statics.getTotalTime() + " milliseconds");
+
+      
     } catch (EtlExecutorException e) {
       e.printStackTrace();
     }
