@@ -6,17 +6,16 @@
     <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
 
-    <query id="networks" connection-id="old-registry">
-        SELECT t1.a_id AS network_key, 
-        	t1.ta_id AS dataset_key
-        FROM (SELECT a.id AS a_id,
-        		 ar.to_agent_id AS ta_id
-        		FROM agent_relation ar, agent a WHERE ar.relation_type_id = 15030 AND ar.from_agent_id = a.id AND ar.deleted IS NULL AND a.deleted IS NULL) t1
-					JOIN agent ag ON t1.ta_id = ag.id WHERE ag.deleted IS NULL
+    <query id="dataset_networks" connection-id="old-registry">
+        SELECT t1.uuid AS network_key, 
+        	ag.uuid AS dataset_key 
+        FROM 
+		(SELECT a.uuid AS uuid, a.id AS a_id, ar.to_agent_id AS ta_id FROM agent_relation ar, agent a WHERE ar.relation_type_id = 15030 AND ar.from_agent_id = a.id AND ar.deleted IS NULL AND a.deleted IS NULL) t1
+			JOIN agent ag ON t1.ta_id = ag.id WHERE ag.deleted IS NULL
 					
 		<script connection-id="new-registry">
 		INSERT INTO dataset_network(dataset_key, network_key)
-		VALUES (?dataset_key,?network_key);
+		VALUES (?dataset_key::uuid,?network_key::uuid);
         </script>
     </query>
 </etl>
