@@ -15,14 +15,18 @@
  */
 package org.gbif.registry2;
 
+import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Organization;
+import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.registry2.utils.Datasets;
 import org.gbif.registry2.utils.Installations;
 import org.gbif.registry2.utils.Nodes;
 import org.gbif.registry2.utils.Organizations;
+import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
@@ -48,80 +52,92 @@ import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
  * </ol>
  */
 @RunWith(Parameterized.class)
-public class InstallationTest extends NetworkEntityTest<Installation> {
+public class DatasetIT extends NetworkEntityTest<Dataset> {
 
-  private final InstallationService service;
+  private final DatasetService service;
   private final OrganizationService organizationService;
   private final NodeService nodeService;
+  private final InstallationService installationService;
 
   @Parameters
   public static Iterable<Object[]> data() {
     final Injector webservice = webservice();
     final Injector client = webserviceClient();
-    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(InstallationResource.class),
-      webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class)},
-                                      new Object[] {client.getInstance(InstallationService.class),
+    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(DatasetResource.class),
+      webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class),
+      webservice.getInstance(InstallationResource.class)},
+                                      new Object[] {client.getInstance(DatasetService.class),
                                         client.getInstance(OrganizationService.class),
-                                        client.getInstance(NodeService.class)});
+                                        client.getInstance(NodeService.class),
+                                        client.getInstance(InstallationService.class)});
   }
 
-  public InstallationTest(
-    InstallationService service,
+  public DatasetIT(
+    DatasetService service,
     OrganizationService organizationService,
-    NodeService nodeService
+    NodeService nodeService,
+    InstallationService installationService
   ) {
     super(service);
     this.service = service;
     this.organizationService = organizationService;
     this.nodeService = nodeService;
+    this.installationService = installationService;
   }
 
   @Test
   public void testContacts() {
-    Installation installation = create(newEntity(), 1);
-    ContactTests.testAddDelete(service, installation);
+    Dataset dataset = create(newEntity(), 1);
+    ContactTests.testAddDelete(service, dataset);
   }
 
   @Test
   public void testEndpoints() {
-    Installation installation;
-    try {
-      installation = create(newEntity(), 1);
-      EndpointTests.testAddDelete(service, installation);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    Dataset dataset = create(newEntity(), 1);
+    EndpointTests.testAddDelete(service, dataset);
   }
 
   @Test
   public void testMachineTags() {
-    Installation installation = create(newEntity(), 1);
-    MachineTagTests.testAddDelete(service, installation);
+    Dataset dataset = create(newEntity(), 1);
+    MachineTagTests.testAddDelete(service, dataset);
   }
 
   @Test
   public void testTags() {
-    Installation installation = create(newEntity(), 1);
-    TagTests.testAddDelete(service, installation);
-    installation = create(newEntity(), 2);
-    TagTests.testTagErroneousDelete(service, installation);
+    Dataset dataset = create(newEntity(), 1);
+    TagTests.testAddDelete(service, dataset);
+    dataset = create(newEntity(), 2);
+    TagTests.testTagErroneousDelete(service, dataset);
+  }
+
+  @Test
+  public void testIdentifiers() {
+    Dataset dataset = create(newEntity(), 1);
+    IdentifierTests.testAddDelete(service, dataset);
   }
 
   @Test
   public void testComments() {
-    Installation installation = create(newEntity(), 1);
-    CommentTests.testAddDelete(service, installation);
+    Dataset dataset = create(newEntity(), 1);
+    CommentTests.testAddDelete(service, dataset);
   }
 
   @Override
-  protected Installation newEntity() {
+  protected Dataset newEntity() {
+    // endorsing node for the organization
     UUID nodeKey = nodeService.create(Nodes.newInstance());
+    // owning organization (required field)
     Organization o = Organizations.newInstance(nodeKey);
-    UUID key = organizationService.create(o);
-    Organization organization = organizationService.get(key);
-    Installation i = Installations.newInstance(organization.getKey());
-    return i;
+    UUID organizationKey = organizationService.create(o);
+    // hosting technical installation (required field)
+    Installation i = Installations.newInstance(organizationKey);
+    UUID installationKey = installationService.create(i);
+
+    // the dataset
+    Dataset d = Datasets.newInstance(organizationKey);
+    d.setInstallationKey(installationKey);
+    return d;
   }
 
 }

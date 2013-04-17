@@ -50,7 +50,7 @@ import static org.junit.Assert.assertNotNull;
  * </ol>
  */
 @RunWith(Parameterized.class)
-public class OrganizationTest extends NetworkEntityTest<Organization> {
+public class OrganizationIT extends NetworkEntityTest<Organization> {
 
   private final OrganizationService service;
   private final NodeService nodeService;
@@ -65,7 +65,7 @@ public class OrganizationTest extends NetworkEntityTest<Organization> {
                                         client.getInstance(NodeService.class)});
   }
 
-  public OrganizationTest(OrganizationService service, NodeService nodeService) {
+  public OrganizationIT(OrganizationService service, NodeService nodeService) {
     super(service);
     this.service = service;
     this.nodeService = nodeService;
