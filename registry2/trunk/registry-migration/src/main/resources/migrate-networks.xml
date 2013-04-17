@@ -9,10 +9,7 @@
     <query id="networks" connection-id="old-registry">
     	SELECT uuid AS uuid_key,
     		name AS title,
-    		CASE
-    			WHEN length(description)&gt;1000 THEN substring(description,1,1000)
-    			ELSE description
-    		END AS description,
+    		description,
     		CASE 
     			WHEN language IS NULL THEN 'en' 
     			ELSE language 
@@ -46,7 +43,7 @@
     		created,
     		modified,
     		deleted
-    	FROM agent WHERE type = 14080
+    	FROM agent WHERE type = 14080 OR uuid = '7ddf754f-d193-4cc9-b351-99906754a03b'
     		
         <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
         <script connection-id="new-registry">
