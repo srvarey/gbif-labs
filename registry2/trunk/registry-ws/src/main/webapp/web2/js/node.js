@@ -45,7 +45,7 @@ nodeModule.initializeState = function (stateProvider) {
 // RESTfully backed Node resource 
 nodeModule.factory('Node', function($resource) {
   // Node using key as the ID, and PUT on save (TODO change save to create)
-  return $resource('/node/:nodeKey', {nodeKey : '@key'}, {
+  return $resource('../node/:nodeKey', {nodeKey : '@key'}, {
     save : {method:'PUT'}
   });  
 });
