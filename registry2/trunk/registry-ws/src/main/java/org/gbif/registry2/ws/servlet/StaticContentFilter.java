@@ -39,7 +39,7 @@ public class StaticContentFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
 
     String path = req.getRequestURI().substring(req.getContextPath().length());
-    if (path.contains("web") || path.contains("web2")) {
+    if (path.contains("/web/") || path.contains("/web2/")) {
       // do not chain any more filters
       request.getRequestDispatcher(path).forward(request, response);
 
