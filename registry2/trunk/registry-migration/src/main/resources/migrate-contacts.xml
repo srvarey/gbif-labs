@@ -7,7 +7,7 @@
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
 
     <query id="contact" connection-id="old-registry">
-    SELECT id AS key,
+    SELECT id AS `key`,
     	CASE
     		WHEN char_length(trim(CONCAT_WS(' ',first_name, last_name)))&lt;1 THEN NULL
     		ELSE trim(CONCAT_WS(' ',first_name, last_name))
@@ -18,7 +18,7 @@
     	END AS description,
     	CASE
     		WHEN char_length(trim(position))&lt;2 THEN NULL
-    		ESLE position
+    		ELSE position
     	END AS position,
     	CASE 
     		WHEN char_length(trim(email))&lt;5 THEN null 
@@ -47,8 +47,11 @@
     	END AS country,
     	NULL AS postal_code,	<!-- hardcoded value. Column usage is uncertain -->
     	created,
-    	modified
-    FROM contact   	
+    	CASE
+    		WHEN modified IS NULL THEN NOW()
+    		ELSE modified
+    	END AS modified
+    FROM contact WHERE deleted IS NULL  	
     		 
     <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
     <script connection-id="new-registry">
