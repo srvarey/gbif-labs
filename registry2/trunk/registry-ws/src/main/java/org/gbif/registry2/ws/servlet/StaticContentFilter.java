@@ -16,6 +16,7 @@
 package org.gbif.registry2.ws.servlet;
 
 import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -41,7 +42,7 @@ public class StaticContentFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     String path = req.getRequestURI().substring(req.getContextPath().length());
 
-    if (path.startsWith("/web")) {
+    if (path.contains("/web/") || path.contains("/web2/")) {
       // do not chain any more filters
       request.getRequestDispatcher(req.getRequestURI()).forward(request, response);
 
