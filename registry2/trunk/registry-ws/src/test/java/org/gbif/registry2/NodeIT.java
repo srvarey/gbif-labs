@@ -36,7 +36,7 @@ import org.junit.runners.Parameterized.Parameters;
  * </ol>
  */
 @RunWith(Parameterized.class)
-public class NodeTest extends NetworkEntityTest<Node> {
+public class NodeIT extends NetworkEntityTest<Node> {
 
   private final NodeService service;
 
@@ -47,7 +47,7 @@ public class NodeTest extends NetworkEntityTest<Node> {
                                         RegistryTestModules.webserviceClient().getInstance(NodeService.class)});
   }
 
-  public NodeTest(NodeService service) {
+  public NodeIT(NodeService service) {
     super(service);
     this.service = service;
   }

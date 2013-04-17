@@ -84,7 +84,6 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     expose(IdentifierMapper.class);
     expose(CommentMapper.class);
     expose(MetadataMapper.class);
-
   }
 
   /**
@@ -161,5 +160,6 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     @Override
     protected void bindManagers() {
     }
+
   }
 }
