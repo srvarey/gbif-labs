@@ -5,7 +5,6 @@
     </properties>
     <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
-    
 
     <query id="datasets" connection-id="old-registry">
         SELECT a.uuid AS uuid_key,
@@ -42,6 +41,7 @@
         AND aHosting.type=14100
         AND ep.deleted IS NULL
         GROUP BY uuid_key
+
 
         <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
         <script connection-id="new-registry">
