@@ -17,7 +17,8 @@
           a.alias AS alias,
           CASE WHEN char_length(trim(a.description))&lt;10 THEN null ELSE a.description END AS description,
           CASE WHEN a.language IS NULL THEN 'en' WHEN char_length(trim(a.language))&lt;2 THEN 'en' ELSE a.language END AS language,
-          a.homepage AS homepage,
+          CASE WHEN a.homepage NOT REGEXP '^[a-z0-9]{2,}://|^[a-z0-9]{2,}\\.' THEN IF(a.homepage REGEXP '`', REPLACE(a.homepage, '`',''), NULL ) 
+			ELSE a.homepage END AS homepage,
           a.logoURL as logo_url,          
           CASE WHEN char_length(trim(ep.citation_text))&lt;10 THEN null ELSE ep.citation_text END AS citation,
           CASE WHEN char_length(trim(ep.citation_identifier))&lt;1 THEN null ELSE ep.citation_identifier END AS citation_identifier,
