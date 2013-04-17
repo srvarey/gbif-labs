@@ -37,11 +37,11 @@ public class StaticContentFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest) request;
-    String path = req.getRequestURI().substring(req.getContextPath().length());
 
+    String path = req.getRequestURI().substring(req.getContextPath().length());
     if (path.contains("web") || path.contains("web2")) {
       // do not chain any more filters
-      request.getRequestDispatcher(req.getRequestURI()).forward(request, response);
+      request.getRequestDispatcher(path).forward(request, response);
 
     } else {
       chain.doFilter(request, response);
