@@ -14,10 +14,10 @@
 		END AS type,
 		c.is_primary_contact AS is_primary 
 		FROM contact c , agent a 
-		WHERE c.agent_id = a.id AND c.deleted IS NULL AND a.type = 14010
+		WHERE c.agent_id = a.id AND c.deleted IS NULL AND a.deleted IS NULL AND a.type = 14010
 				 
         <script connection-id="new-registry">
-            INSERT INTO organization_contact(node_key,contact_key,
+            INSERT INTO organization_contact(organization_key,contact_key,
               type,is_primary)
             VALUES(?organization_key::uuid,?contact_key,
               ?type::enum_contact_type,?is_primary);
