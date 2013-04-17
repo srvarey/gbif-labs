@@ -7,7 +7,7 @@
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
      
     <query id="endpoint" connection-id="old-registry">
-        SELECT uuid AS uuid_key,
+        SELECT id AS `key`,
         CASE service_type_id
         	WHEN 16000 THEN 'EML' WHEN 16010 THEN 'FEED' WHEN 16030 THEN 'WFS' WHEN 16040 THEN 'WMS' WHEN 16050 THEN 'TCS_RDF' WHEN 16060 THEN 'TCS_XML' WHEN 16090 THEN 'DWC_ARCHIVE' WHEN 16100 THEN 'DIGIR' WHEN 16110 THEN 'DIGIR_MANIS' WHEN 16120 THEN 'TAPIR' WHEN 16130 THEN 'BIOCASE' WHEN 16150 THEN 'OAI_PMH' WHEN 16160 THEN 'DWC_ARCHIVE_CHECKLIST' WHEN 16170 THEN 'DWC_ARCHIVE_OCCURRENCE' WHEN 16180 THEN 'OTHER'
         END AS type,
@@ -23,7 +23,7 @@
         <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
         <script connection-id="new-registry">
             INSERT INTO endpoint(key,type,url,description,created,modified,created_by,modified_by)
-            VALUES(?uuid_key::uuid,?type::enum_endpoint_type,?description,?created,?modified,?created_by,?modified_by);
+            VALUES(?key,?type::enum_endpoint_type,?url,?description,?created,?modified,?created_by,?modified_by);
         </script>
     </query>
 
