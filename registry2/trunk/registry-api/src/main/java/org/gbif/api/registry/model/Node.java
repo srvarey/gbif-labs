@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.api.registry.model;
 
 import org.gbif.api.registry.vocabulary.Continent;
@@ -11,14 +26,12 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-
 
 /**
  * A GBIF participant node.
@@ -62,6 +75,56 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
     this.key = key;
   }
 
+  @Override
+  public String getTitle() {
+    return title;
+  }
+
+  @Override
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public Date getCreated() {
+    return created;
+  }
+
+  @Override
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  @Override
+  public Date getModified() {
+    return modified;
+  }
+
+  @Override
+  public void setModified(Date modified) {
+    this.modified = modified;
+  }
+
+  @Override
+  public Date getDeleted() {
+    return deleted;
+  }
+
+  @Override
+  public void setDeleted(Date deleted) {
+    this.deleted = deleted;
+  }
+
   @NotNull
   public NodeType getType() {
     return type;
@@ -96,26 +159,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
 
   public void setContinent(Continent continent) {
     this.continent = continent;
-  }
-
-  @Override
-  public String getTitle() {
-    return title;
-  }
-
-  @Override
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   @NotNull
@@ -235,36 +278,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   }
 
   @Override
-  public Date getCreated() {
-    return created;
-  }
-
-  @Override
-  public void setCreated(Date created) {
-    this.created = created;
-  }
-
-  @Override
-  public Date getModified() {
-    return modified;
-  }
-
-  @Override
-  public void setModified(Date modified) {
-    this.modified = modified;
-  }
-
-  @Override
-  public Date getDeleted() {
-    return deleted;
-  }
-
-  @Override
-  public void setDeleted(Date deleted) {
-    this.deleted = deleted;
-  }
-
-  @Override
   public List<Contact> getContacts() {
     return contacts;
   }
@@ -305,44 +318,99 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   }
 
   @Override
-  public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("type", type)
-      .add("participationStatus", participationStatus).add("gbifRegion", gbifRegion).add("continent", continent)
-      .add("title", title).add("description", description).add("language", language).add("email", email)
-      .add("phone", phone).add("homepage", homepage).add("logoUrl", logoUrl).add("address", address).add("city", city)
-      .add("province", province).add("country", country).add("postalCode", postalCode).add("createdBy", createdBy)
-      .add("modifiedBy", modifiedBy).add("created", created).add("modified", modified).add("deleted", deleted)
-      .add("contacts", contacts).add("machineTags", machineTags).add("tags", tags).add("comments", comments).toString();
-  }
-
-  @Override
   public int hashCode() {
-    return Objects.hashCode(key, type, participationStatus, gbifRegion, continent, title, description, language, email,
-      phone, homepage, logoUrl, address, city, province, country, postalCode, createdBy, modifiedBy, created, modified,
-      deleted, contacts, machineTags, tags, comments);
+    return Objects.hashCode(key,
+                            type,
+                            participationStatus,
+                            gbifRegion,
+                            continent,
+                            title,
+                            description,
+                            language,
+                            email,
+                            phone,
+                            homepage,
+                            logoUrl,
+                            address,
+                            city,
+                            province,
+                            country,
+                            postalCode,
+                            createdBy,
+                            modifiedBy,
+                            created,
+                            modified,
+                            deleted,
+                            contacts,
+                            machineTags,
+                            tags,
+                            comments);
   }
 
   @Override
   public boolean equals(Object object) {
     if (object instanceof Node) {
       Node that = (Node) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.type, that.type)
-        && Objects.equal(this.participationStatus, that.participationStatus)
-        && Objects.equal(this.gbifRegion, that.gbifRegion) && Objects.equal(this.continent, that.continent)
-        && Objects.equal(this.title, that.title) && Objects.equal(this.description, that.description)
-        && Objects.equal(this.language, that.language) && Objects.equal(this.email, that.email)
-        && Objects.equal(this.phone, that.phone) && Objects.equal(this.homepage, that.homepage)
-        && Objects.equal(this.logoUrl, that.logoUrl) && Objects.equal(this.address, that.address)
-        && Objects.equal(this.city, that.city) && Objects.equal(this.province, that.province)
-        && Objects.equal(this.country, that.country) && Objects.equal(this.postalCode, that.postalCode)
-        && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.modifiedBy, that.modifiedBy)
-        && Objects.equal(this.created, that.created) && Objects.equal(this.modified, that.modified)
-        && Objects.equal(this.deleted, that.deleted) && Objects.equal(this.contacts, that.contacts)
-        && Objects.equal(this.machineTags, that.machineTags) && Objects.equal(this.tags, that.tags)
-        && Objects.equal(this.comments, that.comments);
+      return Objects.equal(this.key, that.key)
+             && Objects.equal(this.type, that.type)
+             && Objects.equal(this.participationStatus, that.participationStatus)
+             && Objects.equal(this.gbifRegion, that.gbifRegion)
+             && Objects.equal(this.continent, that.continent)
+             && Objects.equal(this.title, that.title)
+             && Objects.equal(this.description, that.description)
+             && Objects.equal(this.language, that.language)
+             && Objects.equal(this.email, that.email)
+             && Objects.equal(this.phone, that.phone)
+             && Objects.equal(this.homepage, that.homepage)
+             && Objects.equal(this.logoUrl, that.logoUrl)
+             && Objects.equal(this.address, that.address)
+             && Objects.equal(this.city, that.city)
+             && Objects.equal(this.province, that.province)
+             && Objects.equal(this.country, that.country)
+             && Objects.equal(this.postalCode, that.postalCode)
+             && Objects.equal(this.createdBy, that.createdBy)
+             && Objects.equal(this.modifiedBy, that.modifiedBy)
+             && Objects.equal(this.created, that.created)
+             && Objects.equal(this.modified, that.modified)
+             && Objects.equal(this.deleted, that.deleted)
+             && Objects.equal(this.contacts, that.contacts)
+             && Objects.equal(this.machineTags, that.machineTags)
+             && Objects.equal(this.tags, that.tags)
+             && Objects.equal(this.comments, that.comments);
     }
     return false;
   }
 
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("key", key)
+      .add("type", type)
+      .add("participationStatus", participationStatus)
+      .add("gbifRegion", gbifRegion)
+      .add("continent", continent)
+      .add("title", title)
+      .add("description", description)
+      .add("language", language)
+      .add("email", email)
+      .add("phone", phone)
+      .add("homepage", homepage)
+      .add("logoUrl", logoUrl)
+      .add("address", address)
+      .add("city", city)
+      .add("province", province)
+      .add("country", country)
+      .add("postalCode", postalCode)
+      .add("createdBy", createdBy)
+      .add("modifiedBy", modifiedBy)
+      .add("created", created)
+      .add("modified", modified)
+      .add("deleted", deleted)
+      .add("contacts", contacts)
+      .add("machineTags", machineTags)
+      .add("tags", tags)
+      .add("comments", comments)
+      .toString();
+  }
 
 }

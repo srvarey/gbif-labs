@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.registry;
 
 import org.gbif.api.model.common.paging.PagingRequest;
@@ -26,7 +41,6 @@ import static org.gbif.registry.guice.RegistryTestModules.webserviceClient;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
 /**
  * This is parameterized to run the same test routines for the following:
  * <ol>
@@ -35,25 +49,26 @@ import static org.junit.Assert.assertNotNull;
  * <li>The WS service client layer</li>
  * </ol>
  */
-@RunWith(value = Parameterized.class)
+@RunWith(Parameterized.class)
 public class OrganizationTest extends NetworkEntityTest<Organization> {
 
   private final OrganizationService service;
   private final NodeService nodeService;
 
-  public OrganizationTest(OrganizationService service, NodeService nodeService) {
-    super(service);
-    this.service = service;
-    this.nodeService = nodeService;
-  }
-
   @Parameters
   public static Iterable<Object[]> data() {
     final Injector webservice = webservice();
     final Injector client = webserviceClient();
-    return ImmutableList.<Object[]>of(
-      new Object[] {webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class)},
-      new Object[] {client.getInstance(OrganizationService.class), client.getInstance(NodeService.class)});
+    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(OrganizationResource.class),
+      webservice.getInstance(NodeResource.class)},
+                                      new Object[] {client.getInstance(OrganizationService.class),
+                                        client.getInstance(NodeService.class)});
+  }
+
+  public OrganizationTest(OrganizationService service, NodeService nodeService) {
+    super(service);
+    this.service = service;
+    this.nodeService = nodeService;
   }
 
   @Test
@@ -94,14 +109,6 @@ public class OrganizationTest extends NetworkEntityTest<Organization> {
     CommentTests.testAddDelete(service, organization);
   }
 
-  @Override
-  protected Organization newEntity() {
-    UUID key = nodeService.create(Nodes.newInstance());
-    Node node = nodeService.get(key);
-    Organization o = Organizations.newInstance(node.getKey());
-    return o;
-  }
-
   @Test
   public void testEndorsements() {
     Node node = Nodes.newInstance();
@@ -122,9 +129,18 @@ public class OrganizationTest extends NetworkEntityTest<Organization> {
     assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 1);
   }
 
+  @Override
+  protected Organization newEntity() {
+    UUID key = nodeService.create(Nodes.newInstance());
+    Node node = nodeService.get(key);
+    Organization o = Organizations.newInstance(node.getKey());
+    return o;
+  }
+
   private void assertResultsOfSize(PagingResponse<Organization> results, int size) {
     assertNotNull(results);
     assertNotNull(results.getResults());
     assertEquals("Unexpected result size for current test state", size, results.getResults().size());
   }
+
 }

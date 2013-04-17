@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.api.registry.model;
 
 import org.gbif.api.registry.vocabulary.DatasetSubType;
@@ -8,7 +23,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -16,12 +30,11 @@ import javax.validation.constraints.Size;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
-
 /**
  * A GBIF dataset which provides occurrence data, checklist data or metadata.
  */
-public class Dataset implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable,
-  Commentable {
+public class Dataset
+  implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable, Commentable {
 
   private UUID key;
   private UUID parentDatasetKey;
@@ -62,6 +75,56 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
   @Override
   public void setKey(UUID key) {
     this.key = key;
+  }
+
+  @Override
+  public String getTitle() {
+    return title;
+  }
+
+  @Override
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public Date getCreated() {
+    return created;
+  }
+
+  @Override
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  @Override
+  public Date getModified() {
+    return modified;
+  }
+
+  @Override
+  public void setModified(Date modified) {
+    this.modified = modified;
+  }
+
+  @Override
+  public Date getDeleted() {
+    return deleted;
+  }
+
+  @Override
+  public void setDeleted(Date deleted) {
+    this.deleted = deleted;
   }
 
   @Nullable
@@ -125,16 +188,6 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
     this.subType = subType;
   }
 
-  @Override
-  public String getTitle() {
-    return title;
-  }
-
-  @Override
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
   @Nullable
   @Size(min = 2, max = 50)
   public String getAlias() {
@@ -153,16 +206,6 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
 
   public void setAbbreviation(String abbreviation) {
     this.abbreviation = abbreviation;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   @NotNull
@@ -249,36 +292,6 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
   }
 
   @Override
-  public Date getCreated() {
-    return created;
-  }
-
-  @Override
-  public void setCreated(Date created) {
-    this.created = created;
-  }
-
-  @Override
-  public Date getModified() {
-    return modified;
-  }
-
-  @Override
-  public void setModified(Date modified) {
-    this.modified = modified;
-  }
-
-  @Override
-  public Date getDeleted() {
-    return deleted;
-  }
-
-  @Override
-  public void setDeleted(Date deleted) {
-    this.deleted = deleted;
-  }
-
-  @Override
   public List<Contact> getContacts() {
     return contacts;
   }
@@ -339,51 +352,111 @@ public class Dataset implements NetworkEntity, Contactable, Endpointable, Machin
   }
 
   @Override
-  public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("parentDatasetKey", parentDatasetKey)
-      .add("duplicateOfDatasetKey", duplicateOfDatasetKey).add("installationKey", installationKey)
-      .add("owningOrganizationKey", owningOrganizationKey).add("external", external).add("type", type)
-      .add("subType", subType).add("title", title).add("alias", alias).add("abbreviation", abbreviation)
-      .add("description", description).add("language", language).add("homepage", homepage).add("logoUrl", logoUrl)
-      .add("citation", citation).add("citationIdentifier", citationIdentifier).add("rights", rights)
-      .add("lockedForAutoUpdate", lockedForAutoUpdate).add("createdBy", createdBy).add("modifiedBy", modifiedBy)
-      .add("created", created).add("modified", modified).add("deleted", deleted).add("contacts", contacts)
-      .add("endpoints", endpoints).add("machineTags", machineTags).add("tags", tags).add("identifiers", identifiers)
-      .add("comments", comments).toString();
-  }
-
-  @Override
   public int hashCode() {
-    return Objects.hashCode(key, parentDatasetKey, duplicateOfDatasetKey, installationKey, owningOrganizationKey,
-      external, type, subType, title, alias, abbreviation, description, language, homepage, logoUrl, citation,
-      citationIdentifier, rights, lockedForAutoUpdate, createdBy, modifiedBy, created, modified, deleted, contacts,
-      endpoints, machineTags, tags, identifiers, comments);
+    return Objects.hashCode(key,
+                            parentDatasetKey,
+                            duplicateOfDatasetKey,
+                            installationKey,
+                            owningOrganizationKey,
+                            external,
+                            type,
+                            subType,
+                            title,
+                            alias,
+                            abbreviation,
+                            description,
+                            language,
+                            homepage,
+                            logoUrl,
+                            citation,
+                            citationIdentifier,
+                            rights,
+                            lockedForAutoUpdate,
+                            createdBy,
+                            modifiedBy,
+                            created,
+                            modified,
+                            deleted,
+                            contacts,
+                            endpoints,
+                            machineTags,
+                            tags,
+                            identifiers,
+                            comments);
   }
 
   @Override
   public boolean equals(Object object) {
     if (object instanceof Dataset) {
       Dataset that = (Dataset) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.parentDatasetKey, that.parentDatasetKey)
-        && Objects.equal(this.duplicateOfDatasetKey, that.duplicateOfDatasetKey)
-        && Objects.equal(this.installationKey, that.installationKey)
-        && Objects.equal(this.owningOrganizationKey, that.owningOrganizationKey)
-        && Objects.equal(this.external, that.external) && Objects.equal(this.type, that.type)
-        && Objects.equal(this.subType, that.subType) && Objects.equal(this.title, that.title)
-        && Objects.equal(this.alias, that.alias) && Objects.equal(this.abbreviation, that.abbreviation)
-        && Objects.equal(this.description, that.description) && Objects.equal(this.language, that.language)
-        && Objects.equal(this.homepage, that.homepage) && Objects.equal(this.logoUrl, that.logoUrl)
-        && Objects.equal(this.citation, that.citation)
-        && Objects.equal(this.citationIdentifier, that.citationIdentifier) && Objects.equal(this.rights, that.rights)
-        && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
-        && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.modifiedBy, that.modifiedBy)
-        && Objects.equal(this.created, that.created) && Objects.equal(this.modified, that.modified)
-        && Objects.equal(this.deleted, that.deleted) && Objects.equal(this.contacts, that.contacts)
-        && Objects.equal(this.endpoints, that.endpoints) && Objects.equal(this.machineTags, that.machineTags)
-        && Objects.equal(this.tags, that.tags) && Objects.equal(this.identifiers, that.identifiers)
-        && Objects.equal(this.comments, that.comments);
+      return Objects.equal(this.key, that.key)
+             && Objects.equal(this.parentDatasetKey, that.parentDatasetKey)
+             && Objects.equal(this.duplicateOfDatasetKey, that.duplicateOfDatasetKey)
+             && Objects.equal(this.installationKey, that.installationKey)
+             && Objects.equal(this.owningOrganizationKey, that.owningOrganizationKey)
+             && Objects.equal(this.external, that.external)
+             && Objects.equal(this.type, that.type)
+             && Objects.equal(this.subType, that.subType)
+             && Objects.equal(this.title, that.title)
+             && Objects.equal(this.alias, that.alias)
+             && Objects.equal(this.abbreviation, that.abbreviation)
+             && Objects.equal(this.description, that.description)
+             && Objects.equal(this.language, that.language)
+             && Objects.equal(this.homepage, that.homepage)
+             && Objects.equal(this.logoUrl, that.logoUrl)
+             && Objects.equal(this.citation, that.citation)
+             && Objects.equal(this.citationIdentifier, that.citationIdentifier)
+             && Objects.equal(this.rights, that.rights)
+             && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
+             && Objects.equal(this.createdBy, that.createdBy)
+             && Objects.equal(this.modifiedBy, that.modifiedBy)
+             && Objects.equal(this.created, that.created)
+             && Objects.equal(this.modified, that.modified)
+             && Objects.equal(this.deleted, that.deleted)
+             && Objects.equal(this.contacts, that.contacts)
+             && Objects.equal(this.endpoints, that.endpoints)
+             && Objects.equal(this.machineTags, that.machineTags)
+             && Objects.equal(this.tags, that.tags)
+             && Objects.equal(this.identifiers, that.identifiers)
+             && Objects.equal(this.comments, that.comments);
     }
     return false;
+  }
+
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("key", key)
+      .add("parentDatasetKey", parentDatasetKey)
+      .add("duplicateOfDatasetKey", duplicateOfDatasetKey)
+      .add("installationKey", installationKey)
+      .add("owningOrganizationKey", owningOrganizationKey)
+      .add("external", external)
+      .add("type", type)
+      .add("subType", subType)
+      .add("title", title)
+      .add("alias", alias)
+      .add("abbreviation", abbreviation)
+      .add("description", description)
+      .add("language", language)
+      .add("homepage", homepage)
+      .add("logoUrl", logoUrl)
+      .add("citation", citation)
+      .add("citationIdentifier", citationIdentifier)
+      .add("rights", rights)
+      .add("lockedForAutoUpdate", lockedForAutoUpdate)
+      .add("createdBy", createdBy)
+      .add("modifiedBy", modifiedBy)
+      .add("created", created)
+      .add("modified", modified)
+      .add("deleted", deleted)
+      .add("contacts", contacts)
+      .add("endpoints", endpoints)
+      .add("machineTags", machineTags)
+      .add("tags", tags)
+      .add("identifiers", identifiers)
+      .add("comments", comments)
+      .toString();
   }
 
 }

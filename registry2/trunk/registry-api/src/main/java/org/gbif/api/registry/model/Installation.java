@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.api.registry.model;
 
 import org.gbif.api.registry.vocabulary.InstallationType;
@@ -5,13 +20,11 @@ import org.gbif.api.registry.vocabulary.InstallationType;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-
 
 /**
  * A technical installation which can serve dataset(s).
@@ -44,24 +57,6 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
     this.key = key;
   }
 
-  @NotNull
-  public UUID getOrganizationKey() {
-    return organizationKey;
-  }
-
-  public void setOrganizationKey(UUID organizationKey) {
-    this.organizationKey = organizationKey;
-  }
-
-  @NotNull
-  public InstallationType getType() {
-    return type;
-  }
-
-  public void setType(InstallationType type) {
-    this.type = type;
-  }
-
   @Override
   public String getTitle() {
     return title;
@@ -80,26 +75,6 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   @Override
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  @NotNull
-  @Size(min = 3)
-  public String getCreatedBy() {
-    return createdBy;
-  }
-
-  public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
-  @NotNull
-  @Size(min = 3)
-  public String getModifiedBy() {
-    return modifiedBy;
-  }
-
-  public void setModifiedBy(String modifiedBy) {
-    this.modifiedBy = modifiedBy;
   }
 
   @Override
@@ -130,6 +105,44 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   @Override
   public void setDeleted(Date deleted) {
     this.deleted = deleted;
+  }
+
+  @NotNull
+  public UUID getOrganizationKey() {
+    return organizationKey;
+  }
+
+  public void setOrganizationKey(UUID organizationKey) {
+    this.organizationKey = organizationKey;
+  }
+
+  @NotNull
+  public InstallationType getType() {
+    return type;
+  }
+
+  public void setType(InstallationType type) {
+    this.type = type;
+  }
+
+  @NotNull
+  @Size(min = 3)
+  public String getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  @NotNull
+  @Size(min = 3)
+  public String getModifiedBy() {
+    return modifiedBy;
+  }
+
+  public void setModifiedBy(String modifiedBy) {
+    this.modifiedBy = modifiedBy;
   }
 
   @Override
@@ -183,35 +196,66 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   }
 
   @Override
-  public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("organizationKey", organizationKey).add("type", type)
-      .add("title", title).add("description", description).add("createdBy", createdBy).add("modifiedBy", modifiedBy)
-      .add("created", created).add("modified", modified).add("deleted", deleted).add("contacts", contacts)
-      .add("endpoints", endpoints).add("machineTags", machineTags).add("tags", tags).add("comments", comments)
-      .toString();
-  }
-
-  @Override
   public int hashCode() {
-    return Objects.hashCode(key, organizationKey, type, title, description, createdBy, modifiedBy, created, modified,
-      deleted, contacts, endpoints, machineTags, tags, comments);
+    return Objects.hashCode(key,
+                            organizationKey,
+                            type,
+                            title,
+                            description,
+                            createdBy,
+                            modifiedBy,
+                            created,
+                            modified,
+                            deleted,
+                            contacts,
+                            endpoints,
+                            machineTags,
+                            tags,
+                            comments);
   }
 
   @Override
   public boolean equals(Object object) {
     if (object instanceof Installation) {
       Installation that = (Installation) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.organizationKey, that.organizationKey)
-        && Objects.equal(this.type, that.type) && Objects.equal(this.title, that.title)
-        && Objects.equal(this.description, that.description) && Objects.equal(this.createdBy, that.createdBy)
-        && Objects.equal(this.modifiedBy, that.modifiedBy) && Objects.equal(this.created, that.created)
-        && Objects.equal(this.modified, that.modified) && Objects.equal(this.deleted, that.deleted)
-        && Objects.equal(this.contacts, that.contacts) && Objects.equal(this.endpoints, that.endpoints)
-        && Objects.equal(this.machineTags, that.machineTags) && Objects.equal(this.tags, that.tags)
-        && Objects.equal(this.comments, that.comments);
+      return Objects.equal(this.key, that.key)
+             && Objects.equal(this.organizationKey, that.organizationKey)
+             && Objects.equal(this.type, that.type)
+             && Objects.equal(this.title, that.title)
+             && Objects.equal(this.description, that.description)
+             && Objects.equal(this.createdBy, that.createdBy)
+             && Objects.equal(this.modifiedBy, that.modifiedBy)
+             && Objects.equal(this.created, that.created)
+             && Objects.equal(this.modified, that.modified)
+             && Objects.equal(this.deleted, that.deleted)
+             && Objects.equal(this.contacts, that.contacts)
+             && Objects.equal(this.endpoints, that.endpoints)
+             && Objects.equal(this.machineTags, that.machineTags)
+             && Objects.equal(this.tags, that.tags)
+             && Objects.equal(this.comments, that.comments);
     }
     return false;
   }
 
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("key", key)
+      .add("organizationKey", organizationKey)
+      .add("type", type)
+      .add("title", title)
+      .add("description", description)
+      .add("createdBy", createdBy)
+      .add("modifiedBy", modifiedBy)
+      .add("created", created)
+      .add("modified", modified)
+      .add("deleted", deleted)
+      .add("contacts", contacts)
+      .add("endpoints", endpoints)
+      .add("machineTags", machineTags)
+      .add("tags", tags)
+      .add("comments", comments)
+      .toString();
+  }
 
 }

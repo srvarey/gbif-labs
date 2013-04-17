@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.registry.ws.resources.rest;
 
 import org.gbif.api.model.common.paging.Pageable;
@@ -27,7 +42,7 @@ import org.mybatis.guice.transactional.Transactional;
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
-@Consumes({MediaType.APPLICATION_JSON})
+@Consumes(MediaType.APPLICATION_JSON)
 public class AbstractNetworkEntityResource<T extends NetworkEntity> implements NetworkEntityRest<T> {
 
   private final NetworkEntityMapper<T> mapper;
@@ -57,7 +72,7 @@ public class AbstractNetworkEntityResource<T extends NetworkEntity> implements N
   @Override
   public void update(UUID key, @NotNull @Valid @Trim T entity) {
     Preconditions.checkArgument(key.equals(entity.getKey()),
-      "Provided entity must have the same key as the resource URL");
+                                "Provided entity must have the same key as the resource URL");
     update(entity);
   }
 
@@ -79,4 +94,5 @@ public class AbstractNetworkEntityResource<T extends NetworkEntity> implements N
     page = page == null ? new PagingRequest() : page;
     return WithMyBatis.list(mapper, page);
   }
+
 }

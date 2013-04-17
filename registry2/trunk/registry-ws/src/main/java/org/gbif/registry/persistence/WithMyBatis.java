@@ -36,6 +36,7 @@ public class WithMyBatis {
   public static <T extends NetworkEntity> UUID create(NetworkEntityMapper<T> mapper, T entity) {
     Preconditions.checkArgument(entity.getKey() == null, "Unable to create an entity which already has a key");
     entity.setKey(UUID.randomUUID());
+    // TODO: If this call fails the entity will have been modified anyway! We could make a copy and return that instead
     mapper.create(entity);
     return entity.getKey();
   }
@@ -64,8 +65,9 @@ public class WithMyBatis {
   }
 
   @Transactional
-  public static int addContact(ContactMapper contactMapper, ContactableMapper contactableMapper, UUID targetEntityKey,
-    Contact contact) {
+  public static int addContact(
+    ContactMapper contactMapper, ContactableMapper contactableMapper, UUID targetEntityKey, Contact contact
+  ) {
     Preconditions.checkArgument(contact.getKey() == null, "Unable to create an entity which already has a key");
     contactMapper.createContact(contact);
     contactableMapper.addContact(targetEntityKey, contact.getKey(), ContactType.ADMINISTRATIVE_POINT_OF_CONTACT, false);
@@ -81,9 +83,9 @@ public class WithMyBatis {
   }
 
   @Transactional
-  public static int addEndpoint(EndpointMapper endpointMapper, EndpointableMapper endpointableMapper,
-    UUID targetEntityKey,
-    Endpoint endpoint) {
+  public static int addEndpoint(
+    EndpointMapper endpointMapper, EndpointableMapper endpointableMapper, UUID targetEntityKey, Endpoint endpoint
+  ) {
     Preconditions.checkArgument(endpoint.getKey() == null, "Unable to create an entity which already has a key");
     endpointMapper.createEndpoint(endpoint);
     endpointableMapper.addEndpoint(targetEntityKey, endpoint.getKey());
@@ -98,16 +100,21 @@ public class WithMyBatis {
     return endpointableMapper.listEndpoints(targetEntityKey);
   }
 
-  public static int addMachineTag(MachineTagMapper machineTagMapper, MachineTaggableMapper machineTaggableMapper,
-    UUID targetEntityKey, MachineTag machineTag) {
+  public static int addMachineTag(
+    MachineTagMapper machineTagMapper,
+    MachineTaggableMapper machineTaggableMapper,
+    UUID targetEntityKey,
+    MachineTag machineTag
+  ) {
     Preconditions.checkArgument(machineTag.getKey() == null, "Unable to create an entity which already has a key");
     machineTagMapper.createMachineTag(machineTag);
     machineTaggableMapper.addMachineTag(targetEntityKey, machineTag.getKey());
     return machineTag.getKey();
   }
 
-  public static void deleteMachineTag(MachineTaggableMapper machineTaggableMapper, UUID targetEntityKey,
-    int machineTagKey) {
+  public static void deleteMachineTag(
+    MachineTaggableMapper machineTaggableMapper, UUID targetEntityKey, int machineTagKey
+  ) {
     machineTaggableMapper.deleteMachineTag(targetEntityKey, machineTagKey);
   }
 
@@ -134,8 +141,12 @@ public class WithMyBatis {
   }
 
   @Transactional
-  public static int addIdentifier(IdentifierMapper identifierMapper, IdentifiableMapper identifiableMapper,
-    UUID targetEntityKey, Identifier identifier) {
+  public static int addIdentifier(
+    IdentifierMapper identifierMapper,
+    IdentifiableMapper identifiableMapper,
+    UUID targetEntityKey,
+    Identifier identifier
+  ) {
     Preconditions.checkArgument(identifier.getKey() == null, "Unable to create an entity which already has a key");
     identifierMapper.createIdentifier(identifier);
     identifiableMapper.addIdentifier(targetEntityKey, identifier.getKey());
@@ -151,8 +162,9 @@ public class WithMyBatis {
   }
 
   @Transactional
-  public static int addComment(CommentMapper commentMapper, CommentableMapper commentableMapper, UUID targetEntityKey,
-    Comment comment) {
+  public static int addComment(
+    CommentMapper commentMapper, CommentableMapper commentableMapper, UUID targetEntityKey, Comment comment
+  ) {
     Preconditions.checkArgument(comment.getKey() == null, "Unable to create an entity which already has a key");
     commentMapper.createComment(comment);
     commentableMapper.addComment(targetEntityKey, comment.getKey());
@@ -165,6 +177,10 @@ public class WithMyBatis {
 
   public static List<Comment> listComments(CommentableMapper commentableMapper, UUID targetEntityKey) {
     return commentableMapper.listComments(targetEntityKey);
+  }
+
+  private WithMyBatis() {
+    throw new UnsupportedOperationException("Can't initialize class");
   }
 
 }

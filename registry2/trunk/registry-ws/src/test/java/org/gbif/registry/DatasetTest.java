@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.registry;
 
 import org.gbif.api.registry.model.Dataset;
@@ -28,7 +43,6 @@ import org.junit.runners.Parameterized.Parameters;
 import static org.gbif.registry.guice.RegistryTestModules.webservice;
 import static org.gbif.registry.guice.RegistryTestModules.webserviceClient;
 
-
 /**
  * This is parameterized to run the same test routines for the following:
  * <ol>
@@ -37,7 +51,7 @@ import static org.gbif.registry.guice.RegistryTestModules.webserviceClient;
  * <li>The WS service client layer</li>
  * </ol>
  */
-@RunWith(value = Parameterized.class)
+@RunWith(Parameterized.class)
 public class DatasetTest extends NetworkEntityTest<Dataset> {
 
   private final DatasetService service;
@@ -45,24 +59,30 @@ public class DatasetTest extends NetworkEntityTest<Dataset> {
   private final NodeService nodeService;
   private final InstallationService installationService;
 
-  public DatasetTest(DatasetService service, OrganizationService organizationService, NodeService nodeService,
-    InstallationService installationService) {
+  @Parameters
+  public static Iterable<Object[]> data() {
+    final Injector webservice = webservice();
+    final Injector client = webserviceClient();
+    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(DatasetResource.class),
+      webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class),
+      webservice.getInstance(InstallationResource.class)},
+                                      new Object[] {client.getInstance(DatasetService.class),
+                                        client.getInstance(OrganizationService.class),
+                                        client.getInstance(NodeService.class),
+                                        client.getInstance(InstallationService.class)});
+  }
+
+  public DatasetTest(
+    DatasetService service,
+    OrganizationService organizationService,
+    NodeService nodeService,
+    InstallationService installationService
+  ) {
     super(service);
     this.service = service;
     this.organizationService = organizationService;
     this.nodeService = nodeService;
     this.installationService = installationService;
-  }
-
-  @Parameters
-  public static Iterable<Object[]> data() {
-    final Injector webservice = webservice();
-    final Injector client = webserviceClient();
-    return ImmutableList.<Object[]>of(
-      new Object[] {webservice.getInstance(DatasetResource.class), webservice.getInstance(OrganizationResource.class),
-        webservice.getInstance(NodeResource.class), webservice.getInstance(InstallationResource.class)},
-      new Object[] {client.getInstance(DatasetService.class), client.getInstance(OrganizationService.class),
-        client.getInstance(NodeService.class), client.getInstance(InstallationService.class)});
   }
 
   @Test
@@ -119,4 +139,5 @@ public class DatasetTest extends NetworkEntityTest<Dataset> {
     d.setInstallationKey(installationKey);
     return d;
   }
+
 }

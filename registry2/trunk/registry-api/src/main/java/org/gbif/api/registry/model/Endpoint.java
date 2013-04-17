@@ -1,10 +1,24 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.api.registry.model;
 
 import org.gbif.api.registry.vocabulary.EndpointType;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -108,13 +122,6 @@ public class Endpoint {
   }
 
   @Override
-  public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("type", type).add("url", url)
-      .add("description", description).add("createdBy", createdBy).add("modifiedBy", modifiedBy)
-      .add("created", created).add("modified", modified).add("machineTags", machineTags).toString();
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hashCode(key, type, url, description, createdBy, modifiedBy, created, modified, machineTags);
   }
@@ -123,14 +130,32 @@ public class Endpoint {
   public boolean equals(Object object) {
     if (object instanceof Endpoint) {
       Endpoint that = (Endpoint) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.type, that.type)
-        && Objects.equal(this.url, that.url) && Objects.equal(this.description, that.description)
-        && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.modifiedBy, that.modifiedBy)
-        && Objects.equal(this.created, that.created) && Objects.equal(this.modified, that.modified)
-        && Objects.equal(this.machineTags, that.machineTags);
+      return Objects.equal(this.key, that.key)
+             && Objects.equal(this.type, that.type)
+             && Objects.equal(this.url, that.url)
+             && Objects.equal(this.description, that.description)
+             && Objects.equal(this.createdBy, that.createdBy)
+             && Objects.equal(this.modifiedBy, that.modifiedBy)
+             && Objects.equal(this.created, that.created)
+             && Objects.equal(this.modified, that.modified)
+             && Objects.equal(this.machineTags, that.machineTags);
     }
     return false;
   }
 
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("key", key)
+      .add("type", type)
+      .add("url", url)
+      .add("description", description)
+      .add("createdBy", createdBy)
+      .add("modifiedBy", modifiedBy)
+      .add("created", created)
+      .add("modified", modified)
+      .add("machineTags", machineTags)
+      .toString();
+  }
 
 }

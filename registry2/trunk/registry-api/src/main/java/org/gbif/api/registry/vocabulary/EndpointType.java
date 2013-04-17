@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Global Biodiversity Information Facility (GBIF)
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,4 +44,5 @@ public enum EndpointType {
   public static EndpointType fromString(String endpointType) {
     return (EndpointType) VocabularyUtils.lookupEnum(endpointType, EndpointType.class);
   }
+
 }
