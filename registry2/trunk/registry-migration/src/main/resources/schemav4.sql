@@ -284,7 +284,7 @@ CREATE TYPE enum_contact_type AS ENUM ('TECHNICAL_POINT_OF_CONTACT', 'ADMINISTRA
 'DISTRIBUTOR', 'EDITOR', 'OWNER', 'PROCESSOR', 'PUBLISHER', 'USER', 'PROGRAMMER', 'DATA_ADMINISTRATOR', 'SYSTEM_ADMINISTRATOR');
 CREATE TABLE contact
 (
-  key integer PRIMARY KEY,
+  key serial NOT NULL PRIMARY KEY,
   name text CHECK (assert_min_length(name, 1)),
   description text CHECK (assert_min_length(description, 10)),
   position text CHECK (assert_min_length(position, 2)),
