@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.registry.ws.resources;
 
 import org.gbif.api.registry.model.Comment;
@@ -27,7 +42,6 @@ import org.gbif.registry.ws.resources.rest.TagRest;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -43,8 +57,8 @@ import org.mybatis.guice.transactional.Transactional;
  */
 @Path("organization")
 @Singleton
-public class OrganizationResource extends AbstractNetworkEntityResource<Organization> implements OrganizationService,
-  ContactRest, EndpointRest, MachineTagRest, TagRest, IdentifierRest, CommentRest {
+public class OrganizationResource extends AbstractNetworkEntityResource<Organization>
+  implements OrganizationService, ContactRest, EndpointRest, MachineTagRest, TagRest, IdentifierRest, CommentRest {
 
   private final OrganizationMapper organizationMapper;
   private final ContactMapper contactMapper;
@@ -55,9 +69,15 @@ public class OrganizationResource extends AbstractNetworkEntityResource<Organiza
   private final CommentMapper commentMapper;
 
   @Inject
-  public OrganizationResource(OrganizationMapper organizationMapper, ContactMapper contactMapper,
-    EndpointMapper endpointMapper, MachineTagMapper machineTagMapper, TagMapper tagMapper,
-    IdentifierMapper identifierMapper, CommentMapper commentMapper) {
+  public OrganizationResource(
+    OrganizationMapper organizationMapper,
+    ContactMapper contactMapper,
+    EndpointMapper endpointMapper,
+    MachineTagMapper machineTagMapper,
+    TagMapper tagMapper,
+    IdentifierMapper identifierMapper,
+    CommentMapper commentMapper
+  ) {
     super(organizationMapper);
     this.organizationMapper = organizationMapper;
     this.contactMapper = contactMapper;
@@ -169,4 +189,5 @@ public class OrganizationResource extends AbstractNetworkEntityResource<Organiza
   public List<Comment> listComments(UUID targetEntityKey) {
     return WithMyBatis.listComments(organizationMapper, targetEntityKey);
   }
+
 }

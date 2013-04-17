@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Global Biodiversity Information Facility (GBIF)
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ public enum Continent {
   NORTH_AMERICA,
   SOUTH_AMERICA;
 
-
   /**
    * @param continent name
    *
@@ -39,6 +38,5 @@ public enum Continent {
   public static Continent fromString(String continent) {
     return (Continent) VocabularyUtils.lookupEnum(continent, Continent.class);
   }
-
 
 }

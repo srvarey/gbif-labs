@@ -1,7 +1,6 @@
 package org.gbif.api.registry.model;
 
 import java.util.Set;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -31,9 +30,7 @@ public class NodeTest {
     for (ConstraintViolation<?> cv : violations) {
       propertiesInViolation.remove(cv.getPropertyPath().toString());
     }
-    assertTrue("Properties incorrectly passed validation " + propertiesInViolation,
-      propertiesInViolation.isEmpty());
+    assertTrue("Properties incorrectly passed validation " + propertiesInViolation, propertiesInViolation.isEmpty());
   }
-
 
 }

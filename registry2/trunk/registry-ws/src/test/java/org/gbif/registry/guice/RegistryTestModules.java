@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.registry.guice;
 
 import org.gbif.registry.grizzly.RegistryServer;
@@ -13,7 +28,6 @@ import java.io.IOException;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
-
 import javax.sql.DataSource;
 
 import com.google.common.base.Throwables;
@@ -96,7 +110,6 @@ public class RegistryTestModules {
 
   }
 
-
   /**
    * @return An injector configured to issue a Datasource suitable for database management activities (Liquibase etc).
    */
@@ -135,9 +148,12 @@ public class RegistryTestModules {
     private final String password;
 
     @Inject
-    public ManagementProvider(@Named("registry.db.JDBC.driver") String driver,
-      @Named("registry.db.JDBC.url") String url, @Named("registry.db.JDBC.username") String username,
-      @Named("registry.db.JDBC.password") String password) {
+    public ManagementProvider(
+      @Named("registry.db.JDBC.driver") String driver,
+      @Named("registry.db.JDBC.url") String url,
+      @Named("registry.db.JDBC.username") String username,
+      @Named("registry.db.JDBC.password") String password
+    ) {
       this.url = url;
       this.username = username;
       this.password = password;
@@ -160,4 +176,5 @@ public class RegistryTestModules {
       return ds;
     }
   }
+
 }

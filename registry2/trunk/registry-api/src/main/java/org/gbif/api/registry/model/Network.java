@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.api.registry.model;
 
 import org.gbif.api.vocabulary.Country;
@@ -7,14 +22,12 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-
 
 /**
  * A GBIF network.
@@ -74,6 +87,36 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   @Override
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  @Override
+  public Date getCreated() {
+    return created;
+  }
+
+  @Override
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  @Override
+  public Date getModified() {
+    return modified;
+  }
+
+  @Override
+  public void setModified(Date modified) {
+    this.modified = modified;
+  }
+
+  @Override
+  public Date getDeleted() {
+    return deleted;
+  }
+
+  @Override
+  public void setDeleted(Date deleted) {
+    this.deleted = deleted;
   }
 
   @NotNull
@@ -193,36 +236,6 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   }
 
   @Override
-  public Date getCreated() {
-    return created;
-  }
-
-  @Override
-  public void setCreated(Date created) {
-    this.created = created;
-  }
-
-  @Override
-  public Date getModified() {
-    return modified;
-  }
-
-  @Override
-  public void setModified(Date modified) {
-    this.modified = modified;
-  }
-
-  @Override
-  public Date getDeleted() {
-    return deleted;
-  }
-
-  @Override
-  public void setDeleted(Date deleted) {
-    this.deleted = deleted;
-  }
-
-  @Override
   public List<Contact> getContacts() {
     return contacts;
   }
@@ -281,43 +294,93 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   }
 
   @Override
-  public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("title", title).add("description", description)
-      .add("language", language).add("email", email).add("phone", phone).add("homepage", homepage)
-      .add("logoUrl", logoUrl).add("address", address).add("city", city).add("province", province)
-      .add("country", country).add("postalCode", postalCode).add("createdBy", createdBy).add("modifiedBy", modifiedBy)
-      .add("created", created).add("modified", modified).add("deleted", deleted).add("contacts", contacts)
-      .add("endpoints", endpoints).add("machineTags", machineTags).add("tags", tags).add("comments", comments)
-      .add("constituentDatasets", constituentDatasets).toString();
-  }
-
-  @Override
   public int hashCode() {
-    return Objects.hashCode(key, title, description, language, email, phone, homepage, logoUrl, address, city,
-      province, country, postalCode, createdBy, modifiedBy, created, modified, deleted, contacts, endpoints,
-      machineTags, tags, comments, constituentDatasets);
+    return Objects.hashCode(key,
+                            title,
+                            description,
+                            language,
+                            email,
+                            phone,
+                            homepage,
+                            logoUrl,
+                            address,
+                            city,
+                            province,
+                            country,
+                            postalCode,
+                            createdBy,
+                            modifiedBy,
+                            created,
+                            modified,
+                            deleted,
+                            contacts,
+                            endpoints,
+                            machineTags,
+                            tags,
+                            comments,
+                            constituentDatasets);
   }
 
   @Override
   public boolean equals(Object object) {
     if (object instanceof Network) {
       Network that = (Network) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.title, that.title)
-        && Objects.equal(this.description, that.description) && Objects.equal(this.language, that.language)
-        && Objects.equal(this.email, that.email) && Objects.equal(this.phone, that.phone)
-        && Objects.equal(this.homepage, that.homepage) && Objects.equal(this.logoUrl, that.logoUrl)
-        && Objects.equal(this.address, that.address) && Objects.equal(this.city, that.city)
-        && Objects.equal(this.province, that.province) && Objects.equal(this.country, that.country)
-        && Objects.equal(this.postalCode, that.postalCode) && Objects.equal(this.createdBy, that.createdBy)
-        && Objects.equal(this.modifiedBy, that.modifiedBy) && Objects.equal(this.created, that.created)
-        && Objects.equal(this.modified, that.modified) && Objects.equal(this.deleted, that.deleted)
-        && Objects.equal(this.contacts, that.contacts) && Objects.equal(this.endpoints, that.endpoints)
-        && Objects.equal(this.machineTags, that.machineTags) && Objects.equal(this.tags, that.tags)
-        && Objects.equal(this.comments, that.comments)
-        && Objects.equal(this.constituentDatasets, that.constituentDatasets);
+      return Objects.equal(this.key, that.key)
+             && Objects.equal(this.title, that.title)
+             && Objects.equal(this.description, that.description)
+             && Objects.equal(this.language, that.language)
+             && Objects.equal(this.email, that.email)
+             && Objects.equal(this.phone, that.phone)
+             && Objects.equal(this.homepage, that.homepage)
+             && Objects.equal(this.logoUrl, that.logoUrl)
+             && Objects.equal(this.address, that.address)
+             && Objects.equal(this.city, that.city)
+             && Objects.equal(this.province, that.province)
+             && Objects.equal(this.country, that.country)
+             && Objects.equal(this.postalCode, that.postalCode)
+             && Objects.equal(this.createdBy, that.createdBy)
+             && Objects.equal(this.modifiedBy, that.modifiedBy)
+             && Objects.equal(this.created, that.created)
+             && Objects.equal(this.modified, that.modified)
+             && Objects.equal(this.deleted, that.deleted)
+             && Objects.equal(this.contacts, that.contacts)
+             && Objects.equal(this.endpoints, that.endpoints)
+             && Objects.equal(this.machineTags, that.machineTags)
+             && Objects.equal(this.tags, that.tags)
+             && Objects.equal(this.comments, that.comments)
+             && Objects.equal(this.constituentDatasets, that.constituentDatasets);
     }
     return false;
   }
 
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("key", key)
+      .add("title", title)
+      .add("description", description)
+      .add("language", language)
+      .add("email", email)
+      .add("phone", phone)
+      .add("homepage", homepage)
+      .add("logoUrl", logoUrl)
+      .add("address", address)
+      .add("city", city)
+      .add("province", province)
+      .add("country", country)
+      .add("postalCode", postalCode)
+      .add("createdBy", createdBy)
+      .add("modifiedBy", modifiedBy)
+      .add("created", created)
+      .add("modified", modified)
+      .add("deleted", deleted)
+      .add("contacts", contacts)
+      .add("endpoints", endpoints)
+      .add("machineTags", machineTags)
+      .add("tags", tags)
+      .add("comments", comments)
+      .add("constituentDatasets", constituentDatasets)
+      .toString();
+  }
 
 }

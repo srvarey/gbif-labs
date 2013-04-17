@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.registry.persistence.guice;
 
 import org.gbif.api.model.common.paging.Pageable;
@@ -76,16 +91,12 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
    * Sets up the MyBatis structure. Note that MyBatis Guice uses named injection parameters (e.g. JDBC.url), and they
    * are filtered and bound in the enclosing class.
    */
-  public class InternalRegistryServiceMyBatisModule extends MyBatisModule {
+  public static class InternalRegistryServiceMyBatisModule extends MyBatisModule {
 
     public static final String DATASOURCE_BINDING_NAME = "registry";
 
     public InternalRegistryServiceMyBatisModule() {
       super(DATASOURCE_BINDING_NAME);
-    }
-
-    @Override
-    protected void bindManagers() {
     }
 
     @Override
@@ -130,12 +141,11 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
 
       addAlias("Pageable").to(Pageable.class);
       addAlias("UuidTypeHandler").to(UuidTypeHandler.class);
-      addAlias("UUID").to(java.util.UUID.class);
+      addAlias("UUID").to(UUID.class);
       addAlias("Country").to(Country.class);
       addAlias("Language").to(Language.class);
       addAlias("LanguageTypeHandler").to(LanguageTypeHandler.class);
       addAlias("CountryTypeHandler").to(CountryTypeHandler.class);
-      // addAlias("java.util.UUID").to(java.util.UUID.class);
     }
 
     @Override
@@ -146,6 +156,10 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
       handleType(Language.class).with(LanguageTypeHandler.class);
       // TODO: change to use proper typehandler and use char(2) in DB
       // handleType(Language.class).with(LanguageTypeHandler.java)
+    }
+
+    @Override
+    protected void bindManagers() {
     }
   }
 }

@@ -77,6 +77,8 @@
     to the release of that dependency]
   -->
   <properties>
+    <aopalliance.version>1.0</aopalliance.version>
+    <commons-beanutils.version>1.8.3</commons-beanutils.version>
     <gbif-api.version>0.2</gbif-api.version>
     <gbif-common.version>0.10</gbif-common.version>
     <gbif-common-mybatis.version>0.5</gbif-common-mybatis.version>
@@ -114,6 +116,16 @@
   -->
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>${aopalliance.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils-core</artifactId>
+        <version>${commons-beanutils.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.gbif.registry</groupId>
         <artifactId>registry-api</artifactId>
@@ -227,11 +239,6 @@
         <version>${jersey.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.beust</groupId>
-        <artifactId>jcommander</artifactId>
-        <version>${jcommander.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.sun.jersey.contribs</groupId>
         <artifactId>jersey-apache-client4</artifactId>
         <version>${jersey.version}</version>
@@ -298,6 +305,7 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.mybatis</groupId>

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.registry.grizzly;
 
 import org.gbif.registry.guice.TestRegistryWsServletListener;
@@ -19,19 +34,30 @@ import org.slf4j.LoggerFactory;
  */
 public class RegistryServer implements TestRule {
 
-  private static final Logger LOG = LoggerFactory.getLogger(RegistryServer.class);
-
   /**
    * The system property one can set to override the port.
    */
   public static final String PORT_PROPERTY = "grizzly.port"; // to override as a system property
-
   /**
    * The default port to use, should no system property be supplied.
    */
   public static final int DEFAULT_PORT = 7001;
-
+  private static final Logger LOG = LoggerFactory.getLogger(RegistryServer.class);
   private final GrizzlyWebServer webServer;
+
+  /**
+   * Gets the port that grizzly will run on. This will either be {@link #DEFAULT_PORT} or the value supplied as a
+   * system
+   * property named {@link #PORT_PROPERTY}.
+   */
+  public static int getPort() {
+    String port = System.getProperty(PORT_PROPERTY);
+    try {
+      return (port == null) ? DEFAULT_PORT : Integer.parseInt(port);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(PORT_PROPERTY + " does not hold a valid port: " + port);
+    }
+  }
 
   public RegistryServer() {
     webServer = new GrizzlyWebServer(getPort());
@@ -58,19 +84,6 @@ public class RegistryServer implements TestRule {
   }
 
   /**
-   * Gets the port that grizzly will run on. This will either be {@link #DEFAULT_PORT} or the value supplied as a system
-   * property named {@link #PORT_PROPERTY}.
-   */
-  public static int getPort() {
-    String port = System.getProperty(PORT_PROPERTY);
-    try {
-      return (port == null) ? DEFAULT_PORT : Integer.parseInt(port);
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(PORT_PROPERTY + " does not hold a valid port: " + port);
-    }
-  }
-
-  /**
    * Utility to allow this to be used as a rule that will start and stop a server around the statement base.
    */
   @Override
@@ -89,4 +102,5 @@ public class RegistryServer implements TestRule {
       }
     };
   }
+
 }
