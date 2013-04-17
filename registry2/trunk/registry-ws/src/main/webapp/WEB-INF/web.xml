@@ -6,11 +6,11 @@
   <display-name>Registry WebService</display-name>
 
   <listener>
-    <listener-class>org.gbif.registry.ws.guice.RegistryWsServletListener</listener-class>
+    <listener-class>org.gbif.registry2.ws.guice.RegistryWsServletListener</listener-class>
   </listener>
   <filter>
     <filter-name>Static content</filter-name>
-    <filter-class>org.gbif.registry.ws.servlet.StaticContentFilter</filter-class>
+    <filter-class>org.gbif.registry2.ws.servlet.StaticContentFilter</filter-class>
   </filter>
   <filter>
     <filter-name>Guice Filter</filter-name>
