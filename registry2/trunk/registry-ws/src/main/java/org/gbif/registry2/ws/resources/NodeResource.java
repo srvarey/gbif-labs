@@ -24,6 +24,7 @@ import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.NodeService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.persistence.WithMyBatis;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
 import org.gbif.registry2.persistence.mapper.ContactMapper;
@@ -40,6 +41,7 @@ import org.gbif.registry2.ws.resources.rest.TagRest;
 
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -95,6 +97,21 @@ public class NodeResource extends AbstractNetworkEntityResource<Node>
   @Override
   public PagingResponse<Organization> pendingEndorsements(@Context Pageable page) {
     return new PagingResponse<Organization>(page, null, organizationMapper.pendingEndorsements(page));
+  }
+
+  @GET
+  @Path("country/{key}")
+  @Nullable
+  @Override
+  public Node getByCountry(@PathParam("key") Country country) {
+    return nodeMapper.getByCountry(country);
+  }
+
+  @GET
+  @Path("country")
+  @Override
+  public List<Country> listNodeCountries() {
+    return nodeMapper.listNodeCountries();
   }
 
   @Validate

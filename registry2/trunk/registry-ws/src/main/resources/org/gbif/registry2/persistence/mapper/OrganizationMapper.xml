@@ -108,7 +108,7 @@
     SELECT <include refid="ORGANIZATION_FIELDS"/>
     FROM organization o
     WHERE o.deleted IS NULL
-    ORDER BY o.created
+    ORDER BY o.created DESC
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>

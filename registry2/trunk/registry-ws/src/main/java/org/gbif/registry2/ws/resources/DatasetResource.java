@@ -189,5 +189,4 @@ public class DatasetResource extends AbstractNetworkEntityResource<Dataset>
   public List<Comment> listComments(UUID targetEntityKey) {
     return WithMyBatis.listComments(datasetMapper, targetEntityKey);
   }
-
 }

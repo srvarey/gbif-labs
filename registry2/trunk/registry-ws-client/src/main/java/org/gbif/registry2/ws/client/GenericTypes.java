@@ -27,6 +27,7 @@ import org.gbif.api.model.registry2.Network;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.Tag;
+import org.gbif.api.vocabulary.Country;
 
 import java.util.List;
 
@@ -60,6 +61,8 @@ class GenericTypes {
   public static final GenericType<List<Identifier>> LIST_IDENTIFIER = new GenericType<List<Identifier>>() {
   };
   public static final GenericType<List<Comment>> LIST_COMMENT = new GenericType<List<Comment>>() {
+  };
+  public static final GenericType<List<Country>> LIST_COUNTRY = new GenericType<List<Country>>() {
   };
 
   private GenericTypes() {

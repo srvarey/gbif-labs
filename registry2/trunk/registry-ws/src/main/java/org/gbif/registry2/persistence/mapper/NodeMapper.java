@@ -16,6 +16,14 @@
 package org.gbif.registry2.persistence.mapper;
 
 import org.gbif.api.model.registry2.Node;
+import org.gbif.api.vocabulary.Country;
+
+import java.util.List;
 
 public interface NodeMapper
-  extends NetworkEntityMapper<Node>, ContactableMapper, MachineTaggableMapper, TaggableMapper, CommentableMapper {}
+  extends NetworkEntityMapper<Node>, ContactableMapper, MachineTaggableMapper, TaggableMapper, CommentableMapper {
+
+  List<Country> listNodeCountries();
+
+  Node getByCountry(Country country);
+}

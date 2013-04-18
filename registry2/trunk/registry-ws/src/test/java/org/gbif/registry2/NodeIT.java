@@ -17,15 +17,25 @@ package org.gbif.registry2;
 
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.service.registry2.NodeService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.guice.RegistryTestModules;
 import org.gbif.registry2.utils.Nodes;
 import org.gbif.registry2.ws.resources.NodeResource;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This is parameterized to run the same test routines for the following:
@@ -39,6 +49,9 @@ import org.junit.runners.Parameterized.Parameters;
 public class NodeIT extends NetworkEntityTest<Node> {
 
   private final NodeService service;
+  private static Set<Country> TEST_COUNTRIES = Sets.newHashSet(
+    Country.AFGHANISTAN, Country.ARGENTINA, Country.DENMARK, Country.GHANA
+  );
 
   @Parameters
   public static Iterable<Object[]> data() {
@@ -76,6 +89,40 @@ public class NodeIT extends NetworkEntityTest<Node> {
   public void testComments() {
     Node node = create(newEntity(), 1);
     CommentTests.testAddDelete(service, node);
+  }
+
+  @Test
+  @Ignore("Waiting for a proper country provider")
+  public void testGetByCountry() {
+    initCountryNodes();
+    Node n = service.getByCountry(Country.ANGOLA);
+    assertNull(n);
+
+    for (Country c : TEST_COUNTRIES) {
+      n = service.getByCountry(c);
+      assertEquals(c, n.getCountry());
+    }
+  }
+
+  private void initCountryNodes() {
+    int count = 0;
+    for (Country c : TEST_COUNTRIES) {
+      Node n = newEntity();
+      n.setCountry(c);
+      n.setTitle("GBIF Node " + c.getTitle());
+      create(n, count + 1);
+      count++;
+    }
+  }
+
+  @Test
+  public void testCountries() {
+    initCountryNodes();
+    List<Country> countries = service.listNodeCountries();
+    assertEquals(TEST_COUNTRIES.size(), countries.size());
+    for (Country c : countries) {
+      assertTrue("Unexpected node country" + c, TEST_COUNTRIES.contains(c));
+    }
   }
 
   @Override
