@@ -85,6 +85,7 @@
     <gbif-common-ws.version>0.7-SNAPSHOT</gbif-common-ws.version>
     <gbif-common-test.version>0.5</gbif-common-test.version>
     <gbif-common-service.version>0.4</gbif-common-service.version>
+    <gbif-common-search.version>0.6</gbif-common-search.version>
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
     <guava.version>14.0.1</guava.version>
@@ -177,6 +178,11 @@
         <groupId>org.gbif</groupId>
         <artifactId>gbif-common-service</artifactId>
         <version>${gbif-common-service.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common-search</artifactId>
+        <version>${gbif-common-search.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
