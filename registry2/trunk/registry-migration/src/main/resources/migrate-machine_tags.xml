@@ -1,0 +1,26 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="machine_tags" connection-id="old-registry">
+		SELECT t.id AS `key`, 
+		        	n.namespace AS namespace,
+		        	t.name AS name,
+		        	t.value AS value,
+		        	'ADMIN' AS created_by,
+		        CASE            
+		        	WHEN t.created IS NULL THEN NOW()
+		            ELSE t.created END AS created 
+		        FROM tag t, namespace n
+		        WHERE t.namespace_id = n.id; 
+         			
+		<script connection-id="new-registry">
+		INSERT INTO machine_tag(key,namespace,name,value,created_by,created)
+		VALUES (?key,?namespace,?name,?value,?created_by,?created);
+        </script>
+    </query>
+</etl>
