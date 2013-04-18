@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +13,14 @@
 package org.gbif.api.model.registry2;
 
 import org.gbif.api.vocabulary.Language;
-import org.gbif.api.vocabulary.registry2.DatasetSubType;
+import org.gbif.api.vocabulary.registry2.DatasetSubtype;
 import org.gbif.api.vocabulary.registry2.DatasetType;
 
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -43,7 +41,7 @@ public class Dataset
   private UUID owningOrganizationKey;
   private boolean external;
   private DatasetType type;
-  private DatasetSubType subType;
+  private DatasetSubtype subtype;
   private String title;
   private String alias;
   private String abbreviation;
@@ -180,12 +178,12 @@ public class Dataset
   }
 
   @Nullable
-  public DatasetSubType getSubType() {
-    return subType;
+  public DatasetSubtype getSubtype() {
+    return subtype;
   }
 
-  public void setSubType(DatasetSubType subType) {
-    this.subType = subType;
+  public void setSubtype(DatasetSubtype subtype) {
+    this.subtype = subtype;
   }
 
   @Nullable
@@ -354,35 +352,35 @@ public class Dataset
   @Override
   public int hashCode() {
     return Objects.hashCode(key,
-                            parentDatasetKey,
-                            duplicateOfDatasetKey,
-                            installationKey,
-                            owningOrganizationKey,
-                            external,
-                            type,
-                            subType,
-                            title,
-                            alias,
-                            abbreviation,
-                            description,
-                            language,
-                            homepage,
-                            logoUrl,
-                            citation,
-                            citationIdentifier,
-                            rights,
-                            lockedForAutoUpdate,
-                            createdBy,
-                            modifiedBy,
-                            created,
-                            modified,
-                            deleted,
-                            contacts,
-                            endpoints,
-                            machineTags,
-                            tags,
-                            identifiers,
-                            comments);
+      parentDatasetKey,
+      duplicateOfDatasetKey,
+      installationKey,
+      owningOrganizationKey,
+      external,
+      type,
+      subtype,
+      title,
+      alias,
+      abbreviation,
+      description,
+      language,
+      homepage,
+      logoUrl,
+      citation,
+      citationIdentifier,
+      rights,
+      lockedForAutoUpdate,
+      createdBy,
+      modifiedBy,
+      created,
+      modified,
+      deleted,
+      contacts,
+      endpoints,
+      machineTags,
+      tags,
+      identifiers,
+      comments);
   }
 
   @Override
@@ -390,35 +388,35 @@ public class Dataset
     if (object instanceof Dataset) {
       Dataset that = (Dataset) object;
       return Objects.equal(this.key, that.key)
-             && Objects.equal(this.parentDatasetKey, that.parentDatasetKey)
-             && Objects.equal(this.duplicateOfDatasetKey, that.duplicateOfDatasetKey)
-             && Objects.equal(this.installationKey, that.installationKey)
-             && Objects.equal(this.owningOrganizationKey, that.owningOrganizationKey)
-             && Objects.equal(this.external, that.external)
-             && Objects.equal(this.type, that.type)
-             && Objects.equal(this.subType, that.subType)
-             && Objects.equal(this.title, that.title)
-             && Objects.equal(this.alias, that.alias)
-             && Objects.equal(this.abbreviation, that.abbreviation)
-             && Objects.equal(this.description, that.description)
-             && Objects.equal(this.language, that.language)
-             && Objects.equal(this.homepage, that.homepage)
-             && Objects.equal(this.logoUrl, that.logoUrl)
-             && Objects.equal(this.citation, that.citation)
-             && Objects.equal(this.citationIdentifier, that.citationIdentifier)
-             && Objects.equal(this.rights, that.rights)
-             && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified)
-             && Objects.equal(this.deleted, that.deleted)
-             && Objects.equal(this.contacts, that.contacts)
-             && Objects.equal(this.endpoints, that.endpoints)
-             && Objects.equal(this.machineTags, that.machineTags)
-             && Objects.equal(this.tags, that.tags)
-             && Objects.equal(this.identifiers, that.identifiers)
-             && Objects.equal(this.comments, that.comments);
+        && Objects.equal(this.parentDatasetKey, that.parentDatasetKey)
+        && Objects.equal(this.duplicateOfDatasetKey, that.duplicateOfDatasetKey)
+        && Objects.equal(this.installationKey, that.installationKey)
+        && Objects.equal(this.owningOrganizationKey, that.owningOrganizationKey)
+        && Objects.equal(this.external, that.external)
+        && Objects.equal(this.type, that.type)
+        && Objects.equal(this.subtype, that.subtype)
+        && Objects.equal(this.title, that.title)
+        && Objects.equal(this.alias, that.alias)
+        && Objects.equal(this.abbreviation, that.abbreviation)
+        && Objects.equal(this.description, that.description)
+        && Objects.equal(this.language, that.language)
+        && Objects.equal(this.homepage, that.homepage)
+        && Objects.equal(this.logoUrl, that.logoUrl)
+        && Objects.equal(this.citation, that.citation)
+        && Objects.equal(this.citationIdentifier, that.citationIdentifier)
+        && Objects.equal(this.rights, that.rights)
+        && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified)
+        && Objects.equal(this.deleted, that.deleted)
+        && Objects.equal(this.contacts, that.contacts)
+        && Objects.equal(this.endpoints, that.endpoints)
+        && Objects.equal(this.machineTags, that.machineTags)
+        && Objects.equal(this.tags, that.tags)
+        && Objects.equal(this.identifiers, that.identifiers)
+        && Objects.equal(this.comments, that.comments);
     }
     return false;
   }
@@ -433,7 +431,7 @@ public class Dataset
       .add("owningOrganizationKey", owningOrganizationKey)
       .add("external", external)
       .add("type", type)
-      .add("subType", subType)
+      .add("subtype", subtype)
       .add("title", title)
       .add("alias", alias)
       .add("abbreviation", abbreviation)
