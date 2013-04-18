@@ -13,7 +13,7 @@
         WHERE a.id = s.agent_id AND a.type = 14100 AND a.deleted IS NULL AND s.deleted IS NULL
          			
 		<script connection-id="new-registry">
-		INSERT INTO organization_endpoint(installation_key, endpoint_key)
+		INSERT INTO installation_endpoint(installation_key, endpoint_key)
 		VALUES (?installation_key::uuid,?endpoint_key);
         </script>
     </query>
