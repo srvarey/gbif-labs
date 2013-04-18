@@ -89,6 +89,10 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting network_endpoints creation...");
       statics = execute("src/main/resources/migrate-network_endpoints.xml", "Registry network_endpoint");
       System.out.println("Network_endpoints created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting node_endpoints creation...");
+      statics = execute("src/main/resources/migrate-node_endpoints.xml", "Registry node_endpoint");
+      System.out.println("Node_endpoints created in " + statics.getTotalTime() + " milliseconds");
       
     } catch (EtlExecutorException e) {
       e.printStackTrace();
