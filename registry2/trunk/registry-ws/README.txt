@@ -7,12 +7,12 @@ This project provides the WS, and JS based admin console for the registry (v2) w
 Warnings: 
 ********
   a) This project makes use of liquibase to manage schemas, AND WILL TRUNCATE TABLES in tests.
-  b) Tests are run against the database in JUnit during the maven test lifecycle (NOT verify)
+  b) Tests are run against the database in JUnit during the maven verify
   c) Grizzly is used for tests, and port conflicts can be avoided by using -D
 
 
 To use this project you would typically do one of the following:
-  i) mvn clean package -Pregistry2-local
+  i) mvn clean verify package -Pregistry2-local
   ii) mvn jetty:run -Pregistry2-local
 
  
