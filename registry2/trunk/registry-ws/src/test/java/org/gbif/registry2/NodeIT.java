@@ -27,7 +27,6 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -92,7 +91,6 @@ public class NodeIT extends NetworkEntityTest<Node> {
   }
 
   @Test
-  @Ignore("Waiting for a proper country provider")
   public void testGetByCountry() {
     initCountryNodes();
     Node n = service.getByCountry(Country.ANGOLA);
