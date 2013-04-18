@@ -102,8 +102,13 @@ public class NodeResource extends AbstractNetworkEntityResource<Node>
   @GET
   @Path("country/{key}")
   @Nullable
+  public Node getByCountry(@PathParam("key") String isoCode) {
+    return getByCountry(Country .fromIsoCode(isoCode));
+  }
+
+  @Nullable
   @Override
-  public Node getByCountry(@PathParam("key") Country country) {
+  public Node getByCountry(Country country) {
     return nodeMapper.getByCountry(country);
   }
 
