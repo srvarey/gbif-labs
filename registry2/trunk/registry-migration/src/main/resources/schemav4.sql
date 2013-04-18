@@ -370,7 +370,7 @@ CREATE UNIQUE INDEX unique_network_contact ON network_contact(network_key, type)
 -- 
 --  endpoint
 -- 
-CREATE TYPE enum_endpoint_type AS ENUM ('EML', 'FEED', 'WFS', 'WMS', 'TCS_RDF', 'TCS_XML', 'DWC_ARCHIVE', 'DIGIR', 'DIGIR_MANIS',
+CREATE TYPE enum_endpoint_type AS ENUM ('EML', 'RSS', 'WFS', 'WMS', 'TCS_RDF', 'TCS_XML', 'DWC_ARCHIVE', 'DIGIR', 'DIGIR_MANIS',
 'TAPIR', 'BIOCASE', 'OAI_PMH', 'DWC_ARCHIVE_CHECKLIST', 'DWC_ARCHIVE_OCCURRENCE', 'OTHER');
 CREATE TABLE endpoint
 (
@@ -382,6 +382,16 @@ CREATE TABLE endpoint
   modified_by varchar(255) NOT NULL CHECK (assert_min_length(modified_by, 3)),
   created timestamp with time zone NOT NULL DEFAULT now(),
   modified timestamp with time zone NOT NULL DEFAULT now()
+);
+
+--
+--	node_endpoint
+--
+CREATE TABLE node_endpoint
+(
+	node_key uuid NOT NULL REFERENCES node(key),
+	endpoint_key integer NOT NULL UNIQUE REFERENCES endpoint(key) ON DELETE CASCADE,
+  	PRIMARY KEY (node_key, endpoint_key)
 );
 
 -- 
