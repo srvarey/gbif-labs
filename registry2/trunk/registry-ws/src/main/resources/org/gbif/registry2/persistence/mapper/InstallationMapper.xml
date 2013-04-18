@@ -75,7 +75,7 @@
     SELECT <include refid="INSTALLATION_FIELDS"/>
     FROM installation i
     WHERE i.deleted IS NULL
-    ORDER BY i.created
+    ORDER BY i.created DESC
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>

@@ -24,6 +24,7 @@ import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.NodeService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
 
@@ -143,6 +144,16 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   @Override
   public PagingResponse<Organization> pendingEndorsements(Pageable page) {
     return get(GenericTypes.PAGING_ORGANIZATION, null, null, page, "pendingEndorsement");
+  }
+
+  @Override
+  public Node getByCountry(Country country) {
+    return get("country", country.getIso2LetterCode());
+  }
+
+  @Override
+  public List<Country> listNodeCountries() {
+    return get(GenericTypes.LIST_COUNTRY, "country");
   }
 
 }

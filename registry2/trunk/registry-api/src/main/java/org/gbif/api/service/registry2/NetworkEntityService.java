@@ -30,6 +30,9 @@ public interface NetworkEntityService<T> {
 
   T get(@NotNull UUID key);
 
+  /**
+   * @return a list of network entities ordered by their creation date, newest coming first
+   */
   PagingResponse<T> list(@Nullable Pageable page);
 
   void update(@NotNull T entity);

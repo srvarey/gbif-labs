@@ -41,6 +41,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   private UUID key;
   private NodeType type;
   private ParticipationStatus participationStatus;
+  private Integer participantSince;
   private GbifRegion gbifRegion;
   private Continent continent;
   private String title;
@@ -141,6 +142,15 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
 
   public void setParticipationStatus(ParticipationStatus participationStatus) {
     this.participationStatus = participationStatus;
+  }
+
+  @Nullable
+  public Integer getParticipantSince() {
+    return participantSince;
+  }
+
+  public void setParticipantSince(Integer participantSince) {
+    this.participantSince = participantSince;
   }
 
   @Nullable
@@ -322,6 +332,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
     return Objects.hashCode(key,
                             type,
                             participationStatus,
+                            participantSince,
                             gbifRegion,
                             continent,
                             title,
@@ -354,6 +365,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       return Objects.equal(this.key, that.key)
              && Objects.equal(this.type, that.type)
              && Objects.equal(this.participationStatus, that.participationStatus)
+             && Objects.equal(this.participantSince, that.participantSince)
              && Objects.equal(this.gbifRegion, that.gbifRegion)
              && Objects.equal(this.continent, that.continent)
              && Objects.equal(this.title, that.title)
@@ -387,6 +399,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       .add("key", key)
       .add("type", type)
       .add("participationStatus", participationStatus)
+      .add("participantSince", participantSince)
       .add("gbifRegion", gbifRegion)
       .add("continent", continent)
       .add("title", title)

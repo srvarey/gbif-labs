@@ -72,6 +72,12 @@
     WHERE key = #{key,jdbcType=OTHER}
   </select>  
   
+  <select id="getByCountry" resultType="Node" resultMap="NODE_MAP">
+    SELECT <include refid="NODE_FIELDS"/>
+    FROM node
+    WHERE country = #{key,jdbcType=OTHER} AND deleted IS NULL
+  </select>
+
   <insert id="create" parameterType="Node">
     INSERT INTO node(<include refid="NODE_FIELDS"/>)
     VALUES(<include refid="NODE_FIELD_TYPES"/>)
@@ -96,7 +102,7 @@
     SELECT <include refid="NODE_FIELDS"/>
     FROM node 
     WHERE deleted IS NULL
-    ORDER BY created
+    ORDER BY created DESC
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -204,5 +210,13 @@
     WHERE
       comment_key = comment.key AND 
       node_key = #{targetEntityKey,jdbcType=OTHER} AND comment_key = #{commentKey,jdbcType=INTEGER}
-  </delete>    
+  </delete>
+
+  <select id="listNodeCountries" resultType="Country">
+    SELECT country
+    FROM node
+    WHERE country IS NOT NULL
+    ORDER BY country
+  </select>
+
 </mapper>

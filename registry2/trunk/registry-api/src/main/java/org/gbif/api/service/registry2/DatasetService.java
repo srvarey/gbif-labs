@@ -19,4 +19,6 @@ import org.gbif.api.model.registry2.Dataset;
 
 public interface DatasetService
   extends NetworkEntityService<Dataset>, ContactService, EndpointService, MachineTagService, TagService,
-  IdentifierService, CommentService {}
+  IdentifierService, CommentService {
+
+}

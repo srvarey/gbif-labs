@@ -167,5 +167,4 @@ public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements D
   public List<Comment> listComments(UUID targetEntityKey) {
     return get(GenericTypes.LIST_COMMENT, null, null, (Pageable) null, targetEntityKey.toString(), "comment");
   }
-
 }

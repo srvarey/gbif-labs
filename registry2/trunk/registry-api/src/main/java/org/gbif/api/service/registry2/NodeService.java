@@ -19,7 +19,9 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
+import org.gbif.api.vocabulary.Country;
 
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -40,4 +42,16 @@ public interface NodeService
    */
   PagingResponse<Organization> pendingEndorsements(@Nullable Pageable page);
 
+  /**
+   * Returns a node for a given country.
+   * @param country
+   * @return the countries node or null if none exists
+   */
+  Node getByCountry(Country country);
+
+  /**
+   * Returns a list of all countries which do have a GBIF node.
+   * @return list of distinct countries having a GBIF node
+   */
+  List<Country> listNodeCountries();
 }

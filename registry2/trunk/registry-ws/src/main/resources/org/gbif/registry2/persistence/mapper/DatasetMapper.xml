@@ -110,12 +110,12 @@
     SELECT <include refid="DATASET_FIELDS"/>
     FROM dataset d
     WHERE d.deleted IS NULL
-    ORDER BY d.created
+    ORDER BY d.created DESC
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
-  </select>  
-  
+  </select>
+
   <select id="count" resultType="Integer">
     SELECT COUNT(*)
     FROM dataset 

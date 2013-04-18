@@ -20,6 +20,7 @@
 package org.gbif.registry2;
 
 import org.gbif.api.model.common.paging.PagingRequest;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.NetworkEntity;
 import org.gbif.api.service.registry2.NetworkEntityService;
 import org.gbif.registry2.database.DatabaseInitializer;
@@ -33,6 +34,7 @@ import javax.validation.ValidationException;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import org.apache.commons.beanutils.BeanUtils;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -150,6 +152,40 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
         assertEquals("Paging is not operating as expected when requesting pages of size " + pageSize,
                      expectedPages[pageSize - 1][page],
                      results.size());
+      }
+    }
+  }
+
+
+  /**
+   * Confirm that the list method and its paging return entities in creation time order.
+   */
+  @Test
+  public void testPagingOrder() {
+    // keeps a list of all uuids created in that creation order
+    List<UUID> uuids = Lists.newArrayList();
+    for (int i = 1; i <= 5; i++) {
+      T d = create(newEntity(), i);
+      uuids.add(d.getKey());
+    }
+    uuids = Lists.reverse(uuids);
+
+    // test the various paging strategies (e.g. page size of 1,2,3 etc to verify they behave as outlined above)
+    for (int pageSize = 1; pageSize <= uuids.size(); pageSize++) {
+      for (int offset = 0; offset < uuids.size() + 1; offset++) {
+        // request a page using the page size and offset
+        PagingResponse<T> resp = service.list(new PagingRequest(offset, pageSize));
+        // confirm it is the correct number of results as outlined above
+        assertEquals("Paging is not operating as expected when requesting pages of size " + pageSize,
+          Math.min(pageSize, uuids.size() - offset), resp.getResults().size());
+        assertEquals("Count wrong", Long.valueOf(uuids.size()), resp.getCount());
+        int lastIdx = -1;
+        for (T d : resp.getResults()) {
+          int idx = uuids.indexOf(d.getKey());
+          // make sure the datasets are in the same order as the reversed uuid list
+          assertTrue(idx > lastIdx);
+          lastIdx = idx;
+        }
       }
     }
   }
