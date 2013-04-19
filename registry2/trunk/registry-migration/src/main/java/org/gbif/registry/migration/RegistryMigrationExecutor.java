@@ -97,6 +97,30 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting machine_tags creation...");
       statics = execute("src/main/resources/migrate-machine_tags.xml", "Registry machine_tag");
       System.out.println("Machine_tags created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting node_machine_tags creation...");
+      statics = execute("src/main/resources/migrate-node_machine_tags.xml", "Registry node_machine_tag");
+      System.out.println("Node_machine_tags created in " + statics.getTotalTime() + " milliseconds");
+      
+      System.out.println("Starting organization_machine_tags creation...");
+      statics = execute("src/main/resources/migrate-organization_machine_tags.xml", "Registry organization_machine_tag");
+      System.out.println("Organization_machine_tags created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting installation_machine_tags creation...");
+      statics = execute("src/main/resources/migrate-installation_machine_tags.xml", "Registry installation_machine_tag");
+      System.out.println("Installation_machine_tags created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting dataset_machine_tags creation...");
+      statics = execute("src/main/resources/migrate-dataset_machine_tags.xml", "Registry dataset_machine_tag");
+      System.out.println("Dataset_machine_tags created in " + statics.getTotalTime() + " milliseconds");
+      
+      System.out.println("Starting network_machine_tags creation...");
+      statics = execute("src/main/resources/migrate-network_machine_tags.xml", "Registry network_machine_tag");
+      System.out.println("Network_machine_tags created in " + statics.getTotalTime() + " milliseconds");
+      
+      System.out.println("Starting tags creation...");
+      statics = execute("src/main/resources/migrate-tags.xml", "Registry tag");
+      System.out.println("Tags created in " + statics.getTotalTime() + " milliseconds");
       
     } catch (EtlExecutorException e) {
       e.printStackTrace();
