@@ -15,6 +15,9 @@
  */
 package org.gbif.registry2.events;
 
+/**
+ * This event is fired after a new network entity has been successfully updated.
+ */
 public class UpdateEvent<T> {
 
   private final T newObject;
