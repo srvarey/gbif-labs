@@ -3,11 +3,11 @@
 -- i. Trimming of whitespace 
 -- *Note*: PostgreSQL's JDBC driver needs to parse the function in a single line
 --
---CREATE FUNCTION assert_min_length(input text, minlength integer) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (length >= minlength) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql; 
+CREATE FUNCTION assert_min_length(input text, minlength integer) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (length >= minlength) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql; 
 --
 -- Returns true if the URL comforms with the HTTP protocol.  
 --
---CREATE FUNCTION assert_is_http(input text) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (position('http://' in trim(input)) = 0) OR (position('https://' in trim(input)) = 0) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql;
+CREATE FUNCTION assert_is_http(input text) RETURNS boolean AS $$ DECLARE length integer; BEGIN length := char_length(trim(input)); IF (length IS NULL) OR (position('http://' in trim(input)) = 0) OR (position('https://' in trim(input)) = 0) THEN RETURN TRUE; ELSE RETURN FALSE; END IF; END; $$ LANGUAGE plpgsql;
 
 -- 
 --  node
@@ -216,7 +216,7 @@ CREATE TABLE network_tag
 -- 
 --  machine_tag
 -- 
-CREATE TABLE machine_tag	
+CREATE TABLE machine_tag
 (
   key serial NOT NULL PRIMARY KEY,
   namespace varchar(255) NOT NULL CHECK (assert_min_length(value, 1)),
@@ -281,7 +281,8 @@ CREATE TABLE network_machine_tag
 -- 
 CREATE TYPE enum_contact_type AS ENUM ('TECHNICAL_POINT_OF_CONTACT', 'ADMINISTRATIVE_POINT_OF_CONTACT', 'POINT_OF_CONTACT', 
 'ORIGINATOR', 'METADATA_AUTHOR', 'PRINCIPAL_INVESTIGATOR', 'AUTHOR', 'CONTENT_PROVIDER', 'CUSTODIAN_STEWARD',
-'DISTRIBUTOR', 'EDITOR', 'OWNER', 'PROCESSOR', 'PUBLISHER', 'USER', 'PROGRAMMER', 'DATA_ADMINISTRATOR', 'SYSTEM_ADMINISTRATOR');
+'DISTRIBUTOR', 'EDITOR', 'OWNER', 'PROCESSOR', 'PUBLISHER', 'USER', 'PROGRAMMER', 'DATA_ADMINISTRATOR', 'SYSTEM_ADMINISTRATOR',
+'HEAD_OF_DELEGATION','REGIONAL_NODE_REPRESENTATIVE','VICE_CHAIR','NODE_MANAGER','NODE_STAFF');
 CREATE TABLE contact
 (
   key serial NOT NULL PRIMARY KEY,

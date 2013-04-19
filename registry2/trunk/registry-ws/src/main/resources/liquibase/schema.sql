@@ -281,7 +281,8 @@ CREATE TABLE network_machine_tag
 -- 
 CREATE TYPE enum_contact_type AS ENUM ('TECHNICAL_POINT_OF_CONTACT', 'ADMINISTRATIVE_POINT_OF_CONTACT', 'POINT_OF_CONTACT', 
 'ORIGINATOR', 'METADATA_AUTHOR', 'PRINCIPAL_INVESTIGATOR', 'AUTHOR', 'CONTENT_PROVIDER', 'CUSTODIAN_STEWARD',
-'DISTRIBUTOR', 'EDITOR', 'OWNER', 'PROCESSOR', 'PUBLISHER', 'USER', 'PROGRAMMER', 'DATA_ADMINISTRATOR', 'SYSTEM_ADMINISTRATOR');
+'DISTRIBUTOR', 'EDITOR', 'OWNER', 'PROCESSOR', 'PUBLISHER', 'USER', 'PROGRAMMER', 'DATA_ADMINISTRATOR', 'SYSTEM_ADMINISTRATOR',
+'HEAD_OF_DELEGATION','REGIONAL_NODE_REPRESENTATIVE','VICE_CHAIR','NODE_MANAGER','NODE_STAFF');
 CREATE TABLE contact
 (
   key serial NOT NULL PRIMARY KEY,
@@ -371,7 +372,7 @@ CREATE UNIQUE INDEX unique_network_contact ON network_contact(network_key, type)
 --  endpoint
 -- 
 CREATE TYPE enum_endpoint_type AS ENUM ('EML', 'FEED', 'WFS', 'WMS', 'TCS_RDF', 'TCS_XML', 'DWC_ARCHIVE', 'DIGIR', 'DIGIR_MANIS',
-'TAPIR', 'BIOCASE', 'OAI_PMH', 'DWC_ARCHIVE_CHECKLIST', 'DWC_ARCHIVE_OCCURRENCE', 'OTHER');
+'TAPIR', 'BIOCASE', 'OAI_PMH', 'OTHER');
 CREATE TABLE endpoint
 (
   key serial NOT NULL PRIMARY KEY,
@@ -382,6 +383,16 @@ CREATE TABLE endpoint
   modified_by varchar(255) NOT NULL CHECK (assert_min_length(modified_by, 3)),
   created timestamp with time zone NOT NULL DEFAULT now(),
   modified timestamp with time zone NOT NULL DEFAULT now()
+);
+
+--
+--	node_endpoint
+--
+CREATE TABLE node_endpoint
+(
+	node_key uuid NOT NULL REFERENCES node(key),
+	endpoint_key integer NOT NULL UNIQUE REFERENCES endpoint(key) ON DELETE CASCADE,
+  	PRIMARY KEY (node_key, endpoint_key)
 );
 
 -- 

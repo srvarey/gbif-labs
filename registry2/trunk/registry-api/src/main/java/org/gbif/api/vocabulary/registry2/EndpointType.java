@@ -34,8 +34,6 @@ public enum EndpointType {
   TAPIR,
   BIOCASE,
   OAI_PMH,
-  DWC_ARCHIVE_CHECKLIST,
-  DWC_ARCHIVE_OCCURRENCE,
   OTHER;
 
   /**
