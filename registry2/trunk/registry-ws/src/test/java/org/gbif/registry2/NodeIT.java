@@ -48,9 +48,8 @@ import static org.junit.Assert.assertTrue;
 public class NodeIT extends NetworkEntityTest<Node> {
 
   private final NodeService service;
-  private static Set<Country> TEST_COUNTRIES = Sets.newHashSet(
-    Country.AFGHANISTAN, Country.ARGENTINA, Country.DENMARK, Country.GHANA
-  );
+  private static final Set<Country> TEST_COUNTRIES =
+    Sets.newHashSet(Country.AFGHANISTAN, Country.ARGENTINA, Country.DENMARK, Country.GHANA);
 
   @Parameters
   public static Iterable<Object[]> data() {
@@ -62,12 +61,6 @@ public class NodeIT extends NetworkEntityTest<Node> {
   public NodeIT(NodeService service) {
     super(service);
     this.service = service;
-  }
-
-  @Test
-  public void testContacts() {
-    Node node = create(newEntity(), 1);
-    ContactTests.testAddDelete(service, node);
   }
 
   @Test

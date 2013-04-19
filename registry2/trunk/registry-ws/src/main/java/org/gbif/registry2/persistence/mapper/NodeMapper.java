@@ -20,8 +20,7 @@ import org.gbif.api.vocabulary.Country;
 
 import java.util.List;
 
-public interface NodeMapper
-  extends NetworkEntityMapper<Node>, ContactableMapper, MachineTaggableMapper, TaggableMapper, CommentableMapper {
+public interface NodeMapper extends BaseNetworkEntityMapper<Node> {
 
   List<Country> listNodeCountries();
 

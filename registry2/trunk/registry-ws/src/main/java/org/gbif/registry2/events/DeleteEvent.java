@@ -13,10 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gbif.registry2.persistence.mapper;
+package org.gbif.registry2.events;
 
-import org.gbif.api.model.registry2.Installation;
+public class DeleteEvent<T> {
 
-public interface InstallationMapper extends BaseNetworkEntityMapper2<Installation> {
+  private final T oldObject;
+  private final Class<T> objectClass;
+
+  public static <T> DeleteEvent<T> newInstance(T oldObject, Class<T> objectClass) {
+    return new DeleteEvent<T>(oldObject, objectClass);
+  }
+
+  public DeleteEvent(T oldObject, Class<T> objectClass) {
+    this.oldObject = oldObject;
+    this.objectClass = objectClass;
+  }
+
+  public T getOldObject() {
+    return oldObject;
+  }
+
+  public Class<T> getObjectClass() {
+    return objectClass;
+  }
 
 }

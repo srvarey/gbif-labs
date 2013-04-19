@@ -156,7 +156,6 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
     }
   }
 
-
   /**
    * Confirm that the list method and its paging return entities in creation time order.
    */
@@ -177,7 +176,8 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
         PagingResponse<T> resp = service.list(new PagingRequest(offset, pageSize));
         // confirm it is the correct number of results as outlined above
         assertEquals("Paging is not operating as expected when requesting pages of size " + pageSize,
-          Math.min(pageSize, uuids.size() - offset), resp.getResults().size());
+                     Math.min(pageSize, uuids.size() - offset),
+                     resp.getResults().size());
         assertEquals("Count wrong", Long.valueOf(uuids.size()), resp.getCount());
         int lastIdx = -1;
         for (T d : resp.getResults()) {

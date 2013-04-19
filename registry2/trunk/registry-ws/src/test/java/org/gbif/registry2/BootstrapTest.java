@@ -15,14 +15,12 @@
  */
 package org.gbif.registry2;
 
-import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.registry2.database.DatabaseInitializer;
 import org.gbif.registry2.guice.RegistryTestModules;
-import org.gbif.registry2.utils.Contacts;
 import org.gbif.registry2.utils.Nodes;
 import org.gbif.registry2.utils.Organizations;
 import org.gbif.registry2.ws.resources.NodeResource;
@@ -69,10 +67,6 @@ public class BootstrapTest {
     o2.setEndorsementApproved(true);
     organizationService.create(o2);
 
-    for (int i = 0; i < 5; i++) {
-      nodeService.addContact(n1.getKey(), newContact(i + ": "));
-      nodeService.addContact(n2.getKey(), newContact(i + ": "));
-    }
     String[] tags = {"Abies", "Georeferenced", "Images", "Dubious", "DataPaper"};
     for (String tag : tags) {
       nodeService.addTag(n1.getKey(), tag);
@@ -89,20 +83,11 @@ public class BootstrapTest {
       n1.setKey(nodeService.create(n1));
       Organization o1 = Organizations.newInstance(n1.getKey());
       organizationService.create(o1);
-      for (int i = 0; i < 5; i++) {
-        nodeService.addContact(n1.getKey(), newContact(i + ": "));
-      }
       String[] tags = {"Abies", "Georeferenced", "Images", "Dubious", "DataPaper"};
       for (String tag : tags) {
         nodeService.addTag(n1.getKey(), tag);
       }
     }
-  }
-
-  private Contact newContact(String namePrefix) {
-    Contact c = Contacts.newInstance();
-    c.setName(namePrefix + c.getName());
-    return c;
   }
 
 }

@@ -15,37 +15,18 @@
  */
 package org.gbif.registry2.persistence.mapper;
 
-import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.registry2.NetworkEntity;
 
-import java.util.List;
-import java.util.UUID;
-import javax.annotation.Nullable;
-
-import org.apache.ibatis.annotations.Param;
-
 /**
- * Mappers that perform operations on network entities.
+ * These mappers (BaseNetworkEntityMapper*) define a common interface for all our Network entities. We have five
+ * different ones (Datasets, Installations, Networks, Nodes and Organizations) and they can be grouped in three
+ * different categories:
+ * <ul>
+ * <li>BaseNetworkEntityMapper: Comments, Machine tags and tags (Node)</li>
+ * <li>BaseNetworkEntityMapper2: Comments, Machine tags, tags, contacts and endpoints (Installation and Network)</li>
+ * <li>BaseNetworkEntityMapper3: Comments, Machine tags, tags, contacts, identifiers and endpoints (Datasets and
+ * Organizations)</li>
+ * </ul>
  */
-public interface NetworkEntityMapper<T extends NetworkEntity> {
-
-  /**
-   * This gets the instance in question. Note that this does return deleted items.
-   *
-   * @param key of the network entity to fetch
-   *
-   * @return either the requested network entity or {@code null} if it couldn't be found
-   */
-  T get(@Param("key") UUID key);
-
-  void create(T entity);
-
-  void delete(@Param("key") UUID key);
-
-  void update(T entity);
-
-  List<T> list(@Nullable @Param("page") Pageable page);
-
-  int count();
-
-}
+public interface BaseNetworkEntityMapper3<T extends NetworkEntity>
+  extends BaseNetworkEntityMapper2<T>, IdentifiableMapper {}
