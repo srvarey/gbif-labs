@@ -22,8 +22,8 @@
     			WHEN char_length(trim(phone))&lt;5 THEN NULL
     			ELSE phone
     		END AS phone,
-    		homepage,
-    		logoURL AS logo_url,
+    		trim(homepage),
+    		trim(logoURL) AS logo_url,
     		CASE
     			WHEN char_length(trim(address))&lt;1 THEN NULL
     			ELSE address
