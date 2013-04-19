@@ -30,7 +30,7 @@
   <packaging>pom</packaging>
 
   <name>Registry :: Mother POM</name>
-  <description>The projects to provide the registry, web services and client </description>
+  <description>The projects to provide the registry, web services and client</description>
   <url>http://sites.gbif.org/registry</url>
 
   <scm>

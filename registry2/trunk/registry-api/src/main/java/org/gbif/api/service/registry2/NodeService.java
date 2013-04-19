@@ -29,8 +29,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Actions on a GBIF node.
  */
-public interface NodeService
-  extends NetworkEntityService<Node>, ContactService, MachineTagService, TagService, CommentService {
+public interface NodeService extends NetworkEntityService<Node>, MachineTagService, TagService, CommentService {
 
   /**
    * Provides access to the organizations endorsed by a single node.
@@ -44,14 +43,16 @@ public interface NodeService
 
   /**
    * Returns a node for a given country.
-   * @param country
+   *
    * @return the countries node or null if none exists
    */
   Node getByCountry(Country country);
 
   /**
    * Returns a list of all countries which do have a GBIF node.
+   *
    * @return list of distinct countries having a GBIF node
    */
   List<Country> listNodeCountries();
+
 }

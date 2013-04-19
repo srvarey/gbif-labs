@@ -26,6 +26,7 @@ public interface NetworkEntityService<T> {
 
   UUID create(@NotNull T entity);
 
+  // TODO: Define behavior when it is already deleted or does not exist
   void delete(@NotNull UUID key);
 
   T get(@NotNull UUID key);

@@ -27,16 +27,18 @@ import org.gbif.registry2.persistence.mapper.TaggableMapper;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.base.Preconditions;
 import org.mybatis.guice.transactional.Transactional;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class WithMyBatis {
 
   @Transactional
   public static <T extends NetworkEntity> UUID create(NetworkEntityMapper<T> mapper, T entity) {
-    Preconditions.checkArgument(entity.getKey() == null, "Unable to create an entity which already has a key");
+    checkArgument(entity.getKey() == null, "Unable to create an entity which already has a key");
+    // REVIEW: If this call fails the entity will have been modified anyway! We could make a copy and return that instead
     entity.setKey(UUID.randomUUID());
-    // TODO: If this call fails the entity will have been modified anyway! We could make a copy and return that instead
     mapper.create(entity);
     return entity.getKey();
   }
@@ -47,10 +49,10 @@ public class WithMyBatis {
 
   @Transactional
   public static <T extends NetworkEntity> void update(NetworkEntityMapper<T> mapper, T entity) {
-    Preconditions.checkNotNull(entity, "Unable to update an entity when it is not provided");
+    checkNotNull(entity, "Unable to update an entity when it is not provided");
     T existing = mapper.get(entity.getKey());
-    Preconditions.checkNotNull(existing, "Unable to update a non existing entity");
-    Preconditions.checkArgument(existing.getDeleted() == null, "Unable to update a previously deleted entity");
+    checkNotNull(existing, "Unable to update a non existing entity");
+    checkArgument(existing.getDeleted() == null, "Unable to update a previously deleted entity");
     mapper.update(entity);
   }
 
@@ -68,7 +70,7 @@ public class WithMyBatis {
   public static int addContact(
     ContactMapper contactMapper, ContactableMapper contactableMapper, UUID targetEntityKey, Contact contact
   ) {
-    Preconditions.checkArgument(contact.getKey() == null, "Unable to create an entity which already has a key");
+    checkArgument(contact.getKey() == null, "Unable to create an entity which already has a key");
     contactMapper.createContact(contact);
     contactableMapper.addContact(targetEntityKey, contact.getKey(), ContactType.ADMINISTRATIVE_POINT_OF_CONTACT, false);
     return contact.getKey();
@@ -86,7 +88,7 @@ public class WithMyBatis {
   public static int addEndpoint(
     EndpointMapper endpointMapper, EndpointableMapper endpointableMapper, UUID targetEntityKey, Endpoint endpoint
   ) {
-    Preconditions.checkArgument(endpoint.getKey() == null, "Unable to create an entity which already has a key");
+    checkArgument(endpoint.getKey() == null, "Unable to create an entity which already has a key");
     endpointMapper.createEndpoint(endpoint);
     endpointableMapper.addEndpoint(targetEntityKey, endpoint.getKey());
     return endpoint.getKey();
@@ -106,7 +108,7 @@ public class WithMyBatis {
     UUID targetEntityKey,
     MachineTag machineTag
   ) {
-    Preconditions.checkArgument(machineTag.getKey() == null, "Unable to create an entity which already has a key");
+    checkArgument(machineTag.getKey() == null, "Unable to create an entity which already has a key");
     machineTagMapper.createMachineTag(machineTag);
     machineTaggableMapper.addMachineTag(targetEntityKey, machineTag.getKey());
     return machineTag.getKey();
@@ -147,7 +149,7 @@ public class WithMyBatis {
     UUID targetEntityKey,
     Identifier identifier
   ) {
-    Preconditions.checkArgument(identifier.getKey() == null, "Unable to create an entity which already has a key");
+    checkArgument(identifier.getKey() == null, "Unable to create an entity which already has a key");
     identifierMapper.createIdentifier(identifier);
     identifiableMapper.addIdentifier(targetEntityKey, identifier.getKey());
     return identifier.getKey();
@@ -165,7 +167,7 @@ public class WithMyBatis {
   public static int addComment(
     CommentMapper commentMapper, CommentableMapper commentableMapper, UUID targetEntityKey, Comment comment
   ) {
-    Preconditions.checkArgument(comment.getKey() == null, "Unable to create an entity which already has a key");
+    checkArgument(comment.getKey() == null, "Unable to create an entity which already has a key");
     commentMapper.createComment(comment);
     commentableMapper.addComment(targetEntityKey, comment.getKey());
     return comment.getKey();

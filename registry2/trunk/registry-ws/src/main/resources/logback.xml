@@ -42,7 +42,8 @@
 
   <logger name="org.gbif" level="DEBUG"/>
   <logger name="org.gbif.registry2.persistence.mapper" level="INFO"/>
-  
+  <logger name="org.apache.tomcat.util.digester.Digester" level="WARN"/>
+
 
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>

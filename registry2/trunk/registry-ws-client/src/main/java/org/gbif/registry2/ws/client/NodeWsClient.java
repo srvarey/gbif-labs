@@ -18,7 +18,6 @@ package org.gbif.registry2.ws.client;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Comment;
-import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
@@ -86,24 +85,6 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   public List<Tag> listTags(UUID taggedEntityKey, String owner) {
     return get(GenericTypes.LIST_TAG, null, null, // TODO add owner here
                (Pageable) null, taggedEntityKey.toString(), "tag");
-  }
-
-  @Override
-  public int addContact(UUID targetEntityKey, Contact contact) {
-    // post the contact to .../uuid/contact and expect an int back
-    return post(Integer.class, contact, targetEntityKey.toString(), "contact");
-  }
-
-  @Override
-  public void deleteContact(UUID targetEntityKey, int contactKey) {
-    delete(targetEntityKey.toString(), "contact", String.valueOf(contactKey));
-  }
-
-  @Override
-  public List<Contact> listContacts(UUID targetEntityKey) {
-    return get(GenericTypes.LIST_CONTACT, null, null,
-               // TODO: type on contact?
-               (Pageable) null, targetEntityKey.toString(), "contact");
   }
 
   @Override

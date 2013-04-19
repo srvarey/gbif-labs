@@ -1,7 +1,5 @@
 package org.gbif.api.model.registry2;
 
-import org.gbif.api.model.registry2.Tag;
-
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

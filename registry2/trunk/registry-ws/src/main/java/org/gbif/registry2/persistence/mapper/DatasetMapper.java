@@ -25,9 +25,7 @@ import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
 
-public interface DatasetMapper
-  extends NetworkEntityMapper<Dataset>, ContactableMapper, EndpointableMapper, MachineTaggableMapper, TaggableMapper,
-  IdentifiableMapper, CommentableMapper {
+public interface DatasetMapper extends BaseNetworkEntityMapper3<Dataset> {
 
   /**
    * Obtains the metadata associated to a single dataset.

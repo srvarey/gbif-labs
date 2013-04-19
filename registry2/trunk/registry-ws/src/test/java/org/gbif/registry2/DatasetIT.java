@@ -63,13 +63,18 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   public static Iterable<Object[]> data() {
     final Injector webservice = webservice();
     final Injector client = webserviceClient();
-    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(DatasetResource.class),
-      webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class),
-      webservice.getInstance(InstallationResource.class)},
-                                      new Object[] {client.getInstance(DatasetService.class),
-                                        client.getInstance(OrganizationService.class),
-                                        client.getInstance(NodeService.class),
-                                        client.getInstance(InstallationService.class)});
+    return ImmutableList.<Object[]>of(
+      new Object[] {
+        webservice.getInstance(DatasetResource.class),
+        webservice.getInstance(OrganizationResource.class),
+        webservice.getInstance(NodeResource.class),
+        webservice.getInstance(InstallationResource.class)},
+      new Object[] {
+        client.getInstance(DatasetService.class),
+        client.getInstance(OrganizationService.class),
+        client.getInstance(NodeService.class),
+        client.getInstance(InstallationService.class)}
+    );
   }
 
   public DatasetIT(
