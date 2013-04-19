@@ -43,6 +43,8 @@ import org.junit.runners.Parameterized.Parameters;
 import static org.gbif.registry2.guice.RegistryTestModules.webservice;
 import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * This is parameterized to run the same test routines for the following:
  * <ol>
@@ -126,6 +128,19 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   public void testComments() {
     Dataset dataset = create(newEntity(), 1);
     CommentTests.testAddDelete(service, dataset);
+  }
+
+  @Test
+  public void testConstituents() {
+    Dataset parent = create(newEntity(), 1);
+    for (int id = 0; id < 10; id++) {
+      Dataset constituent = newEntity();
+      constituent.setParentDatasetKey(parent.getKey());
+      constituent.setType(parent.getType());
+      create(constituent, id + 2);
+    }
+
+    assertEquals(10, service.get(parent.getKey()).getNumConstituents());
   }
 
   @Override

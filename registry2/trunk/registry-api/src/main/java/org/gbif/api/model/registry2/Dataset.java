@@ -20,8 +20,8 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -40,6 +40,7 @@ public class Dataset
   private UUID installationKey;
   private UUID owningOrganizationKey;
   private boolean external;
+  private int numConstituents;
   private DatasetType type;
   private DatasetSubtype subtype;
   private String title;
@@ -166,6 +167,15 @@ public class Dataset
 
   public void setExternal(boolean external) {
     this.external = external;
+  }
+
+  @Min(0)
+  public int getNumConstituents() {
+    return numConstituents;
+  }
+
+  public void setNumConstituents(int numConstituents) {
+    this.numConstituents = numConstituents;
   }
 
   @NotNull
@@ -356,7 +366,7 @@ public class Dataset
       duplicateOfDatasetKey,
       installationKey,
       owningOrganizationKey,
-      external,
+      external, numConstituents,
       type,
       subtype,
       title,
@@ -393,6 +403,7 @@ public class Dataset
         && Objects.equal(this.installationKey, that.installationKey)
         && Objects.equal(this.owningOrganizationKey, that.owningOrganizationKey)
         && Objects.equal(this.external, that.external)
+        && Objects.equal(this.numConstituents, that.numConstituents)
         && Objects.equal(this.type, that.type)
         && Objects.equal(this.subtype, that.subtype)
         && Objects.equal(this.title, that.title)
@@ -429,7 +440,7 @@ public class Dataset
       .add("duplicateOfDatasetKey", duplicateOfDatasetKey)
       .add("installationKey", installationKey)
       .add("owningOrganizationKey", owningOrganizationKey)
-      .add("external", external)
+      .add("numConstituents", numConstituents)
       .add("type", type)
       .add("subtype", subtype)
       .add("title", title)

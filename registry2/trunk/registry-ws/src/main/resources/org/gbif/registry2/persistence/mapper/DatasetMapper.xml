@@ -5,6 +5,7 @@
   <!-- Auto-mapping and eager loading of sub resources  -->
   <resultMap id="DATASET_MAP" type="Dataset" autoMapping="true">
     <id property="key" column="key"/>
+    <association property="numConstituents" column="key" select="countConstituents" />
     <collection property="contacts" column="key" select="listContacts"/>
     <collection property="endpoints" column="key" select="listEndpoints"/>
     <collection property="machineTags" column="key" select="listMachineTags"/>
@@ -24,10 +25,10 @@
     d.key,d.parent_dataset_key,d.duplicate_of_dataset_key,d.installation_key,d.owning_organization_key,
     d.external,d.type,d.sub_type,d.title,d.alias,d.abbreviation,d.description,d.language,
     d.homepage,d.logo_url,d.citation,d.citation_identifier,d.rights,d.locked_for_auto_update,d.created,d.created_by,
-    d.modified,d.modified_by,d.deleted  
+    d.modified,d.modified_by,d.deleted
   </sql>
-  
-  <!-- 
+
+  <!--
     key, created and deleted are never changed
    -->
   <sql id="DATASET_UPDATE">
@@ -79,12 +80,16 @@
     #{modifiedBy}
   </sql>
   
+  <select id="countConstituents" resultType="int">
+    SELECT COUNT(*) AS num_constituents FROM dataset WHERE deleted IS NULL AND parent_dataset_key = #{key}
+  </select>
+
   <!--  Note: you can get entities which are deleted -->
   <select id="get" resultMap="DATASET_MAP">
     SELECT <include refid="DATASET_FIELDS"/>
     FROM dataset d
     WHERE d.key = #{key,jdbcType=OTHER}
-  </select>  
+  </select>
   
   <insert id="create" parameterType="Dataset">
     INSERT INTO dataset(<include refid="WRITABLE_DATASET_FIELDS"/>)
