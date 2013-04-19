@@ -370,7 +370,7 @@ CREATE UNIQUE INDEX unique_network_contact ON network_contact(network_key, type)
 -- 
 --  endpoint
 -- 
-CREATE TYPE enum_endpoint_type AS ENUM ('EML', 'RSS', 'WFS', 'WMS', 'TCS_RDF', 'TCS_XML', 'DWC_ARCHIVE', 'DIGIR', 'DIGIR_MANIS',
+CREATE TYPE enum_endpoint_type AS ENUM ('EML', 'FEED', 'WFS', 'WMS', 'TCS_RDF', 'TCS_XML', 'DWC_ARCHIVE', 'DIGIR', 'DIGIR_MANIS',
 'TAPIR', 'BIOCASE', 'OAI_PMH', 'DWC_ARCHIVE_CHECKLIST', 'DWC_ARCHIVE_OCCURRENCE', 'OTHER');
 CREATE TABLE endpoint
 (
