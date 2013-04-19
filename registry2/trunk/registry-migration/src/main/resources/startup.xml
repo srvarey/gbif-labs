@@ -19,7 +19,7 @@
 
   <script connection-id="new-registry">
     <dialect name="postgresql">
-      <include href="schemav4.sql"/>
+      <include href="schema.sql"/>
     </dialect>
   </script>
 
