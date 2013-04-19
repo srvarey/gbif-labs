@@ -7,7 +7,7 @@
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
 
     <query id="tags" connection-id="old-registry">
-        SELECT id AS key, 
+        SELECT id AS `key`, 
         	name AS value,
         	'ADMIN' AS created_by,
         	created
