@@ -256,8 +256,8 @@
       <id>ims</id>
       <properties>
         <ims.db.url>jdbc:filemaker://filemaker.gbif.org/IMS_NG</ims.db.url>
-        <ims.db.username>mdoering</ims.db.username>
-        <ims.db.password>carla</ims.db.password>
+        <ims.db.username></ims.db.username>
+        <ims.db.password></ims.db.password>
       </properties>
     </profile>
   </profiles>
