@@ -16,11 +16,10 @@
 package org.gbif.api.model.registry2.eml;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 
 public class SamplingDescription implements Serializable {
@@ -31,23 +30,23 @@ public class SamplingDescription implements Serializable {
 
   private String sampling;
   private String qualityControl;
-  private List<MethodStep> methodSteps = new ArrayList<MethodStep>();
+  private List<String> methodSteps = Lists.newArrayList();
 
   public SamplingDescription() {
   }
 
-  public SamplingDescription(String studyExtent, String sampling, String qualityControl, List<MethodStep> methodSteps) {
+  public SamplingDescription(String studyExtent, String sampling, String qualityControl, List<String> methodSteps) {
     this.studyExtent = studyExtent;
     this.sampling = sampling;
     this.qualityControl = qualityControl;
     this.methodSteps = methodSteps;
   }
 
-  public List<MethodStep> getMethodSteps() {
+  public List<String> getMethodSteps() {
     return methodSteps;
   }
 
-  public void setMethodSteps(List<MethodStep> methodSteps) {
+  public void setMethodSteps(List<String> methodSteps) {
     this.methodSteps = methodSteps;
   }
 
@@ -78,9 +77,9 @@ public class SamplingDescription implements Serializable {
   /**
    * Add methodStep to MethodStep List.
    */
-  public void addMethodStep(MethodStep methodStep) {
+  public void addMethodStep(String methodStep) {
     if (methodSteps == null) {
-      methodSteps = new LinkedList<MethodStep>();
+      methodSteps = Lists.newArrayList();
     }
     methodSteps.add(methodStep);
   }
