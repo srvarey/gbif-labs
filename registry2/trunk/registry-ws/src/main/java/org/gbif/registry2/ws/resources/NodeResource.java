@@ -21,6 +21,7 @@ import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.registry2.ims.Augmenter;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NodeMapper;
@@ -45,6 +46,7 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
 
   private final NodeMapper nodeMapper;
   private final OrganizationMapper organizationMapper;
+  private final Augmenter nodeAugmenter;
 
   @Inject
   public NodeResource(
@@ -53,11 +55,28 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     CommentMapper commentMapper,
-    EventBus eventBus
+    EventBus eventBus,
+    Augmenter nodeAugmenter
   ) {
     super(nodeMapper, commentMapper, machineTagMapper, tagMapper, Node.class, eventBus);
     this.nodeMapper = nodeMapper;
     this.organizationMapper = organizationMapper;
+    this.nodeAugmenter = nodeAugmenter;
+  }
+
+  @Nullable
+  @Override
+  public Node get(UUID key) {
+    return nodeAugmenter.augment(super.get(key));
+  }
+
+  @Override
+  public PagingResponse<Node> list(@Nullable Pageable page) {
+    PagingResponse<Node> resp = super.list(page);
+    for (Node n : resp.getResults()) {
+      nodeAugmenter.augment(n);
+    }
+    return resp;
   }
 
   @GET
@@ -84,7 +103,7 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   @Nullable
   @Override
   public Node getByCountry(Country country) {
-    return nodeMapper.getByCountry(country);
+    return nodeAugmenter.augment(nodeMapper.getByCountry(country));
   }
 
   @GET

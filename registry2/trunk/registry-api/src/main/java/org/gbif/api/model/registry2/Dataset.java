@@ -12,6 +12,18 @@
  */
 package org.gbif.api.model.registry2;
 
+import org.gbif.api.model.common.InterpretedEnum;
+import org.gbif.api.model.registry2.eml.Citation;
+import org.gbif.api.model.registry2.eml.Collection;
+import org.gbif.api.model.registry2.eml.DataDescription;
+import org.gbif.api.model.registry2.eml.KeywordCollection;
+import org.gbif.api.model.registry2.eml.Project;
+import org.gbif.api.model.registry2.eml.SamplingDescription;
+import org.gbif.api.model.registry2.eml.TaxonomicCoverages;
+import org.gbif.api.model.registry2.eml.curatorial.CuratorialUnitComposite;
+import org.gbif.api.model.registry2.eml.geospatial.GeospatialCoverage;
+import org.gbif.api.model.registry2.eml.temporal.TemporalCoverage;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.Language;
 import org.gbif.api.vocabulary.registry2.DatasetSubtype;
 import org.gbif.api.vocabulary.registry2.DatasetType;
@@ -19,6 +31,7 @@ import org.gbif.api.vocabulary.registry2.DatasetType;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
@@ -27,6 +40,7 @@ import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * A GBIF dataset which provides occurrence data, checklist data or metadata.
@@ -65,6 +79,26 @@ public class Dataset
   private List<Tag> tags = Lists.newArrayList();
   private List<Identifier> identifiers = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
+  // EML specific properties
+  private UUID networkOfOriginKey;
+  private List<Citation> bibliographicCitations = Lists.newArrayList();
+  private List<CuratorialUnitComposite> curatorialUnits = Lists.newArrayList();
+  private List<TaxonomicCoverages> taxonomicCoverages = Lists.newArrayList();
+  private String geographicCoverageDescription;
+  private List<GeospatialCoverage> geographicCoverages = Lists.newArrayList();
+  private List<TemporalCoverage> temporalCoverages = Lists.newArrayList();
+  private List<KeywordCollection> keywordCollections = Lists.newArrayList();
+  private Project project;
+  private SamplingDescription samplingDescription;
+  private Set<Country> countryCoverage = Sets.newHashSet();
+  private List<Collection> collections = Lists.newArrayList();
+  private List<DataDescription> dataDescriptions = Lists.newArrayList();
+  private InterpretedEnum<String, Language> dataLanguage;
+  private String metadataLanguageVerbatim;
+  private String intellectualRights;
+  private String purpose;
+  private String additionalInfo;
+  private Date pubDate;
 
   @Override
   public UUID getKey() {

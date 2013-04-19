@@ -55,7 +55,7 @@ public enum DatasetSearchParameter implements SearchParameter {
 
   /**
    * A case insensitive plain text keyword or serialized tag as created by Tag.toString().
-   * The search is done on the keywords generated through {@link org.gbif.api.model.registry.Dataset#getKeywords()}
+   * The search is done on the keywords generated through {@link org.gbif.api.model.registry2.eml.Dataset#getKeywords()}
    * by merging tags, the keywordCollections and temporalCoverages property.
    */
   KEYWORD(String.class),
