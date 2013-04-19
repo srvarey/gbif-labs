@@ -216,7 +216,7 @@ CREATE TABLE network_tag
 -- 
 --  machine_tag
 -- 
-CREATE TABLE machine_tag
+CREATE TABLE machine_tag	
 (
   key serial NOT NULL PRIMARY KEY,
   namespace varchar(255) NOT NULL CHECK (assert_min_length(value, 1)),
