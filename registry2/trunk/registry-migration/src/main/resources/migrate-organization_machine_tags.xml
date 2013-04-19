@@ -10,7 +10,7 @@
         SELECT a.uuid AS organization_key, 
         	t.id AS machine_tag_key 
         FROM agent a, tag t
-        WHERE a.id = t.agent_id AND a.type = 14010 AND a.deleted IS NULL
+        WHERE a.id = t.agent_id AND a.type = 14010 AND a.deleted IS NULL AND t.namespace_id IS NOT NULL
          			
 		<script connection-id="new-registry">
 		INSERT INTO organization_machine_tag(organization_key, machine_tag_key)
