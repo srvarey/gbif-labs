@@ -8,7 +8,7 @@
 
     <query id="tags" connection-id="old-registry">
         SELECT id AS `key`, 
-        	name AS value,
+        	trim(TRAILING ',' FROM name) AS value,
         	'ADMIN' AS created_by,
         	created
         FROM tag
