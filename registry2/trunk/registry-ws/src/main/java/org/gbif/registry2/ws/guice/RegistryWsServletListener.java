@@ -15,6 +15,7 @@
  */
 package org.gbif.registry2.ws.guice;
 
+import org.gbif.registry2.events.EventModule;
 import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
 import org.gbif.ws.server.guice.GbifServletListener;
 

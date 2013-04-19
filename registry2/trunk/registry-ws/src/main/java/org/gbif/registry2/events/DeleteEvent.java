@@ -15,6 +15,9 @@
  */
 package org.gbif.registry2.events;
 
+/**
+ * This event is fired after a new network entity has been successfully deleted.
+ */
 public class DeleteEvent<T> {
 
   private final T oldObject;

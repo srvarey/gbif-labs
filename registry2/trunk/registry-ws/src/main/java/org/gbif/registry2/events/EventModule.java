@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gbif.registry2.ws.guice;
+package org.gbif.registry2.events;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
@@ -53,4 +53,5 @@ public class EventModule extends AbstractModule {
   private void bindEventListeners() {
 
   }
+
 }
