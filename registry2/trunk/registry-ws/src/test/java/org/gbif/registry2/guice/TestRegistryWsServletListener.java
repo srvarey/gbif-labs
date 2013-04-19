@@ -15,6 +15,7 @@
  */
 package org.gbif.registry2.guice;
 
+import org.gbif.registry2.ims.ImsModule;
 import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry2.ws.guice.StringTrimInterceptor;
 import org.gbif.ws.server.guice.GbifServletListener;
@@ -41,8 +42,9 @@ public class TestRegistryWsServletListener extends GbifServletListener {
   @Override
   protected List<Module> getModules(Properties props) {
     return Lists.<Module>newArrayList(new RegistryMyBatisModule(props),
-                                      StringTrimInterceptor.newMethodInterceptingModule(),
-                                      new ValidationModule());
+                                  new ImsModule(props),
+                                  StringTrimInterceptor.newMethodInterceptingModule(),
+                                  new ValidationModule());
   }
 
 }

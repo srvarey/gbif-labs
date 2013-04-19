@@ -2,7 +2,7 @@ package org.gbif.api.model.registry2.search;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.search.FacetedSearchRequest;
-import org.gbif.api.model.registry.Tag;
+import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.vocabulary.Continent;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.DatasetSubtype;
@@ -62,7 +62,7 @@ public class DatasetSearchRequest extends FacetedSearchRequest<DatasetSearchPara
   }
 
   /**
-   * Filters datasets by a keyword as generated through {@link org.gbif.api.model.registry.Dataset#getKeywords()}
+   * Filters datasets by a keyword as generated through {@link org.gbif.api.model.registry2.eml.Dataset#getKeywords()}
    * by merging tags, the keywordCollections and temporalCoverages property.
    *
    * @param keyword a plain keyword e.g. created by Tag.toString()

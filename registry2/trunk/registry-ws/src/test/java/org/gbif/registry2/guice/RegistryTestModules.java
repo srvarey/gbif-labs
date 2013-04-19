@@ -16,6 +16,7 @@
 package org.gbif.registry2.guice;
 
 import org.gbif.registry2.grizzly.RegistryServer;
+import org.gbif.registry2.ims.ImsModule;
 import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
 import org.gbif.registry2.ws.resources.DatasetResource;
@@ -78,7 +79,7 @@ public class RegistryTestModules {
             bind(DatasetResource.class);
             bind(NetworkResource.class);
           }
-        }, new RegistryMyBatisModule(p), new ValidationModule());
+        }, new RegistryMyBatisModule(p), new ImsModule(p), new ValidationModule());
       } catch (IOException e) {
         throw Throwables.propagate(e);
       }

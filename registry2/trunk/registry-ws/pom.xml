@@ -19,6 +19,10 @@
       <id>gbif-all</id>
       <url>http://repository.gbif.org/content/groups/gbif</url>
     </repository>
+    <repository>
+      <id>gbif-thirdparty</id>
+      <url>http://repository.gbif.org/content/repositories/thirdparty/</url>
+    </repository>
   </repositories>
 
   <build>
@@ -146,6 +150,10 @@
       <artifactId>postgresql</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.filemaker</groupId>
+      <artifactId>jdbc</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common-search</artifactId>
       <exclusions>
@@ -242,4 +250,15 @@
       <scope>compile</scope>
     </dependency -->
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>ims</id>
+      <properties>
+        <ims.db.url>jdbc:filemaker://filemaker.gbif.org/IMS_NG</ims.db.url>
+        <ims.db.username>mdoering</ims.db.username>
+        <ims.db.password>carla</ims.db.password>
+      </properties>
+    </profile>
+  </profiles>
 </project>

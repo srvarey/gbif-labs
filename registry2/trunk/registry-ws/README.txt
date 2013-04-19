@@ -31,3 +31,15 @@ With a maven profile similar to:
       </properties>
     </profile>    
 
+
+If an optional IMS Filemaker connection is configured with a profile as follows, extra information will be taken from that:
+
+    <!-- A local profile for the registry2 IMS development -->
+    <profile>
+      <id>ims</id>
+      <properties>
+        <ims.db.url>jdbc:filemaker://filemaker.gbif.org/IMS_NG</ims.db.url>
+        <ims.db.username>mdoering</ims.db.username>
+        <ims.db.password>password</ims.db.password>
+      </properties>
+    </profile>

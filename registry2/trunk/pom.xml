@@ -62,6 +62,10 @@
       <id>gbif-all</id>
       <url>http://repository.gbif.org/content/groups/gbif</url>
     </repository>
+    <repository>
+      <id>gbif-thirdparty</id>
+      <url>http://repository.gbif.org/content/repositories/thirdparty/</url>
+    </repository>
   </repositories>
 
   <modules>
@@ -87,6 +91,7 @@
     <gbif-common-service.version>0.4</gbif-common-service.version>
     <gbif-common-search.version>0.6</gbif-common-search.version>
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
+    <filemaker.version>12.2.94</filemaker.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
     <guava.version>14.0.1</guava.version>
     <guice.version>3.0</guice.version>
@@ -306,6 +311,12 @@
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>${postgresql.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.filemaker</groupId>
+        <artifactId>jdbc</artifactId>
+        <version>${filemaker.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gbif.registry2.persistence.mapper.NodeMapper">
+  
+  <!-- Auto-mapping and eager loading of sub resources  -->
+  <resultMap id="NODE_MAP" type="Node" autoMapping="true">
+    <id property="country" column="country"/>
+    <!--
+    <collection property="contacts" column="key" select="listContacts"/>
+    <collection property="comments" column="key" select="listComments"/>
+    -->
+  </resultMap>
+
+  <sql id="NODE_FIELD_TYPES">
+    #{key,jdbcType=OTHER},
+    #{type,jdbcType=OTHER},
+    #{participationStatus,jdbcType=OTHER},
+    #{gbifRegion,jdbcType=OTHER},
+    #{continent,jdbcType=OTHER},
+    #{title,jdbcType=VARCHAR},
+    #{description,jdbcType=VARCHAR},
+    #{language,jdbcType=CHAR},
+    #{email,jdbcType=VARCHAR},
+    #{phone,jdbcType=VARCHAR},
+    #{homepage,jdbcType=VARCHAR},
+    #{logoUrl,jdbcType=VARCHAR},
+    #{address,jdbcType=VARCHAR},
+    #{city,jdbcType=VARCHAR},
+    #{province,jdbcType=VARCHAR},
+    #{country,jdbcType=CHAR},
+    #{postalCode,jdbcType=VARCHAR},
+    now(), <!-- created -->    
+    #{createdBy}, 
+    now(), <!-- modified -->
+    #{modifiedBy},
+    NULL <!-- deleted -->
+  </sql>
+  
+  <!--  Note: you can get entities which are deleted -->
+  <select id="get" resultType="Node" resultMap="NODE_MAP">
+    key,type,participation_status,gbif_region,continent,title,description,language,email,phone,homepage,logo_url,address,city,province,
+    country,postal_code,created,created_by,modified,modified_by,deleted
+    SELECT n.Name_Full, n.Name_Acronym, n.URL,
+      p.GBIFmembership, p.Member_AsOf, p.Member_Status, p.Name_Full, p.Name_Short, p.Host_URL
+      r.Region
+    FROM __Node n
+      JOIN __Participant p ON n._kf_ParticipantID=p.__kp_ID
+      JOIN __Region r ON p._kf_RegionID=r.__kp_ID
+      JOIN __Country ctr ON p._kf_CountryID=ctr.__kp_ID
+      JOIN __Institution i ON p._kf_InstitutionID=i.__kp_ID
+    WHERE ctr.ISO2 = #{key}
+  </select>  
+
+  <select id="listContacts" resultType="Contact">
+    SELECT <include refid="org.gbif.registry2.persistence.mapper.ContactMapper.CONTACT_FIELDS"/>
+    FROM contact INNER JOIN node_contact ON contact_key = key
+    WHERE node_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+  
+  <select id="listComments" resultType="Comment">
+    SELECT <include refid="org.gbif.registry2.persistence.mapper.CommentMapper.COMMENT_FIELDS"/>
+    FROM comment INNER JOIN node_comment ON comment_key = key
+    WHERE node_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+
+</mapper>
