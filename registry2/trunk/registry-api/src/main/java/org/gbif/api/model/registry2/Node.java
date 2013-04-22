@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
 /**
  * A GBIF participant node.
  */
-public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggable, Commentable {
+public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggable, Commentable, Identifiable {
 
   private UUID key;
   private NodeType type;
@@ -64,6 +64,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   private List<Contact> contacts = Lists.newArrayList();
   private List<MachineTag> machineTags = Lists.newArrayList();
   private List<Tag> tags = Lists.newArrayList();
+  private List<Identifier> identifiers = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
 
   @Override
@@ -318,6 +319,16 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   }
 
   @Override
+  public List<Identifier> getIdentifiers() {
+    return identifiers;
+  }
+
+  @Override
+  public void setIdentifiers(List<Identifier> identifiers) {
+    this.identifiers = identifiers;
+  }
+
+  @Override
   public List<Comment> getComments() {
     return comments;
   }
@@ -355,6 +366,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
                             contacts,
                             machineTags,
                             tags,
+                            identifiers,
                             comments);
   }
 
@@ -388,6 +400,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
              && Objects.equal(this.contacts, that.contacts)
              && Objects.equal(this.machineTags, that.machineTags)
              && Objects.equal(this.tags, that.tags)
+             && Objects.equal(this.identifiers, that.identifiers)
              && Objects.equal(this.comments, that.comments);
     }
     return false;
@@ -422,6 +435,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       .add("contacts", contacts)
       .add("machineTags", machineTags)
       .add("tags", tags)
+      .add("identifiers", identifiers)
       .add("comments", comments)
       .toString();
   }
