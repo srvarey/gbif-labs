@@ -393,6 +393,158 @@ public class Dataset
     this.comments = comments;
   }
 
+  public UUID getNetworkOfOriginKey() {
+    return networkOfOriginKey;
+  }
+
+  public void setNetworkOfOriginKey(UUID networkOfOriginKey) {
+    this.networkOfOriginKey = networkOfOriginKey;
+  }
+
+  public List<Citation> getBibliographicCitations() {
+    return bibliographicCitations;
+  }
+
+  public void setBibliographicCitations(List<Citation> bibliographicCitations) {
+    this.bibliographicCitations = bibliographicCitations;
+  }
+
+  public List<CuratorialUnitComposite> getCuratorialUnits() {
+    return curatorialUnits;
+  }
+
+  public void setCuratorialUnits(List<CuratorialUnitComposite> curatorialUnits) {
+    this.curatorialUnits = curatorialUnits;
+  }
+
+  public List<TaxonomicCoverages> getTaxonomicCoverages() {
+    return taxonomicCoverages;
+  }
+
+  public void setTaxonomicCoverages(List<TaxonomicCoverages> taxonomicCoverages) {
+    this.taxonomicCoverages = taxonomicCoverages;
+  }
+
+  public String getGeographicCoverageDescription() {
+    return geographicCoverageDescription;
+  }
+
+  public void setGeographicCoverageDescription(String geographicCoverageDescription) {
+    this.geographicCoverageDescription = geographicCoverageDescription;
+  }
+
+  public List<GeospatialCoverage> getGeographicCoverages() {
+    return geographicCoverages;
+  }
+
+  public void setGeographicCoverages(List<GeospatialCoverage> geographicCoverages) {
+    this.geographicCoverages = geographicCoverages;
+  }
+
+  public List<TemporalCoverage> getTemporalCoverages() {
+    return temporalCoverages;
+  }
+
+  public void setTemporalCoverages(List<TemporalCoverage> temporalCoverages) {
+    this.temporalCoverages = temporalCoverages;
+  }
+
+  public List<KeywordCollection> getKeywordCollections() {
+    return keywordCollections;
+  }
+
+  public void setKeywordCollections(List<KeywordCollection> keywordCollections) {
+    this.keywordCollections = keywordCollections;
+  }
+
+  public Project getProject() {
+    return project;
+  }
+
+  public void setProject(Project project) {
+    this.project = project;
+  }
+
+  public SamplingDescription getSamplingDescription() {
+    return samplingDescription;
+  }
+
+  public void setSamplingDescription(SamplingDescription samplingDescription) {
+    this.samplingDescription = samplingDescription;
+  }
+
+  public Set<Country> getCountryCoverage() {
+    return countryCoverage;
+  }
+
+  public void setCountryCoverage(Set<Country> countryCoverage) {
+    this.countryCoverage = countryCoverage;
+  }
+
+  public List<Collection> getCollections() {
+    return collections;
+  }
+
+  public void setCollections(List<Collection> collections) {
+    this.collections = collections;
+  }
+
+  public List<DataDescription> getDataDescriptions() {
+    return dataDescriptions;
+  }
+
+  public void setDataDescriptions(List<DataDescription> dataDescriptions) {
+    this.dataDescriptions = dataDescriptions;
+  }
+
+  public InterpretedEnum<String, Language> getDataLanguage() {
+    return dataLanguage;
+  }
+
+  public void setDataLanguage(InterpretedEnum<String, Language> dataLanguage) {
+    this.dataLanguage = dataLanguage;
+  }
+
+  public String getMetadataLanguageVerbatim() {
+    return metadataLanguageVerbatim;
+  }
+
+  public void setMetadataLanguageVerbatim(String metadataLanguageVerbatim) {
+    this.metadataLanguageVerbatim = metadataLanguageVerbatim;
+  }
+
+  public String getIntellectualRights() {
+    return intellectualRights;
+  }
+
+  public void setIntellectualRights(String intellectualRights) {
+    this.intellectualRights = intellectualRights;
+  }
+
+  public String getPurpose() {
+    return purpose;
+  }
+
+  public void setPurpose(String purpose) {
+    this.purpose = purpose;
+  }
+
+  public String getAdditionalInfo() {
+    return additionalInfo;
+  }
+
+  public void setAdditionalInfo(String additionalInfo) {
+    this.additionalInfo = additionalInfo;
+  }
+
+  public Date getPubDate() {
+    return pubDate;
+  }
+
+  public void setPubDate(Date pubDate) {
+    this.pubDate = pubDate;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hashCode(key,
@@ -424,7 +576,27 @@ public class Dataset
       machineTags,
       tags,
       identifiers,
-      comments);
+      comments,
+      networkOfOriginKey,
+      bibliographicCitations,
+      curatorialUnits,
+      taxonomicCoverages,
+      geographicCoverageDescription,
+      geographicCoverages,
+      temporalCoverages,
+      keywordCollections,
+      project,
+      samplingDescription,
+      countryCoverage,
+      collections,
+      dataDescriptions,
+      dataLanguage,
+      metadataLanguageVerbatim,
+      intellectualRights,
+      purpose,
+      additionalInfo,
+      pubDate
+    );
   }
 
   @Override
@@ -461,7 +633,26 @@ public class Dataset
         && Objects.equal(this.machineTags, that.machineTags)
         && Objects.equal(this.tags, that.tags)
         && Objects.equal(this.identifiers, that.identifiers)
-        && Objects.equal(this.comments, that.comments);
+        && Objects.equal(this.comments, that.comments)
+        && Objects.equal(this.networkOfOriginKey, that.networkOfOriginKey)
+        && Objects.equal(this.bibliographicCitations, that.bibliographicCitations)
+        && Objects.equal(this.curatorialUnits, that.curatorialUnits)
+        && Objects.equal(this.taxonomicCoverages, that.taxonomicCoverages)
+        && Objects.equal(this.geographicCoverageDescription, that.geographicCoverageDescription)
+        && Objects.equal(this.geographicCoverages, that.geographicCoverages)
+        && Objects.equal(this.temporalCoverages, that.temporalCoverages)
+        && Objects.equal(this.keywordCollections, that.keywordCollections)
+        && Objects.equal(this.project, that.project)
+        && Objects.equal(this.samplingDescription, that.samplingDescription)
+        && Objects.equal(this.countryCoverage, that.countryCoverage)
+        && Objects.equal(this.collections, that.collections)
+        && Objects.equal(this.dataDescriptions, that.dataDescriptions)
+        && Objects.equal(this.dataLanguage, that.dataLanguage)
+        && Objects.equal(this.metadataLanguageVerbatim, that.metadataLanguageVerbatim)
+        && Objects.equal(this.intellectualRights, that.intellectualRights)
+        && Objects.equal(this.purpose, that.purpose)
+        && Objects.equal(this.additionalInfo, that.additionalInfo)
+        && Objects.equal(this.pubDate, that.pubDate);
     }
     return false;
   }
@@ -499,6 +690,25 @@ public class Dataset
       .add("tags", tags)
       .add("identifiers", identifiers)
       .add("comments", comments)
+      .add("networkOfOriginKey", networkOfOriginKey)
+      .add("bibliographicCitations", bibliographicCitations)
+      .add("curatorialUnits", curatorialUnits)
+      .add("taxonomicCoverages", taxonomicCoverages)
+      .add("geographicCoverageDescription", geographicCoverageDescription)
+      .add("geographicCoverages", geographicCoverages)
+      .add("temporalCoverages", temporalCoverages)
+      .add("keywordCollections", keywordCollections)
+      .add("project", project)
+      .add("samplingDescription", samplingDescription)
+      .add("countryCoverage", countryCoverage)
+      .add("collections", collections)
+      .add("dataDescriptions", dataDescriptions)
+      .add("dataLanguage", dataLanguage)
+      .add("metadataLanguageVerbatim", metadataLanguageVerbatim)
+      .add("intellectualRights", intellectualRights)
+      .add("purpose", purpose)
+      .add("additionalInfo", additionalInfo)
+      .add("pubDate", pubDate)
       .toString();
   }
 
