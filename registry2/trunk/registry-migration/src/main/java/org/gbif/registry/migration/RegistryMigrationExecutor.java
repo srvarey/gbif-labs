@@ -134,6 +134,10 @@ public class RegistryMigrationExecutor {
       statics = execute("src/main/resources/migrate-installation_tags.xml", "Registry installation_tag");
       System.out.println("Installation_tags created in " + statics.getTotalTime() + " milliseconds");
       
+      System.out.println("Starting dataset_tags creation...");
+      statics = execute("src/main/resources/migrate-dataset_tags.xml", "Dataset installation_tag");
+      System.out.println("Dataset_tags created in " + statics.getTotalTime() + " milliseconds");
+      
     } catch (EtlExecutorException e) {
       e.printStackTrace();
     }
