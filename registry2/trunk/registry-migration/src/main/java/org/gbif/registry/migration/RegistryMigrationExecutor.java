@@ -149,6 +149,10 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting organization_identifiers creation...");
       statics = execute("src/main/resources/migrate-organization_identifiers.xml", "Registry organization_identifier");
       System.out.println("Organization_identifiers created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting dataset_identifiers creation...");
+      statics = execute("src/main/resources/migrate-dataset_identifiers.xml", "Registry dataset_identifier");
+      System.out.println("Dataset_identifiers created in " + statics.getTotalTime() + " milliseconds");
       
     } catch (EtlExecutorException e) {
       e.printStackTrace();
