@@ -18,6 +18,7 @@ package org.gbif.registry2.ws.client;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Comment;
+import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
@@ -100,6 +101,23 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   @Override
   public List<MachineTag> listMachineTags(UUID targetEntityKey) {
     return get(GenericTypes.LIST_MACHINETAG, null, null, (Pageable) null, targetEntityKey.toString(), "machinetag");
+  }
+
+  @Override
+  public int addIdentifier(UUID targetEntityKey, Identifier identifier) {
+    return post(Integer.class, identifier, targetEntityKey.toString(), "identifier");
+  }
+
+  @Override
+  public void deleteIdentifier(UUID targetEntityKey, int identifierKey) {
+    delete(targetEntityKey.toString(), "identifier", String.valueOf(identifierKey));
+  }
+
+  @Override
+  public List<Identifier> listIdentifiers(UUID targetEntityKey) {
+    return get(GenericTypes.LIST_IDENTIFIER, null, null,
+               // TODO: identifier type?
+               (Pageable) null, targetEntityKey.toString(), "identifier");
   }
 
   @Override

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -49,7 +50,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
 
   private final NodeService service;
   private static final Set<Country> TEST_COUNTRIES =
-    Sets.newHashSet(Country.AFGHANISTAN, Country.ARGENTINA, Country.DENMARK, Country.GHANA);
+    Sets.newHashSet(Country.AFGHANISTAN, Country.ARGENTINA, Country.DENMARK, Country.SPAIN);
 
   @Parameters
   public static Iterable<Object[]> data() {
@@ -114,6 +115,21 @@ public class NodeIT extends NetworkEntityTest<Node> {
     for (Country c : countries) {
       assertTrue("Unexpected node country" + c, TEST_COUNTRIES.contains(c));
     }
+  }
+
+  @Test
+  public void testIdentifiers() {
+    Node node = create(newEntity(), 1);
+    IdentifierTests.testAddDelete(service, node);
+  }
+
+  @Test
+  @Ignore("A manual test requiring a local filemaker IMS copy")
+  public void testIms() throws Exception {
+    initCountryNodes();
+    Node es = service.getByCountry(Country.SPAIN);
+    //TODO: remove sys out and replace with real comparisons
+    System.out.println(es);
   }
 
   @Override

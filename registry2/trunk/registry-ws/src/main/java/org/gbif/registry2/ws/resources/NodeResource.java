@@ -23,6 +23,7 @@ import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.ims.Augmenter;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
+import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NodeMapper;
 import org.gbif.registry2.persistence.mapper.OrganizationMapper;
@@ -42,7 +43,7 @@ import com.google.inject.Singleton;
 
 @Singleton
 @Path("node")
-public class NodeResource extends BaseNetworkEntityResource<Node> implements NodeService {
+public class NodeResource extends BaseNetworkEntityResource4<Node> implements NodeService {
 
   private final NodeMapper nodeMapper;
   private final OrganizationMapper organizationMapper;
@@ -51,14 +52,15 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   @Inject
   public NodeResource(
     NodeMapper nodeMapper,
-    OrganizationMapper organizationMapper,
+    IdentifierMapper identifierMapper,
+    CommentMapper commentMapper,
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
-    CommentMapper commentMapper,
+    OrganizationMapper organizationMapper,
     EventBus eventBus,
     Augmenter nodeAugmenter
   ) {
-    super(nodeMapper, commentMapper, machineTagMapper, tagMapper, Node.class, eventBus);
+    super(nodeMapper, commentMapper, identifierMapper, machineTagMapper, tagMapper, Node.class, eventBus);
     this.nodeMapper = nodeMapper;
     this.organizationMapper = organizationMapper;
     this.nodeAugmenter = nodeAugmenter;

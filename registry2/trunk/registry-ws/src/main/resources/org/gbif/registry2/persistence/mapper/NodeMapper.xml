@@ -8,6 +8,7 @@
     <collection property="contacts" column="key" select="listContacts"/>
     <collection property="machineTags" column="key" select="listMachineTags"/>
     <collection property="tags" column="key" select="listTags"/>
+    <collection property="identifiers" column="key" select="listIdentifiers"/>
     <collection property="comments" column="key" select="listComments"/>
   </resultMap>
 
@@ -164,6 +165,30 @@
       node_key = #{targetEntityKey,jdbcType=OTHER} AND contact_key = #{contactKey,jdbcType=INTEGER}
   </delete>
   
+  <!-- IDENTIFIERS -->
+  <insert id="addIdentifier">
+    INSERT INTO node_identifier(node_key,identifier_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{identifierKey,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <select id="listIdentifiers" resultType="Identifier">
+    SELECT <include refid="org.gbif.registry2.persistence.mapper.IdentifierMapper.IDENTIFIER_FIELDS"/>
+    FROM identifier INNER JOIN node_identifier ON identifier_key = key
+    WHERE node_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created
+  </select>
+
+  <!-- Joined delete of identifier to trigger cascade delete of the join table -->
+  <delete id="deleteIdentifier">
+    DELETE FROM identifier USING node_identifier
+    WHERE
+      identifier_key = identifier.key AND
+      node_key = #{targetEntityKey,jdbcType=OTHER} AND identifier_key = #{identifierKey,jdbcType=INTEGER}
+  </delete>
+
   <!-- MACHINE TAGS -->
   <insert id="addMachineTag">
     INSERT INTO node_machine_tag(node_key,machine_tag_key)

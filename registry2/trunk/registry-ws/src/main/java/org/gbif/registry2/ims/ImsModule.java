@@ -86,7 +86,7 @@ public class ImsModule extends PrivateServiceModule {
     @Override
     protected void bindMappers() {
       // network entities
-      addMapperClass(NodeMapper.class);
+      addMapperClass(ImsNodeMapper.class);
 
       // reduce mapper verboseness with aliases
       addAlias("Node").to(Node.class);

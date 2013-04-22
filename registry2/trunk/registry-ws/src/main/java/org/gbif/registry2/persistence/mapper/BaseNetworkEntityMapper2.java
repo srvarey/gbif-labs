@@ -19,13 +19,14 @@ import org.gbif.api.model.registry2.NetworkEntity;
 
 /**
  * These mappers (BaseNetworkEntityMapper*) define a common interface for all our Network entities. We have five
- * different ones (Datasets, Installations, Networks, Nodes and Organizations) and they can be grouped in three
+ * different ones (Datasets, Installations, Networks, Nodes and Organizations) and they can be grouped in four
  * different categories:
  * <ul>
- * <li>BaseNetworkEntityMapper: Comments, Machine tags and tags (Node)</li>
+ * <li>BaseNetworkEntityMapper: Comments, Machine tags and tags</li>
  * <li>BaseNetworkEntityMapper2: Comments, Machine tags, tags, contacts and endpoints (Installation and Network)</li>
  * <li>BaseNetworkEntityMapper3: Comments, Machine tags, tags, contacts, identifiers and endpoints (Datasets and
  * Organizations)</li>
+ * <li>BaseNetworkEntityMapper4: Comments, Machine tags, tags, contacts, identifiers (Node)</li>
  * </ul>
  */
 public interface BaseNetworkEntityMapper2<T extends NetworkEntity>

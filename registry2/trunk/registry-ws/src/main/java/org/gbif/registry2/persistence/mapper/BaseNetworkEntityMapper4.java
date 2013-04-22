@@ -29,5 +29,5 @@ import org.gbif.api.model.registry2.NetworkEntity;
  * <li>BaseNetworkEntityMapper4: Comments, Machine tags, tags, contacts, identifiers (Node)</li>
  * </ul>
  */
-public interface BaseNetworkEntityMapper3<T extends NetworkEntity>
-  extends BaseNetworkEntityMapper2<T>, IdentifiableMapper {}
+public interface BaseNetworkEntityMapper4<T extends NetworkEntity>
+  extends BaseNetworkEntityMapper<T>, IdentifiableMapper {}
