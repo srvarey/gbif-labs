@@ -133,10 +133,18 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting installation_tags creation...");
       statics = execute("src/main/resources/migrate-installation_tags.xml", "Registry installation_tag");
       System.out.println("Installation_tags created in " + statics.getTotalTime() + " milliseconds");
-      
+            
       System.out.println("Starting dataset_tags creation...");
-      statics = execute("src/main/resources/migrate-dataset_tags.xml", "Dataset installation_tag");
+      statics = execute("src/main/resources/migrate-dataset_tags.xml", "Registry dataset_tag");
       System.out.println("Dataset_tags created in " + statics.getTotalTime() + " milliseconds");
+      
+      System.out.println("Starting network_tags creation...");
+      statics = execute("src/main/resources/migrate-network_tags.xml", "Registry network_tag");
+      System.out.println("Network_tags created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting identifiers creation...");
+      statics = execute("src/main/resources/migrate-identifiers.xml", "Registry identifier");
+      System.out.println("Identifiers created in " + statics.getTotalTime() + " milliseconds");
       
     } catch (EtlExecutorException e) {
       e.printStackTrace();
