@@ -46,7 +46,10 @@
     		ELSE country
     	END AS country,
     	NULL AS postal_code,	<!-- hardcoded value. Column usage is uncertain -->
-    	created,
+    	CASE 
+    		WHEN created IS NULL THEN NOW()
+    		ELSE created
+    	END AS created,
     	CASE
     		WHEN modified IS NULL THEN NOW()
     		ELSE modified
