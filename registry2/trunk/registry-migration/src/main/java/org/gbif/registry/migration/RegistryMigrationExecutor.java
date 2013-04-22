@@ -125,6 +125,14 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting node_tags creation...");
       statics = execute("src/main/resources/migrate-node_tags.xml", "Registry node_tag");
       System.out.println("Node_tags created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting organization_tags creation...");
+      statics = execute("src/main/resources/migrate-organization_tags.xml", "Registry organization_tag");
+      System.out.println("Organization_tags created in " + statics.getTotalTime() + " milliseconds");
+      
+      System.out.println("Starting installation_tags creation...");
+      statics = execute("src/main/resources/migrate-installation_tags.xml", "Registry installation_tag");
+      System.out.println("Installation_tags created in " + statics.getTotalTime() + " milliseconds");
       
     } catch (EtlExecutorException e) {
       e.printStackTrace();
