@@ -24,7 +24,7 @@
 			identifier,
 			'ADMIN' AS created_by,
 			created 
-        FROM identifier
+        FROM identifier WHERE deleted IS NULL
                  			
 		<script connection-id="new-registry">
 		INSERT INTO identifier(key, type, identifier, created_by,created)
