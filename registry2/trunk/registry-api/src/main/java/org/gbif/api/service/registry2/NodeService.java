@@ -29,7 +29,8 @@ import javax.validation.constraints.NotNull;
 /**
  * Actions on a GBIF node.
  */
-public interface NodeService extends NetworkEntityService<Node>, MachineTagService, TagService, CommentService {
+public interface NodeService extends NetworkEntityService<Node>, MachineTagService, TagService, CommentService,
+  IdentifierService {
 
   /**
    * Provides access to the organizations endorsed by a single node.

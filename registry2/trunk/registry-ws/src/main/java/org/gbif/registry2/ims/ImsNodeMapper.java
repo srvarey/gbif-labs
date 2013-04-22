@@ -18,6 +18,6 @@ package org.gbif.registry2.ims;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.vocabulary.Country;
 
-public interface NodeMapper {
+public interface ImsNodeMapper {
   Node get(Country country);
 }
