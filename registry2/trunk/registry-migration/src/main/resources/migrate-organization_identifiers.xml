@@ -1,0 +1,20 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="organization_identifier" connection-id="old-registry">
+        SELECT a.uuid AS organization_key, 
+        	i.id AS identifier_key 
+        FROM agent a, identifier i
+        WHERE i.agent_id = a.id AND a.type = 14010 AND a.deleted IS NULL AND i.deleted IS NULL
+         			
+		<script connection-id="new-registry">
+		INSERT INTO organization_identifier(organization_key, identifier_key)
+		VALUES (?organization_key::uuid,?identifier_key);
+        </script>
+    </query>
+</etl>
