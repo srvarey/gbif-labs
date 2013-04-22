@@ -469,7 +469,17 @@ CREATE TABLE dataset_identifier
   PRIMARY KEY (dataset_key, identifier_key)
 );
 
--- 
+--
+--  node_identifier
+--
+CREATE TABLE node_identifier
+(
+  node_key uuid NOT NULL REFERENCES node(key),
+  identifier_key integer NOT NULL UNIQUE REFERENCES identifier(key) ON DELETE CASCADE,
+  PRIMARY KEY (node_key, identifier_key)
+);
+
+--
 --  comment
 -- 
 CREATE TABLE comment
