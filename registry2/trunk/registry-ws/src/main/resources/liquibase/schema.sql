@@ -439,7 +439,7 @@ CREATE TABLE network_endpoint
 --  identifier
 -- 
 CREATE TYPE enum_identifier_type AS ENUM ('SOURCE_ID', 'URL', 'LSID', 'HANDLER', 'DOI', 'UUID', 
-'FTP', 'URI', 'UNKNOWN', 'GBIF_PORTAL', 'GBIF_NODE');
+'FTP', 'URI', 'UNKNOWN', 'GBIF_PORTAL', 'GBIF_NODE', 'GBIF_PARTICIPANT');
 CREATE TABLE identifier
 (
   key serial NOT NULL PRIMARY KEY,

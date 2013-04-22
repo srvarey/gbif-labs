@@ -32,7 +32,12 @@ public enum IdentifierType {
   URI,
   UNKNOWN,
   GBIF_PORTAL,
-  GBIF_NODE;
+  GBIF_NODE,
+
+  /**
+   * Participant identifier from the GBIF IMS Filemaker system.
+   */
+  GBIF_PARTICIPANT;
 
   /**
    * @return the matching IdentifierType or null
