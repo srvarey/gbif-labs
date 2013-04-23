@@ -1,6 +1,8 @@
 package org.gbif.registry2.ims;
 
+import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.Node;
+import org.gbif.api.vocabulary.registry2.IdentifierType;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,28 +20,39 @@ public class AugmenterImpl implements Augmenter {
     this.mapper = mapper;
   }
 
+  private Integer findImsParticipantID(Node node) {
+    for (Identifier id : node.getIdentifiers()) {
+      if (IdentifierType.GBIF_PARTICIPANT == id.getType()) {
+        try {
+          return Integer.parseInt(id.getIdentifier());
+        } catch (NumberFormatException e) {
+          LOG.error("IMS Participant ID is no integer: %s", id.getIdentifier());
+        }
+      }
+    }
+    return null;
+  }
+
   @Override
   public Node augment(Node node) {
-    if (node != null && node.getCountry() != null) {
+    if (node != null) {
       try {
-        Node imsNode = mapper.get(node.getCountry());
-        if (imsNode != null) {
-          // update node with IMS info if it exists
-          node.setContacts(imsNode.getContacts());
-          node.setDescription(imsNode.getDescription());
-          node.setParticipantSince(imsNode.getParticipantSince());
-          node.setAddress(imsNode.getAddress());
-          node.setPostalCode(imsNode.getPostalCode());
-          node.setCity(imsNode.getCity());
-          node.setProvince(imsNode.getProvince());
-          node.setEmail(imsNode.getEmail());
-          node.setPhone(imsNode.getPhone());
-          node.setHomepage(imsNode.getHomepage());
-          // registry info takes precedence, don't update
-          node.setTitle(imsNode.getTitle());
-          node.setGbifRegion(imsNode.getGbifRegion());
-          node.setContinent(imsNode.getContinent());
-          node.setParticipationStatus(imsNode.getParticipationStatus());
+        Integer imsId = findImsParticipantID(node);
+        if (imsId != null) {
+          Node imsNode = mapper.get(imsId);
+          if (imsNode != null) {
+            // update node with IMS info if it exists
+            node.setContacts(imsNode.getContacts());
+            node.setDescription(imsNode.getDescription());
+            node.setParticipantSince(imsNode.getParticipantSince());
+            node.setAddress(imsNode.getAddress());
+            node.setPostalCode(imsNode.getPostalCode());
+            node.setCity(imsNode.getCity());
+            node.setProvince(imsNode.getProvince());
+            node.setEmail(imsNode.getEmail());
+            node.setPhone(imsNode.getPhone());
+            node.setHomepage(imsNode.getHomepage());
+          }
         }
       } catch (Exception e) {
         LOG.error("Failed to augment node %s with IMS information", node.getKey(), e);

@@ -16,7 +16,6 @@
 package org.gbif.api.model.registry2;
 
 import org.gbif.api.vocabulary.Country;
-import org.gbif.api.vocabulary.Language;
 import org.gbif.api.vocabulary.registry2.Continent;
 import org.gbif.api.vocabulary.registry2.GbifRegion;
 import org.gbif.api.vocabulary.registry2.NodeType;
@@ -46,7 +45,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   private Continent continent;
   private String title;
   private String description;
-  private Language language;
   private String email;
   private String phone;
   private URI homepage;
@@ -170,15 +168,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
 
   public void setContinent(Continent continent) {
     this.continent = continent;
-  }
-
-  @NotNull
-  public Language getLanguage() {
-    return language;
-  }
-
-  public void setLanguage(Language language) {
-    this.language = language;
   }
 
   @Nullable
@@ -348,7 +337,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
                             continent,
                             title,
                             description,
-                            language,
                             email,
                             phone,
                             homepage,
@@ -382,7 +370,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
              && Objects.equal(this.continent, that.continent)
              && Objects.equal(this.title, that.title)
              && Objects.equal(this.description, that.description)
-             && Objects.equal(this.language, that.language)
              && Objects.equal(this.email, that.email)
              && Objects.equal(this.phone, that.phone)
              && Objects.equal(this.homepage, that.homepage)
@@ -417,7 +404,6 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       .add("continent", continent)
       .add("title", title)
       .add("description", description)
-      .add("language", language)
       .add("email", email)
       .add("phone", phone)
       .add("homepage", homepage)

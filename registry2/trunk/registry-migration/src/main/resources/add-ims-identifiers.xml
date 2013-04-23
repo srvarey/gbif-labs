@@ -1,0 +1,238 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>
+
+  <!-- creates new Node identifier records for IMS participant identifiers -->
+  <script connection-id="new-registry">
+    <!-- COUNTRY NODES -->
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '350', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('8df8d012-8e64-4c8a-886e-521a3bdfa623', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '16', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('2426a871-9feb-40a1-96c6-0c593a76b835', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '20', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('1e789bc9-79fc-4e60-a49e-89dfc45a7188', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '19', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('4a6f1b71-969e-4fc5-a693-282b05e1220c', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '28', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('fb11cfe1-ebc3-45af-9159-17d9fddbcdac', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '41', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('086f5148-c0a8-469b-84cc-cce5342f9242', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '40', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('8dae0f8c-12bc-444d-b889-6b177550a8b2', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '30', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('efb9c00e-f802-45dd-8826-a52ec45b89ff', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '37', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('cdc9736d-5ff7-4ece-9959-3c744360cdb3', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '46', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('8f83fc96-c966-4126-83f7-bf044dc49efa', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '49', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('d3499f89-5bc0-4454-8cdb-60bead228a6d', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '57', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('1193638d-32d1-43f0-a855-8727c94299d8', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '236', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('169eb292-376b-4cc6-8e31-9c2c432de0ad', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '51', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('a8b16421-d80b-4ef3-8f22-098b01a89255', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '45', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('cfe0cad9-2bf4-4d16-ae33-c3dfb0da1ed9', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '55', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('7e865cba-7c46-417b-ade5-97f2cf5b7be0', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '60', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('3379bb09-1a58-41e7-9c57-e3b66c3eb5a0', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '63', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('69b43123-c06e-4f83-a5e3-651c34c0b97a', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '92', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('4f6826f2-4ff6-443d-b966-e6913bd24013', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '2', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('4ddd294f-02b7-4359-ac33-0806a9ca9c6b', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '77', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('2c11b821-d22b-4c64-8cd3-c1578173b129', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '1', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('1f94b3ca-9345-4d65-afe2-4bace93aa0fe', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '83', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('dd514216-5c7c-45f3-910d-797424cb5be6', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '84', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('da44cd31-5901-4687-a106-6d1c7734ee3a', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '257', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('d897a5b9-35ee-4232-94bd-b0bcaac003c2', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '93', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('b5633b75-6a86-4fdf-9cfc-506047fb9dc7', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '102', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('b1cd2e84-c4ba-47bd-b72a-dfd1f92dce0a', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '75', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('2970c4c9-9169-41b6-91b7-a3a176e66946', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '115', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('2ebd91f6-f14f-4375-b525-c011a3774f03', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '118', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('422b00b2-6c94-4bb6-976b-c359916efdb8', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '114', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('59d15a9b-ba51-43c3-a53f-304fe6732c04', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '113', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('4dbdcae6-9ac9-4005-ac15-4a95a3eb7701', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '124', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('db5705aa-6a6e-42f1-8942-d77b9f4896ea', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '129', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('2a44d626-9f7a-4120-8a7a-4ab5ac15ff2a', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '132', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('e0a1e772-0177-4800-94b4-2d023fe6cdf4', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '144', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('b0ccbf42-26b3-412e-b38a-339889154d77', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '166', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('10df48ca-517f-49e6-a33c-b903bbbb07f7', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '148', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('2dbfc5c5-51b5-4494-9dfc-4d3f013a3b64', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '156', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('a48482b4-725f-49e9-934d-2f572deaa361', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '159', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('b324e8e9-9a4c-44fa-8f1a-7f39ea7ab576', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '177', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('767a5cb4-f2f0-41b3-b0ec-21e4751e2927', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '173', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('0909d601-bda2-42df-9e63-a6d51847ebce', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '183', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('4f829580-180d-46a9-9c87-ed8ec959b545', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '176', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('4f9fd726-20dd-445e-89a1-8ed93792276f', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '193', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('46e3639a-27f8-45af-bfbe-d19b77efb040', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '194', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('073d1223-70b1-4433-bb21-dd70afe3053b', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '187', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('e3715f62-66fe-4ecc-8c9e-7531ed0bd14c', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '197', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('673f7038-4262-4149-b753-5658a4e912f6', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '235', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('a0b3be64-6525-4387-ac67-a499950f92e1', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '224', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('53e3f6b9-81f8-41e3-9e51-2666a5e0ae6a', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '223', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('477b14bb-3d5c-474b-8dec-6bd73dd67dec', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '244', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('c9659a3e-07e9-4fcb-83c6-de8b9009a02e', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '239', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('e1b85abc-61f9-430f-ba79-6813dec53a0f', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '241', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('abd95ca6-3959-4db9-aaa6-2de1aeecf514', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '254', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('71b40829-6a12-4c3d-8fee-5746f5e9cf8c', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '258', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('8618c64a-93e0-4300-b546-7249e5148ed2', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '260', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('a3ceb6dd-0a65-4f30-a385-30f6937c2096', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '227', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('7190b835-4e86-4b6e-85c1-19cc6677c250', LASTVAL());
+
+    <!-- matching TITLES -->
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '297', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('b9628650-eeb8-44e3-80b8-ea6626956793', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '278', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('dd6b757b-ce91-4e58-951b-989cea8166bf', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '293', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('c13e0e4a-bb5b-4bd8-8fa9-aa0dba71698a', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '284', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('ed988a18-81f8-4d5f-a88d-f93ef592b2f2', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '294', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('86b37808-0fa3-489a-af1f-53e72b2d75ce', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '281', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('41d4686c-f6b7-42ec-aa54-a5792700e784', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '282', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('b8a5be24-9225-4ba5-b664-159308a4b537', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '292', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('4be1ac47-75ae-44f6-917a-f095306f4450', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '279', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('7f017f1c-d33e-480a-99ed-547ff9bf7abe', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '289', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('f74f8534-a357-49ae-82b1-b1d39616a0b1', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '290', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('f6b3dbc6-4e21-49aa-a7c6-61d778e19ec0', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '280', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('0e0181bf-9c78-4676-bdc3-54765e661bb8', LASTVAL());
+
+    <!-- MANUAL -->
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '291', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('58ef3cd5-e76a-4073-8ecd-744e137e9bc9', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '316', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('9e5d504a-879e-446e-bab0-1816dce12e41', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '323', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('90a939d3-e99c-4f6d-915f-2616423b3735', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '322', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('af2a0fa1-4c8e-4bdc-8954-b1a55e32b0f1', LASTVAL());
+
+    insert into identifier (type,identifier,created_by) values ('GBIF_PARTICIPANT', '283', 'markus');
+    insert into node_identifier (node_key,identifier_key) values ('844f7db8-d78e-4f9a-98ba-2008b1f1461e', LASTVAL());
+  </script>
+</etl>

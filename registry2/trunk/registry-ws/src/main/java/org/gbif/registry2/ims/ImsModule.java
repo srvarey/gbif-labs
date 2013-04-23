@@ -35,11 +35,14 @@ import java.util.UUID;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sets up the persistence layer using the properties supplied.
  */
 public class ImsModule extends PrivateServiceModule {
+  private static Logger LOG = LoggerFactory.getLogger(ImsModule.class);
 
   private static final String PREFIX = "ims.db.";
 
@@ -52,12 +55,13 @@ public class ImsModule extends PrivateServiceModule {
     // is any real IMS database configured?
     if (getVerbatimProperties().getProperty("ims.db.JDBC.url").startsWith("$")) {
       // no, use an empty module that injects mocks
+      LOG.info("IMS not configured");
       install( new ImsEmptyModule() );
 
     } else {
+      LOG.info("IMS configured, connecting to Filemaker at {}", getVerbatimProperties().getProperty("ims.db.JDBC.url"));
       MyBatisModule internalModule = new InternalModule();
       install(internalModule); // the named parameters are already configured at this stage
-      //expose(internalModule.getDatasourceKey()); // to avoid clashes between multiple datasources
     }
 
     // expose only the augmenter

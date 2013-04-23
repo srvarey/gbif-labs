@@ -99,7 +99,7 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
   @Path("country/{key}")
   @Nullable
   public Node getByCountry(@PathParam("key") String isoCode) {
-    return getByCountry(Country .fromIsoCode(isoCode));
+    return getByCountry(Country.fromIsoCode(isoCode));
   }
 
   @Nullable

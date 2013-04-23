@@ -32,6 +32,11 @@ public interface ContactableMapper {
     @Param("isPrimary") boolean isPrimary
   );
 
+  /**
+   * Updates the current primary contact of the given type if it exists and makes it non primary.
+   */
+  void updatePrimaryContacts(@Param("targetEntityKey") UUID entityKey, @Param("type") ContactType contactType);
+
   int deleteContact(@Param("targetEntityKey") UUID entityKey, @Param("contactKey") int contactKey);
 
   List<Contact> listContacts(@Param("targetEntityKey") UUID targetEntityKey);

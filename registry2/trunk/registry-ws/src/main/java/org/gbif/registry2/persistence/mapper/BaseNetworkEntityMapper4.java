@@ -24,9 +24,9 @@ import org.gbif.api.model.registry2.NetworkEntity;
  * <ul>
  * <li>BaseNetworkEntityMapper: Comments, Machine tags and tags</li>
  * <li>BaseNetworkEntityMapper2: Comments, Machine tags, tags, contacts and endpoints (Installation and Network)</li>
- * <li>BaseNetworkEntityMapper3: Comments, Machine tags, tags, contacts, identifiers and endpoints (Datasets and
+ * <li>BaseNetworkEntityMapper3: Comments, Machine tags, tags, identifiers, contacts and endpoints (Datasets and
  * Organizations)</li>
- * <li>BaseNetworkEntityMapper4: Comments, Machine tags, tags, contacts, identifiers (Node)</li>
+ * <li>BaseNetworkEntityMapper4: Comments, Machine tags, tags, identifiers (Node)</li>
  * </ul>
  */
 public interface BaseNetworkEntityMapper4<T extends NetworkEntity>
