@@ -1,20 +1,10 @@
 {
   "title":"The UK National Node",
   "gbifRegion":"EUROPE",
-  "description":"The UK NBN is the national node of the United Kingdon located in...",
-  "language":"ENGLISH",
   "createdBy":"GBIF_ADMIN",
   "modifiedBy":"GBIF_ADMIN",
   "country":"UNITED_KINGDOM",
   "type":"COUNTRY",
   "participationStatus":"VOTING",
-  "continent":"EUROPE",
-  "province":"LONDON",
-  "postalCode":"1408",
-  "city":"LONDON",
-  "address":"Universitetsparken",
-  "logoUrl":"http://www.example.org",
-  "homepage":"http://www.example.org",
-  "email":"http://www.example.org",
-  "phone":"2920202"
+  "continent":"EUROPE"
 }

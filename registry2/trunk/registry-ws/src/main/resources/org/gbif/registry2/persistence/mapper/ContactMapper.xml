@@ -7,28 +7,9 @@
   </sql>
   
   <sql id="CONTACT_FIELDS">
-    key,<include refid="org.gbif.registry2.persistence.mapper.ContactMapper.WRITABLE_CONTACT_FIELDS"/>
+    key,type,is_primary AS primary,<include refid="org.gbif.registry2.persistence.mapper.ContactMapper.WRITABLE_CONTACT_FIELDS"/>
   </sql>
 
-  <!-- 
-    key, created_by and created are never changed
-   -->
-  <sql id="CONTACT_UPDATE">
-    name = #{name, jdbcType=VARCHAR}, 
-    description = #{description, jdbcType=VARCHAR}, 
-    position = #{position, jdbcType=VARCHAR}, 
-    email = #{email, jdbcType=VARCHAR}, 
-    phone = #{phone, jdbcType=VARCHAR}, 
-    organization = #{organization, jdbcType=VARCHAR}, 
-    address = #{address, jdbcType=VARCHAR}, 
-    city = #{city, jdbcType=VARCHAR}, 
-    province = #{province, jdbcType=VARCHAR}, 
-    country = #{country, jdbcType=CHAR}, 
-    postalCode = #{postalCode, jdbcType=VARCHAR},
-    modified = now(),    
-    modified_by = #{modifiedBy}
-  </sql>
-  
   <sql id="WRITABLE_CONTACT_FIELD_TYPES">
     #{name, jdbcType=VARCHAR}, 
     #{description, jdbcType=VARCHAR}, 

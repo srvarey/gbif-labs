@@ -12,7 +12,7 @@ The startup.xml is the one responsible for initializing the DB.
 conf.properties has all the information necessary to connect to the old registry DB and to the new registry DB.
 
 === KNOWN PROBLEMS ===
-1. When running the startup.xml ETL, the 2 functions have been commented out at schemav4.sql because
+1. When running the startup.xml ETL, the 2 functions have been commented out at schemav.sql because
 for some reason they are not being parsed successfully by the scriptella processor.
 Therefore these 2 functions have to be created separately when newly creating the registry DB on postgres, before running the
 RegistryMigrationExecutor file.

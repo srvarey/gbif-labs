@@ -47,7 +47,7 @@ public class DatabaseInitializer extends ExternalResource {
     try {
       connection.setAutoCommit(true);
       connection.createStatement().execute("TRUNCATE TABLE " +
-        "node, node_contact, node_machine_tag, node_tag, node_comment, " +
+        "node, node_identifier, node_machine_tag, node_tag, node_comment, " +
         "organization, organization_contact, organization_endpoint, organization_machine_tag, " +
         "organization_tag, organization_identifier, organization_comment, " +
         "installation, installation_contact, installation_endpoint, installation_machine_tag, " +

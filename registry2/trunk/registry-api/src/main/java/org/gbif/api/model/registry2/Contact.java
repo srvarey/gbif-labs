@@ -16,6 +16,7 @@
 package org.gbif.api.model.registry2;
 
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.ContactType;
 
 import java.util.Date;
 import javax.annotation.Nullable;
@@ -28,6 +29,8 @@ import com.google.common.base.Objects;
 public class Contact implements Address {
 
   private Integer key;
+  private ContactType type;
+  private boolean primary;
   private String name;
   private String position;
   private String description;
@@ -50,6 +53,23 @@ public class Contact implements Address {
 
   public void setKey(Integer key) {
     this.key = key;
+  }
+
+  @Nullable
+  public ContactType getType() {
+    return type;
+  }
+
+  public void setType(ContactType type) {
+    this.type = type;
+  }
+
+  public boolean isPrimary() {
+    return primary;
+  }
+
+  public void setPrimary(boolean primary) {
+    this.primary = primary;
   }
 
   @Nullable
@@ -206,8 +226,8 @@ public class Contact implements Address {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(key, name, position, description, email, phone, organization, address, city, province,
-      country, postalCode, createdBy, modifiedBy, created, modified);
+    return Objects.hashCode(key, type, primary, name, position, description, email, phone, organization, address, city,
+      province, country, postalCode, createdBy, modifiedBy, created, modified);
   }
 
   @Override
@@ -219,6 +239,8 @@ public class Contact implements Address {
     if (object instanceof Contact) {
       Contact that = (Contact) object;
       return Objects.equal(this.key, that.key)
+             && Objects.equal(this.type, that.type)
+             && Objects.equal(this.primary, that.primary)
              && Objects.equal(this.name, that.name)
              && Objects.equal(this.position, that.position)
              && Objects.equal(this.description, that.description)
@@ -240,7 +262,8 @@ public class Contact implements Address {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("name", name).add("position", position)
+    return Objects.toStringHelper(this).add("key", key).add("type", type).add("primary", primary).add("name", name)
+      .add("position", position)
       .add("description", description).add("email", email).add("phone", phone).add("organization", organization)
       .add("address", address).add("city", city).add("province", province).add("country", country)
       .add("postalCode", postalCode).add("createdBy", createdBy).add("modifiedBy", modifiedBy).add("created", created)

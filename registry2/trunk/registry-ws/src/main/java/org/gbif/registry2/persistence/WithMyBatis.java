@@ -9,7 +9,6 @@ import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.NetworkEntity;
 import org.gbif.api.model.registry2.Tag;
-import org.gbif.api.vocabulary.registry2.ContactType;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
 import org.gbif.registry2.persistence.mapper.CommentableMapper;
 import org.gbif.registry2.persistence.mapper.ContactMapper;
@@ -72,7 +71,11 @@ public class WithMyBatis {
   ) {
     checkArgument(contact.getKey() == null, "Unable to create an entity which already has a key");
     contactMapper.createContact(contact);
-    contactableMapper.addContact(targetEntityKey, contact.getKey(), ContactType.ADMINISTRATIVE_POINT_OF_CONTACT, false);
+    // is this a primary contact? We need to make sure it only exists once per type
+    if (contact.isPrimary()) {
+      contactableMapper.updatePrimaryContacts(targetEntityKey, contact.getType());
+    }
+    contactableMapper.addContact(targetEntityKey, contact.getKey(), contact.getType(), contact.isPrimary());
     return contact.getKey();
   }
 

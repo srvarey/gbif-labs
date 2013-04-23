@@ -1,5 +1,7 @@
 {
   "name":"Tim Robertson",
+  "type":"PROGRAMMER",
+  "primary":true,
   "description":"About 175cm, geeky, scruffy...",
   "position":"Programmer",
   "email":"trobertson@gbif.org",

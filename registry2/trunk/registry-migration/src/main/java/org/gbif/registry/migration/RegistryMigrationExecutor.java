@@ -50,10 +50,6 @@ public class RegistryMigrationExecutor {
       statics = execute("src/main/resources/migrate-contacts.xml", "Registry contact");
       System.out.println("Contacts created in " + statics.getTotalTime() + " milliseconds");
 
-      System.out.println("Starting node_contacts creation...");
-      statics = execute("src/main/resources/migrate-node_contacts.xml", "Registry node_contact");
-      System.out.println("Node_contacts created in " + statics.getTotalTime() + " milliseconds");
-
       System.out.println("Starting organization_contacts creation...");
       statics = execute("src/main/resources/migrate-organization_contacts.xml", "Registry organization_contact");
       System.out.println("Organization_contacts created in " + statics.getTotalTime() + " milliseconds");
@@ -153,7 +149,19 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting dataset_identifiers creation...");
       statics = execute("src/main/resources/migrate-dataset_identifiers.xml", "Registry dataset_identifier");
       System.out.println("Dataset_identifiers created in " + statics.getTotalTime() + " milliseconds");
-      
+
+      System.out.println("Starting pg sequence udpates...");
+      statics = execute("src/main/resources/reset-sequences.xml", "Reset pg sequences");
+      System.out.println("Postgres sequences updated in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting node IMS identifiers creation...");
+      statics = execute("src/main/resources/add-ims-identifiers.xml", "IMS identifier");
+      System.out.println("IMS Identifiers created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting updating node continents ...");
+      statics = execute("src/main/resources/update-node-continents.xml", "continents");
+      System.out.println("Node continents udpated in " + statics.getTotalTime() + " milliseconds");
+
     } catch (EtlExecutorException e) {
       e.printStackTrace();
     }

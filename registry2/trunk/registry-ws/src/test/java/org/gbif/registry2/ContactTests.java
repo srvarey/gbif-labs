@@ -38,6 +38,7 @@ import org.gbif.registry2.utils.Contacts;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -50,12 +51,15 @@ public class ContactTests {
     assertNotNull("Contact list should be empty, not null when no contacts exist", contacts);
     assertTrue("Contact should be empty when none added", contacts.isEmpty());
 
-    // test additions
+    // test additions, both being primary
     service.addContact(entity.getKey(), Contacts.newInstance());
     service.addContact(entity.getKey(), Contacts.newInstance());
     contacts = service.listContacts(entity.getKey());
     assertNotNull(contacts);
     assertEquals("2 contacts have been added", 2, contacts.size());
+    assertFalse("Older contact should not be primary anymore", contacts.get(0).isPrimary());
+    assertTrue("Newer contact should be primary", contacts.get(1).isPrimary());
+
 
     // test deletion, ensuring correct one is deleted
     service.deleteContact(entity.getKey(), contacts.get(0).getKey());

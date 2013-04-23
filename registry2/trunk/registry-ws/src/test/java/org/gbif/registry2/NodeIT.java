@@ -15,18 +15,20 @@
  */
 package org.gbif.registry2;
 
+import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.IdentifierType;
 import org.gbif.registry2.guice.RegistryTestModules;
 import org.gbif.registry2.utils.Nodes;
 import org.gbif.registry2.ws.resources.NodeResource;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableMap;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -49,14 +52,22 @@ import static org.junit.Assert.assertTrue;
 public class NodeIT extends NetworkEntityTest<Node> {
 
   private final NodeService service;
-  private static final Set<Country> TEST_COUNTRIES =
-    Sets.newHashSet(Country.AFGHANISTAN, Country.ARGENTINA, Country.DENMARK, Country.SPAIN);
+  private static final Map<Country, Integer> TEST_COUNTRIES = ImmutableMap.<Country, Integer>builder()
+    .put(Country.AFGHANISTAN, 6)
+    .put(Country.ARGENTINA, 16)
+    .put(Country.DENMARK, 2)
+    .put(Country.SPAIN, 1)
+    .build();
 
   @Parameters
   public static Iterable<Object[]> data() {
-    return ImmutableList.<Object[]>of(new Object[] {RegistryTestModules.webservice().getInstance(NodeResource.class)},
-                                      new Object[] {
-                                        RegistryTestModules.webserviceClient().getInstance(NodeService.class)});
+    return ImmutableList.<Object[]>of(
+                    new Object[] {
+                      RegistryTestModules.webservice().getInstance(NodeResource.class)
+                    },
+                    new Object[] {
+                      RegistryTestModules.webserviceClient().getInstance(NodeService.class)
+                    });
   }
 
   public NodeIT(NodeService service) {
@@ -90,7 +101,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     Node n = service.getByCountry(Country.ANGOLA);
     assertNull(n);
 
-    for (Country c : TEST_COUNTRIES) {
+    for (Country c : TEST_COUNTRIES.keySet()) {
       n = service.getByCountry(c);
       assertEquals(c, n.getCountry());
     }
@@ -98,13 +109,38 @@ public class NodeIT extends NetworkEntityTest<Node> {
 
   private void initCountryNodes() {
     int count = 0;
-    for (Country c : TEST_COUNTRIES) {
+    for (Country c : TEST_COUNTRIES.keySet()) {
       Node n = newEntity();
       n.setCountry(c);
       n.setTitle("GBIF Node " + c.getTitle());
-      create(n, count + 1);
+      n = create(n, count + 1);
       count++;
+
+      // create IMS identifiers
+      Identifier id = new Identifier();
+      id.setType(IdentifierType.GBIF_PARTICIPANT);
+      id.setIdentifier(TEST_COUNTRIES.get(c).toString());
+      id.setCreatedBy("NodeIT");
+      service.addIdentifier(n.getKey(), id);
     }
+  }
+
+  @Override
+  protected Node asWritable(Node source) {
+    Node node = super.asWritable(source);
+    // remove all IMS augmented properties
+    node.getContacts().clear();
+    node.setDescription(null);
+    node.setParticipantSince(null);
+    node.setAddress(null);
+    node.setPostalCode(null);
+    node.setCity(null);
+    node.setProvince(null);
+    node.setEmail(null);
+    node.setPhone(null);
+    node.setHomepage(null);
+
+    return node;
   }
 
   @Test
@@ -113,7 +149,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     List<Country> countries = service.listNodeCountries();
     assertEquals(TEST_COUNTRIES.size(), countries.size());
     for (Country c : countries) {
-      assertTrue("Unexpected node country" + c, TEST_COUNTRIES.contains(c));
+      assertTrue("Unexpected node country" + c, TEST_COUNTRIES.containsKey(c));
     }
   }
 
@@ -128,8 +164,13 @@ public class NodeIT extends NetworkEntityTest<Node> {
   public void testIms() throws Exception {
     initCountryNodes();
     Node es = service.getByCountry(Country.SPAIN);
-    //TODO: remove sys out and replace with real comparisons
-    System.out.println(es);
+    assertEquals("Madrid", es.getCity());
+    assertEquals("28014", es.getPostalCode());
+    assertNotNull(es.getAddress());
+    assertTrue(es.getContacts().size() > 5);
+
+    Node notInIms = service.getByCountry(Country.AFGHANISTAN);
+    assertNotNull(notInIms);
   }
 
   @Override
