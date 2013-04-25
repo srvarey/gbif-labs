@@ -1,7 +1,5 @@
 package org.gbif.registry2.search;
 
-import org.gbif.api.model.registry2.Dataset;
-import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.search.DatasetSearchResult;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.registry2.DatasetSubtype;
@@ -50,41 +48,6 @@ import org.apache.solr.client.solrj.beans.Field;
 @SuggestMapping(field = "dataset_title_ngram", phraseQueryField = "dataset_title_nedge")
 public class SolrAnnotatedDataset extends DatasetSearchResult {
 
-  /**
-   * Empty constructor required by SOLR.
-   */
-  public SolrAnnotatedDataset() {
-  }
-
-  /**
-   * Creates a SolrAnnotatedDataset from the given dataset, copying only the relevant fields for Solr from
-   * the given dataset.
-   * 
-   * @param d The Dataset which will be copied into this object
-   * @param owner The owning organization
-   * @param host The hosting organization
-   */
-  public SolrAnnotatedDataset(Dataset d, Organization owner, Organization host) {
-    this.setDescription(d.getDescription());
-    this.setKey(d.getKey());
-    this.setTitle(d.getTitle());
-    // this.setCountryCoverage(d.getCountryCoverage());
-    // this.setNetworkOfOriginKey(d.getNetworkOfOriginKey());
-    // this.setType(d.getType());
-    // this.setSubtype(d.getSubtype());
-    // this.setKeywords(d.getKeywords());
-    // this.setDecades(DecadeExtractor.extractDecades(d.getTemporalCoverages()));
-    // CoordinateExtractor.populateCoordinates(this, d.getGeographicCoverages());
-    // this.setOwningOrganizationKey(d.getOwningOrganizationKey());
-    if (owner != null) {
-      this.setOwningOrganizationTitle(owner.getTitle());
-    }
-    if (host != null) {
-      this.setHostingOrganizationKey(host.getKey().toString());
-      this.setHostingOrganizationTitle(host.getTitle());
-    }
-  }
-
   @Field("iso_country_code")
   public void setCountryCoverage(List<String> isoCountryCodes) {
     Set<Country> countries = Sets.newHashSet();
@@ -109,12 +72,6 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
     super.setDescription(description);
   }
 
-  @Field("east_bounding_coordinate")
-  @Override
-  public void setEastBoundingCoordinates(List<Double> eastBoundingCoordinates) {
-    super.setEastBoundingCoordinates(eastBoundingCoordinates);
-  }
-
   @Field("full_text")
   @Override
   public void setFullText(String fullText) {
@@ -123,7 +80,7 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
 
   @Field("hosting_organization_key")
   public void setHostingOrganizationKey(String hostingOrganizationKey) {
-    super.setHostingOrganizationKey(UUID.fromString(hostingOrganizationKey));
+    setHostingOrganizationKey(UUID.fromString(hostingOrganizationKey));
   }
 
   @Override
@@ -135,7 +92,7 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
   @Field("key")
   @Key
   public void setKey(String key) {
-    super.setKey(UUID.fromString(key));
+    setKey(UUID.fromString(key));
   }
 
   @Override
@@ -146,18 +103,12 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
 
   @Field("network_of_origin_key")
   public void setNetworkOfOriginKey(String networkOfOriginKey) {
-    super.setNetworkOfOriginKey(UUID.fromString(networkOfOriginKey));
-  }
-
-  @Field("north_bounding_coordinate")
-  @Override
-  public void setNorthBoundingCoordinates(List<Double> northBoundingCoordinates) {
-    super.setNorthBoundingCoordinates(northBoundingCoordinates);
+    setNetworkOfOriginKey(UUID.fromString(networkOfOriginKey));
   }
 
   @Field("owning_organization_key")
   public void setOwningOrganizationKey(String owningOrganizationKey) {
-    super.setOwningOrganizationKey(UUID.fromString(owningOrganizationKey));
+    setOwningOrganizationKey(UUID.fromString(owningOrganizationKey));
   }
 
   @Override
@@ -166,15 +117,9 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
     super.setOwningOrganizationTitle(owningOrganizationTitle);
   }
 
-  @Field("south_bounding_coordinate")
-  @Override
-  public void setSouthBoundingCoordinates(List<Double> southBoundingCoordinates) {
-    super.setSouthBoundingCoordinates(southBoundingCoordinates);
-  }
-
   @Field("dataset_subtype")
   public void setSubtype(String datasetSubtype) {
-    super.setSubtype(DatasetSubtype.valueOf(datasetSubtype));
+    setSubtype(DatasetSubtype.valueOf(datasetSubtype));
   }
 
   @Field("dataset_title")
@@ -185,12 +130,6 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
 
   @Field("dataset_type")
   public void setType(String datasetType) {
-    super.setType(DatasetType.valueOf(datasetType));
-  }
-
-  @Field("west_bounding_coordinate")
-  @Override
-  public void setWestBoundingCoordinates(List<Double> westBoundingCoordinates) {
-    super.setWestBoundingCoordinates(westBoundingCoordinates);
+    setType(DatasetType.valueOf(datasetType));
   }
 }

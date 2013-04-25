@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +16,7 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Comment;
 import org.gbif.api.model.registry2.Contact;
+import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
@@ -82,7 +80,7 @@ public class InstallationWsClient extends BaseWsGetClient<Installation, UUID> im
   @Override
   public List<Tag> listTags(UUID taggedEntityKey, String owner) {
     return get(GenericTypes.LIST_TAG, null, null, // TODO add owner here
-               (Pageable) null, taggedEntityKey.toString(), "tag");
+      (Pageable) null, taggedEntityKey.toString(), "tag");
   }
 
   @Override
@@ -99,8 +97,8 @@ public class InstallationWsClient extends BaseWsGetClient<Installation, UUID> im
   @Override
   public List<Contact> listContacts(UUID targetEntityKey) {
     return get(GenericTypes.LIST_CONTACT, null, null,
-               // TODO: type on contact?
-               (Pageable) null, targetEntityKey.toString(), "contact");
+      // TODO: type on contact?
+      (Pageable) null, targetEntityKey.toString(), "contact");
   }
 
   @Override
@@ -116,8 +114,8 @@ public class InstallationWsClient extends BaseWsGetClient<Installation, UUID> im
   @Override
   public List<Endpoint> listEndpoints(UUID targetEntityKey) {
     return get(GenericTypes.LIST_ENDPOINT, null, null,
-               // TODO: type on endpoint?
-               (Pageable) null, targetEntityKey.toString(), "endpoint");
+      // TODO: type on endpoint?
+      (Pageable) null, targetEntityKey.toString(), "endpoint");
   }
 
   @Override
@@ -148,6 +146,11 @@ public class InstallationWsClient extends BaseWsGetClient<Installation, UUID> im
   @Override
   public List<Comment> listComments(UUID targetEntityKey) {
     return get(GenericTypes.LIST_COMMENT, null, null, (Pageable) null, targetEntityKey.toString(), "comment");
+  }
+
+  @Override
+  public PagingResponse<Dataset> hostedDatasets(UUID installationKey, Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(installationKey), "datasets");
   }
 
 }

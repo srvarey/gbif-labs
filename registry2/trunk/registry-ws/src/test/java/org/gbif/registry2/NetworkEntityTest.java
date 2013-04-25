@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,6 +27,7 @@ import org.gbif.registry2.guice.RegistryTestModules;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.validation.ValidationException;
 
 import com.google.common.base.Preconditions;
@@ -55,7 +53,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
   public static final LiquibaseInitializer liquibaseRule = new LiquibaseInitializer(RegistryTestModules.database());
 
   @ClassRule
-  public static final RegistryServer registryServer = new RegistryServer();
+  public static final RegistryServer registryServer = RegistryServer.INSTANCE;
 
   @Rule
   public final DatabaseInitializer databaseRule = new DatabaseInitializer(RegistryTestModules.database());
@@ -88,8 +86,8 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
     assertTrue("Modification date not changing on update", n2.getModified().after(n1.getModified()));
     assertTrue("Modification date is not after the creation date", n2.getModified().after(n1.getCreated()));
     assertEquals("List service does not reflect the number of created entities",
-                 1,
-                 service.list(new PagingRequest()).getResults().size());
+      1,
+      service.list(new PagingRequest()).getResults().size());
   }
 
   @Test(expected = ValidationException.class)
@@ -97,7 +95,6 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
     T n1 = create(newEntity(), 1);
     n1.setTitle("A"); // should fail as it is too short
     service.update(asWritable(n1));
-    System.out.println("it worked");
   }
 
   @Test
@@ -110,11 +107,11 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
     assertEquals("Persisted does not reflect original after a deletion", n1, n4);
     // check that one cannot see the deleted entity in a list
     assertEquals("List service does not reflect the number of created entities",
-                 1,
-                 service.list(new PagingRequest()).getResults().size());
+      1,
+      service.list(new PagingRequest()).getResults().size());
     assertEquals("Following a delete, the wrong entity is returned in list results",
-                 n2,
-                 service.list(new PagingRequest()).getResults().get(0));
+      n2,
+      service.list(new PagingRequest()).getResults().get(0));
   }
 
   public void testDoubleDelete() {
@@ -134,7 +131,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
     }
 
     // the expected number of records returned when paging at different page sizes
-    int[][] expectedPages = new int[][] {{1, 1, 1, 1, 1, 0}, // page size of 1
+    int[][] expectedPages = new int[][] { {1, 1, 1, 1, 1, 0}, // page size of 1
       {2, 2, 1, 0}, // page size of 2
       {3, 2, 0}, // page size of 3
       {4, 1, 0}, // page size of 4
@@ -150,8 +147,8 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
         List<T> results = service.list(new PagingRequest(offset, expectedPages[pageSize - 1][page])).getResults();
         // confirm it is the correct number of results as outlined above
         assertEquals("Paging is not operating as expected when requesting pages of size " + pageSize,
-                     expectedPages[pageSize - 1][page],
-                     results.size());
+          expectedPages[pageSize - 1][page],
+          results.size());
       }
     }
   }
@@ -176,8 +173,8 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
         PagingResponse<T> resp = service.list(new PagingRequest(offset, pageSize));
         // confirm it is the correct number of results as outlined above
         assertEquals("Paging is not operating as expected when requesting pages of size " + pageSize,
-                     Math.min(pageSize, uuids.size() - offset),
-                     resp.getResults().size());
+          Math.min(pageSize, uuids.size() - offset),
+          resp.getResults().size());
         assertEquals("Count wrong", Long.valueOf(uuids.size()), resp.getCount());
         int lastIdx = -1;
         for (T d : resp.getResults()) {
@@ -209,8 +206,8 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
       assertNull(written.getDeleted());
       assertEquals("Persisted does not reflect original", entity, asWritable(written));
       assertEquals("List service does not reflect the number of created entities",
-                   expectedCount,
-                   service.list(new PagingRequest()).getResults().size());
+        expectedCount,
+        service.list(new PagingRequest()).getResults().size());
       return written;
     } catch (Exception e) {
       throw Throwables.propagate(e);
