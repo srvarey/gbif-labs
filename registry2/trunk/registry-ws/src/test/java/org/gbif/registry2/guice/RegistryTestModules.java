@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +12,11 @@
  */
 package org.gbif.registry2.guice;
 
+import org.gbif.registry2.events.EventModule;
 import org.gbif.registry2.grizzly.RegistryServer;
 import org.gbif.registry2.ims.ImsModule;
 import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
+import org.gbif.registry2.search.guice.RegistrySearchModule;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
 import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
+
 import javax.sql.DataSource;
 
 import com.google.common.base.Throwables;
@@ -62,24 +62,26 @@ public class RegistryTestModules {
   private static DataSource managementDatasource;
 
   /**
-   * @return An injector that is bound for the webservice layer.
+   * @return An injector that is bound for the webservice layer without SOLR capabilities.
    */
   public static synchronized Injector webservice() {
     if (webservice == null) {
       try {
         final Properties p = new Properties();
         p.load(Resources.getResourceAsStream("registry-test.properties"));
-        webservice = Guice.createInjector(new AbstractModule() {
+        webservice =
+          Guice.createInjector(new AbstractModule() {
 
-          @Override
-          protected void configure() {
-            bind(NodeResource.class);
-            bind(OrganizationResource.class);
-            bind(InstallationResource.class);
-            bind(DatasetResource.class);
-            bind(NetworkResource.class);
-          }
-        }, new RegistryMyBatisModule(p), new ImsModule(p), new ValidationModule());
+            @Override
+            protected void configure() {
+              bind(NodeResource.class);
+              bind(OrganizationResource.class);
+              bind(InstallationResource.class);
+              bind(DatasetResource.class);
+              bind(NetworkResource.class);
+            }
+          }, new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(),
+            new ValidationModule());
       } catch (IOException e) {
         throw Throwables.propagate(e);
       }
@@ -153,8 +155,7 @@ public class RegistryTestModules {
       @Named("registry.db.JDBC.driver") String driver,
       @Named("registry.db.JDBC.url") String url,
       @Named("registry.db.JDBC.username") String username,
-      @Named("registry.db.JDBC.password") String password
-    ) {
+      @Named("registry.db.JDBC.password") String password) {
       this.url = url;
       this.username = username;
       this.password = password;

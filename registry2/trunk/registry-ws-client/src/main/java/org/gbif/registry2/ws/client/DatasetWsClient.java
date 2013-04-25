@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -83,7 +80,7 @@ public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements D
   @Override
   public List<Tag> listTags(UUID taggedEntityKey, String owner) {
     return get(GenericTypes.LIST_TAG, null, null, // TODO add owner here
-               (Pageable) null, taggedEntityKey.toString(), "tag");
+      (Pageable) null, taggedEntityKey.toString(), "tag");
   }
 
   @Override
@@ -100,8 +97,8 @@ public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements D
   @Override
   public List<Contact> listContacts(UUID targetEntityKey) {
     return get(GenericTypes.LIST_CONTACT, null, null,
-               // TODO: type on contact?
-               (Pageable) null, targetEntityKey.toString(), "contact");
+      // TODO: type on contact?
+      (Pageable) null, targetEntityKey.toString(), "contact");
   }
 
   @Override
@@ -117,8 +114,8 @@ public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements D
   @Override
   public List<Endpoint> listEndpoints(UUID targetEntityKey) {
     return get(GenericTypes.LIST_ENDPOINT, null, null,
-               // TODO: endpoint type
-               (Pageable) null, targetEntityKey.toString(), "endpoint");
+      // TODO: endpoint type
+      (Pageable) null, targetEntityKey.toString(), "endpoint");
   }
 
   @Override
@@ -149,8 +146,8 @@ public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements D
   @Override
   public List<Identifier> listIdentifiers(UUID targetEntityKey) {
     return get(GenericTypes.LIST_IDENTIFIER, null, null,
-               // TODO: identifier type
-               (Pageable) null, targetEntityKey.toString(), "identifier");
+      // TODO: identifier type
+      (Pageable) null, targetEntityKey.toString(), "identifier");
   }
 
   @Override

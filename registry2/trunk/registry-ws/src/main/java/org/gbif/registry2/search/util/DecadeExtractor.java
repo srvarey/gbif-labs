@@ -1,8 +1,8 @@
 package org.gbif.registry2.search.util;
 
-import org.gbif.api.model.registry.temporal.DateRange;
-import org.gbif.api.model.registry.temporal.SingleDate;
-import org.gbif.api.model.registry.temporal.TemporalCoverage;
+import org.gbif.api.model.registry2.eml.temporal.DateRange;
+import org.gbif.api.model.registry2.eml.temporal.SingleDate;
+import org.gbif.api.model.registry2.eml.temporal.TemporalCoverage;
 
 import java.util.Calendar;
 import java.util.List;
@@ -17,6 +17,10 @@ import com.google.common.collect.Sets;
  * A utility to extract string "decades" (eg "1980", "1840") from TemporalCoverages.
  */
 public class DecadeExtractor {
+
+  // not for construction
+  private DecadeExtractor() {
+  }
 
   private static Set<Integer> decadesFromInt(int start, int end) {
     Set<Integer> decades = Sets.newHashSet();
@@ -62,11 +66,7 @@ public class DecadeExtractor {
         }
       }
     }
-
-    List<Integer> returnList = Lists.newArrayList();
-    returnList.addAll(decades);
-
-    return returnList;
+    return Lists.newArrayList(decades);
   }
 
   /**
@@ -76,9 +76,6 @@ public class DecadeExtractor {
    * @return a list of 4 digit decades with no duplicates, ordered numerically
    */
   public static List<Integer> extractDecades(TemporalCoverage temporalCoverage) {
-    List<TemporalCoverage> tcList = Lists.newArrayList();
-    tcList.add(temporalCoverage);
-
-    return extractDecades(tcList);
+    return extractDecades(Lists.newArrayList(temporalCoverage));
   }
 }

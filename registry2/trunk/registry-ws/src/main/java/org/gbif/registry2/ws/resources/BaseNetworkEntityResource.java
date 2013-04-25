@@ -145,7 +145,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
   public void update(@NotNull @Valid @Trim T entity) {
     T oldEntity = get(entity.getKey());
     WithMyBatis.update(mapper, entity);
-    eventBus.post(UpdateEvent.newInstance(oldEntity, entity, objectClass));
+    eventBus.post(UpdateEvent.newInstance(entity, oldEntity, objectClass));
   }
 
   /**
