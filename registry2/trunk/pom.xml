@@ -89,18 +89,18 @@
     <gbif-common-ws.version>0.7-SNAPSHOT</gbif-common-ws.version>
     <gbif-common-test.version>0.5</gbif-common-test.version>
     <gbif-common-service.version>0.4</gbif-common-service.version>
-    <gbif-common-search.version>0.6</gbif-common-search.version>
+    <gbif-common-search.version>0.7-SNAPSHOT</gbif-common-search.version>
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
     <filemaker.version>12.2.94</filemaker.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
     <guava.version>14.0.1</guava.version>
     <guice.version>3.0</guice.version>
     <jackson.version>1.9.11</jackson.version>
-    <jersey.version>1.12</jersey.version>
+    <jersey.version>1.17.1</jersey.version>
     <jsr311-api.version>1.0</jsr311-api.version>
     <logback.version>1.0.11</logback.version>
     <mockito.version>1.9.5</mockito.version>
-    <mybatis.version>3.1.1</mybatis.version>
+    <mybatis.version>3.2.2</mybatis.version>
     <mybatis-guice.version>3.3</mybatis-guice.version>
     <mybatis-ehcache.version>1.0.0</mybatis-ehcache.version>
     <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
@@ -112,7 +112,9 @@
     <validation-api.version>1.1.0.Final</validation-api.version>
     <junit.version>4.11</junit.version>
     <bval.version>0.5</bval.version>
-    <grizzly-servlet-webserver.version>1.9.50</grizzly-servlet-webserver.version>
+    <solr.version>4.2.1</solr.version>
+    <grizzly-servlet-webserver.version>1.9.57</grizzly-servlet-webserver.version>
+    <liquibase.version>2.0.5</liquibase.version>
   </properties>
 
   <!--
@@ -342,6 +344,12 @@
         <scope>runtime</scope>
       </dependency>
       <dependency>
+        <groupId>com.jolbox</groupId>
+        <artifactId>bonecp</artifactId>
+        <version>${bonecp.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis-ehcache</artifactId>
         <version>${mybatis-ehcache.version}</version>
@@ -363,9 +371,25 @@
         <version>${bval.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.bval</groupId>
+        <artifactId>org.apache.bval.bundle</artifactId>
+        <version>${bval.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>${solr.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.sun.grizzly</groupId>
         <artifactId>grizzly-servlet-webserver</artifactId>
         <version>${grizzly-servlet-webserver.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>${liquibase.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
