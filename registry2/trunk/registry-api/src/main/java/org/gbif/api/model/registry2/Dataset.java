@@ -169,6 +169,13 @@ public class Dataset
     this.parentDatasetKey = parentDatasetKey;
   }
 
+  /**
+   * TODO: Someone verify that what I've written here makes sense
+   * <p/>
+   * If a dataset is registered with GBIF through more than one place we'll mark all but one as a duplicate by pointing
+   * it to the canonical dataset. That is done using this field. If it is {@code null} then this is not a known
+   * duplicate.
+   */
   @Nullable
   public UUID getDuplicateOfDatasetKey() {
     return duplicateOfDatasetKey;
@@ -230,6 +237,9 @@ public class Dataset
     this.subtype = subtype;
   }
 
+  /**
+   * TODO: Document what this is
+   */
   @Nullable
   @Size(min = 2, max = 50)
   public String getAlias() {
@@ -240,6 +250,9 @@ public class Dataset
     this.alias = alias;
   }
 
+  /**
+   * TODO: Document what this is
+   */
   @Nullable
   @Size(min = 1, max = 50)
   public String getAbbreviation() {
@@ -277,6 +290,9 @@ public class Dataset
     this.logoUrl = logoUrl;
   }
 
+  /**
+   * TODO: Document what this is and how it differst from bibliographicCitations & citationIdentifier
+   */
   @Nullable
   @Size(min = 10)
   public String getCitation() {
@@ -287,6 +303,9 @@ public class Dataset
     this.citation = citation;
   }
 
+  /**
+   * TODO: Document what this is and how it differst from bibliographicCitations & citation
+   */
   @Nullable
   @Size(min = 1, max = 100)
   public String getCitationIdentifier() {
