@@ -96,7 +96,7 @@ public class RegistryTestModules {
   public static synchronized Injector webserviceClient() {
     if (webserviceClient == null) {
       Properties props = new Properties();
-      props.put("registry.ws.url", "http://localhost:" + RegistryServer.getPort());
+      props.setProperty("registry.ws.url", "http://localhost:" + RegistryServer.getPort());
       webserviceClient = Guice.createInjector(new RegistryWsClientModule(props));
     }
     return webserviceClient;
