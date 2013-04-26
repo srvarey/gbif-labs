@@ -110,12 +110,15 @@
     WHERE key = #{key,jdbcType=OTHER} AND deleted IS NULL
   </update>
   
-  <!-- Append safe ordering, omitting deleted entities -->
+  <!-- 
+    Append safe ordering, omitting deleted entities 
+    Sort order includes key, since created is not a unique sort order, so not robust
+  -->
   <select id="list" resultType="Dataset"  resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
     FROM dataset d
     WHERE d.deleted IS NULL
-    ORDER BY d.created DESC
+    ORDER BY d.created DESC, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
