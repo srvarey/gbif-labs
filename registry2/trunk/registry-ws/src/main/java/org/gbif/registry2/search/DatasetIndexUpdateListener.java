@@ -177,7 +177,7 @@ public class DatasetIndexUpdateListener {
      * If the installation has changed the host, then all hosted datasets get a new organization title.
      */
     private void handleInstallationUpdate(UpdateEvent<Installation> event) {
-      if (event.getNewObject().getOrganizationKey() != event.getOldObject().getOrganizationKey()) {
+      if (!event.getNewObject().getOrganizationKey().equals(event.getOldObject().getOrganizationKey())) {
         PagingResponse<Dataset> results = null;
         PagingRequest page = new PagingRequest();
         do {
@@ -210,7 +210,6 @@ public class DatasetIndexUpdateListener {
       } while (!results.isEndOfRecords());
 
       // Page over all OWNED datasets that could be affected
-      results = null;
       page = new PagingRequest();
       do {
         results = organizationService.ownedDatasets(oEvent.getOldObject().getKey(), page);
