@@ -48,7 +48,7 @@ public class DatasetIndexBuilder {
     pageAndIndex();
     solrServer.commit();
     solrServer.optimize();
-    LOG.info("Finished building Dataset index in " + stopwatch.elapsed(TimeUnit.SECONDS) + " secs");
+    LOG.info("Finished building Dataset index in {} secs", stopwatch.elapsed(TimeUnit.SECONDS));
   }
 
   /**
