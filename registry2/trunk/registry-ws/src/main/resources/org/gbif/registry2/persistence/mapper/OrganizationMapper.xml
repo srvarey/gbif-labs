@@ -108,7 +108,7 @@
     SELECT <include refid="ORGANIZATION_FIELDS"/>
     FROM organization o
     WHERE o.deleted IS NULL
-    ORDER BY o.created DESC
+    ORDER BY o.created DESC, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -279,7 +279,7 @@
     FROM organization o
     INNER JOIN node n ON o.endorsing_node_key = n.key 
     WHERE o.deleted IS NULL AND n.deleted IS NULL AND n.key = #{nodeKey,jdbcType=OTHER} AND o.endorsement_approved = true 
-    ORDER BY o.created
+    ORDER BY o.created, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -290,7 +290,7 @@
     SELECT <include refid="ORGANIZATION_FIELDS"/>
     FROM organization o
     WHERE o.deleted IS NULL AND o.endorsement_approved = false 
-    ORDER BY o.created
+    ORDER BY o.created, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>

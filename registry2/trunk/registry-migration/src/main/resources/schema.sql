@@ -105,6 +105,9 @@ CREATE TABLE dataset
   modified timestamp with time zone NOT NULL DEFAULT now(),
   deleted timestamp with time zone
 );
+CREATE INDEX default_paging_idx ON dataset (created DESC, key ASC) WHERE deleted IS NULL;
+CREATE INDEX num_constituents_idx ON dataset (parent_dataset_key) WHERE deleted IS NULL;      
+
 
 -- 
 --  network
@@ -365,13 +368,13 @@ CREATE TABLE endpoint
 );
 
 --
---	node_endpoint
+--    node_endpoint
 --
 CREATE TABLE node_endpoint
 (
-	node_key uuid NOT NULL REFERENCES node(key),
-	endpoint_key integer NOT NULL UNIQUE REFERENCES endpoint(key) ON DELETE CASCADE,
-  	PRIMARY KEY (node_key, endpoint_key)
+    node_key uuid NOT NULL REFERENCES node(key),
+    endpoint_key integer NOT NULL UNIQUE REFERENCES endpoint(key) ON DELETE CASCADE,
+      PRIMARY KEY (node_key, endpoint_key)
 );
 
 -- 

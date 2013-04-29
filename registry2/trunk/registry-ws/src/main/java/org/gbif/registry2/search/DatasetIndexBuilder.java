@@ -1,15 +1,26 @@
 package org.gbif.registry2.search;
 
+import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.model.registry2.Installation;
+import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.DatasetService;
+import org.gbif.api.service.registry2.InstallationService;
+import org.gbif.api.service.registry2.NetworkEntityService;
+import org.gbif.api.service.registry2.OrganizationService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -35,16 +46,18 @@ public class DatasetIndexBuilder {
 
   @Inject
   public DatasetIndexBuilder(@Named("Dataset") SolrServer solrServer, DatasetService datasetService,
-    SolrAnnotatedDatasetBuilder sadBuilder) {
+    InstallationService installationService, OrganizationService organizationService) {
     this.solrServer = solrServer;
     this.datasetService = datasetService;
-    this.sadBuilder = sadBuilder;
+    // We can use a cache at startup
+    this.sadBuilder =
+      new SolrAnnotatedDatasetBuilder(new CachingNetworkEntityService<Organization>(organizationService),
+        new CachingNetworkEntityService<Installation>(installationService));
   }
 
   public void build() throws SolrServerException, IOException {
     LOG.info("Building a new Dataset index");
     Stopwatch stopwatch = new Stopwatch().start();
-    solrServer.deleteByQuery("*:*");
     pageAndIndex();
     solrServer.commit();
     solrServer.optimize();
@@ -72,5 +85,59 @@ public class DatasetIndexBuilder {
       page.nextPage();
 
     } while (!response.isEndOfRecords());
+  }
+
+  /**
+   * A lightweight cache to help improve performance of the builder.
+   * 
+   * @param <T> The type of entity being wrapped
+   */
+  private static class CachingNetworkEntityService<T> implements NetworkEntityService<T> {
+
+    private final NetworkEntityService<T> service;
+    private final LoadingCache<UUID, T> cache = CacheBuilder.newBuilder()
+      .maximumSize(1000)
+      .expireAfterWrite(10, TimeUnit.MINUTES)
+      .build(
+        new CacheLoader<UUID, T>() {
+
+          @Override
+          public T load(UUID key) throws Exception {
+            return service.get(key);
+          }
+        });
+
+    public CachingNetworkEntityService(NetworkEntityService<T> service) {
+      this.service = service;
+    }
+
+    @Override
+    public UUID create(T entity) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void delete(UUID key) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public T get(UUID key) {
+      try {
+        return cache.get(key);
+      } catch (ExecutionException e) {
+        return null;
+      }
+    }
+
+    @Override
+    public PagingResponse<T> list(Pageable page) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void update(T entity) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
   }
 }

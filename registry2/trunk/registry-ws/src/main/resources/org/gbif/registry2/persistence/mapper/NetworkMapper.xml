@@ -93,7 +93,7 @@
     SELECT <include refid="NETWORK_FIELDS"/>
     FROM network n
     WHERE n.deleted IS NULL
-    ORDER BY n.created DESC
+    ORDER BY n.created DESC, n.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>

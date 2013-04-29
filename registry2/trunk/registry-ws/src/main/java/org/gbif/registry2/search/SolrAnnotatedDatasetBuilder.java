@@ -4,26 +4,23 @@ import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.Tag;
-import org.gbif.api.service.registry2.InstallationService;
-import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.api.service.registry2.NetworkEntityService;
 import org.gbif.registry2.search.util.DecadeExtractor;
 
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 
 /**
  * A utility builder to prepare objects suitable for SOLR.
  */
-public class SolrAnnotatedDatasetBuilder {
+class SolrAnnotatedDatasetBuilder {
 
-  private final OrganizationService organizationService;
-  private final InstallationService installationService;
+  private final NetworkEntityService<Organization> organizationService;
+  private final NetworkEntityService<Installation> installationService;
 
-  @Inject
-  public SolrAnnotatedDatasetBuilder(OrganizationService organizationService,
-    InstallationService installationService) {
+  public SolrAnnotatedDatasetBuilder(NetworkEntityService<Organization> organizationService,
+    NetworkEntityService<Installation> installationService) {
     this.organizationService = organizationService;
     this.installationService = installationService;
   }
@@ -60,7 +57,6 @@ public class SolrAnnotatedDatasetBuilder {
     Organization host =
       installation != null && installation.getOrganizationKey() != null ? organizationService.get(installation
         .getOrganizationKey()) : null;
-
     if (owner != null) {
       sad.setOwningOrganizationTitle(owner.getTitle());
     }
@@ -68,6 +64,7 @@ public class SolrAnnotatedDatasetBuilder {
       sad.setHostingOrganizationKey(String.valueOf(host.getKey()));
       sad.setHostingOrganizationTitle(host.getTitle());
     }
+
     return sad;
   }
 }
