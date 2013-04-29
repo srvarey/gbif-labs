@@ -82,7 +82,7 @@
     SELECT <include refid="NODE_FIELDS"/>
     FROM node 
     WHERE deleted IS NULL
-    ORDER BY created DESC
+    ORDER BY created DESC, key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>

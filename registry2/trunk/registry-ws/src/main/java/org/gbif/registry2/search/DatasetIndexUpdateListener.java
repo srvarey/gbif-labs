@@ -59,13 +59,12 @@ public class DatasetIndexUpdateListener {
   public DatasetIndexUpdateListener(DatasetIndexBuilder indexBuilder,
     @Named("performIndexSync") boolean performIndexSync,
     @Named("Dataset") SolrServer solrServer,
-    SolrAnnotatedDatasetBuilder sadBuilder,
     OrganizationService organizationService,
     InstallationService installationService) {
     this.indexBuilder = indexBuilder;
     this.performIndexSync = performIndexSync;
     this.solrServer = solrServer;
-    this.sadBuilder = sadBuilder;
+    this.sadBuilder = new SolrAnnotatedDatasetBuilder(organizationService, installationService);
     this.organizationService = organizationService;
     this.installationService = installationService;
     Thread updateThread = new Thread(new Consumer());

@@ -9,7 +9,6 @@ import org.gbif.common.search.solr.builders.EmbeddedServerBuilder;
 import org.gbif.registry2.search.DatasetIndexBuilder;
 import org.gbif.registry2.search.DatasetIndexUpdateListener;
 import org.gbif.registry2.search.DatasetSearchServiceSolr;
-import org.gbif.registry2.search.SolrAnnotatedDatasetBuilder;
 import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
@@ -67,7 +66,6 @@ public class RegistrySearchModule extends PrivateServiceModule {
     bind(DatasetService.class).to(DatasetResource.class).in(Scopes.SINGLETON);
     bind(OrganizationService.class).to(OrganizationResource.class).in(Scopes.SINGLETON);
     bind(InstallationService.class).to(InstallationResource.class).in(Scopes.SINGLETON);
-    bind(SolrAnnotatedDatasetBuilder.class).in(Scopes.SINGLETON);
     bind(DatasetIndexUpdateListener.class).asEagerSingleton();
     bind(DatasetIndexBuilder.class).in(Scopes.SINGLETON);
     expose(DatasetSearchService.class);

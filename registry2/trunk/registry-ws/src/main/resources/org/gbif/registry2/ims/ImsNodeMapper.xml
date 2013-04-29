@@ -25,12 +25,12 @@
       JOIN "__Region" r ON p."_kf_RegionID" = r."__kp_ID"
       JOIN "__Country" c ON p."_kf_CountryID" = c."__kp_ID"
       JOIN "__Institution" i ON p."_kf_InstitutionID" = i."__kp_ID"
-
+	
     WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country Participant') AND p."__kp_ID" = #{imsId}
   </select>  
 
   <select id="listContacts" resultType="Contact" resultMap="CONTACT_MAP">
-    SELECT -1 * pc."_kf_ContactID" AS cid, pc."_kf_ParticipantID", pc."_kf_NodeID",
+    SELECT pc."_kf_ContactID" AS cid, pc."_kf_ParticipantID", pc."_kf_NodeID",
          i.Name_Full__lct AS organization, c.Address, c.City, c.ZipCode, ca.Name AS country,
          c.Email AS email, c.Fax, c.Phone_And_Phone__lct AS phone, c.URL AS homepage,
          c.Name_Full__lct AS name, c.Job_Position AS job_position, c.Job_Description AS description,

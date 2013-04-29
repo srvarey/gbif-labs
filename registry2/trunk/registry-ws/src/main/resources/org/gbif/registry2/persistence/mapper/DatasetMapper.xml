@@ -294,7 +294,7 @@
     SELECT <include refid="DATASET_FIELDS"/>
     FROM dataset d INNER JOIN dataset_network dn ON dn.dataset_key = d.key
     WHERE dn.network_key = #{networkKey,jdbcType=OTHER} AND d.deleted IS NULL 
-    ORDER BY d.created
+    ORDER BY d.created, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -306,7 +306,7 @@
     INNER JOIN organization o ON d.owning_organization_key = o.key
     WHERE o.key = #{organizationKey,jdbcType=OTHER} 
     AND d.deleted IS NULL
-    ORDER BY d.created
+    ORDER BY d.created, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -319,7 +319,7 @@
     INNER JOIN organization o ON i.organization_key = o.key
     WHERE o.key = #{organizationKey,jdbcType=OTHER} 
     AND d.deleted IS NULL 
-    ORDER BY d.created
+    ORDER BY d.created, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -330,7 +330,7 @@
     FROM dataset d 
     WHERE d.installation_key = #{installationKey,jdbcType=OTHER} 
     AND d.deleted IS NULL 
-    ORDER BY d.created
+    ORDER BY d.created, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
