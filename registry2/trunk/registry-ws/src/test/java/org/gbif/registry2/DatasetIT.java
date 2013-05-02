@@ -226,6 +226,11 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
       dataset.getKey());
   }
 
+  // Check that simple search covers contacts
+  @Test
+  public void testSimpleSearchContact() {
+    ContactTests.testSimpleSearch(service, service, create(newEntity(), 1));
+  }
 
   @Test
   public void testSearchListener() {

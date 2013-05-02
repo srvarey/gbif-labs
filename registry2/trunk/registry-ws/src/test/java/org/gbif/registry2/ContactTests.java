@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,13 +12,10 @@
  */
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +27,7 @@ package org.gbif.registry2;
 import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.NetworkEntity;
 import org.gbif.api.service.registry2.ContactService;
+import org.gbif.api.service.registry2.NetworkEntityService;
 import org.gbif.registry2.utils.Contacts;
 
 import java.util.List;
@@ -74,4 +69,18 @@ public class ContactTests {
     assertEquals("Created contact does not read as expected", expected, created);
   }
 
+  /**
+   * Tests that adding a contact means the entity is found in the search.
+   */
+  public static <T extends NetworkEntity> void testSimpleSearch(ContactService service,
+    NetworkEntityService<T> networkService, T entity) {
+    assertEquals("There should be no results for this search", Long.valueOf(0), networkService.search("Frankie", null)
+      .getCount());
+    Contact c = Contacts.newInstance();
+    c.setName("Frankie");
+    service.addContact(entity.getKey(), c);
+    assertEquals("There should a search result for Frankie", Long.valueOf(1), networkService.search("Frankie", null)
+      .getCount());
+
+  }
 }

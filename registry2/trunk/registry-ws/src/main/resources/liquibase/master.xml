@@ -7,5 +7,6 @@
   <include file="liquibase/001-initial.xml"/>
   <include file="liquibase/002-node_ims.xml"/>
   <include file="liquibase/003-dataset-index.xml"/>
-
+  <include file="liquibase/004-fulltext-search.xml"/>
+  
 </databaseChangeLog>

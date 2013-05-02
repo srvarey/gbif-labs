@@ -27,6 +27,7 @@ import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import com.google.inject.Inject;
@@ -175,6 +176,11 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
   @Override
   public PagingResponse<Dataset> ownedDatasets(UUID organizationKey, Pageable page) {
     return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(organizationKey), "ownedDatasets");
+  }
+
+  @Override
+  public PagingResponse<Organization> search(String query, Pageable page) {
+    return get(GenericTypes.PAGING_ORGANIZATION, (Locale) null, Params.of("q", query), page);
   }
 
 }

@@ -17,6 +17,15 @@
   </sql>
   
   <!-- 
+    Simple fulltext search.
+    plainto_tsquery() is used to handle ALL stuff from the URL so the limitations are constrained by this method.
+    E.g. no prefix search is supported. 
+   -->
+  <sql id="SIMPLE_SEARCH">  
+    AND fulltext_search @@ plainto_tsquery(#{query})
+  </sql>
+  
+  <!-- 
     key, created and deleted are never changed
    -->
   <sql id="NODE_UPDATE">
@@ -78,7 +87,7 @@
   </update>  
   
   <!-- Append safe ordering, omitting deleted entities -->
-  <select id="list" resultMap="NODE_MAP" parameterType="Pageable">
+  <select id="list" resultMap="NODE_MAP">
     SELECT <include refid="NODE_FIELDS"/>
     FROM node 
     WHERE deleted IS NULL
@@ -87,11 +96,28 @@
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
   </select>  
-  
+	
+  <!-- Basic paging search functionality -->
+  <select id="search" resultMap="NODE_MAP">
+    SELECT <include refid="NODE_FIELDS"/>
+    FROM node 
+    WHERE deleted IS NULL
+    <if test="query != null" >
+      <include refid="SIMPLE_SEARCH"/>
+    </if>
+    ORDER BY created DESC, key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+
   <select id="count" resultType="Integer">
     SELECT COUNT(*)
     FROM node 
     WHERE deleted IS NULL
+    <if test="query != null" >
+      <include refid="SIMPLE_SEARCH"/>
+    </if>
   </select>  
   
   <!-- TAGS -->

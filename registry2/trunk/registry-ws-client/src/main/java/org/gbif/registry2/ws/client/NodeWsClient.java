@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +26,7 @@ import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
@@ -85,7 +83,7 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   @Override
   public List<Tag> listTags(UUID taggedEntityKey, String owner) {
     return get(GenericTypes.LIST_TAG, null, null, // TODO add owner here
-               (Pageable) null, taggedEntityKey.toString(), "tag");
+      (Pageable) null, taggedEntityKey.toString(), "tag");
   }
 
   @Override
@@ -116,8 +114,8 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   @Override
   public List<Identifier> listIdentifiers(UUID targetEntityKey) {
     return get(GenericTypes.LIST_IDENTIFIER, null, null,
-               // TODO: identifier type?
-               (Pageable) null, targetEntityKey.toString(), "identifier");
+      // TODO: identifier type?
+      (Pageable) null, targetEntityKey.toString(), "identifier");
   }
 
   @Override
@@ -155,4 +153,8 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
     return get(GenericTypes.LIST_COUNTRY, "country");
   }
 
+  @Override
+  public PagingResponse<Node> search(String query, Pageable page) {
+    return get(GenericTypes.PAGING_NODE, (Locale) null, Params.of("q", query), page);
+  }
 }

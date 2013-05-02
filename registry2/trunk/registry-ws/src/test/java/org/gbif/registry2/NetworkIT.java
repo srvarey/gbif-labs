@@ -94,6 +94,12 @@ public class NetworkIT extends NetworkEntityTest<Network> {
     CommentTests.testAddDelete(service, network);
   }
 
+  // Check that simple search covers contacts
+  @Test
+  public void testSimpleSearchContact() {
+    ContactTests.testSimpleSearch(service, service, create(newEntity(), 1));
+  }
+
   @Override
   protected Network newEntity() {
     return Networks.newInstance();

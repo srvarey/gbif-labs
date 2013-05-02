@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,6 +36,7 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -55,6 +53,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import org.apache.bval.guice.Validate;
 import org.mybatis.guice.transactional.Transactional;
@@ -65,7 +65,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Provides a skeleton implementation of the core CRUD operations.
- *
+ * 
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
@@ -87,8 +87,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     Class<T> objectClass,
-    EventBus eventBus
-  ) {
+    EventBus eventBus) {
     this.mapper = mapper;
     this.commentMapper = commentMapper;
     this.machineTagMapper = machineTagMapper;
@@ -115,8 +114,8 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     T objectToDelete = get(key);
     if (objectToDelete == null || objectToDelete.getDeleted() != null) {
       LOG.debug("Tried to delete [{}] with id [{}] but it doesn't exist or is already marked as deleted.",
-                objectClass.getSimpleName(),
-                key);
+        objectClass.getSimpleName(),
+        key);
       return;
     }
 
@@ -132,7 +131,32 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     return WithMyBatis.get(mapper, key);
   }
 
+  /**
+   * All network entities support simple (!) search with "&q=".
+   * This is to support the console user interface, and is in addition to any complex, faceted search that might
+   * additionally be supported, such as dataset search.
+   */
   @GET
+  public PagingResponse<T> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    if (Strings.isNullOrEmpty(query)) {
+      return WithMyBatis.list(mapper, page);
+    } else {
+      return search(query, page);
+    }
+  }
+
+  /**
+   * The simple search is not mapped to a URL, but called from the root path (e.g. /dataset) when the optional query
+   * parameter is given.
+   */
+  @Override
+  public PagingResponse<T> search(String query, @Nullable Pageable page) {
+    page = page == null ? new PagingRequest() : page;
+    // trim and handle null from given input
+    String q = Strings.nullToEmpty(CharMatcher.WHITESPACE.trimFrom(query));
+    return WithMyBatis.search(mapper, q, page);
+  }
+
   @Override
   public PagingResponse<T> list(@Nullable @Context Pageable page) {
     page = page == null ? new PagingRequest() : page;
@@ -226,5 +250,4 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
   public List<Tag> listTags(@PathParam("key") UUID taggedEntityKey, @QueryParam("owner") String owner) {
     return WithMyBatis.listTags(mapper, taggedEntityKey, owner);
   }
-
 }

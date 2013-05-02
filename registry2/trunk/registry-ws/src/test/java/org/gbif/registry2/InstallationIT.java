@@ -108,6 +108,12 @@ public class InstallationIT extends NetworkEntityTest<Installation> {
     CommentTests.testAddDelete(service, installation);
   }
 
+  // Check that simple search covers contacts
+  @Test
+  public void testSimpleSearchContact() {
+    ContactTests.testSimpleSearch(service, service, create(newEntity(), 1));
+  }
+
   @Override
   protected Installation newEntity() {
     UUID nodeKey = nodeService.create(Nodes.newInstance());

@@ -26,6 +26,7 @@ import org.gbif.registry2.persistence.mapper.TaggableMapper;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.base.Preconditions;
 import org.mybatis.guice.transactional.Transactional;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -36,7 +37,8 @@ public class WithMyBatis {
   @Transactional
   public static <T extends NetworkEntity> UUID create(NetworkEntityMapper<T> mapper, T entity) {
     checkArgument(entity.getKey() == null, "Unable to create an entity which already has a key");
-    // REVIEW: If this call fails the entity will have been modified anyway! We could make a copy and return that instead
+    // REVIEW: If this call fails the entity will have been modified anyway! We could make a copy and return that
+// instead
     entity.setKey(UUID.randomUUID());
     mapper.create(entity);
     return entity.getKey();
@@ -65,10 +67,25 @@ public class WithMyBatis {
     return new PagingResponse<T>(page.getOffset(), page.getLimit(), total, mapper.list(page));
   }
 
+  /**
+   * The simple search option of the list.
+   * 
+   * @param mapper To use for the search
+   * @param query A simple query string such as "Pontaurus"
+   * @param page To support paging
+   * @return A paging response
+   */
+  public static <T extends NetworkEntity> PagingResponse<T> search(NetworkEntityMapper<T> mapper, String query,
+    Pageable page) {
+    Preconditions.checkNotNull(page, "To search you must supply a page");
+    long total = mapper.count(query);
+    return new PagingResponse<T>(page.getOffset(), page.getLimit(), total, mapper.search(query, page));
+  }
+
   @Transactional
   public static int addContact(
     ContactMapper contactMapper, ContactableMapper contactableMapper, UUID targetEntityKey, Contact contact
-  ) {
+    ) {
     checkArgument(contact.getKey() == null, "Unable to create an entity which already has a key");
     contactMapper.createContact(contact);
     // is this a primary contact? We need to make sure it only exists once per type
@@ -90,7 +107,7 @@ public class WithMyBatis {
   @Transactional
   public static int addEndpoint(
     EndpointMapper endpointMapper, EndpointableMapper endpointableMapper, UUID targetEntityKey, Endpoint endpoint
-  ) {
+    ) {
     checkArgument(endpoint.getKey() == null, "Unable to create an entity which already has a key");
     endpointMapper.createEndpoint(endpoint);
     endpointableMapper.addEndpoint(targetEntityKey, endpoint.getKey());
@@ -110,7 +127,7 @@ public class WithMyBatis {
     MachineTaggableMapper machineTaggableMapper,
     UUID targetEntityKey,
     MachineTag machineTag
-  ) {
+    ) {
     checkArgument(machineTag.getKey() == null, "Unable to create an entity which already has a key");
     machineTagMapper.createMachineTag(machineTag);
     machineTaggableMapper.addMachineTag(targetEntityKey, machineTag.getKey());
@@ -119,7 +136,7 @@ public class WithMyBatis {
 
   public static void deleteMachineTag(
     MachineTaggableMapper machineTaggableMapper, UUID targetEntityKey, int machineTagKey
-  ) {
+    ) {
     machineTaggableMapper.deleteMachineTag(targetEntityKey, machineTagKey);
   }
 
@@ -151,7 +168,7 @@ public class WithMyBatis {
     IdentifiableMapper identifiableMapper,
     UUID targetEntityKey,
     Identifier identifier
-  ) {
+    ) {
     checkArgument(identifier.getKey() == null, "Unable to create an entity which already has a key");
     identifierMapper.createIdentifier(identifier);
     identifiableMapper.addIdentifier(targetEntityKey, identifier.getKey());
@@ -169,7 +186,7 @@ public class WithMyBatis {
   @Transactional
   public static int addComment(
     CommentMapper commentMapper, CommentableMapper commentableMapper, UUID targetEntityKey, Comment comment
-  ) {
+    ) {
     checkArgument(comment.getKey() == null, "Unable to create an entity which already has a key");
     commentMapper.createComment(comment);
     commentableMapper.addComment(targetEntityKey, comment.getKey());
