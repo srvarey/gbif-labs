@@ -26,6 +26,7 @@ import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import com.google.inject.Inject;
@@ -151,6 +152,11 @@ public class InstallationWsClient extends BaseWsGetClient<Installation, UUID> im
   @Override
   public PagingResponse<Dataset> hostedDatasets(UUID installationKey, Pageable page) {
     return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(installationKey), "datasets");
+  }
+
+  @Override
+  public PagingResponse<Installation> search(String query, Pageable page) {
+    return get(GenericTypes.PAGING_INSTALLATION, (Locale) null, Params.of("q", query), page);
   }
 
 }

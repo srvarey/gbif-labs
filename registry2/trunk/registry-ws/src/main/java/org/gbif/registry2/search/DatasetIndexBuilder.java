@@ -139,5 +139,10 @@ public class DatasetIndexBuilder {
     public void update(T entity) {
       throw new IllegalStateException("Method not supported in caching service");
     }
+
+    @Override
+    public PagingResponse<T> search(String query, Pageable page) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
   }
 }

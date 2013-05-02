@@ -23,6 +23,23 @@
   </sql>
   
   <!-- 
+    Simple fulltext search on the search field or contact search field.
+    plainto_tsquery() is used to handle ALL stuff from the URL so the limitations are constrained by this method.
+    E.g. no prefix search is supported. 
+   -->
+  <sql id="SIMPLE_SEARCH">  
+    AND (
+      n.fulltext_search @@ plainto_tsquery(#{query}) 
+      OR EXISTS(
+        SELECT contact_key 
+        FROM network_contact JOIN contact c ON c.key = contact_key
+        WHERE network_key=n.key AND c.fulltext_search @@ plainto_tsquery(#{query})
+      )
+    ) 
+  </sql>
+  
+  
+  <!-- 
     key, created and deleted are never changed
    -->
   <sql id="NETWORK_UPDATE">
@@ -99,11 +116,28 @@
     </if>
   </select>  
   
+  <!-- Basic paging search functionality -->
+  <select id="search" resultMap="NETWORK_MAP">
+    SELECT <include refid="NETWORK_FIELDS"/>
+    FROM network n
+    WHERE deleted IS NULL
+    <if test="query != null" >
+      <include refid="SIMPLE_SEARCH"/>
+    </if>
+    ORDER BY n.created DESC, key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+
   <select id="count" resultType="Integer">
     SELECT COUNT(*)
-    FROM network 
+    FROM network n
     WHERE deleted IS NULL
-  </select>  
+    <if test="query != null" >
+      <include refid="SIMPLE_SEARCH"/>
+    </if>
+  </select>    
   
   <!-- TAGS -->
   <insert id="addTag">

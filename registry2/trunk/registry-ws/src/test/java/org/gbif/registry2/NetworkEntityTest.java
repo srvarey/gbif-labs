@@ -188,6 +188,51 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
   }
 
   /**
+   * Simple search test including when the entity is updated.
+   */
+  @Test
+  public void testSimpleSearch() {
+    T n1 = create(newEntity(), 1);
+    n1.setTitle("New title");
+    service.update(asWritable(n1));
+
+    assertEquals("Search should return a hit", Long.valueOf(1), service.search("New", null).getCount());
+    assertEquals("Search should return a hit", Long.valueOf(1), service.search("TITLE", null).getCount());
+    assertEquals("Search should return no hits", Long.valueOf(0), service.search("NO", null).getCount());
+
+    // Updates should be reflected in search
+    n1.setTitle("BINGO");
+    service.update(asWritable(n1));
+
+    assertEquals("Search should return a hit", Long.valueOf(1), service.search("BINGO", null).getCount());
+    assertEquals("Search should return no hits", Long.valueOf(0), service.search("New", null).getCount());
+    assertEquals("Search should return no hits", Long.valueOf(0), service.search("TITILE", null).getCount());
+  }
+
+  /**
+   * Ensures the simple search pages as expected.
+   */
+  @Test
+  public void testSimpleSearchPaging() {
+    for (int i = 1; i <= 5; i++) {
+      T n1 = newEntity();
+      n1.setTitle("Bingo");
+      create(n1, i);
+    }
+
+    assertEquals("Search should return a hit", Long.valueOf(5), service.search("Bingo", null).getCount());
+    // first page 3 results
+    assertEquals("Search should return the requested number of records", 3,
+      service.search("Bingo", new PagingRequest(0, 3)).getResults().size());
+    // second page should bring the last 2
+    assertEquals("Search should return the requested number of records", 2,
+      service.search("Bingo", new PagingRequest(3, 3)).getResults().size());
+    // there are no results after 5
+    assertTrue("Search should return the requested number of records", service.search("Bingo", new PagingRequest(5, 3))
+      .getResults().isEmpty());
+  }
+
+  /**
    * @return a new example instance
    */
   protected abstract T newEntity();

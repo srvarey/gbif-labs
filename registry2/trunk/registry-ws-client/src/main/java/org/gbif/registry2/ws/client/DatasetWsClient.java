@@ -26,6 +26,7 @@ import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import com.google.inject.Inject;
@@ -163,5 +164,10 @@ public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements D
   @Override
   public List<Comment> listComments(UUID targetEntityKey) {
     return get(GenericTypes.LIST_COMMENT, null, null, (Pageable) null, targetEntityKey.toString(), "comment");
+  }
+
+  @Override
+  public PagingResponse<Dataset> search(String query, Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, (Locale) null, Params.of("q", query), page);
   }
 }
