@@ -1,4 +1,4 @@
-var registryApp = angular.module('registry.app', ['ui.compat', 'registry.node'])
+var registryApp = angular.module('registry.app', ['ui.compat', 'registry.search', 'registry.node'])
   .config(
     ['$stateProvider', '$routeProvider', '$urlRouterProvider',
     function ($stateProvider,  $routeProvider,  $urlRouterProvider) {
@@ -16,6 +16,7 @@ var registryApp = angular.module('registry.app', ['ui.compat', 'registry.node'])
         });
       
       // delegate to modules to add their states
+      searchModule.initializeState($stateProvider);
       nodeModule.initializeState($stateProvider);
     }])
   .run (
