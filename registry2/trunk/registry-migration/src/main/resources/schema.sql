@@ -268,7 +268,8 @@ CREATE TYPE enum_contact_type AS ENUM ('TECHNICAL_POINT_OF_CONTACT', 'ADMINISTRA
 CREATE TABLE contact
 (
   key serial NOT NULL PRIMARY KEY,
-  name text CHECK (assert_min_length(name, 1)),
+  first_name text CHECK (assert_min_length(last_name, 1)),
+  last_name text CHECK (assert_min_length(first_name, 1)),
   description text CHECK (assert_min_length(description, 10)),
   position text CHECK (assert_min_length(position, 2)),
   email varchar(254) CHECK (assert_min_length(email, 5)),

@@ -12,8 +12,6 @@
  */
 package org.gbif.api.model.registry2;
 
-import org.gbif.api.model.common.InterpretedEnum;
-import org.gbif.api.model.registry2.eml.Citation;
 import org.gbif.api.model.registry2.eml.Collection;
 import org.gbif.api.model.registry2.eml.DataDescription;
 import org.gbif.api.model.registry2.eml.KeywordCollection;
@@ -64,8 +62,7 @@ public class Dataset
   private Language language;
   private URI homepage;
   private URI logoUrl;
-  private String citation;
-  private String citationIdentifier;
+  private Citation citation = new Citation();
   private String rights;
   private boolean lockedForAutoUpdate;
   private String createdBy;
@@ -80,7 +77,6 @@ public class Dataset
   private List<Identifier> identifiers = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
   // EML specific properties
-  private UUID networkOfOriginKey;
   private List<Citation> bibliographicCitations = Lists.newArrayList();
   private List<CuratorialUnitComposite> curatorialUnits = Lists.newArrayList();
   private List<TaxonomicCoverages> taxonomicCoverages = Lists.newArrayList();
@@ -93,8 +89,7 @@ public class Dataset
   private Set<Country> countryCoverage = Sets.newHashSet();
   private List<Collection> collections = Lists.newArrayList();
   private List<DataDescription> dataDescriptions = Lists.newArrayList();
-  private InterpretedEnum<String, Language> dataLanguage;
-  private String metadataLanguageVerbatim;
+  private Language dataLanguage;
   private String intellectualRights;
   private String purpose;
   private String additionalInfo;
@@ -294,28 +289,17 @@ public class Dataset
    * TODO: Document what this is and how it differst from bibliographicCitations & citationIdentifier
    */
   @Nullable
-  @Size(min = 10)
-  public String getCitation() {
+  public Citation getCitation() {
     return citation;
   }
 
-  public void setCitation(String citation) {
+  public void setCitation(Citation citation) {
     this.citation = citation;
   }
 
   /**
    * TODO: Document what this is and how it differst from bibliographicCitations & citation
    */
-  @Nullable
-  @Size(min = 1, max = 100)
-  public String getCitationIdentifier() {
-    return citationIdentifier;
-  }
-
-  public void setCitationIdentifier(String citationIdentifier) {
-    this.citationIdentifier = citationIdentifier;
-  }
-
   @Nullable
   @Size(min = 1)
   public String getRights() {
@@ -410,14 +394,6 @@ public class Dataset
   @Override
   public void setComments(List<Comment> comments) {
     this.comments = comments;
-  }
-
-  public UUID getNetworkOfOriginKey() {
-    return networkOfOriginKey;
-  }
-
-  public void setNetworkOfOriginKey(UUID networkOfOriginKey) {
-    this.networkOfOriginKey = networkOfOriginKey;
   }
 
   public List<Citation> getBibliographicCitations() {
@@ -516,20 +492,12 @@ public class Dataset
     this.dataDescriptions = dataDescriptions;
   }
 
-  public InterpretedEnum<String, Language> getDataLanguage() {
+  public Language getDataLanguage() {
     return dataLanguage;
   }
 
-  public void setDataLanguage(InterpretedEnum<String, Language> dataLanguage) {
+  public void setDataLanguage(Language dataLanguage) {
     this.dataLanguage = dataLanguage;
-  }
-
-  public String getMetadataLanguageVerbatim() {
-    return metadataLanguageVerbatim;
-  }
-
-  public void setMetadataLanguageVerbatim(String metadataLanguageVerbatim) {
-    this.metadataLanguageVerbatim = metadataLanguageVerbatim;
   }
 
   public String getIntellectualRights() {
@@ -582,7 +550,6 @@ public class Dataset
       homepage,
       logoUrl,
       citation,
-      citationIdentifier,
       rights,
       lockedForAutoUpdate,
       createdBy,
@@ -596,7 +563,6 @@ public class Dataset
       tags,
       identifiers,
       comments,
-      networkOfOriginKey,
       bibliographicCitations,
       curatorialUnits,
       taxonomicCoverages,
@@ -610,7 +576,6 @@ public class Dataset
       collections,
       dataDescriptions,
       dataLanguage,
-      metadataLanguageVerbatim,
       intellectualRights,
       purpose,
       additionalInfo,
@@ -639,7 +604,6 @@ public class Dataset
         && Objects.equal(this.homepage, that.homepage)
         && Objects.equal(this.logoUrl, that.logoUrl)
         && Objects.equal(this.citation, that.citation)
-        && Objects.equal(this.citationIdentifier, that.citationIdentifier)
         && Objects.equal(this.rights, that.rights)
         && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
         && Objects.equal(this.createdBy, that.createdBy)
@@ -653,7 +617,6 @@ public class Dataset
         && Objects.equal(this.tags, that.tags)
         && Objects.equal(this.identifiers, that.identifiers)
         && Objects.equal(this.comments, that.comments)
-        && Objects.equal(this.networkOfOriginKey, that.networkOfOriginKey)
         && Objects.equal(this.bibliographicCitations, that.bibliographicCitations)
         && Objects.equal(this.curatorialUnits, that.curatorialUnits)
         && Objects.equal(this.taxonomicCoverages, that.taxonomicCoverages)
@@ -667,7 +630,6 @@ public class Dataset
         && Objects.equal(this.collections, that.collections)
         && Objects.equal(this.dataDescriptions, that.dataDescriptions)
         && Objects.equal(this.dataLanguage, that.dataLanguage)
-        && Objects.equal(this.metadataLanguageVerbatim, that.metadataLanguageVerbatim)
         && Objects.equal(this.intellectualRights, that.intellectualRights)
         && Objects.equal(this.purpose, that.purpose)
         && Objects.equal(this.additionalInfo, that.additionalInfo)
@@ -695,7 +657,6 @@ public class Dataset
       .add("homepage", homepage)
       .add("logoUrl", logoUrl)
       .add("citation", citation)
-      .add("citationIdentifier", citationIdentifier)
       .add("rights", rights)
       .add("lockedForAutoUpdate", lockedForAutoUpdate)
       .add("createdBy", createdBy)
@@ -709,7 +670,6 @@ public class Dataset
       .add("tags", tags)
       .add("identifiers", identifiers)
       .add("comments", comments)
-      .add("networkOfOriginKey", networkOfOriginKey)
       .add("bibliographicCitations", bibliographicCitations)
       .add("curatorialUnits", curatorialUnits)
       .add("taxonomicCoverages", taxonomicCoverages)
@@ -723,7 +683,6 @@ public class Dataset
       .add("collections", collections)
       .add("dataDescriptions", dataDescriptions)
       .add("dataLanguage", dataLanguage)
-      .add("metadataLanguageVerbatim", metadataLanguageVerbatim)
       .add("intellectualRights", intellectualRights)
       .add("purpose", purpose)
       .add("additionalInfo", additionalInfo)

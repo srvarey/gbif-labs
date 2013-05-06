@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.registry2.persistence.mapper.ContactMapper">
   
   <sql id="WRITABLE_CONTACT_FIELDS">
-    name,description,position,email,phone,organization,address,city,province,country,postal_code,created,created_by,modified,modified_by
+    first_name,last_name,description,position,email,phone,organization,address,city,province,country,postal_code,created,created_by,modified,modified_by
   </sql>
   
   <sql id="CONTACT_FIELDS">
@@ -11,8 +11,9 @@
   </sql>
 
   <sql id="WRITABLE_CONTACT_FIELD_TYPES">
-    #{name, jdbcType=VARCHAR}, 
-    #{description, jdbcType=VARCHAR}, 
+    #{firstName, jdbcType=VARCHAR},
+    #{lastName, jdbcType=VARCHAR},
+    #{description, jdbcType=VARCHAR},
     #{position, jdbcType=VARCHAR},
     #{email, jdbcType=VARCHAR}, 
     #{phone, jdbcType=VARCHAR}, 

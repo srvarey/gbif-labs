@@ -17,6 +17,10 @@ package org.gbif.api.vocabulary.registry2;
 
 import org.gbif.api.util.VocabularyUtils;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Strings;
+
 /**
  * Enumeration for all possible identifier types.
  */
@@ -46,4 +50,48 @@ public enum IdentifierType {
     return (IdentifierType) VocabularyUtils.lookupEnum(identifierType, IdentifierType.class);
   }
 
+
+  /**
+   * Tries to infer the identifier type from a given identifier.
+   * Most identifiers have a URI protocol prefix or a specific structure that
+   * allows the guess.
+   *
+   * @return the inferred identifier type or Unknown if identifier is null or cant be inferred.
+   */
+  public static IdentifierType inferFrom(@Nullable String identifier) {
+    String lcIdentifier = Strings.nullToEmpty(identifier).trim().toLowerCase();
+
+    if (lcIdentifier.isEmpty()) {
+      return UNKNOWN;
+    }
+
+    if (lcIdentifier.startsWith("doi:10")
+        || lcIdentifier.startsWith("urn:doi:")
+        || lcIdentifier.startsWith("http://dx.doi.org/10.")) {
+      return DOI;
+    }
+    if (lcIdentifier.startsWith("http:")
+        || lcIdentifier.startsWith("https:")
+        || lcIdentifier.startsWith("www.")) {
+      return URL;
+    }
+    if (lcIdentifier.startsWith("ftp:")) {
+      return FTP;
+    }
+    if (lcIdentifier.startsWith("urn:lsid:") || lcIdentifier.startsWith("lsid:")) {
+      return LSID;
+    }
+
+    if (lcIdentifier.startsWith("urn:uuid:") || lcIdentifier.startsWith("uuid:")) {
+      return UUID;
+    }
+    try {
+      java.util.UUID.fromString(lcIdentifier);
+      return UUID;
+    } catch (IllegalArgumentException ignored) {
+      // We're just trying to convert a String to anything readable. Apparently the UUID approach failed.
+    }
+
+    return UNKNOWN;
+  }
 }

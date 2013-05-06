@@ -77,7 +77,7 @@ public class ContactTests {
     assertEquals("There should be no results for this search", Long.valueOf(0), networkService.search("Frankie", null)
       .getCount());
     Contact c = Contacts.newInstance();
-    c.setName("Frankie");
+    c.setLastName("Frankie");
     service.addContact(entity.getKey(), c);
     assertEquals("There should a search result for Frankie", Long.valueOf(1), networkService.search("Frankie", null)
       .getCount());

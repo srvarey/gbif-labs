@@ -5,6 +5,7 @@
   <!-- Auto-mapping and eager loading of sub resources  -->
   <resultMap id="DATASET_MAP" type="Dataset" autoMapping="true">
     <id property="key" column="key"/>
+    <association property="citation" resultMap="CITATION_MAP"/>
     <association property="numConstituents" column="key" select="countConstituents" />
     <collection property="contacts" column="key" select="listContacts"/>
     <collection property="endpoints" column="key" select="listEndpoints"/>
@@ -12,6 +13,12 @@
     <collection property="tags" column="key" select="listTags"/>
     <collection property="identifiers" column="key" select="listIdentifiers"/>
     <collection property="comments" column="key" select="listComments"/>
+  </resultMap>
+
+  <!-- maps a citation object  -->
+  <resultMap id="CITATION_MAP" type="Citation" autoMapping="false">
+    <result property="text" column="citation" />
+    <result property="identifier" column="citation_identifier" />
   </resultMap>
 
   <sql id="WRITABLE_DATASET_FIELDS">
@@ -62,8 +69,8 @@
     language = #{language,jdbcType=CHAR},
     homepage = #{homepage,jdbcType=VARCHAR},
     logo_url = #{logoUrl,jdbcType=VARCHAR},
-    citation = #{citation,jdbcType=VARCHAR},
-    citation_identifier = #{citationIdentifier,jdbcType=VARCHAR},
+    citation = #{citation.text,jdbcType=VARCHAR},
+    citation_identifier = #{citation.identifier,jdbcType=VARCHAR},
     rights = #{rights,jdbcType=VARCHAR},
     locked_for_auto_update = #{lockedForAutoUpdate,jdbcType=BOOLEAN},
     modified = now(),
@@ -86,8 +93,8 @@
     #{language,jdbcType=CHAR},
     #{homepage,jdbcType=VARCHAR},
     #{logoUrl,jdbcType=VARCHAR},
-    #{citation,jdbcType=VARCHAR},
-    #{citationIdentifier,jdbcType=VARCHAR},
+    #{citation.text,jdbcType=VARCHAR},
+    #{citation.identifier,jdbcType=VARCHAR},
     #{rights,jdbcType=VARCHAR},
     #{lockedForAutoUpdate,jdbcType=BOOLEAN},
     now(), <!-- created -->    
@@ -367,5 +374,5 @@
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
-  </select>  
+  </select>
 </mapper>
