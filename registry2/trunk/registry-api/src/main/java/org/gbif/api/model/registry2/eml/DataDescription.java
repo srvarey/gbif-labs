@@ -16,7 +16,7 @@
 package org.gbif.api.model.registry2.eml;
 
 import java.io.Serializable;
-import java.net.URL;
+import java.net.URI;
 
 import com.google.common.base.Objects;
 
@@ -30,14 +30,14 @@ public class DataDescription implements Serializable {
 
   private String name;
   private String charset;
-  private URL url;
+  private URI url;
   private String format;
   private String formatVersion;
 
   public DataDescription() {
   }
 
-  public DataDescription(String name, String charset, URL url, String format, String formatVersion) {
+  public DataDescription(String name, String charset, URI url, String format, String formatVersion) {
     this.name = name;
     this.charset = charset;
     this.url = url;
@@ -102,11 +102,11 @@ public class DataDescription implements Serializable {
    *
    * @return the download URL
    */
-  public URL getUrl() {
+  public URI getUrl() {
     return url;
   }
 
-  public void setUrl(URL url) {
+  public void setUrl(URI url) {
     this.url = url;
   }
 

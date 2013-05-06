@@ -31,7 +31,8 @@ public class Contact implements Address {
   private Integer key;
   private ContactType type;
   private boolean primary;
-  private String name;
+  private String firstName;
+  private String lastName;
   private String position;
   private String description;
   private String email;
@@ -74,12 +75,22 @@ public class Contact implements Address {
 
   @Nullable
   @Size(min = 1)
-  public String getName() {
-    return name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  @Nullable
+  @Size(min = 1)
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
   @Nullable
@@ -226,7 +237,7 @@ public class Contact implements Address {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(key, type, primary, name, position, description, email, phone, organization, address, city,
+    return Objects.hashCode(key, type, primary, firstName, lastName, position, description, email, phone, organization, address, city,
       province, country, postalCode, createdBy, modifiedBy, created, modified);
   }
 
@@ -241,7 +252,8 @@ public class Contact implements Address {
       return Objects.equal(this.key, that.key)
              && Objects.equal(this.type, that.type)
              && Objects.equal(this.primary, that.primary)
-             && Objects.equal(this.name, that.name)
+             && Objects.equal(this.firstName, that.firstName)
+             && Objects.equal(this.lastName, that.lastName)
              && Objects.equal(this.position, that.position)
              && Objects.equal(this.description, that.description)
              && Objects.equal(this.email, that.email)
@@ -262,8 +274,8 @@ public class Contact implements Address {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("key", key).add("type", type).add("primary", primary).add("name", name)
-      .add("position", position)
+    return Objects.toStringHelper(this).add("key", key).add("type", type).add("primary", primary)
+      .add("firstName", firstName).add("lastName", lastName).add("position", position)
       .add("description", description).add("email", email).add("phone", phone).add("organization", organization)
       .add("address", address).add("city", city).add("province", province).add("country", country)
       .add("postalCode", postalCode).add("createdBy", createdBy).add("modifiedBy", modifiedBy).add("created", created)

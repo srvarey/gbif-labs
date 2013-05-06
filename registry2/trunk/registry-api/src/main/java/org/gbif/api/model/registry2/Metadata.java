@@ -31,7 +31,6 @@ public class Metadata {
   private UUID datasetKey;
   private MetadataType type;
   private String version;
-  private String content;
   private String createdBy;
   private String modifiedBy;
   private Date created;
@@ -75,16 +74,6 @@ public class Metadata {
   }
 
   @NotNull
-  @Size(min = 1)
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  @NotNull
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -124,7 +113,7 @@ public class Metadata {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(key, datasetKey, type, version, content, createdBy, modifiedBy, created, modified);
+    return Objects.hashCode(key, datasetKey, type, version, createdBy, modifiedBy, created, modified);
   }
 
   @Override
@@ -135,7 +124,6 @@ public class Metadata {
              && Objects.equal(this.datasetKey, that.datasetKey)
              && Objects.equal(this.type, that.type)
              && Objects.equal(this.version, that.version)
-             && Objects.equal(this.content, that.content)
              && Objects.equal(this.createdBy, that.createdBy)
              && Objects.equal(this.modifiedBy, that.modifiedBy)
              && Objects.equal(this.created, that.created)
@@ -151,7 +139,6 @@ public class Metadata {
       .add("datasetKey", datasetKey)
       .add("type", type)
       .add("version", version)
-      .add("content", content)
       .add("createdBy", createdBy)
       .add("modifiedBy", modifiedBy)
       .add("created", created)

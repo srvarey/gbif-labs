@@ -9,9 +9,13 @@
     <query id="contact" connection-id="old-registry">
     SELECT id AS `key`,
     	CASE
-    		WHEN char_length(trim(CONCAT_WS(' ',first_name, last_name)))&lt;1 THEN NULL
-    		ELSE trim(CONCAT_WS(' ',first_name, last_name))
-    	END AS name,
+    		WHEN char_length(trim(first_name))&lt;1 THEN NULL
+    		ELSE trim(first_name)
+    	END AS first_name,
+      CASE
+     		WHEN char_length(trim(last_name))&lt;1 THEN NULL
+     		ELSE trim(last_name)
+     	END AS last_name,
     	CASE
     		WHEN char_length(trim(description))&lt;10 THEN NULL
     		ELSE description

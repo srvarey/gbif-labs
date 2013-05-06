@@ -1,5 +1,6 @@
 {
-  "name":"Tim Robertson",
+  "firstName":"Tim",
+  "lastName":"Robertson",
   "type":"PROGRAMMER",
   "primary":true,
   "description":"About 175cm, geeky, scruffy...",

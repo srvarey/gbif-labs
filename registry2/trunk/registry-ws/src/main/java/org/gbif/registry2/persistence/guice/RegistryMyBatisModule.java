@@ -13,6 +13,7 @@
 package org.gbif.registry2.persistence.guice;
 
 import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.registry2.Citation;
 import org.gbif.api.model.registry2.Comment;
 import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.Dataset;
@@ -128,6 +129,7 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
       addAlias("Dataset").to(Dataset.class);
       addAlias("Network").to(Network.class);
 
+      addAlias("Citation").to(Citation.class);
       addAlias("Contact").to(Contact.class);
       addAlias("Endpoint").to(Endpoint.class);
       addAlias("MachineTag").to(MachineTag.class);

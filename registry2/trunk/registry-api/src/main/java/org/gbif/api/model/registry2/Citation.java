@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gbif.api.model.registry2.eml;
+package org.gbif.api.model.registry2;
 
 import java.io.Serializable;
+
+import javax.annotation.Nullable;
+import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 
@@ -28,7 +31,12 @@ public class Citation implements Serializable {
 
   private static final long serialVersionUID = 5587531070690709593L;
 
+  @Nullable
+  @Size(min = 10)
   private String text;
+
+  @Nullable
+  @Size(min = 1, max = 100)
   private String identifier;
 
   public Citation() {
@@ -57,18 +65,11 @@ public class Citation implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
+    if (obj instanceof Citation) {
+      Citation that = (Citation) obj;
+      return Objects.equal(this.text, that.text) && Objects.equal(this.identifier, that.identifier);
     }
-    if (!(obj instanceof Citation)) {
-      return false;
-    }
-    if (!super.equals(obj)) {
-      return false;
-    }
-
-    Citation that = (Citation) obj;
-    return Objects.equal(this.text, that.text) && Objects.equal(this.identifier, that.identifier);
+    return false;
   }
 
   @Override
@@ -79,7 +80,6 @@ public class Citation implements Serializable {
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-      .add("super", super.toString())
       .add("text", text)
       .add("identifier", identifier)
       .toString();

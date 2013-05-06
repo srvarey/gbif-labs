@@ -12,10 +12,20 @@
  */
 package org.gbif.api.service.registry2;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
+
+import java.util.UUID;
+import javax.annotation.Nullable;
 
 public interface DatasetService
   extends NetworkEntityService<Dataset>, ContactService, EndpointService, MachineTagService, TagService,
   IdentifierService, CommentService {
+
+  /**
+   * List all datasets belonging to a given network.
+   */
+  PagingResponse<Dataset> listNetwork(UUID networkKey, @Nullable Pageable page);
 
 }

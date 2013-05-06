@@ -50,6 +50,10 @@ public class SamplingDescription implements Serializable {
     this.methodSteps = methodSteps;
   }
 
+  public void addMethodStep(String methodStep) {
+    this.methodSteps.add(methodStep);
+  }
+
   public String getQualityControl() {
     return qualityControl;
   }
@@ -72,16 +76,6 @@ public class SamplingDescription implements Serializable {
 
   public void setStudyExtent(String studyExtent) {
     this.studyExtent = studyExtent;
-  }
-
-  /**
-   * Add methodStep to MethodStep List.
-   */
-  public void addMethodStep(String methodStep) {
-    if (methodSteps == null) {
-      methodSteps = Lists.newArrayList();
-    }
-    methodSteps.add(methodStep);
   }
 
   @Override

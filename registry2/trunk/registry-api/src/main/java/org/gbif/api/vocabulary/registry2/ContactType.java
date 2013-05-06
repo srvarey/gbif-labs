@@ -19,6 +19,8 @@ import org.gbif.api.util.VocabularyUtils;
 
 /**
  * Enumeration for all contact types.
+ * See vocabulary used by the IPT:
+ * http://rs.gbif.org/vocabulary/gbif/agent_role.xml
  */
 public enum ContactType {
 
