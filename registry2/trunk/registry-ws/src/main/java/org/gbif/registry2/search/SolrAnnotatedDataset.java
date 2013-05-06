@@ -24,7 +24,6 @@ import org.apache.solr.client.solrj.beans.Field;
  */
 @SearchMapping(
   facets = {
-    @FacetField(name = "NETWORK_ORIGIN", field = "network_of_origin_key", sort = FacetField.SortOrder.INDEX),
     @FacetField(name = "TYPE", field = "dataset_type", sort = FacetField.SortOrder.INDEX),
     @FacetField(name = "SUBTYPE", field = "dataset_subtype", sort = FacetField.SortOrder.INDEX),
     @FacetField(name = "KEYWORD", field = "keyword"),
@@ -99,11 +98,6 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
   @Field("keyword")
   public void setKeywords(List<String> keywords) {
     super.setKeywords(keywords);
-  }
-
-  @Field("network_of_origin_key")
-  public void setNetworkOfOriginKey(String networkOfOriginKey) {
-    setNetworkOfOriginKey(UUID.fromString(networkOfOriginKey));
   }
 
   @Field("owning_organization_key")

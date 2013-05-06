@@ -80,6 +80,10 @@ public class DatasetSearchRequest extends FacetedSearchRequest<DatasetSearchPara
     addParameter(DatasetSearchParameter.KEYWORD, keyword.toString());
   }
 
+  public void addNetworkOfOriginFilter(UUID networkOfOriginKey) {
+    addParameter(DatasetSearchParameter.NETWORK_ORIGIN, networkOfOriginKey.toString());
+  }
+
   public void addOwningOrgFilter(UUID orgKey) {
     addParameter(DatasetSearchParameter.OWNING_ORG, orgKey.toString());
   }
