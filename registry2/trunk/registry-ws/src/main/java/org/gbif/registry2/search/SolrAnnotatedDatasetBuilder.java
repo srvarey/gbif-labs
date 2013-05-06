@@ -41,7 +41,6 @@ class SolrAnnotatedDatasetBuilder {
     sad.setSubtype(d.getSubtype());
     // Cannot be done until the Dataset object is fleshed out
     sad.setCountryCoverage(d.getCountryCoverage());
-    sad.setNetworkOfOriginKey(d.getNetworkOfOriginKey());
     List<String> kw = Lists.newArrayList();
     for (Tag t : d.getTags()) {
       kw.add(t.getValue());
