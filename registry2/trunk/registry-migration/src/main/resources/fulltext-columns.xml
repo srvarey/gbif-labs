@@ -147,7 +147,8 @@
       $$
         BEGIN
           NEW.fulltext_search := 
-            TO_TSVECTOR('pg_catalog.english', COALESCE(NEW.name,'')) ||
+            TO_TSVECTOR('pg_catalog.english', COALESCE(NEW.first_name,'')) ||
+            TO_TSVECTOR('pg_catalog.english', COALESCE(NEW.last_name,'')) ||
             TO_TSVECTOR('pg_catalog.english', COALESCE(NEW.description,'')) ||
             TO_TSVECTOR('pg_catalog.english', COALESCE(NEW.position,'')) ||
             TO_TSVECTOR('pg_catalog.english', COALESCE(NEW.email,'')) ||
