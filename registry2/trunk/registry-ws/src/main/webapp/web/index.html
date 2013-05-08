@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" ng-app="app" style="height:100%">
+  <head>
+    <meta charset="utf-8">
+    <title>Registry</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-ui-states.min.js"></script>
+    <script src="lib/angular-resource.min.js"></script>
+    
+    <!--
+    
+    <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/jquery-1.8.3.min.js"></script>
+    <script src="lib/underscore-min.js"></script>
+    <script src="lib/moment.min.js"></script>
+    -->
+    
+    <script src="app/app.js"></script>
+    <script src="app/search/search.js"></script>
+    <script src="app/node/node.js"></script>
+    <script src="app/node/nodeResource.js"></script>
+    
+    
+  </head>
+  <body>
+    <div class="container">
+      <div ng-include="'header.tpl.html'"></div>
+      <!--div ng-include="'notifications.tpl.html'" class="container-fluid" ng-show="notifications.getCurrent().length"></div-->
+      <div ui-view class="container"></div>
+  </body>
+</html>
