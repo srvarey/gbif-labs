@@ -34,8 +34,12 @@ angular.module('node', ['ngResource', 'resources.node'])
   $scope.edit = function (node) {
     $state.transitionTo('node.edit', { nodeKey: node.key }); 
   }
+
+  $scope.save = function (node) {
+    $state.transitionTo('node.edit', { nodeKey: node.key }); 
+  }
   
-  $scope.cancel = function (node) {
+  $scope.cancelEdit = function (node) {
     $state.transitionTo('node.detail', { nodeKey: node.key }); 
   }
 });

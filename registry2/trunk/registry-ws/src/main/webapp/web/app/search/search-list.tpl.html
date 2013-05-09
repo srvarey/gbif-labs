@@ -1,12 +1,44 @@
-<div class="row">
-  <div class="span4">
-    <ul>
-      <li>Nodes</li>
-      <li>Organizations</li>
-    </ul>
+<div class="span4">
+
+  <ul class="nav side-nav nav-tabs nav-stacked">
+    <li><a href="#">Organizations <span ng-show="organizations">({{organizations.count}})</span> <i class="icon-chevron-right"></i></a></li>
+    <li><a href="#">Datasets <span ng-show="datasets">({{datasets.count}})</span> <i class="icon-chevron-right"></i></a></li>
+    <li><a href="#">Installations <span ng-show="installations">({{installations.count}})</span> <i class="icon-chevron-right"></i></a></li>
+    <li class="active"><a href="#">Nodes <span ng-show="nodes">({{nodes.count}})</span> <i class="icon-chevron-right"></i></a></li>
+  </ul>
+
+</div>
+<div class="span8">
+  <div class="content">
+
+{{nodes.count}} results matching <strong><em>{{q}}</em></strong>
+
+<div class="btn-group pull-right">
+      <a class="btn dropdown-toggle">
+        <i class="search-toggle"></i>
+      </a>
+      <ul class="dropdown-menu">
+          <li><a>Most recently modified first</a></li>
+          <li><a>Most recently created first</a></li>
+          <li><a>Alphabetically ordered by title</a></li>
+      </ul>
   </div>
-  <div class="span8">
-    Query: {{q}} <br/>
-    <a href="" ng-click="viewNode('03e816b3-8f58-49ae-bc12-4e18b358d6d9')">example node</a>
+  <br/><br/> 
+  <h4>Nodes</h4> 
+<hr/>
+    
+<ul class="unstyled list-hover">
+<div data-ng-repeat="node in nodes.results">
+<li ng-click="viewNode(node)">
+  <strong><a href="">{{node.title}}</a></strong> <span class="muted"><small>a {{node.participationStatus | lowercase}} {{node.type | lowercase}} participant</small></span> <span class="muted pull-right"><small>Edited {{node.modified | timeAgo}}</small></span><br/>
+   {{node.description}}<br/>
+   <span class="muted"><small>Created {{node.created | timeAgo}} by {{node.creator || "anonymous"}}</small></span>
+</li>
+</div>
+</ul>
+<ul class="pager">
+  <li><a href="#">Load more results</a></li>
+</ul>    
+
   </div>
 </div>
