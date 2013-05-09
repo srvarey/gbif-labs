@@ -23,22 +23,32 @@ angular.module('search', ['resources.node'])
   
   $http.get('../organization?q=' + $scope.q).success(function(data) { 
     $scope.organizations = data;
+    $scope.organizationsLabel = 'organization'.pluralize(data.count);
   });
   $http.get('../dataset?q=' + $scope.q).success(function(data) { 
     $scope.datasets = data;
+    $scope.datasetsLabel = "dataset".pluralize(data.count);
   });
   $http.get('../installation?q=' + $scope.q).success(function(data) { 
     $scope.installations = data;
+    $scope.installationsLabel = "installation".pluralize(data.count);
   });
   $http.get('../node?q=' + $scope.q).success(function(data) { 
     $scope.nodes = data;
+    $scope.nodesLabel = "node".pluralize(data.count);
   });
   
   // rewrite the query param just for display
   if ($scope.q==null || $scope.q.length==0) $scope.q="*";
   
-  $scope.viewNode = function (node) {
-    $location.path('/node/'+ node.key);
+  $scope.viewItem = function (item, type) {
+    $location.path('/' + type + '/'+ item.key);
+  }
+  
+  // for changing the type of results, d'uh
+  $scope.type = "organization"; // default for the first one
+  $scope.setType = function (t) {
+    $scope.type=t;
   }
 })
 
@@ -52,3 +62,10 @@ angular.module('search', ['resources.node'])
   };    
 });
 
+// Simple pluralizer
+String.prototype.pluralize = function(count, plural) {
+  if (plural == null)
+    plural = this + 's';
+  // adding '' to stop it adding "..." by default
+  return (count == 1 ? this + '' : plural) 
+}
