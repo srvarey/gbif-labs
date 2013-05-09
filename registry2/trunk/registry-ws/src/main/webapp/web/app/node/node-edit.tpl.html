@@ -1,2 +1,32 @@
-{{node.title}} <br/>
-I am editing a node <a href="" ng-click="cancel(node)">cancel</a>
+<h4>Overview</h4>
+<p class="muted">This information appears on the node profile, organization pages, search results, and beyond.</p>
+<hr/>
+<form id="nodeEdit" novalidate class="form-horizontal">
+  <fieldset class="control-group">
+    <div class="alert alert-error" ng-show="errorMessage!=null">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Error!</strong><p>{{errorMessage}}</p>
+    </div>
+    <label class="control-label" for="title">Title</label>
+    <div class="controls">
+      <input id="title" maxlength="255" type="text" name="title" ng-model="node.title" value="{{node.title}}">
+      <p class="muted"><small>Enter an accurate node title as it is used in many key places.</small></p>
+    </div>      
+      
+    <label class="control-label" for="description">Description</label>
+    <div class="controls">
+      <textarea name="description id="description" ng-model="node.description" value="{{node.description}}"></textarea>
+      <p class="muted"><small>Provide a meaningful description of the node, so a user will understand what the node is.</small></p>
+    </div>
+
+      
+    <div class="form-actions">
+      <button class="btn primary-btn" ng-click="cancelEdit(node)">Cancel</button>
+      <button class="btn primary-btn" ng-click="save(node)" type="submit">Save changes</button>
+    </div>            
+    <div class="form-actions">
+      <small><a href="">Delete this node</a></small>
+      <p><small class="muted">A deletion may be reverted at a later date</small></p>
+    </div>            
+  </fieldset>
+</form>
