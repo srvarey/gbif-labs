@@ -21,16 +21,16 @@ angular.module('search', ['resources.node'])
   $scope.q = $location.search().q;
   if ($scope.q==null) $scope.q="";
   
-  $http.get('/organization?q=' + $scope.q).success(function(data) { 
+  $http.get('../organization?q=' + $scope.q).success(function(data) { 
     $scope.organizations = data;
   });
-  $http.get('/dataset?q=' + $scope.q).success(function(data) { 
+  $http.get('../dataset?q=' + $scope.q).success(function(data) { 
     $scope.datasets = data;
   });
-  $http.get('/installation?q=' + $scope.q).success(function(data) { 
+  $http.get('../installation?q=' + $scope.q).success(function(data) { 
     $scope.installations = data;
   });
-  $http.get('/node?q=' + $scope.q).success(function(data) { 
+  $http.get('../node?q=' + $scope.q).success(function(data) { 
     $scope.nodes = data;
   });
   
