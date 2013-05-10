@@ -12,8 +12,8 @@
           CASE a.category WHEN 20000 THEN 'DIGIR_INSTALLATION' WHEN 20010 THEN 'TAPIR_INSTALLATION' WHEN 20020 THEN 'BIOCASE_INSTALLATION' WHEN 20030 THEN 'IPT_INSTALLATION' WHEN 20040 THEN 'HTTP_INSTALLATION' END AS type,
           a.name AS title,
           CASE WHEN char_length(trim(a.description))&lt;10 THEN null ELSE a.description END AS description,
-          a.created,
-          a.modified,
+          COALESCE(a.created, a.modified, now()) AS created,
+          COALESCE(a.modified, a.created, now()) AS modified,
           a.deleted,
           'ADMIN' AS created_by,
           'ADMIN' AS modified_by     
