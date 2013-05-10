@@ -13,8 +13,8 @@
         END AS type,
         url,
         CASE WHEN char_length(trim(description))&lt;10 THEN null ELSE description END AS description,
-        created,
-        modified,
+        COALESCE(created, modified, now()) AS created,
+        COALESCE(modified, created, now()) AS modified,
         'ADMIN' AS created_by,
         'ADMIN' AS modified_by     
         FROM service
