@@ -24,8 +24,8 @@
           CASE WHEN char_length(trim(ep.citation_identifier))&lt;1 THEN null ELSE ep.citation_identifier END AS citation_identifier,
           CASE WHEN char_length(trim(ep.rights))&lt;1 THEN null ELSE ep.rights END AS rights,
           CASE WHEN a.admin_override IS NULL THEN FALSE ELSE a.admin_override END AS locked_for_auto_update,
-          CASE WHEN a.created IS NULL THEN now() ELSE a.created END AS created,
-          CASE WHEN a.modified IS NULL THEN now() ELSE a.modified END AS modified,
+          COALESCE(a.created, a.modified, now()) AS created,
+          COALESCE(a.modified, a.created, now()) AS modified,
           a.deleted,
           'ADMIN' AS created_by,
           'ADMIN' AS modified_by
