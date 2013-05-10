@@ -40,8 +40,8 @@
     			WHEN char_length(trim(zip))&lt;1 THEN NULL
     			ELSE zip
     		END AS postal_code,
-    		created,
-    		modified,
+            COALESCE(created, modified, now()) AS created,
+            COALESCE(modified, created, now()) AS modified,
     		deleted
     	FROM agent WHERE type = 14080 OR uuid = '7ddf754f-d193-4cc9-b351-99906754a03b'
     		
