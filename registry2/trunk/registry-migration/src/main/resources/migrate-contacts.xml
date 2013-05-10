@@ -50,14 +50,8 @@
     		ELSE country
     	END AS country,
     	NULL AS postal_code,	<!-- hardcoded value. Column usage is uncertain -->
-    	CASE 
-    		WHEN created IS NULL THEN NOW()
-    		ELSE created
-    	END AS created,
-    	CASE
-    		WHEN modified IS NULL THEN NOW()
-    		ELSE modified
-    	END AS modified
+		COALESCE(created, modified, now()) AS created,
+        COALESCE(modified, created, now()) AS modified
     FROM contact WHERE deleted IS NULL  	
     		 
     <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
