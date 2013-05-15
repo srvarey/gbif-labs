@@ -27,7 +27,6 @@ import org.gbif.registry2.persistence.mapper.OrganizationMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 
 import java.util.UUID;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -82,5 +81,4 @@ public class OrganizationResource extends BaseNetworkEntityResource3<Organizatio
   public PagingResponse<Dataset> ownedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
     return new PagingResponse<Dataset>(page, null, datasetMapper.listDatasetsOwnedBy(organizationKey, page));
   }
-
 }

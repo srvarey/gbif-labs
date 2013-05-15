@@ -30,7 +30,6 @@ public class Metadata {
   private Integer key;
   private UUID datasetKey;
   private MetadataType type;
-  private String version;
   private String content;
 
   private String createdBy;
@@ -63,16 +62,6 @@ public class Metadata {
 
   public void setType(MetadataType type) {
     this.type = type;
-  }
-
-  @NotNull
-  @Size(min = 1, max = 50)
-  public String getVersion() {
-    return version;
-  }
-
-  public void setVersion(String version) {
-    this.version = version;
   }
 
   @NotNull
@@ -125,7 +114,7 @@ public class Metadata {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(key, datasetKey, type, version, content, createdBy, modifiedBy, created, modified);
+    return Objects.hashCode(key, datasetKey, type, content, createdBy, modifiedBy, created, modified);
   }
 
   @Override
@@ -135,7 +124,6 @@ public class Metadata {
       return Objects.equal(this.key, that.key)
              && Objects.equal(this.datasetKey, that.datasetKey)
              && Objects.equal(this.type, that.type)
-             && Objects.equal(this.version, that.version)
              && Objects.equal(this.content, that.content)
              && Objects.equal(this.createdBy, that.createdBy)
              && Objects.equal(this.modifiedBy, that.modifiedBy)
@@ -151,7 +139,6 @@ public class Metadata {
       .add("key", key)
       .add("datasetKey", datasetKey)
       .add("type", type)
-      .add("version", version)
       .add("content", content)
       .add("createdBy", createdBy)
       .add("modifiedBy", modifiedBy)

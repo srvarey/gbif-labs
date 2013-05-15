@@ -46,4 +46,5 @@ public class RegistryWsServletListener extends GbifServletListener {
       new RegistrySearchModule(props)
       );
   }
+
 }

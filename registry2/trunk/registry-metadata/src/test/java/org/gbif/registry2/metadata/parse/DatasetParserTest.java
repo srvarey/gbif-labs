@@ -97,7 +97,7 @@ public class DatasetParserTest {
       }
     }
     return null;
-  };
+  }
 
   private void assertIdentifierExists(Dataset d, String id, IdentifierType type) {
     for (Identifier i : d.getIdentifiers()) {
@@ -121,8 +121,7 @@ public class DatasetParserTest {
 
   @Test
   public void testDcParsing() throws Exception {
-    Dataset dataset = DatasetParser.parse(MetadataType.DC, new Dataset(),
-      FileUtils.classpathStream("dc/worms_dc.xml"));
+    Dataset dataset = DatasetParser.parse(MetadataType.DC, FileUtils.classpathStream("dc/worms_dc.xml"));
 
     Calendar cal = Calendar.getInstance();
     cal.clear();
@@ -153,8 +152,7 @@ public class DatasetParserTest {
   @Test
   public void testEmlParsing() {
     try {
-      Dataset dataset = DatasetParser.parse(MetadataType.EML, new Dataset(),
-        FileUtils.classpathStream("eml/sample.xml"));
+      Dataset dataset = DatasetParser.parse(MetadataType.EML, FileUtils.classpathStream("eml/sample.xml"));
 
       Calendar cal = Calendar.getInstance();
       cal.clear();
@@ -418,16 +416,14 @@ public class DatasetParserTest {
   @Test
   public void testEmlParsingBreaking() throws IOException {
     // throws a ConversionException/Throwable that is caught - but build still returns the dataset populated partially
-    Dataset dataset = DatasetParser.parse(MetadataType.EML, new Dataset(),
-      FileUtils.classpathStream("eml/sample-breaking.xml"));
+    Dataset dataset = DatasetParser.parse(MetadataType.EML, FileUtils.classpathStream("eml/sample-breaking.xml"));
     assertEquals("Estimates of walleye abundance for Oneida\n" + "      Lake, NY (1957-2008)", dataset.getTitle());
   }
 
   @Test
   public void testEmlParsingBreakingOnURLConversion() throws IOException {
     // Gracefully handles ConversionException/Throwable during conversion of URLs, and fully populates the dataset
-    Dataset dataset = DatasetParser.parse(MetadataType.EML, new Dataset(),
-      FileUtils.classpathStream("eml/sample-breaking2.xml"));
+    Dataset dataset = DatasetParser.parse(MetadataType.EML, FileUtils.classpathStream("eml/sample-breaking2.xml"));
     assertEquals("WII Herbarium Dataset", dataset.getTitle());
     assertEquals(buildURI("http://www.wii.gov.in"), dataset.getHomepage());
   }

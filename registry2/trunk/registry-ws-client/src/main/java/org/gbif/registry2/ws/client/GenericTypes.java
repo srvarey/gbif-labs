@@ -23,6 +23,7 @@ import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
+import org.gbif.api.model.registry2.Metadata;
 import org.gbif.api.model.registry2.Network;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
@@ -63,6 +64,10 @@ class GenericTypes {
   public static final GenericType<List<Comment>> LIST_COMMENT = new GenericType<List<Comment>>() {
   };
   public static final GenericType<List<Country>> LIST_COUNTRY = new GenericType<List<Country>>() {
+  };
+  public static final GenericType<List<Metadata>> LIST_METADATA = new GenericType<List<Metadata>>() {
+  };
+  public static final GenericType<Metadata> METADATA = new GenericType<Metadata>() {
   };
 
   private GenericTypes() {

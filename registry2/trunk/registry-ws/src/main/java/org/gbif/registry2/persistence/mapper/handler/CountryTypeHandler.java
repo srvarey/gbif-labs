@@ -30,7 +30,7 @@ public class CountryTypeHandler implements TypeHandler<Country> {
 
   @Override
   public void setParameter(PreparedStatement ps, int i, Country parameter, JdbcType jdbcType) throws SQLException {
-    ps.setObject(i, parameter.getIso2LetterCode(), Types.CHAR);
+    ps.setObject(i, parameter == null ? null : parameter.getIso2LetterCode(), Types.CHAR);
   }
 
   @Override

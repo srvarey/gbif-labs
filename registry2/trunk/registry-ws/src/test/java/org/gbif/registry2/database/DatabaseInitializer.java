@@ -55,7 +55,7 @@ public class DatabaseInitializer extends ExternalResource {
         "dataset, dataset_contact, dataset_endpoint, dataset_machine_tag, dataset_tag, " +
         "dataset_identifier, dataset_comment, " +
         "network, network_contact, network_endpoint, network_machine_tag, network_tag, network_comment, " +
-        "contact, endpoint, machine_tag, tag, identifier, comment CASCADE");
+        "contact, endpoint, machine_tag, tag, identifier, comment, metadata CASCADE");
     } catch (SQLException e) {
       Throwables.propagate(e);
     } finally {

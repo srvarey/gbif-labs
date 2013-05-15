@@ -118,8 +118,6 @@
 			stored="true" required="false" />
 		<field name="dataset_title_ngram" type="text_auto_ngram"
 			indexed="true" stored="true" required="false" />
-		<field name="network_of_origin_key" type="lowercase" indexed="true"
-			stored="true" required="false" />
 		<field name="dataset_type" type="string" indexed="true" stored="true"
 			required="false" />
 		<field name="dataset_subtype" type="string" indexed="true"

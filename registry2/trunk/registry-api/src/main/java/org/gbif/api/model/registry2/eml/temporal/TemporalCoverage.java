@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 package org.gbif.api.model.registry2.eml.temporal;
-
-
 import org.gbif.api.model.registry2.eml.Keywords;
+
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 /**
  * The base of all types of temporal coverages.
  */
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.NAME,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = "@type"
+)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = DateRange.class, name = "range"),
+  @JsonSubTypes.Type(value = SingleDate.class, name = "single"),
+  @JsonSubTypes.Type(value = VerbatimTimePeriod.class, name = "verbatim")
+})
 public abstract class TemporalCoverage implements Keywords {
 
 }
