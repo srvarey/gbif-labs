@@ -4,8 +4,6 @@ import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -35,8 +33,7 @@ public class DatasetParser {
   private static final Logger LOG = LoggerFactory.getLogger(DatasetParser.class);
 
   private static class ParserDetectionHandler extends DefaultHandler {
-    private final String EML_DATASET = "/eml/dataset";
-    private final String DC_NAMESPACE = "http://purl.org/dc/terms/";
+    private static final String DC_NAMESPACE = "http://purl.org/dc/terms/";
     private MetadataType parserType;
     private LinkedList<String> path = Lists.newLinkedList();
 
@@ -93,59 +90,14 @@ public class DatasetParser {
    * @throws java.io.IOException If the Stream cannot be read from
    * @throws IllegalArgumentException If the XML is not well formed or is not understood
    */
-  public static Dataset build(InputStream xml, Dataset dataset) throws IOException {
+  public static Dataset build(InputStream xml) throws IOException {
     // buffer entire stream first. We need it several times
     final byte[] data = ByteStreams.toByteArray(xml);
     // detect the parser type
-    return parse(detectParserType(new ByteArrayInputStream(data)), dataset, new ByteArrayInputStream(data));
-  };
-
-  /**
-   * @param xml To read
-   * @return The Dataset populated, never null
-   * @throws java.io.IOException If the Stream cannot be read from
-   * @throws IllegalArgumentException If the XML is not well formed or is not understood
-   */
-  public static Dataset build(InputStream xml) throws IOException {
-    return build(xml, new Dataset());
+    return parse(detectParserType(new ByteArrayInputStream(data)), new ByteArrayInputStream(data));
   }
 
-  /**
-   * Builds a new Dataset populating its fields from a source metadata that's parsed.
-   *
-   * @param file to metadata file to parse
-   * @return The Dataset populated, never null
-   * @throws java.io.IOException If the Stream cannot be read from
-   * @throws IllegalArgumentException If the XML is not well formed or is not understood
-   */
-  public static Dataset build(File file) throws IOException {
-    InputStream stream = new FileInputStream(file);
-    try {
-      return build(stream);
-    } finally {
-      Closeables.closeQuietly(stream);
-    }
-  }
-
-  /**
-   * Build from file on-top of a preexisting Dataset populating its fields from a source metadata that's parsed.
-   *
-   * @param file metadata file to parse
-   * @param dataset to build on top of
-   * @return The Dataset populated, never null
-   * @throws java.io.IOException If the Stream cannot be read from
-   * @throws IllegalArgumentException If the XML is not well formed or is not understood
-   */
-  public static Dataset build(File file, Dataset dataset) throws IOException {
-    InputStream stream = new FileInputStream(file);
-    try {
-      return build(stream, dataset);
-    } finally {
-      Closeables.closeQuietly(stream);
-    }
-  }
-
-  public static Dataset parse(MetadataType type, Dataset dataset, InputStream xml) throws IOException{
+  public static Dataset parse(MetadataType type, InputStream xml) throws IOException{
     if (type == null) {
       throw new IllegalArgumentException("No parser found for this metadata document. Only EML or DC supported");
     }
@@ -166,7 +118,7 @@ public class DatasetParser {
     }
 
     // push the Delegating object onto the stack
-    DatasetWrapper delegator = new DatasetWrapper(dataset, false);
+    DatasetWrapper delegator = new DatasetWrapper();
     digester.push(delegator);
 
     // now parse and return the dataset

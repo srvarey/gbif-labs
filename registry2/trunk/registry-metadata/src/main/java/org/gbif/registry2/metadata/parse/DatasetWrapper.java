@@ -35,12 +35,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,19 +49,7 @@ import org.slf4j.LoggerFactory;
 public class DatasetWrapper {
 
   private static final Logger LOG = LoggerFactory.getLogger(DatasetWrapper.class);
-  private final Dataset target;
-  private final boolean override;
-
-  /**
-   * Requires the wrapped object and the instruction as to whether it should be overriden or not.
-   *
-   * @param target   to use, if null a new instance will be created
-   * @param override whether existing values should be overriden or not
-   */
-  public DatasetWrapper(@Nullable Dataset target, boolean override) {
-    this.target = target != null ? target : new Dataset();
-    this.override = override;
-  }
+  private final Dataset target = new Dataset();
 
   /**
    * Utility to parse an EML calendarDate in a textual format. Can be ISO date or just the year, ignoring whitespace
@@ -104,11 +90,7 @@ public class DatasetWrapper {
   }
 
   public void addCollection(Collection collection) {
-    if (target.getCollections() == null) {
-      target.setCollections(Lists.newArrayList(collection));
-    } else {
-      target.getCollections().add(collection);
-    }
+    target.getCollections().add(collection);
   }
 
   /**
@@ -117,11 +99,7 @@ public class DatasetWrapper {
    * @param contact Contact
    */
   public void addContact(Contact contact) {
-    if (target.getContacts() == null) {
-      target.setContacts(Lists.newArrayList(contact));
-    } else {
-      target.getContacts().add(contact);
-    }
+    target.getContacts().add(contact);
   }
 
   /**
@@ -131,10 +109,8 @@ public class DatasetWrapper {
    * @param curatorialUnit curatorial unit
    */
   public void addCuratorial(CuratorialUnitComposite curatorialUnit) {
-    // make sure all container exist
-    if (target.getCollections() == null) {
-      target.setCollections(Lists.<Collection>newArrayList(new Collection()));
-    } else if (target.getCollections().isEmpty()) {
+    // make sure a collection exists
+    if (target.getCollections().isEmpty()) {
       target.getCollections().add(new Collection());
     }
     // add
@@ -142,35 +118,19 @@ public class DatasetWrapper {
   }
 
   public void addDataDescription(DataDescription dataDescription) {
-    if (target.getDataDescriptions() == null) {
-      target.setDataDescriptions(Lists.newArrayList(dataDescription));
-    } else {
-      target.getDataDescriptions().add(dataDescription);
-    }
+    target.getDataDescriptions().add(dataDescription);
   }
 
   public void addGeographicCoverage(GeospatialCoverage coverage) {
-    if (target.getGeographicCoverages() == null) {
-      target.setGeographicCoverages(Lists.newArrayList(coverage));
-    } else {
-      target.getGeographicCoverages().add(coverage);
-    }
+    target.getGeographicCoverages().add(coverage);
   }
 
   public void addIdentifier(Identifier identifier) {
-    if (target.getIdentifiers() == null) {
-      target.setIdentifiers(Lists.newArrayList(identifier));
-    } else {
-      target.getIdentifiers().add(identifier);
-    }
+    target.getIdentifiers().add(identifier);
   }
 
   public void addKeywordCollection(KeywordCollection collection) {
-    if (target.getKeywordCollections() == null) {
-      target.setKeywordCollections(Lists.newArrayList(collection));
-    } else {
-      target.getKeywordCollections().add(collection);
-    }
+    target.getKeywordCollections().add(collection);
   }
 
   /**
@@ -436,16 +396,12 @@ public class DatasetWrapper {
     target.setSubtype(subtype);
   }
 
-
   public void setTaxonomicCoverages(List<TaxonomicCoverages> taxonomicCoverages) {
     target.setTaxonomicCoverages(taxonomicCoverages);
   }
 
   public void setTechnicalInstallationKey(UUID technicalInstallationKey) {
-    // Override or use first non null
-    UUID o = override ? technicalInstallationKey : Objects.firstNonNull(target.getInstallationKey(),
-      technicalInstallationKey);
-    target.setInstallationKey(o);
+    target.setInstallationKey(technicalInstallationKey);
   }
 
   public void setTemporalCoverages(List<TemporalCoverage> temporalCoverages) {
@@ -453,8 +409,8 @@ public class DatasetWrapper {
   }
 
   public void setTitle(String title) {
-    String o = override ? title : Objects.firstNonNull(target.getTitle(), title);
-    target.setTitle(o);
+    // keep first true title in case we encounter several - just to be safe with this important property
+    target.setTitle(Objects.firstNonNull(target.getTitle(), title));
   }
 
   public void setType(DatasetType type) {

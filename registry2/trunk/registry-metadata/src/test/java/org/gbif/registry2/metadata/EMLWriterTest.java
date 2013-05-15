@@ -13,7 +13,7 @@ public class EMLWriterTest {
 
   @Test
   public void testWrite() throws Exception {
-    Dataset d = DatasetParser.build(FileUtils.classpathStream("eml/sample.xml"), new Dataset());
+    Dataset d = DatasetParser.build(FileUtils.classpathStream("eml/sample.xml"));
     d.setKey(UUID.randomUUID());
     StringWriter writer = new StringWriter();
     EMLWriter.write(d, writer);
@@ -21,7 +21,7 @@ public class EMLWriterTest {
 
   @Test
   public void testWriteNullContact() throws Exception {
-    Dataset d = DatasetParser.build(FileUtils.classpathStream("eml/sample.xml"), new Dataset());
+    Dataset d = DatasetParser.build(FileUtils.classpathStream("eml/sample.xml"));
     d.setKey(UUID.randomUUID());
     d.getContacts().clear();
     StringWriter writer = new StringWriter();
@@ -30,7 +30,7 @@ public class EMLWriterTest {
 
   @Test
   public void testWriteDC() throws Exception {
-    Dataset d = DatasetParser.build(FileUtils.classpathStream("dc/worms_dc.xml"), new Dataset());
+    Dataset d = DatasetParser.build(FileUtils.classpathStream("dc/worms_dc.xml"));
     d.setKey(UUID.randomUUID());
     StringWriter writer = new StringWriter();
     EMLWriter.write(d, writer);

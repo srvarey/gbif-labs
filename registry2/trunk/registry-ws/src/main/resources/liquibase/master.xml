@@ -9,5 +9,6 @@
   <include file="liquibase/003-dataset-index.xml"/>
   <include file="liquibase/004-fulltext-search.xml"/>
   <include file="liquibase/005-contact.xml"/>
+  <include file="liquibase/006-metadata.xml"/>
 
 </databaseChangeLog>

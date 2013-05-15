@@ -20,14 +20,22 @@ import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
+import org.gbif.api.model.registry2.Metadata;
 import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.DatasetService;
+import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
+import org.gbif.ws.client.QueryParamBuilder;
+import org.gbif.ws.util.InputStreamUtils;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
+import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
@@ -168,6 +176,40 @@ public class DatasetWsClient extends BaseWsGetClient<Dataset, UUID> implements D
 
   @Override
   public PagingResponse<Dataset> search(String query, Pageable page) {
-    return get(GenericTypes.PAGING_DATASET, (Locale) null, Params.of("q", query), page);
+    return get(GenericTypes.PAGING_DATASET, (Locale) null, QueryParamBuilder.create("q", query).build(), page);
+  }
+
+
+  @Override
+  public InputStream getMetadataDocument(UUID datasetKey) {
+    return InputStreamUtils.wrapStream(getResource(datasetKey.toString(), "document"));
+  }
+
+  @Override
+  public Metadata insertMetadata(UUID datasetKey, InputStream document) {
+    return getResource(datasetKey.toString(), "document")
+      .type(MediaType.APPLICATION_XML)
+      .entity(document)
+      .post(Metadata.class);
+  }
+
+  @Override
+  public List<Metadata> listMetadata(UUID datasetKey, @Nullable MetadataType type) {
+    return get(GenericTypes.LIST_METADATA, QueryParamBuilder.create("type", type).build(), datasetKey.toString(), "metadata");
+  }
+
+  @Override
+  public Metadata getMetadata(int metadataKey) {
+    return get(GenericTypes.METADATA, "metadata", String.valueOf(metadataKey));
+  }
+
+  @Override
+  public InputStream getMetadataDocument(int metadataKey) {
+    return InputStreamUtils.wrapStream(getResource("metadata", String.valueOf(metadataKey)));
+  }
+
+  @Override
+  public void deleteMetadata(int metadataKey) {
+    delete(String.valueOf(metadataKey));
   }
 }

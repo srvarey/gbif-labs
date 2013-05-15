@@ -53,5 +53,4 @@ public interface DatasetMapper extends BaseNetworkEntityMapper3<Dataset> {
   List<Dataset> listDatasetsByInstallation(@Param("installationKey") UUID installationKey,
     @Nullable @Param("page") Pageable page);
 
-
 }

@@ -24,6 +24,7 @@ import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.BaseWsGetClient;
+import org.gbif.ws.client.QueryParamBuilder;
 
 import java.util.List;
 import java.util.Locale;
@@ -155,6 +156,6 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
 
   @Override
   public PagingResponse<Node> search(String query, Pageable page) {
-    return get(GenericTypes.PAGING_NODE, (Locale) null, Params.of("q", query), page);
+    return get(GenericTypes.PAGING_NODE, (Locale) null, QueryParamBuilder.create("q", query).build(), page);
   }
 }

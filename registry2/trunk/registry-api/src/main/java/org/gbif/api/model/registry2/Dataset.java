@@ -51,7 +51,6 @@ public class Dataset
   private UUID duplicateOfDatasetKey;
   private UUID installationKey;
   private UUID owningOrganizationKey;
-  private UUID networkOfOriginKey;
   private boolean external;
   private int numConstituents;
   private DatasetType type;
@@ -397,14 +396,6 @@ public class Dataset
     this.comments = comments;
   }
 
-  public UUID getNetworkOfOriginKey() {
-    return networkOfOriginKey;
-  }
-
-  public void setNetworkOfOriginKey(UUID networkOfOriginKey) {
-    this.networkOfOriginKey = networkOfOriginKey;
-  }
-
   public List<Citation> getBibliographicCitations() {
     return bibliographicCitations;
   }
@@ -572,7 +563,6 @@ public class Dataset
       tags,
       identifiers,
       comments,
-      networkOfOriginKey,
       bibliographicCitations,
       curatorialUnits,
       taxonomicCoverages,
@@ -627,7 +617,6 @@ public class Dataset
         && Objects.equal(this.tags, that.tags)
         && Objects.equal(this.identifiers, that.identifiers)
         && Objects.equal(this.comments, that.comments)
-        && Objects.equal(this.networkOfOriginKey, that.networkOfOriginKey)
         && Objects.equal(this.bibliographicCitations, that.bibliographicCitations)
         && Objects.equal(this.curatorialUnits, that.curatorialUnits)
         && Objects.equal(this.taxonomicCoverages, that.taxonomicCoverages)
@@ -681,7 +670,6 @@ public class Dataset
       .add("tags", tags)
       .add("identifiers", identifiers)
       .add("comments", comments)
-      .add("networkOfOriginKey", networkOfOriginKey)
       .add("bibliographicCitations", bibliographicCitations)
       .add("curatorialUnits", curatorialUnits)
       .add("taxonomicCoverages", taxonomicCoverages)

@@ -17,6 +17,7 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.common.search.SearchResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Installation;
+import org.gbif.api.model.registry2.Metadata;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.search.DatasetSearchParameter;
 import org.gbif.api.model.registry2.search.DatasetSearchRequest;
@@ -26,6 +27,7 @@ import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.grizzly.RegistryServer;
 import org.gbif.registry2.search.DatasetIndexUpdateListener;
 import org.gbif.registry2.search.SolrInitializer;
@@ -37,7 +39,10 @@ import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
+import org.gbif.utils.file.FileUtils;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
@@ -61,7 +66,9 @@ import static org.gbif.registry2.guice.RegistryTestModules.webservice;
 import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This is parameterized to run the same test routines for the following:
@@ -341,7 +348,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     }
   }
 
-
   @Test
   public void testCitation() {
     Dataset dataset = create(newEntity(), 1);
@@ -367,5 +373,35 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertNotNull("Citation should never be null", dRead.getCitation());
     assertEquals(identifier, dRead.getCitation().getIdentifier());
     assertEquals(text, dRead.getCitation().getText());
+  }
+
+  @Test
+  public void testMetadata() throws IOException {
+    Dataset d1 = create(newEntity(), 1);
+
+    // upload a valid EML doc
+    service.insertMetadata(d1.getKey(), FileUtils.classpathStream("metadata/sample.xml"));
+
+    // verify our dataset has changed
+    Dataset d2 = service.get(d1.getKey());
+    assertNotEquals("Dataset should have changed after metadata was uploaded", d1, d2);
+    assertEquals("Tanzanian Entomological Collection", d2.getTitle());
+    assertEquals("Created data should not change", d1.getCreated(), d2.getCreated());
+    assertTrue("Dataset modification date should change", d1.getModified().before(d2.getModified()));
+
+    // check metadata
+    List<Metadata> metadata = service.listMetadata(d1.getKey(), MetadataType.DC);
+    assertTrue("No Dublin Core uplaoded yet", metadata.isEmpty());
+
+    metadata = service.listMetadata(d1.getKey(), MetadataType.EML);
+    assertEquals("Exactly one EML uploaded", 1, metadata.size());
+    assertEquals("Wrong metadata type", MetadataType.EML, metadata.get(0).getType());
+
+    // upload subsequent DC document which has less priority than the previous EML doc
+    service.insertMetadata(d1.getKey(), FileUtils.classpathStream("metadata/worms_dc.xml"));
+    // verify our dataset has not changed
+    Dataset d3 = service.get(d1.getKey());
+    assertEquals("Tanzanian Entomological Collection", d3.getTitle());
+    assertEquals("Created data should not change", d1.getCreated(), d3.getCreated());
   }
 }
