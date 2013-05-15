@@ -19,6 +19,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -141,8 +142,11 @@ public class OldHFileOutputFormat extends FileOutputFormat<ImmutableBytesWritabl
         Path familydir = new Path(outputdir, Bytes.toString(family));
         String compression = compressionMap.get(family);
         compression = compression == null ? defaultCompression : compression;
-        wl.writer =
-          new HFile.Writer(fs, StoreFile.getUniqueFile(fs, familydir), blocksize, compression, KeyValue.KEY_COMPARATOR);
+        //        wl.writer =
+        //          new HFile.Writer(fs, StoreFile.getUniqueFile(fs, familydir), blocksize, compression, KeyValue.KEY_COMPARATOR);
+        HFile.WriterFactory writerFactory = HFile.getWriterFactoryNoCache(HBaseConfiguration.create());
+        wl.writer = writerFactory.withPath(fs, StoreFile.getUniqueFile(fs, familydir)).withBlockSize(blocksize)
+          .withCompression(compression).withComparator(KeyValue.KEY_COMPARATOR).create();
         this.writers.put(family, wl);
         return wl;
       }
@@ -266,7 +270,7 @@ public class OldHFileOutputFormat extends FileOutputFormat<ImmutableBytesWritabl
     try {
       cacheUri = new URI(partitionsPath.toString() + "#" + TotalOrderPartitioner.DEFAULT_PATH);
     } catch (URISyntaxException e) {
-      throw new IOException(e);
+      throw new IOException("Oliver - Bad URI");
     }
     DistributedCache.addCacheFile(cacheUri, jobConf);
     DistributedCache.createSymlink(jobConf);
