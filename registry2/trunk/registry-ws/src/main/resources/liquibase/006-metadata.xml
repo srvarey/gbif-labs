@@ -12,7 +12,7 @@
       <!-- make dataset key non unique -->
       ALTER TABLE metadata DROP COLUMN dataset_key;
       ALTER TABLE metadata ADD COLUMN dataset_key uuid NOT NULL REFERENCES dataset(key);
-      CREATE INDEX ON metadata(dataset_key);
+      CREATE INDEX metadata_dataset_key_idx ON metadata(dataset_key);
       <!-- remove unused version -->
       ALTER TABLE metadata DROP COLUMN version;
       ALTER TABLE metadata DROP COLUMN content;
