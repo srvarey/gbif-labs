@@ -10,10 +10,37 @@
   <name>ImportAvro extension to HBase</name>
 
   <properties>
-    <hbase.version>0.90.4-cdh3u3</hbase.version>
     <avro.version>1.5.4</avro.version>
+    <!-- TODO: redirect to slf4j -->
+    <commons-logging.version>1.1.1</commons-logging.version>
+    <guava.version>11.0.2</guava.version>
+    <hadoop-core.version>2.0.0-mr1-cdh4.2.1</hadoop-core.version>
+    <hadoop-non-core.version>2.0.0-cdh4.2.1</hadoop-non-core.version>
+    <hbase.version>0.94.2-cdh4.2.1</hbase.version>
     <jackson.version>1.8.3</jackson.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>gbif-all</id>
+      <url>http://repository.gbif.org/content/groups/gbif</url>
+    </repository>
+    <repository>
+      <id>gbif-thirdparty</id>
+      <url>http://repository.gbif.org/content/repositories/thirdparty/</url>
+    </repository>
+    <repository>
+      <id>cloudera</id>
+      <url>https://repository.cloudera.com/content/repositories/releases/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
@@ -40,6 +67,21 @@
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${hadoop-non-core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-core</artifactId>
+      <version>${hadoop-core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <version>${hadoop-non-core.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase</artifactId>
       <version>${hbase.version}</version>
@@ -53,6 +95,16 @@
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-mapred</artifactId>
       <version>${avro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>${commons-logging.version}</version>
     </dependency>
   </dependencies>
 </project>

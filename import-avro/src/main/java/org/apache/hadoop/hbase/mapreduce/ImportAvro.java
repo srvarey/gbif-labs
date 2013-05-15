@@ -148,14 +148,15 @@ public class ImportAvro {
      * case is why this method exists. Only supports union with null.
      *
      * @param fieldSchema containing one or a union of multiple types
+     *
      * @return a single type
      */
     private Schema.Type typeFromAvro(Schema fieldSchema) {
       List<Schema> types = fieldSchema.getTypes();
       switch (types.size()) {
-        case 1 :
+        case 1:
           return types.get(0).getType();
-        case 2 :
+        case 2:
           Schema s1 = types.get(0);
           Schema s2 = types.get(1);
           if (s1.getType() == Schema.Type.NULL) {
@@ -165,7 +166,7 @@ public class ImportAvro {
           } else {
             throw new IllegalArgumentException("Only support union with null");
           }
-        default :
+        default:
           throw new IllegalArgumentException("Only support union with null");
       }
     }
@@ -188,7 +189,8 @@ public class ImportAvro {
   public static JobConf createSubmittableJob(JobConf jobConf, String[] args) throws IOException {
     String schemaFile = args[0];
     StringBuilder sb = new StringBuilder();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(schemaFile)), "UTF-8"));
+    BufferedReader reader =
+      new BufferedReader(new InputStreamReader(new FileInputStream(new File(schemaFile)), "UTF-8"));
     while (reader.ready()) {
       String line = reader.readLine();
       sb.append(line);
@@ -220,7 +222,8 @@ public class ImportAvro {
 
     TableMapReduceUtil.addDependencyJars(jobConf);
     TableMapReduceUtil.addDependencyJars(jobConf, org.apache.avro.mapred.AvroInputFormat.class,
-      org.apache.avro.specific.SpecificDatumReader.class, com.google.common.base.Splitter.class);
+      org.apache.avro.specific.SpecificDatumReader.class, com.google.common.base.Splitter.class,
+      org.apache.hadoop.hdfs.DistributedFileSystem.class);
 
     return jobConf;
   }

@@ -5,7 +5,7 @@
 
   <property>
     <name>mapred.job.tracker</name>
-    <value>c1n4.gbif.org:8021</value>
+    <value>c1n10.gbif.org:8021</value>
   </property>
 
   <property>
