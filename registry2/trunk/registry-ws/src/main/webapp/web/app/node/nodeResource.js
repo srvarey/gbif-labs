@@ -20,10 +20,6 @@ angular.module('resources.node').factory('Node', function ($resource, $q) {
     });
     return deferred.promise;
   };
-  
-  Node.prototype.ping = function() {
-    alert("ping");
-  };
    
   
   return Node;
