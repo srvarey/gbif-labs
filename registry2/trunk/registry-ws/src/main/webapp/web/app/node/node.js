@@ -1,4 +1,4 @@
-angular.module('node', ['ngResource', 'resources.node'])
+angular.module('node', ['ngResource', 'resources.node', 'services.notifications'])
 
 /**
  * Nested stated provider using dot notation (item.detail has a parent of item) and the 
@@ -28,7 +28,7 @@ angular.module('node', ['ngResource', 'resources.node'])
   })  
 }])
 
-.controller('NodeCtrl', function ($scope, $state, item) {
+.controller('NodeCtrl', function ($scope, $state, item, Node, notifications) {
   $scope.node = item;
 
   $scope.edit = function (node) {
@@ -36,10 +36,19 @@ angular.module('node', ['ngResource', 'resources.node'])
   }
 
   $scope.save = function (node) {
-    $state.transitionTo('node.edit', { nodeKey: node.key }); 
+    Node.save(node, 
+      function() {
+        notifications.pushForNextRoute("Node successfully updated", 'info');
+        $state.transitionTo('node.detail', { nodeKey: node.key }); 
+      },
+      function(response) {
+        notifications.pushForCurrentRoute(response.data, 'error');
+      }
+    );
   }
   
   $scope.cancelEdit = function (node) {
+    $scope.node = Node.get({ nodeKey: node.key });
     $state.transitionTo('node.detail', { nodeKey: node.key }); 
   }
 });
