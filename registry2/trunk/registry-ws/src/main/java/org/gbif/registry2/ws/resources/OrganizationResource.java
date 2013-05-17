@@ -69,14 +69,14 @@ public class OrganizationResource extends BaseNetworkEntityResource3<Organizatio
   }
 
   @GET
-  @Path("{key}/hostedDatasets")
+  @Path("{key}/hostedDataset")
   @Override
   public PagingResponse<Dataset> hostedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
     return new PagingResponse<Dataset>(page, null, datasetMapper.listDatasetsHostedBy(organizationKey, page));
   }
 
   @GET
-  @Path("{key}/ownedDatasets")
+  @Path("{key}/ownedDataset")
   @Override
   public PagingResponse<Dataset> ownedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
     return new PagingResponse<Dataset>(page, null, datasetMapper.listDatasetsOwnedBy(organizationKey, page));

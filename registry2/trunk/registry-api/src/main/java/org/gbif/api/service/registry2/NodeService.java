@@ -17,6 +17,7 @@ package org.gbif.api.service.registry2;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.vocabulary.Country;
@@ -55,5 +56,11 @@ public interface NodeService extends NetworkEntityService<Node>, MachineTagServi
    * @return list of distinct countries having a GBIF node
    */
   List<Country> listNodeCountries();
+
+  /**
+   * Provides paging service to list datasets published by organizations endorsed by the given node.
+   * @return list of datasets ordered by creation date with latest coming first
+   */
+  PagingResponse<Dataset> publishedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page);
 
 }

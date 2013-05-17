@@ -52,12 +52,12 @@ public class ContactTests {
     contacts = service.listContacts(entity.getKey());
     assertNotNull(contacts);
     assertEquals("2 contacts have been added", 2, contacts.size());
-    assertFalse("Older contact should not be primary anymore", contacts.get(0).isPrimary());
-    assertTrue("Newer contact should be primary", contacts.get(1).isPrimary());
+    assertFalse("Older contact should not be primary anymore", contacts.get(1).isPrimary());
+    assertTrue("Newer contact should be primary", contacts.get(0).isPrimary());
 
 
     // test deletion, ensuring correct one is deleted
-    service.deleteContact(entity.getKey(), contacts.get(0).getKey());
+    service.deleteContact(entity.getKey(), contacts.get(1).getKey());
     contacts = service.listContacts(entity.getKey());
     assertNotNull(contacts);
     assertEquals("1 contact should remain after the deletion", 1, contacts.size());

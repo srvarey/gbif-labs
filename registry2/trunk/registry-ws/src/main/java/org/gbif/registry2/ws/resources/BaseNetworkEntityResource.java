@@ -36,7 +36,6 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -250,4 +249,17 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
   public List<Tag> listTags(@PathParam("key") UUID taggedEntityKey, @QueryParam("owner") String owner) {
     return WithMyBatis.listTags(mapper, taggedEntityKey, owner);
   }
+
+  /**
+   * Null safe builder to construct a paging response.
+   * @param page page to create response for, can be null
+   */
+  protected static <T> PagingResponse<T> pagingResponse(@Nullable Pageable page, Long count, List<T> result) {
+    if (page == null) {
+      // use default request
+      page = new PagingRequest();
+    }
+    return new PagingResponse<T>(page, count, result);
+  }
+
 }

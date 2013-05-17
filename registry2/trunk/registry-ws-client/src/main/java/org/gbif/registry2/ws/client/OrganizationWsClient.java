@@ -171,12 +171,12 @@ public class OrganizationWsClient extends BaseWsGetClient<Organization, UUID> im
 
   @Override
   public PagingResponse<Dataset> hostedDatasets(UUID organizationKey, Pageable page) {
-    return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(organizationKey), "hostedDatasets");
+    return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(organizationKey), "hostedDataset");
   }
 
   @Override
   public PagingResponse<Dataset> ownedDatasets(UUID organizationKey, Pageable page) {
-    return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(organizationKey), "ownedDatasets");
+    return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(organizationKey), "ownedDataset");
   }
 
   @Override

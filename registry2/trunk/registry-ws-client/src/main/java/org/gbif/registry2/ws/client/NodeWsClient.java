@@ -15,6 +15,7 @@ package org.gbif.registry2.ws.client;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Comment;
+import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.Node;
@@ -29,6 +30,9 @@ import org.gbif.ws.client.QueryParamBuilder;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -152,6 +156,11 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   @Override
   public List<Country> listNodeCountries() {
     return get(GenericTypes.LIST_COUNTRY, "country");
+  }
+
+  @Override
+  public PagingResponse<Dataset> publishedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, page, nodeKey.toString(), "dataset");
   }
 
   @Override
