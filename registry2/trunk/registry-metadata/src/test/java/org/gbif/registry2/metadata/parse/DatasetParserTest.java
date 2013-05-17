@@ -388,9 +388,9 @@ public class DatasetParserTest {
       assertEquals("Where can the additional information possibly come from?!", dataset.getAdditionalInfo());
 
       // intellectual rights tests
-      assertNotNull(dataset.getIntellectualRights());
-      assertTrue(dataset.getIntellectualRights().startsWith("Owner grants"));
-      assertTrue(dataset.getIntellectualRights().endsWith("Site)."));
+      assertNotNull(dataset.getRights());
+      assertTrue(dataset.getRights().startsWith("Owner grants"));
+      assertTrue(dataset.getRights().endsWith("Site)."));
 
       // Collection
       Collection collection = dataset.getCollections().get(0);

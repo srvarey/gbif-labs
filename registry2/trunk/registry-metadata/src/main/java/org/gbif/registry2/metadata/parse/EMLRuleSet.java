@@ -130,7 +130,7 @@ public class EMLRuleSet extends RuleSetBase {
 
     digester.addBeanPropertySetter("eml/dataset/purpose/para", "purpose");
     digester.addBeanPropertySetter("eml/dataset/additionalInfo/para", "additionalInfo");
-    digester.addBeanPropertySetter("eml/dataset/intellectualRights/para", "intellectualRights");
+    digester.addBeanPropertySetter("eml/dataset/intellectualRights/para", "rights");
 
     // KeywordCollections
     addKeywordCollectionRules(digester, "eml/dataset/keywordSet", "addKeywordCollection");

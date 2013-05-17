@@ -17,10 +17,10 @@ package org.gbif.api.model.registry2.eml;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 
 
 /**
@@ -32,7 +32,7 @@ public class KeywordCollection implements Serializable, Keywords {
 
   private String thesaurus;
 
-  private Set<String> keywords = new HashSet<String>();
+  private Set<String> keywords = Sets.newHashSet();
 
   public KeywordCollection() {
   }
