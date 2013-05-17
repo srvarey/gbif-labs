@@ -15,17 +15,31 @@
  */
 package org.gbif.registry2;
 
+import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Identifier;
+import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Node;
+import org.gbif.api.model.registry2.Organization;
+import org.gbif.api.service.registry2.DatasetService;
+import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NodeService;
+import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.registry2.IdentifierType;
 import org.gbif.registry2.guice.RegistryTestModules;
+import org.gbif.registry2.utils.Datasets;
+import org.gbif.registry2.utils.Installations;
 import org.gbif.registry2.utils.Nodes;
+import org.gbif.registry2.utils.Organizations;
+import org.gbif.registry2.ws.resources.DatasetResource;
+import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.NodeResource;
+import org.gbif.registry2.ws.resources.OrganizationResource;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -51,7 +65,11 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class NodeIT extends NetworkEntityTest<Node> {
 
-  private final NodeService service;
+  private final NodeService nodeService;
+  private final OrganizationService organizationService;
+  private final InstallationService installationService;
+  private final DatasetService datasetService;
+
   private static final Map<Country, Integer> TEST_COUNTRIES = ImmutableMap.<Country, Integer>builder()
     .put(Country.AFGHANISTAN, 6)
     .put(Country.ARGENTINA, 16)
@@ -63,46 +81,56 @@ public class NodeIT extends NetworkEntityTest<Node> {
   public static Iterable<Object[]> data() {
     return ImmutableList.<Object[]>of(
                     new Object[] {
-                      RegistryTestModules.webservice().getInstance(NodeResource.class)
+                      RegistryTestModules.webservice().getInstance(NodeResource.class),
+                      RegistryTestModules.webservice().getInstance(OrganizationResource.class),
+                      RegistryTestModules.webservice().getInstance(InstallationResource.class),
+                      RegistryTestModules.webservice().getInstance(DatasetResource.class)
                     },
                     new Object[] {
-                      RegistryTestModules.webserviceClient().getInstance(NodeService.class)
+                      RegistryTestModules.webserviceClient().getInstance(NodeService.class),
+                      RegistryTestModules.webserviceClient().getInstance(OrganizationService.class),
+                      RegistryTestModules.webserviceClient().getInstance(InstallationService.class),
+                      RegistryTestModules.webserviceClient().getInstance(DatasetService.class)
                     });
   }
 
-  public NodeIT(NodeService service) {
-    super(service);
-    this.service = service;
+  public NodeIT(NodeService nodeService, OrganizationService organizationService,
+    InstallationService installationService, DatasetService datasetService) {
+    super(nodeService);
+    this.nodeService = nodeService;
+    this.organizationService = organizationService;
+    this.installationService = installationService;
+    this.datasetService = datasetService;
   }
 
   @Test
   public void testMachineTags() {
     Node node = create(newEntity(), 1);
-    MachineTagTests.testAddDelete(service, node);
+    MachineTagTests.testAddDelete(nodeService, node);
   }
 
   @Test
   public void testTags() {
     Node node = create(newEntity(), 1);
-    TagTests.testAddDelete(service, node);
+    TagTests.testAddDelete(nodeService, node);
     node = create(newEntity(), 2);
-    TagTests.testTagErroneousDelete(service, node);
+    TagTests.testTagErroneousDelete(nodeService, node);
   }
 
   @Test
   public void testComments() {
     Node node = create(newEntity(), 1);
-    CommentTests.testAddDelete(service, node);
+    CommentTests.testAddDelete(nodeService, node);
   }
 
   @Test
   public void testGetByCountry() {
     initCountryNodes();
-    Node n = service.getByCountry(Country.ANGOLA);
+    Node n = nodeService.getByCountry(Country.ANGOLA);
     assertNull(n);
 
     for (Country c : TEST_COUNTRIES.keySet()) {
-      n = service.getByCountry(c);
+      n = nodeService.getByCountry(c);
       assertEquals(c, n.getCountry());
     }
   }
@@ -121,7 +149,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
       id.setType(IdentifierType.GBIF_PARTICIPANT);
       id.setIdentifier(TEST_COUNTRIES.get(c).toString());
       id.setCreatedBy("NodeIT");
-      service.addIdentifier(n.getKey(), id);
+      nodeService.addIdentifier(n.getKey(), id);
     }
   }
 
@@ -146,7 +174,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
   @Test
   public void testCountries() {
     initCountryNodes();
-    List<Country> countries = service.listNodeCountries();
+    List<Country> countries = nodeService.listNodeCountries();
     assertEquals(TEST_COUNTRIES.size(), countries.size());
     for (Country c : countries) {
       assertTrue("Unexpected node country" + c, TEST_COUNTRIES.containsKey(c));
@@ -156,20 +184,48 @@ public class NodeIT extends NetworkEntityTest<Node> {
   @Test
   public void testIdentifiers() {
     Node node = create(newEntity(), 1);
-    IdentifierTests.testAddDelete(service, node);
+    IdentifierTests.testAddDelete(nodeService, node);
   }
+
+  @Test
+  public void testDatasets() {
+    // endorsing node for the organization
+    Node node = create(newEntity(), 1);
+    // owning organization (required field)
+    Organization o = Organizations.newInstance(node.getKey());
+    o.setEndorsementApproved(true);
+    o.setEndorsingNodeKey(node.getKey());
+    UUID organizationKey = organizationService.create(o);
+    // hosting technical installation (required field)
+    Installation i = Installations.newInstance(organizationKey);
+    UUID installationKey = installationService.create(i);
+    // 2 datasets
+    Dataset d1 = Datasets.newInstance(organizationKey);
+    d1.setInstallationKey(installationKey);
+    datasetService.create(d1);
+    Dataset d2 = Datasets.newInstance(organizationKey);
+    d2.setInstallationKey(installationKey);
+    UUID d2Key = datasetService.create(d2);
+
+    // test node service
+    PagingResponse<Dataset> resp = nodeService.publishedDatasets(node.getKey(), null);
+    assertEquals(2, resp.getResults().size());
+    // the last created dataset should be the first in the list
+    assertEquals(d2Key, resp.getResults().get(0).getKey());
+  }
+
 
   @Test
   @Ignore("A manual test requiring a local filemaker IMS copy")
   public void testIms() throws Exception {
     initCountryNodes();
-    Node es = service.getByCountry(Country.SPAIN);
+    Node es = nodeService.getByCountry(Country.SPAIN);
     assertEquals("Madrid", es.getCity());
     assertEquals("28014", es.getPostalCode());
     assertNotNull(es.getAddress());
     assertTrue(es.getContacts().size() > 5);
 
-    Node notInIms = service.getByCountry(Country.AFGHANISTAN);
+    Node notInIms = nodeService.getByCountry(Country.AFGHANISTAN);
     assertNotNull(notInIms);
   }
 

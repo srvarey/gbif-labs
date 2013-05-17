@@ -166,7 +166,7 @@
     SELECT <include refid="org.gbif.registry2.persistence.mapper.TagMapper.TAG_FIELDS"/>
     FROM tag INNER JOIN organization_tag ON tag_key = key
     WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}
-    ORDER BY created
+    ORDER BY created DESC
   </select>
   
   <!-- Joined delete of tag to trigger cascade delete of the join table --> 
@@ -199,7 +199,7 @@
     SELECT <include refid="org.gbif.registry2.persistence.mapper.ContactMapper.CONTACT_FIELDS"/>
     FROM contact INNER JOIN organization_contact ON contact_key = key
     WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}
-    ORDER BY created
+    ORDER BY created DESC
   </select>
   
   <!-- Joined delete of contact to trigger cascade delete of the join table --> 
@@ -223,7 +223,7 @@
     SELECT <include refid="org.gbif.registry2.persistence.mapper.EndpointMapper.ENDPOINT_FIELDS"/>
     FROM endpoint INNER JOIN organization_endpoint ON endpoint_key = key
     WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}
-    ORDER BY created
+    ORDER BY created DESC
   </select>
   
   <!-- Joined delete of endpoint to trigger cascade delete of the join table --> 
@@ -247,7 +247,7 @@
     SELECT <include refid="org.gbif.registry2.persistence.mapper.IdentifierMapper.IDENTIFIER_FIELDS"/>
     FROM identifier INNER JOIN organization_identifier ON identifier_key = key
     WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}
-    ORDER BY created
+    ORDER BY created DESC
   </select>
   
   <!-- Joined delete of identifier to trigger cascade delete of the join table --> 
@@ -295,7 +295,7 @@
     SELECT <include refid="org.gbif.registry2.persistence.mapper.CommentMapper.COMMENT_FIELDS"/>
     FROM comment INNER JOIN organization_comment ON comment_key = key
     WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}
-    ORDER BY created
+    ORDER BY created DESC
   </select>
   
   <!-- Joined delete of comment to trigger cascade delete of the join table --> 

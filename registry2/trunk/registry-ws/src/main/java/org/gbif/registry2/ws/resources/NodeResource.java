@@ -17,12 +17,14 @@ package org.gbif.registry2.ws.resources;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.ims.Augmenter;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
+import org.gbif.registry2.persistence.mapper.DatasetMapper;
 import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NodeMapper;
@@ -47,6 +49,7 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
 
   private final NodeMapper nodeMapper;
   private final OrganizationMapper organizationMapper;
+  private final DatasetMapper datasetMapper;
   private final Augmenter nodeAugmenter;
 
   @Inject
@@ -57,6 +60,7 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     OrganizationMapper organizationMapper,
+    DatasetMapper datasetMapper,
     EventBus eventBus,
     Augmenter nodeAugmenter
   ) {
@@ -64,6 +68,7 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
     this.nodeMapper = nodeMapper;
     this.organizationMapper = organizationMapper;
     this.nodeAugmenter = nodeAugmenter;
+    this.datasetMapper = datasetMapper;
   }
 
   @Nullable
@@ -113,6 +118,13 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
   @Override
   public List<Country> listNodeCountries() {
     return nodeMapper.listNodeCountries();
+  }
+
+  @GET
+  @Override
+  @Path("{key}/dataset")
+  public PagingResponse<Dataset> publishedDatasets(@PathParam("key")  UUID nodeKey, @Context Pageable page) {
+    return pagingResponse(page, null, datasetMapper.listDatasetsEndorsedBy(nodeKey, page));
   }
 
 }

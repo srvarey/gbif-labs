@@ -14,21 +14,14 @@ package org.gbif.registry2.persistence.mapper;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.registry2.Dataset;
-import org.gbif.api.model.registry2.Metadata;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
 
 public interface DatasetMapper extends BaseNetworkEntityMapper3<Dataset> {
-
-  /**
-   * Obtains the metadata associated to a single dataset.
-   */
-  Metadata getMetadata(@Param("datasetKey") UUID datasetKey);
 
   /**
    * Obtains a list of all the constituent datasets that are part of this network.
@@ -45,6 +38,12 @@ public interface DatasetMapper extends BaseNetworkEntityMapper3<Dataset> {
    * Obtains a list of all the datasets hosted by the given organization.
    */
   List<Dataset> listDatasetsHostedBy(@Param("organizationKey") UUID organizationKey,
+    @Nullable @Param("page") Pageable page);
+
+  /**
+   * Obtains a list of all the datasets owned by an organization that is endorsed by the given node.
+   */
+  List<Dataset> listDatasetsEndorsedBy(@Param("nodeKey") UUID nodeKey,
     @Nullable @Param("page") Pageable page);
 
   /**
