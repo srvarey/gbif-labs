@@ -180,8 +180,12 @@ public class DatasetWrapper {
   }
 
   public void addLicense(String license) {
-    if (!Strings.isNullOrEmpty(license) && Strings.isNullOrEmpty(target.getIntellectualRights())) {
-      target.setIntellectualRights(license);
+    if (!Strings.isNullOrEmpty(license)) {
+      if (Strings.isNullOrEmpty(target.getRights())) {
+        target.setRights(license);
+      } else {
+        target.setRights(target.getRights() + " \n" + license);
+      }
     }
   }
 
@@ -295,8 +299,8 @@ public class DatasetWrapper {
     target.setIdentifiers(identifiers);
   }
 
-  public void setIntellectualRights(String rights) {
-    target.setIntellectualRights(rights);
+  public void setRights(String rights) {
+    target.setRights(rights);
   }
 
   public void setCountryCoverage(Set<Country> countryCoverage) {

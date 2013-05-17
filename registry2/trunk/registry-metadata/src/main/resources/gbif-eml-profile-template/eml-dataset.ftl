@@ -121,9 +121,9 @@
   </additionalInfo>
   </#if>
 <#-- A statement of the intellectual property rights associated with the resource. -->
-  <#if dataset.intellectualRights?has_content>
+  <#if dataset.rights?has_content>
   <intellectualRights>
-    <para>${dataset.intellectualRights}</para>
+    <para>${dataset.rights}</para>
   </intellectualRights>
   </#if>
   <#if dataset.homepage?has_content>
