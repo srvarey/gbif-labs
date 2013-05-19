@@ -8,9 +8,9 @@
   <ul class="nav side-nav nav-tabs nav-stacked">
     <li class="active"><a href="" ng-click="transitionTo('detail')">Overview <i class="icon-chevron-right"></i></a></li>
     <li><a href="" ng-click="transitionTo('identifier')">Identifiers ({{counts.identifier}}) <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Tags ({{node.tags.length}}) <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Machine tags ({{node.machineTags.length}}) <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Comments ({{node.comments.length}}) <i class="icon-chevron-right"></i></a></li>
+    <li><a href="" ng-click="transitionTo('tag')">Tags ({{counts.tag}}) <i class="icon-chevron-right"></i></a></li>
+    <li><a href="#">Machine tags ({{counts.machineTag}}) <i class="icon-chevron-right"></i></a></li>
+    <li><a href="#">Comments ({{counts.comment}}) <i class="icon-chevron-right"></i></a></li>
     <li><a href="#" class="alert-error"><i class="icon-warning-sign"></i> Pending endorsements (1)<i class="icon-chevron-right"></i></a></li>
     <li><a href="#">Endorsed organisations (3) <i class="icon-chevron-right"></i></a></li>
     <li><a href="#">Endorsed datasets (323) <i class="icon-chevron-right"></i></a></li>
