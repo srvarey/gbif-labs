@@ -1,4 +1,5 @@
-angular.module('node', ['ngResource', 'resources.node', 'services.notifications', 'identifier', 'tag'])
+angular.module('node', ['ngResource', 'resources.node', 'services.notifications', 
+  'identifier', 'tag', 'machinetag'])
 
 /**
  * Nested stated provider using dot notation (item.detail has a parent of item) and the 
@@ -36,17 +37,21 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
     templateUrl: 'app/common/tag-list.tpl.html',
     controller: "TagCtrl",  
   })
+  .state('node.machinetag', {  
+    url: '/machineTag',   
+    templateUrl: 'app/common/machinetag-list.tpl.html',
+    controller: "MachinetagCtrl",  
+  })
 }])
 
 .controller('NodeCtrl', function ($scope, $state, $resource, item, Node, notifications) {
   $scope.node = item;
-  //$scope.identifiers = $scope.node.identifiers;
   
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
     identifier : $scope.node.identifiers.length,
     tag : $scope.node.tags.length,
-    machineTag : $scope.node.machineTags.length,
+    machinetag : $scope.node.machineTags.length,
     comment : $scope.node.comments.length
   };
 	
