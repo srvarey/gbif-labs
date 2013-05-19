@@ -1,0 +1,45 @@
+angular.module('tag', ['services.notifications'])
+
+.controller('TagCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
+  var Tag = $resource('../:type/:key/tag/:tagKey', {
+    type : $stateParams.type,
+    key : $stateParams.key,  
+    tagKey : '@id'}
+  );
+  
+  // loads the tags, and updates the scope
+  var refreshScope = function() {
+    Tag.query(function(data) {
+      $scope.tags = data;
+      $scope.counts.tag = data.length; // update parent counts
+    });
+  }
+  
+  refreshScope();
+
+  $scope.save = function(item) {
+    item.createdBy = "TODO: security for tag.js";
+    Tag.save(item.value, // it is just a string push
+      function() {
+        notifications.pushForCurrentRoute("Tag successfully updated", 'info');
+        refreshScope();
+        $scope.editing = false; // close the form
+      },
+      function(response) {
+        notifications.pushForCurrentRoute(response.data, 'error');
+      });  
+  }
+  
+  $scope.delete = function(tag) {
+    Tag.delete({tagKey : tag.key},
+      function() {
+        notifications.pushForCurrentRoute("Tag successfully deleted", 'info');
+        refreshScope();
+        $scope.editing = false; // close the form
+      },
+      function(response) {
+        notifications.pushForCurrentRoute(response.data, 'error');
+      });  
+  
+  }
+});

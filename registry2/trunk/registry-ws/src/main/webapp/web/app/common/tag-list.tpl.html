@@ -1,0 +1,19 @@
+<h4>Tags</h4> 
+
+<a href="" ng-click="editing = true">create new</a>
+<form ng-show="editing" novalidate class="form-horizontal">
+  <input maxlength="255" type="text" ng-model="tag.value">
+  <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
+  <button class="btn primary-btn" ng-click="save(tag)" type="submit">Save</button><br/>
+</form>
+
+<hr/>    
+<ul class="unstyled list-hover" ng-ctrl="TagCtrl">
+  <div data-ng-repeat="tag in tags">
+    <li>
+      <strong><a href="">{{tag.value}}</a></strong> <br/>
+      <span class="muted"><small>Created {{tag.created | timeAgo}} by {{tag.createdBy || "anonymous"}}</small></span>
+      <small><a ng-click="delete(tag)" class="pull-right" href="">Delete this tag</a></small>
+    </li>
+   </div>
+ </ul>

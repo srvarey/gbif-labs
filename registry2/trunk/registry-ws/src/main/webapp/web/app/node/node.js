@@ -1,4 +1,4 @@
-angular.module('node', ['ngResource', 'resources.node', 'services.notifications', 'identifier'])
+angular.module('node', ['ngResource', 'resources.node', 'services.notifications', 'identifier', 'tag'])
 
 /**
  * Nested stated provider using dot notation (item.detail has a parent of item) and the 
@@ -28,8 +28,13 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
   })  
   .state('node.identifier', {  
     url: '/identifier',   
-    templateUrl: 'app/identifier/identifier-list.tpl.html',
+    templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
+  })
+  .state('node.tag', {  
+    url: '/tag',   
+    templateUrl: 'app/common/tag-list.tpl.html',
+    controller: "TagCtrl",  
   })
 }])
 
@@ -42,7 +47,7 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
     identifier : $scope.node.identifiers.length,
     tag : $scope.node.tags.length,
     machineTag : $scope.node.machineTags.length,
-    comments : $scope.node.comments.length
+    comment : $scope.node.comments.length
   };
 	
 	// transitions to a new view, correctly setting up the path

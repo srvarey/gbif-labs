@@ -1,4 +1,3 @@
-// A reusable directive for identifiers
 angular.module('identifier', ['services.notifications'])
 
 .controller('IdentifierCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
