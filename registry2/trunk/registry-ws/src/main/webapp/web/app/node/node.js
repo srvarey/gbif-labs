@@ -54,10 +54,11 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
   
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
-    identifier : $scope.node.identifiers.length,
-    tag : $scope.node.tags.length,
-    machinetag : $scope.node.machineTags.length,
-    comment : $scope.node.comments.length
+    // collesce with || and use _ for sizing
+    identifier : _.size($scope.node.identifiers || {}), 
+    tag : _.size($scope.node.tags || {}),
+    machinetag : _.size($scope.node.machineTags || {}),
+    comment : _.size($scope.node.comments || {})
   };
 	
 	// transitions to a new view, correctly setting up the path
