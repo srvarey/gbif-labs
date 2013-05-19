@@ -22,7 +22,7 @@
 <ul class="unstyled list-hover" ng-ctrl="ContactCtrl">
   <div data-ng-repeat="comment in comments">
     <li>
-      <strong>{{comment.content}}</strong> </br/>
+      {{comment.content}} </br/>
       <span class="muted"><small>Created {{comment.created | timeAgo}} by {{comment.createdBy || "anonymous"}}</small></span>
       <small><a ng-click="delete(comment)" class="pull-right" href="">Delete this comment</a></small>
     </li>
