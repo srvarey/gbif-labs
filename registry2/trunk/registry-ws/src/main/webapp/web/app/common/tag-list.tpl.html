@@ -2,9 +2,18 @@
 
 <a href="" ng-click="editing = true">create new</a>
 <form ng-show="editing" novalidate class="form-horizontal">
-  <input maxlength="255" type="text" ng-model="tag.value">
-  <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
-  <button class="btn primary-btn" ng-click="save(tag)" type="submit">Save</button><br/>
+  <fieldset ng-show="editing" novalidate class="control-group">
+    <label class="control-label" for="value">Value</label>
+    <div class="controls">
+      <input maxlength="255" name="value" type="text" ng-model="tag.value">
+      <p class="muted"><small>The value for the tag (e.g. <em>Arthropod pitfall trap</em>).</small></p>
+    </div>
+    
+    <div class="form-actions">
+      <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
+      <button class="btn primary-btn" ng-click="save(tag)" type="submit">Save</button>
+    </div>            
+  </fieldset>
 </form>
 
 <hr/>    

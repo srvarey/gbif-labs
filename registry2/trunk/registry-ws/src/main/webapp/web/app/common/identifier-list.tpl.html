@@ -2,10 +2,26 @@
 
 <a href="" ng-click="editing = true">create new</a>
 <form ng-show="editing" novalidate class="form-horizontal">
-  <input maxlength="255" type="text" ng-model="identifier.identifier">
-  <select ng-model="identifier.type" ng-options="t for t in types"></select>  
-  <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
-  <button class="btn primary-btn" ng-click="save(identifier)" type="submit">Save</button><br/>
+  <fieldset ng-show="editing" novalidate class="control-group">
+    <label class="control-label" for="identifier">Identifier</label>
+    <div class="controls">
+      <input maxlength="255" name="value" type="text" ng-model="identifier.identifier">
+      <p class="muted"><small>The value for the identifier (e.g. <em>doi://12.123/123</em>).</small></p>
+    </div>
+    
+    <label class="control-label" for="type">Type</label>
+    <div class="controls">
+      <select ng-model="identifier.type" ng-options="t for t in types"></select>
+      <p class="muted"><small>Select the type of the identifier.</small></p>
+    </div>
+    
+    <div class="form-actions">
+      <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
+      <button class="btn primary-btn" ng-click="save(tag)" type="submit">Save</button>
+    </div>            
+  </fieldset>
+  
+  
 </form>
 
 <hr/>    
