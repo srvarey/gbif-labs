@@ -1,4 +1,4 @@
-angular.module('node', ['ngResource', 'resources.node', 'services.notifications'])
+angular.module('node', ['ngResource', 'resources.node', 'services.notifications', 'identifier'])
 
 /**
  * Nested stated provider using dot notation (item.detail has a parent of item) and the 
@@ -7,14 +7,14 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams, Node) {
   $stateProvider.state('node', {
-    url: '/node/{nodeKey}',
+    url: '/{type}/{key}',  // {type} to provide context to things like identifier 
     abstract: true, 
     templateUrl: 'app/node/node-main.tpl.html',
     controller: 'NodeCtrl',
     // resolve to lookup synchronously first, thus handling errors if not found
     resolve: {
       item: function(Node, $state, $stateParams) {
-        return Node.getSync($stateParams.nodeKey);          
+        return Node.getSync($stateParams.key);          
       }          
     }
   })
@@ -26,20 +26,35 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
     url: '/edit',
     templateUrl: 'app/node/node-edit.tpl.html',
   })  
+  .state('node.identifier', {  
+    url: '/identifier',   
+    templateUrl: 'app/identifier/identifier-list.tpl.html',
+    controller: "IdentifierCtrl",  
+  })
 }])
 
-.controller('NodeCtrl', function ($scope, $state, item, Node, notifications) {
+.controller('NodeCtrl', function ($scope, $state, $resource, item, Node, notifications) {
   $scope.node = item;
-
-  $scope.edit = function (node) {
-    $state.transitionTo('node.edit', { nodeKey: node.key }); 
+  //$scope.identifiers = $scope.node.identifiers;
+  
+  // To enable the nested views update the counts, for the side bar
+  $scope.counts = {
+    identifier : $scope.node.identifiers.length,
+    tag : $scope.node.tags.length,
+    machineTag : $scope.node.machineTags.length,
+    comments : $scope.node.comments.length
+  };
+	
+	// transitions to a new view, correctly setting up the path
+  $scope.transitionTo = function (target) {
+    $state.transitionTo('node.' + target, { key: item.key, type: "node" }); 
   }
-
-  $scope.save = function (node) {
+	
+	$scope.save = function (node) {
     Node.save(node, 
       function() {
         notifications.pushForNextRoute("Node successfully updated", 'info');
-        $state.transitionTo('node.detail', { nodeKey: node.key }); 
+        $scope.transitionTo("detail");
       },
       function(response) {
         notifications.pushForCurrentRoute(response.data, 'error');
@@ -47,8 +62,8 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
     );
   }
   
-  $scope.cancelEdit = function (node) {
-    $scope.node = Node.get({ nodeKey: node.key });
-    $state.transitionTo('node.detail', { nodeKey: node.key }); 
+  $scope.cancelEdit = function () {
+    $scope.node = Node.get({ key: item.key });
+    $scope.transitionTo("detail");
   }
 });

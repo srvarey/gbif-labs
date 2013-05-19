@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +26,7 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -53,7 +51,7 @@ import org.mybatis.guice.transactional.Transactional;
  * <li>MachineTag operations</li>
  * <li>Tag operations</li>
  * </ul>
- *
+ * 
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
@@ -81,9 +79,11 @@ public class BaseNetworkEntityResource4<T extends NetworkEntity> extends BaseNet
     return WithMyBatis.addIdentifier(identifierMapper, mapper, targetEntityKey, identifier);
   }
 
+  // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}/identifier/{identifierKey}")
   @Override
+  @Consumes({MediaType.WILDCARD})
   public void deleteIdentifier(@PathParam("key") UUID targetEntityKey, @PathParam("identifierKey") int identifierKey) {
     WithMyBatis.deleteIdentifier(mapper, targetEntityKey, identifierKey);
   }

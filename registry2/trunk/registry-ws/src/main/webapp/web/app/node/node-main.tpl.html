@@ -6,9 +6,8 @@
   </div>
   
   <ul class="nav side-nav nav-tabs nav-stacked">
-    <li class="active"><a href="#">Overview <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Contacts ({{node.contacts.length}}) <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Identifiers ({{node.identifiers.length}}) <i class="icon-chevron-right"></i></a></li>
+    <li class="active"><a href="" ng-click="transitionTo('detail')">Overview <i class="icon-chevron-right"></i></a></li>
+    <li><a href="" ng-click="transitionTo('identifier')">Identifiers ({{counts.identifier}}) <i class="icon-chevron-right"></i></a></li>
     <li><a href="#">Tags ({{node.tags.length}}) <i class="icon-chevron-right"></i></a></li>
     <li><a href="#">Machine tags ({{node.machineTags.length}}) <i class="icon-chevron-right"></i></a></li>
     <li><a href="#">Comments ({{node.comments.length}}) <i class="icon-chevron-right"></i></a></li>

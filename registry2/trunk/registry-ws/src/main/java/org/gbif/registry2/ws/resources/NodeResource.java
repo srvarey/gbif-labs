@@ -30,6 +30,7 @@ import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NodeMapper;
 import org.gbif.registry2.persistence.mapper.OrganizationMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
+import org.gbif.ws.server.interceptor.NullToNotFound;
 
 import java.util.List;
 import java.util.UUID;
@@ -72,6 +73,7 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
   }
 
   @Nullable
+  @NullToNotFound
   @Override
   public Node get(UUID key) {
     return nodeAugmenter.augment(super.get(key));

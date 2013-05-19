@@ -36,6 +36,7 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -105,10 +106,12 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     return entity.getKey();
   }
 
+  // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}")
   @Transactional
   @Override
+  @Consumes({MediaType.WILDCARD})
   public void delete(@PathParam("key") UUID key) {
     T objectToDelete = get(key);
     if (objectToDelete == null || objectToDelete.getDeleted() != null) {
@@ -191,9 +194,11 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     return WithMyBatis.addComment(commentMapper, mapper, targetEntityKey, comment);
   }
 
+  // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}/comment/{commentKey}")
   @Override
+  @Consumes({MediaType.WILDCARD})
   public void deleteComment(@NotNull @PathParam("key") UUID targetEntityKey, @PathParam("commentKey") int commentKey) {
     WithMyBatis.deleteComment(mapper, targetEntityKey, commentKey);
   }
@@ -214,9 +219,11 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     return WithMyBatis.addMachineTag(machineTagMapper, mapper, targetEntityKey, machineTag);
   }
 
+  // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}/machinetag/{machinetagKey}")
   @Override
+  @Consumes({MediaType.WILDCARD})
   public void deleteMachineTag(@PathParam("key") UUID targetEntityKey, @PathParam("machinetagKey") int machineTagKey) {
     WithMyBatis.deleteMachineTag(mapper, targetEntityKey, machineTagKey);
   }
@@ -236,9 +243,11 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     return WithMyBatis.addTag(tagMapper, mapper, targetEntityKey, value);
   }
 
+  // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}/tag/{tagKey}")
   @Override
+  @Consumes({MediaType.WILDCARD})
   public void deleteTag(@PathParam("key") UUID taggedEntityKey, @PathParam("tagKey") int tagKey) {
     WithMyBatis.deleteTag(mapper, taggedEntityKey, tagKey);
   }
@@ -252,6 +261,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
 
   /**
    * Null safe builder to construct a paging response.
+   * 
    * @param page page to create response for, can be null
    */
   protected static <T> PagingResponse<T> pagingResponse(@Nullable Pageable page, Long count, List<T> result) {

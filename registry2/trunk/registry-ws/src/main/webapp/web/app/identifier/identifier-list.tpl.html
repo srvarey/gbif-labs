@@ -1,0 +1,20 @@
+<h4>Identifiers</h4> 
+
+<a href="" ng-click="editing = true">create new</a>
+<form ng-show="editing" novalidate class="form-horizontal">
+  <input maxlength="255" type="text" ng-model="identifier.identifier">
+  <select ng-model="identifier.type" ng-options="t for t in types"></select>  
+  <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
+  <button class="btn primary-btn" ng-click="save(identifier)" type="submit">Save</button><br/>
+</form>
+
+<hr/>    
+<ul class="unstyled list-hover" ng-ctrl="IdentifierCtrl">
+  <div data-ng-repeat="identifier in identifiers">
+    <li>
+      <strong><a href="">{{identifier.identifier}}</a></strong> <span class="muted"><small>{{identifier.type | lowercase}}</small></span><br/>
+      <span class="muted"><small>Created {{identifier.created | timeAgo}} by {{identifier.creator || "anonymous"}}</small></span>
+      <small><a ng-click="delete(identifier)" class="pull-right" href="">Delete this identifier</a></small>
+    </li>
+   </div>
+ </ul>
