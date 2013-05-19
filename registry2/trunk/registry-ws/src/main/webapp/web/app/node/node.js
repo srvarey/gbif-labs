@@ -1,5 +1,5 @@
 angular.module('node', ['ngResource', 'resources.node', 'services.notifications', 
-  'identifier', 'tag', 'machinetag'])
+  'identifier', 'tag', 'machinetag', 'comment'])
 
 /**
  * Nested stated provider using dot notation (item.detail has a parent of item) and the 
@@ -41,6 +41,11 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
     url: '/machineTag',   
     templateUrl: 'app/common/machinetag-list.tpl.html',
     controller: "MachinetagCtrl",  
+  })
+  .state('node.comment', {  
+    url: '/comment',   
+    templateUrl: 'app/common/comment-list.tpl.html',
+    controller: "CommentCtrl",  
   })
 }])
 
