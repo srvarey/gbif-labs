@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +29,7 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -57,7 +55,7 @@ import org.mybatis.guice.transactional.Transactional;
  * <li>MachineTag operations</li>
  * <li>Tag operations</li>
  * </ul>
- *
+ * 
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
@@ -77,8 +75,7 @@ public class BaseNetworkEntityResource2<T extends NetworkEntity> extends BaseNet
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     Class<T> objectClass,
-    EventBus eventBus
-  ) {
+    EventBus eventBus) {
     super(mapper, commentMapper, machineTagMapper, tagMapper, objectClass, eventBus);
     this.mapper = mapper;
     this.contactMapper = contactMapper;
@@ -94,9 +91,11 @@ public class BaseNetworkEntityResource2<T extends NetworkEntity> extends BaseNet
     return WithMyBatis.addContact(contactMapper, mapper, targetEntityKey, contact);
   }
 
+  // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}/contact/{contactKey}")
   @Override
+  @Consumes({MediaType.WILDCARD})
   public void deleteContact(@PathParam("key") UUID targetEntityKey, @PathParam("contactKey") int contactKey) {
     WithMyBatis.deleteContact(mapper, targetEntityKey, contactKey);
   }
@@ -117,9 +116,11 @@ public class BaseNetworkEntityResource2<T extends NetworkEntity> extends BaseNet
     return WithMyBatis.addEndpoint(endpointMapper, mapper, targetEntityKey, endpoint);
   }
 
+  // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}/endpoint/{endpointKey}")
   @Override
+  @Consumes({MediaType.WILDCARD})
   public void deleteEndpoint(@PathParam("key") UUID targetEntityKey, @PathParam("endpointKey") int endpointKey) {
     WithMyBatis.deleteEndpoint(mapper, targetEntityKey, endpointKey);
   }
