@@ -232,6 +232,7 @@ public class Dataset
     this.duplicateOfDatasetKey = duplicateOfDatasetKey;
   }
 
+  @NotNull
   public UUID getInstallationKey() {
     return installationKey;
   }

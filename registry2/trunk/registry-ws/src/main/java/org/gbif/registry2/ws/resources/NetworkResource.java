@@ -20,6 +20,7 @@ import org.gbif.api.service.registry2.NetworkService;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
 import org.gbif.registry2.persistence.mapper.ContactMapper;
 import org.gbif.registry2.persistence.mapper.EndpointMapper;
+import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NetworkMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
@@ -35,13 +36,14 @@ import com.google.inject.Singleton;
  */
 @Path("network")
 @Singleton
-public class NetworkResource extends BaseNetworkEntityResource2<Network> implements NetworkService {
+public class NetworkResource extends BaseNetworkEntityResource<Network> implements NetworkService {
 
   @Inject
   public NetworkResource(
     NetworkMapper networkMapper,
     ContactMapper contactMapper,
     EndpointMapper endpointMapper,
+    IdentifierMapper identifierMapper,
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     CommentMapper commentMapper,
@@ -51,6 +53,7 @@ public class NetworkResource extends BaseNetworkEntityResource2<Network> impleme
           commentMapper,
           contactMapper,
           endpointMapper,
+          identifierMapper,
           machineTagMapper,
           tagMapper,
           Network.class,

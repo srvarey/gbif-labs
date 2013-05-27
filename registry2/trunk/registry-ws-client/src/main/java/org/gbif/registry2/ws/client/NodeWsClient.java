@@ -14,128 +14,29 @@ package org.gbif.registry2.ws.client;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
-import org.gbif.api.model.registry2.Comment;
 import org.gbif.api.model.registry2.Dataset;
-import org.gbif.api.model.registry2.Identifier;
-import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
-import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.ws.client.guice.RegistryWs;
-import org.gbif.ws.client.BaseWsGetClient;
-import org.gbif.ws.client.QueryParamBuilder;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
 
 /**
  * Client-side implementation to the NodeService.
  */
-public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeService {
+public class NodeWsClient extends BaseNetworkEntityClient<Node> implements NodeService {
 
   @Inject
   public NodeWsClient(@RegistryWs WebResource resource) {
-    super(Node.class, resource.path("node"), null);
-  }
-
-  @Override
-  public UUID create(Node entity) {
-    return post(UUID.class, entity, "/");
-  }
-
-  @Override
-  public void delete(UUID key) {
-    delete(key.toString());
-  }
-
-  @Override
-  public PagingResponse<Node> list(Pageable page) {
-    return get(GenericTypes.PAGING_NODE, null, null, page);
-  }
-
-  @Override
-  public void update(Node entity) {
-    Preconditions.checkArgument(entity.getKey() != null, "An entity must have a key to be updated");
-    put(entity, entity.getKey().toString());
-  }
-
-  @Override
-  public Node get(UUID key) {
-    return get(key.toString());
-  }
-
-  @Override
-  public int addTag(UUID targetEntityKey, String value) {
-    // post the value to .../uuid/tag and expect an int back
-    return post(Integer.class, (Object) value, targetEntityKey.toString(), "tag");
-  }
-
-  @Override
-  public void deleteTag(UUID taggedEntityKey, int tagKey) {
-    delete(taggedEntityKey.toString(), "tag", String.valueOf(tagKey));
-  }
-
-  @Override
-  public List<Tag> listTags(UUID taggedEntityKey, String owner) {
-    return get(GenericTypes.LIST_TAG, null, null, // TODO add owner here
-      (Pageable) null, taggedEntityKey.toString(), "tag");
-  }
-
-  @Override
-  public int addMachineTag(UUID targetEntityKey, MachineTag machineTag) {
-    return post(Integer.class, machineTag, targetEntityKey.toString(), "machinetag");
-  }
-
-  @Override
-  public void deleteMachineTag(UUID targetEntityKey, int machineTagKey) {
-    delete(targetEntityKey.toString(), "machinetag", String.valueOf(machineTagKey));
-  }
-
-  @Override
-  public List<MachineTag> listMachineTags(UUID targetEntityKey) {
-    return get(GenericTypes.LIST_MACHINETAG, null, null, (Pageable) null, targetEntityKey.toString(), "machinetag");
-  }
-
-  @Override
-  public int addIdentifier(UUID targetEntityKey, Identifier identifier) {
-    return post(Integer.class, identifier, targetEntityKey.toString(), "identifier");
-  }
-
-  @Override
-  public void deleteIdentifier(UUID targetEntityKey, int identifierKey) {
-    delete(targetEntityKey.toString(), "identifier", String.valueOf(identifierKey));
-  }
-
-  @Override
-  public List<Identifier> listIdentifiers(UUID targetEntityKey) {
-    return get(GenericTypes.LIST_IDENTIFIER, null, null,
-      // TODO: identifier type?
-      (Pageable) null, targetEntityKey.toString(), "identifier");
-  }
-
-  @Override
-  public int addComment(UUID targetEntityKey, Comment comment) {
-    return post(Integer.class, comment, targetEntityKey.toString(), "comment");
-  }
-
-  @Override
-  public void deleteComment(UUID targetEntityKey, int commentKey) {
-    delete(targetEntityKey.toString(), "comment", String.valueOf(commentKey));
-  }
-
-  @Override
-  public List<Comment> listComments(UUID targetEntityKey) {
-    return get(GenericTypes.LIST_COMMENT, null, null, (Pageable) null, targetEntityKey.toString(), "comment");
+    super(Node.class, resource.path("node"), null, GenericTypes.PAGING_NODE);
   }
 
   @Override
@@ -161,10 +62,5 @@ public class NodeWsClient extends BaseWsGetClient<Node, UUID> implements NodeSer
   @Override
   public PagingResponse<Dataset> publishedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page) {
     return get(GenericTypes.PAGING_DATASET, page, nodeKey.toString(), "dataset");
-  }
-
-  @Override
-  public PagingResponse<Node> search(String query, Pageable page) {
-    return get(GenericTypes.PAGING_NODE, (Locale) null, QueryParamBuilder.create("q", query).build(), page);
   }
 }

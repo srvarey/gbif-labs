@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Generic endpoint interface for entities.
  */
-interface Endpointable {
+public interface Endpointable {
 
   @Valid
   @NotNull

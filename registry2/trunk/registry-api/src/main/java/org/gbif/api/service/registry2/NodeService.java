@@ -29,9 +29,9 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Actions on a GBIF node.
+ * Be aware that of 2013 Nodes DO NOT support the ContactInterface although advertised in this interface!!!
  */
-public interface NodeService extends NetworkEntityService<Node>, MachineTagService, TagService, CommentService,
-  IdentifierService {
+public interface NodeService extends NetworkEntityService<Node> {
 
   /**
    * Provides access to the organizations endorsed by a single node.

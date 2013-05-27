@@ -35,7 +35,8 @@ import com.google.common.collect.Lists;
 /**
  * A GBIF participant node.
  */
-public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggable, Commentable, Identifiable {
+public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggable, Commentable, Identifiable,
+  Endpointable {
 
   private UUID key;
   private NodeType type;
@@ -60,6 +61,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   private Date modified;
   private Date deleted;
   private List<Contact> contacts = Lists.newArrayList();
+  private List<Endpoint> endpoints = Lists.newArrayList();
   private List<MachineTag> machineTags = Lists.newArrayList();
   private List<Tag> tags = Lists.newArrayList();
   private List<Identifier> identifiers = Lists.newArrayList();
@@ -288,6 +290,16 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   }
 
   @Override
+  public List<Endpoint> getEndpoints() {
+    return endpoints;
+  }
+
+  @Override
+  public void setEndpoints(List<Endpoint> endpoints) {
+    this.endpoints = endpoints;
+  }
+
+  @Override
   public List<MachineTag> getMachineTags() {
     return machineTags;
   }
@@ -352,6 +364,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
                             modified,
                             deleted,
                             contacts,
+                            endpoints,
                             machineTags,
                             tags,
                             identifiers,
@@ -385,6 +398,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
              && Objects.equal(this.modified, that.modified)
              && Objects.equal(this.deleted, that.deleted)
              && Objects.equal(this.contacts, that.contacts)
+             && Objects.equal(this.endpoints, that.endpoints)
              && Objects.equal(this.machineTags, that.machineTags)
              && Objects.equal(this.tags, that.tags)
              && Objects.equal(this.identifiers, that.identifiers)
@@ -419,6 +433,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       .add("modified", modified)
       .add("deleted", deleted)
       .add("contacts", contacts)
+      .add("endpoints", endpoints)
       .add("machineTags", machineTags)
       .add("tags", tags)
       .add("identifiers", identifiers)

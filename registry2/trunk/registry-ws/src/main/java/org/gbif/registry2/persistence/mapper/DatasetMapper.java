@@ -21,7 +21,12 @@ import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
 
-public interface DatasetMapper extends BaseNetworkEntityMapper3<Dataset> {
+public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
+
+  /**
+   * Obtains a list of all the constituent datasets that are part of this parent dataset.
+   */
+  List<Dataset> listConstituents(@Param("parentKey") UUID parentKey, @Nullable @Param("page") Pageable page);
 
   /**
    * Obtains a list of all the constituent datasets that are part of this network.

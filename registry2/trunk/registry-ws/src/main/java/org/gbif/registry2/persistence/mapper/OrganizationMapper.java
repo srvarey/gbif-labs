@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
 
-public interface OrganizationMapper extends BaseNetworkEntityMapper3<Organization> {
+public interface OrganizationMapper extends BaseNetworkEntityMapper<Organization> {
 
   /**
    * At higher levels this appears on the NodeService, but it makes a cleaner MyBatis implementation on this mapper.

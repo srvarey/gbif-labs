@@ -17,6 +17,6 @@ package org.gbif.registry2.persistence.mapper;
 
 import org.gbif.api.model.registry2.Network;
 
-public interface NetworkMapper extends BaseNetworkEntityMapper2<Network> {
+public interface NetworkMapper extends BaseNetworkEntityMapper<Network> {
 
 }

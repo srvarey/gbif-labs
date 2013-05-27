@@ -16,11 +16,11 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
-public interface NetworkEntityService<T> {
+public interface NetworkEntityService<T> extends MachineTagService, TagService, CommentService,
+  IdentifierService, EndpointService, ContactService {
 
   UUID create(@NotNull T entity);
 

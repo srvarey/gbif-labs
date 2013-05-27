@@ -381,4 +381,15 @@
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
   </select>
+
+  <select id="listConstituents" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    WHERE d.parent_dataset_key = #{parentKey,jdbcType=OTHER}
+    AND d.deleted IS NULL
+    ORDER BY d.created DESC, d.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>
 </mapper>

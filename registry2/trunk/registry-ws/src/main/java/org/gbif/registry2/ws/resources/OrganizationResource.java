@@ -41,7 +41,7 @@ import com.google.inject.Singleton;
  */
 @Path("organization")
 @Singleton
-public class OrganizationResource extends BaseNetworkEntityResource3<Organization> implements OrganizationService {
+public class OrganizationResource extends BaseNetworkEntityResource<Organization> implements OrganizationService {
 
   private final DatasetMapper datasetMapper;
 

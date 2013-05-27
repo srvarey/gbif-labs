@@ -198,6 +198,30 @@
       network_key = #{targetEntityKey,jdbcType=OTHER} AND contact_key = #{contactKey,jdbcType=INTEGER}
   </delete>  
   
+  <!-- IDENTIFIERS -->
+  <insert id="addIdentifier">
+    INSERT INTO network_identifier(network_key,identifier_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{identifierKey,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <select id="listIdentifiers" resultType="Identifier">
+    SELECT <include refid="org.gbif.registry2.persistence.mapper.IdentifierMapper.IDENTIFIER_FIELDS"/>
+    FROM identifier INNER JOIN network_identifier ON identifier_key = key
+    WHERE network_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created DESC
+  </select>
+
+  <!-- Joined delete of identifier to trigger cascade delete of the join table -->
+  <delete id="deleteIdentifier">
+    DELETE FROM identifier USING network_identifier
+    WHERE
+      identifier_key = identifier.key AND
+      network_key = #{targetEntityKey,jdbcType=OTHER} AND identifier_key = #{identifierKey,jdbcType=INTEGER}
+  </delete>
+
   <!-- ENDPOINTS -->
   <insert id="addEndpoint">
     INSERT INTO network_endpoint(network_key,endpoint_key)

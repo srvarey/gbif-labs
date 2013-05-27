@@ -69,44 +69,6 @@ public class OrganizationIT extends NetworkEntityTest<Organization> {
   }
 
   @Test
-  public void testContacts() {
-    Organization organization = create(newEntity(), 1);
-    ContactTests.testAddDelete(service, organization);
-  }
-
-  @Test
-  public void testEndpoints() {
-    Organization organization = create(newEntity(), 1);
-    EndpointTests.testAddDelete(service, organization);
-  }
-
-  @Test
-  public void testMachineTags() {
-    Organization organization = create(newEntity(), 1);
-    MachineTagTests.testAddDelete(service, organization);
-  }
-
-  @Test
-  public void testTags() {
-    Organization organization = create(newEntity(), 1);
-    TagTests.testAddDelete(service, organization);
-    organization = create(newEntity(), 2);
-    TagTests.testTagErroneousDelete(service, organization);
-  }
-
-  @Test
-  public void testIdentifiers() {
-    Organization organization = create(newEntity(), 1);
-    IdentifierTests.testAddDelete(service, organization);
-  }
-
-  @Test
-  public void testComment() {
-    Organization organization = create(newEntity(), 1);
-    CommentTests.testAddDelete(service, organization);
-  }
-
-  @Test
   public void testEndorsements() {
     Node node = Nodes.newInstance();
     nodeService.create(node);

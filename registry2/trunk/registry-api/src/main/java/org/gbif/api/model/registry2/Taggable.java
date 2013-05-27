@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Generic tag interface for entities.
  */
-interface Taggable {
+public interface Taggable {
 
   @Valid
   @NotNull

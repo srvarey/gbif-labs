@@ -17,12 +17,43 @@ package org.gbif.registry2.persistence.mapper;
 
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.ContactType;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface NodeMapper extends BaseNetworkEntityMapper4<Node> {
+/**
+ * For simplicity we keep ContactableMapper part of the BaseNetworkEntityMapper, but this NodeMapper
+ * does not implement those mapper methods but will throw exceptions instead !
+ *
+ * For a Node all contacts are managed in the GBIF Filemaker IMS which we only access for reads
+ * and cannot manipulate though our Java API.
+ */
+public interface NodeMapper extends BaseNetworkEntityMapper<Node> {
 
   List<Country> listNodeCountries();
 
   Node getByCountry(Country country);
+
+  /**
+   * This method is not supported by the NodeMapper.
+   * @throws
+   */
+  @Override
+  int addContact(UUID entityKey, int contactKey, ContactType contactType, boolean isPrimary);
+
+  /**
+   * This method is not supported by the NodeMapper.
+   * @throws
+   */
+  @Override
+  void updatePrimaryContacts(UUID entityKey, ContactType contactType);
+
+  /**
+   * This method is not supported by the NodeMapper.
+   * @throws
+   */
+  @Override
+  int deleteContact(UUID entityKey, int contactKey);
+
 }

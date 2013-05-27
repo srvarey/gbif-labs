@@ -18,5 +18,6 @@ package org.gbif.api.service.registry2;
 import org.gbif.api.model.registry2.Network;
 
 public interface NetworkService
-  extends NetworkEntityService<Network>, ContactService, EndpointService, MachineTagService, TagService,
-  CommentService {}
+  extends NetworkEntityService<Network> {
+
+}

@@ -31,7 +31,6 @@ import org.gbif.registry2.utils.Networks;
 import org.gbif.registry2.ws.resources.NetworkResource;
 
 import com.google.common.collect.ImmutableList;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -60,44 +59,6 @@ public class NetworkIT extends NetworkEntityTest<Network> {
   public NetworkIT(NetworkService service) {
     super(service);
     this.service = service;
-  }
-
-  @Test
-  public void testContacts() {
-    Network network = create(newEntity(), 1);
-    ContactTests.testAddDelete(service, network);
-  }
-
-  @Test
-  public void testEndpoints() {
-    Network network = create(newEntity(), 1);
-    EndpointTests.testAddDelete(service, network);
-  }
-
-  @Test
-  public void testMachineTags() {
-    Network network = create(newEntity(), 1);
-    MachineTagTests.testAddDelete(service, network);
-  }
-
-  @Test
-  public void testTags() {
-    Network network = create(newEntity(), 1);
-    TagTests.testAddDelete(service, network);
-    network = create(newEntity(), 2);
-    TagTests.testTagErroneousDelete(service, network);
-  }
-
-  @Test
-  public void testComments() {
-    Network network = create(newEntity(), 1);
-    CommentTests.testAddDelete(service, network);
-  }
-
-  // Check that simple search covers contacts
-  @Test
-  public void testSimpleSearchContact() {
-    ContactTests.testSimpleSearch(service, service, create(newEntity(), 1));
   }
 
   @Override

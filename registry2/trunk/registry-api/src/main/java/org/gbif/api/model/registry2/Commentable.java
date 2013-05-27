@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Generic comment interface for entities.
  */
-interface Commentable {
+public interface Commentable {
 
   @Valid
   @NotNull

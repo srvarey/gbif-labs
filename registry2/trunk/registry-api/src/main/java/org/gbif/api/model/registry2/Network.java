@@ -32,7 +32,8 @@ import com.google.common.collect.Lists;
 /**
  * A GBIF network.
  */
-public class Network implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable {
+public class Network implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable,
+  Identifiable {
 
   private UUID key;
   private String title;
@@ -56,6 +57,7 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   private List<Endpoint> endpoints = Lists.newArrayList();
   private List<MachineTag> machineTags = Lists.newArrayList();
   private List<Tag> tags = Lists.newArrayList();
+  private List<Identifier> identifiers = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
   private List<Dataset> constituentDatasets = Lists.newArrayList();
 
@@ -276,6 +278,16 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   }
 
   @Override
+  public List<Identifier> getIdentifiers() {
+    return identifiers;
+  }
+
+  @Override
+  public void setIdentifiers(List<Identifier> identifiers) {
+    this.identifiers = identifiers;
+  }
+
+  @Override
   public List<Comment> getComments() {
     return comments;
   }
@@ -317,6 +329,7 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
                             endpoints,
                             machineTags,
                             tags,
+                            identifiers,
                             comments,
                             constituentDatasets);
   }
@@ -347,6 +360,7 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
              && Objects.equal(this.endpoints, that.endpoints)
              && Objects.equal(this.machineTags, that.machineTags)
              && Objects.equal(this.tags, that.tags)
+             && Objects.equal(this.identifiers, that.identifiers)
              && Objects.equal(this.comments, that.comments)
              && Objects.equal(this.constituentDatasets, that.constituentDatasets);
     }
@@ -378,6 +392,7 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
       .add("endpoints", endpoints)
       .add("machineTags", machineTags)
       .add("tags", tags)
+      .add("identifiers", identifiers)
       .add("comments", comments)
       .add("constituentDatasets", constituentDatasets)
       .toString();

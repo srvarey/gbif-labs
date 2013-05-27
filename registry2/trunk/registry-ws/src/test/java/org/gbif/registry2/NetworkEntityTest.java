@@ -18,8 +18,20 @@ package org.gbif.registry2;
 
 import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry2.Commentable;
+import org.gbif.api.model.registry2.Contactable;
+import org.gbif.api.model.registry2.Endpointable;
+import org.gbif.api.model.registry2.Identifiable;
+import org.gbif.api.model.registry2.MachineTaggable;
 import org.gbif.api.model.registry2.NetworkEntity;
+import org.gbif.api.model.registry2.Taggable;
+import org.gbif.api.service.registry2.CommentService;
+import org.gbif.api.service.registry2.ContactService;
+import org.gbif.api.service.registry2.EndpointService;
+import org.gbif.api.service.registry2.IdentifierService;
+import org.gbif.api.service.registry2.MachineTagService;
 import org.gbif.api.service.registry2.NetworkEntityService;
+import org.gbif.api.service.registry2.TagService;
 import org.gbif.registry2.database.DatabaseInitializer;
 import org.gbif.registry2.database.LiquibaseInitializer;
 import org.gbif.registry2.grizzly.RegistryServer;
@@ -27,7 +39,6 @@ import org.gbif.registry2.guice.RegistryTestModules;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.validation.ValidationException;
 
 import com.google.common.base.Preconditions;
@@ -44,9 +55,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * A generic test that runs against the registry interfaces.
+ * A generic test for all network entities that implement all interfaces required by the BaseNetworkEntityResource.
  */
-public abstract class NetworkEntityTest<T extends NetworkEntity> {
+public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & Taggable & MachineTaggable &
+  Commentable & Endpointable & Identifiable> {
 
   // Flushes the database on each run
   @ClassRule
@@ -59,8 +71,24 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
   public final DatabaseInitializer databaseRule = new DatabaseInitializer(RegistryTestModules.database());
   private final NetworkEntityService<T> service; // under test
 
+  private final ContactService contactService;
+  private final EndpointService endpointService;
+  private final MachineTagService machineTagService;
+  private final TagService tagService;
+  private final CommentService commentService;
+  private final IdentifierService identifierService;
+
+
   public NetworkEntityTest(NetworkEntityService<T> service) {
     this.service = service;
+    // not so nice, but we know what we deal with in the tests
+    // and this bundles most basic tests into one base test class without copy paste redundancy
+    contactService = (ContactService) service;
+    endpointService = (EndpointService) service;
+    machineTagService = (MachineTagService) service;
+    tagService = (TagService) service;
+    commentService = (CommentService) service;
+    identifierService = (IdentifierService) service;
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -230,6 +258,56 @@ public abstract class NetworkEntityTest<T extends NetworkEntity> {
     // there are no results after 5
     assertTrue("Search should return the requested number of records", service.search("Bingo", new PagingRequest(5, 3))
       .getResults().isEmpty());
+  }
+
+
+  @Test
+  public void testContacts() {
+    T entity = create(newEntity(), 1);
+    ContactTests.testAddDelete(contactService, entity);
+  }
+
+  @Test
+  public void testEndpoints() {
+    T entity;
+    try {
+      entity = create(newEntity(), 1);
+      EndpointTests.testAddDelete(endpointService, entity);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  public void testMachineTags() {
+    T entity = create(newEntity(), 1);
+    MachineTagTests.testAddDelete(machineTagService, entity);
+  }
+
+  @Test
+  public void testTags() {
+    T entity = create(newEntity(), 1);
+    TagTests.testAddDelete(tagService, entity);
+    entity = create(newEntity(), 2);
+    TagTests.testTagErroneousDelete(tagService, entity);
+  }
+
+  @Test
+  public void testComments() {
+    T entity = create(newEntity(), 1);
+    CommentTests.testAddDelete(commentService, entity);
+  }
+
+  // Check that simple search covers contacts which throws IllegalStateException for Nodes
+  @Test
+  public void testSimpleSearchContact() {
+    ContactTests.testSimpleSearch(contactService, service, create(newEntity(), 1));
+  }
+
+  @Test
+  public void testIdentifiers() {
+    T entity = create(newEntity(), 1);
+    IdentifierTests.testAddDelete(identifierService, entity);
   }
 
   /**
