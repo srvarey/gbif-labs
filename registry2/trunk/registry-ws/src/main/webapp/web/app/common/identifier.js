@@ -1,8 +1,8 @@
 angular.module('identifier', ['services.notifications'])
 
 .controller('IdentifierCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
-  var Identifier = $resource('../:type/:key/identifier/:identifierKey', {
-    type : $stateParams.type,
+  var Identifier = $resource('../:type/:key/identifier/:identifierKey', {    
+    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
     key : $stateParams.key,  
     identifierKey : '@id'}
   );

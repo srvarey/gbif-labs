@@ -2,7 +2,7 @@ angular.module('comment', ['services.notifications'])
 
 .controller('CommentCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
   var Comment = $resource('../:type/:key/comment/:commentKey', {
-    type : $stateParams.type,
+    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
     key : $stateParams.key,  
     commentKey : '@id'}
   );

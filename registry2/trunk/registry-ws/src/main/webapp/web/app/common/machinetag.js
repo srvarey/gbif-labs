@@ -2,7 +2,7 @@ angular.module('machinetag', ['services.notifications'])
 
 .controller('MachinetagCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
   var Machinetag = $resource('../:type/:key/machinetag/:machinetagKey', {
-    type : $stateParams.type,
+    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
     key : $stateParams.key,  
     machinetagKey : '@id'}
   );

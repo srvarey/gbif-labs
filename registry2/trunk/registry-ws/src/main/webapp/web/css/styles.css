@@ -59,6 +59,13 @@ dl.spaced-list dd {
 
 
 /* Override bootstrap for menu */
+.nav > li > a.active {
+  color: #ffffff;
+}
+
+a.active {
+  color: #ffffff;
+}
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover {
   font-weight: bold;
