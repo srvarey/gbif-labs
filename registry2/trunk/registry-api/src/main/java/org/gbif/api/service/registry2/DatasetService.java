@@ -12,6 +12,8 @@
  */
 package org.gbif.api.service.registry2;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Metadata;
 import org.gbif.api.vocabulary.registry2.MetadataType;
@@ -22,8 +24,14 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 public interface DatasetService
-  extends NetworkEntityService<Dataset>, ContactService, EndpointService, MachineTagService, TagService,
-  IdentifierService, CommentService {
+  extends NetworkEntityService<Dataset> {
+
+  /**
+   * Pages through constituents of a dataset, i.e. returns datasets which have a parentDatasetKey
+   * equals to the one requested.
+   * @param datasetKey the parent datasets key
+   */
+  PagingResponse<Dataset> listConstituents(UUID datasetKey, @Nullable Pageable page);
 
   /**
    * Lists all metadata descriptions available for a dataset and optionally filters them by document type.

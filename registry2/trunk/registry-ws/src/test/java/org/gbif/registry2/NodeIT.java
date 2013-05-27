@@ -16,6 +16,7 @@
 package org.gbif.registry2;
 
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.Installation;
@@ -103,25 +104,6 @@ public class NodeIT extends NetworkEntityTest<Node> {
     this.datasetService = datasetService;
   }
 
-  @Test
-  public void testMachineTags() {
-    Node node = create(newEntity(), 1);
-    MachineTagTests.testAddDelete(nodeService, node);
-  }
-
-  @Test
-  public void testTags() {
-    Node node = create(newEntity(), 1);
-    TagTests.testAddDelete(nodeService, node);
-    node = create(newEntity(), 2);
-    TagTests.testTagErroneousDelete(nodeService, node);
-  }
-
-  @Test
-  public void testComments() {
-    Node node = create(newEntity(), 1);
-    CommentTests.testAddDelete(nodeService, node);
-  }
 
   @Test
   public void testGetByCountry() {
@@ -181,11 +163,6 @@ public class NodeIT extends NetworkEntityTest<Node> {
     }
   }
 
-  @Test
-  public void testIdentifiers() {
-    Node node = create(newEntity(), 1);
-    IdentifierTests.testAddDelete(nodeService, node);
-  }
 
   @Test
   public void testDatasets() {
@@ -228,6 +205,40 @@ public class NodeIT extends NetworkEntityTest<Node> {
     Node notInIms = nodeService.getByCountry(Country.AFGHANISTAN);
     assertNotNull(notInIms);
   }
+
+  /**
+   * Node contacts are IMS managed and the service throws exceptions
+   */
+  @Test(expected = UnsupportedOperationException.class)
+  public void testContacts() {
+    Node n = create(newEntity(), 1);
+    nodeService.listContacts(n.getKey());
+  }
+
+  /**
+   * Node contacts are IMS managed and the service throws exceptions
+   */
+  @Test(expected = UnsupportedOperationException.class)
+  public void testAddContact() {
+    Node n = create(newEntity(), 1);
+    nodeService.addContact(n.getKey(), new Contact());
+  }
+
+  /**
+   * Node contacts are IMS managed and the service throws exceptions
+   */
+  @Test(expected = UnsupportedOperationException.class)
+  public void testDeleteContact() {
+    Node n = create(newEntity(), 1);
+    nodeService.deleteContact(n.getKey(), 1);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  @Override
+  public void testSimpleSearchContact() {
+    super.testSimpleSearchContact();
+  }
+
 
   @Override
   protected Node newEntity() {

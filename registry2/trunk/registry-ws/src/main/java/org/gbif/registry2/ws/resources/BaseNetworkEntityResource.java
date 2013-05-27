@@ -16,10 +16,16 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Comment;
+import org.gbif.api.model.registry2.Contact;
+import org.gbif.api.model.registry2.Endpoint;
+import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.NetworkEntity;
 import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.CommentService;
+import org.gbif.api.service.registry2.ContactService;
+import org.gbif.api.service.registry2.EndpointService;
+import org.gbif.api.service.registry2.IdentifierService;
 import org.gbif.api.service.registry2.MachineTagService;
 import org.gbif.api.service.registry2.NetworkEntityService;
 import org.gbif.api.service.registry2.TagService;
@@ -29,6 +35,9 @@ import org.gbif.registry2.events.UpdateEvent;
 import org.gbif.registry2.persistence.WithMyBatis;
 import org.gbif.registry2.persistence.mapper.BaseNetworkEntityMapper;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
+import org.gbif.registry2.persistence.mapper.ContactMapper;
+import org.gbif.registry2.persistence.mapper.EndpointMapper;
+import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 import org.gbif.registry2.ws.guice.Trim;
@@ -36,7 +45,6 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -64,26 +72,41 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Provides a skeleton implementation of the core CRUD operations.
+ * Provides a skeleton implementation of the following.
+ * <ul>
+ * <li>Base CRUD operations for a network entity</li>
+ * <li>Comment operations</li>
+ * <li>Contact operations (in addition to BaseNetworkEntityResource)</li>
+ * <li>Endpoint operations (in addition to BaseNetworkEntityResource)</li>
+ * <li>Identifier operations (in addition to BaseNetworkEntityResource2)</li>
+ * <li>MachineTag operations</li>
+ * <li>Tag operations</li>
+ * </ul>
  * 
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
 @Consumes(MediaType.APPLICATION_JSON)
-public class BaseNetworkEntityResource<T extends NetworkEntity>
-  implements NetworkEntityService<T>, CommentService, MachineTagService, TagService {
+public class BaseNetworkEntityResource<T extends NetworkEntity> implements NetworkEntityService<T>,
+  ContactService, CommentService, MachineTagService, TagService, EndpointService, IdentifierService {
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseNetworkEntityResource.class);
   private final BaseNetworkEntityMapper<T> mapper;
   private final CommentMapper commentMapper;
   private final MachineTagMapper machineTagMapper;
   private final TagMapper tagMapper;
+  private final ContactMapper contactMapper;
+  private final EndpointMapper endpointMapper;
+  private final IdentifierMapper identifierMapper;
   private final Class<T> objectClass;
   private final EventBus eventBus;
 
   protected BaseNetworkEntityResource(
     BaseNetworkEntityMapper<T> mapper,
     CommentMapper commentMapper,
+    ContactMapper contactMapper,
+    EndpointMapper endpointMapper,
+    IdentifierMapper identifierMapper,
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     Class<T> objectClass,
@@ -92,6 +115,9 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
     this.commentMapper = commentMapper;
     this.machineTagMapper = machineTagMapper;
     this.tagMapper = tagMapper;
+    this.contactMapper = contactMapper;
+    this.endpointMapper = endpointMapper;
+    this.identifierMapper = identifierMapper;
     this.objectClass = objectClass;
     this.eventBus = eventBus;
   }
@@ -141,7 +167,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
   @GET
   public PagingResponse<T> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
     if (Strings.isNullOrEmpty(query)) {
-      return WithMyBatis.list(mapper, page);
+      return list(page);
     } else {
       return search(query, page);
     }
@@ -160,7 +186,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
   }
 
   @Override
-  public PagingResponse<T> list(@Nullable @Context Pageable page) {
+  public PagingResponse<T> list(@Nullable Pageable page) {
     page = page == null ? new PagingRequest() : page;
     return WithMyBatis.list(mapper, page);
   }
@@ -257,6 +283,77 @@ public class BaseNetworkEntityResource<T extends NetworkEntity>
   @Override
   public List<Tag> listTags(@PathParam("key") UUID taggedEntityKey, @QueryParam("owner") String owner) {
     return WithMyBatis.listTags(mapper, taggedEntityKey, owner);
+  }
+
+
+  @POST
+  @Path("{key}/contact")
+  @Validate
+  @Transactional
+  @Override
+  public int addContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
+    return WithMyBatis.addContact(contactMapper, mapper, targetEntityKey, contact);
+  }
+
+  @DELETE
+  @Path("{key}/contact/{contactKey}")
+  @Override
+  public void deleteContact(@PathParam("key") UUID targetEntityKey, @PathParam("contactKey") int contactKey) {
+    WithMyBatis.deleteContact(mapper, targetEntityKey, contactKey);
+  }
+
+  @GET
+  @Path("{key}/contact")
+  @Override
+  public List<Contact> listContacts(@PathParam("key") UUID targetEntityKey) {
+    return WithMyBatis.listContacts(mapper, targetEntityKey);
+  }
+
+  @POST
+  @Path("{key}/endpoint")
+  @Validate
+  @Transactional
+  @Override
+  public int addEndpoint(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Endpoint endpoint) {
+    return WithMyBatis.addEndpoint(endpointMapper, mapper, targetEntityKey, endpoint);
+  }
+
+  @DELETE
+  @Path("{key}/endpoint/{endpointKey}")
+  @Override
+  public void deleteEndpoint(@PathParam("key") UUID targetEntityKey, @PathParam("endpointKey") int endpointKey) {
+    WithMyBatis.deleteEndpoint(mapper, targetEntityKey, endpointKey);
+  }
+
+  @GET
+  @Path("{key}/endpoint")
+  @Override
+  public List<Endpoint> listEndpoints(@PathParam("key") UUID targetEntityKey) {
+    return WithMyBatis.listEndpoints(mapper, targetEntityKey);
+  }
+
+
+  @POST
+  @Path("{key}/identifier")
+  @Validate
+  @Transactional
+  @Override
+  public int addIdentifier(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Identifier identifier) {
+    return WithMyBatis.addIdentifier(identifierMapper, mapper, targetEntityKey, identifier);
+  }
+
+  @DELETE
+  @Path("{key}/identifier/{identifierKey}")
+  @Override
+  public void deleteIdentifier(@PathParam("key") UUID targetEntityKey, @PathParam("identifierKey") int identifierKey) {
+    WithMyBatis.deleteIdentifier(mapper, targetEntityKey, identifierKey);
+  }
+
+  @GET
+  @Path("{key}/identifier")
+  @Override
+  public List<Identifier> listIdentifiers(@PathParam("key") UUID targetEntityKey) {
+    return WithMyBatis.listIdentifiers(mapper, targetEntityKey);
   }
 
   /**

@@ -17,6 +17,7 @@ package org.gbif.registry2.ws.resources;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
@@ -24,18 +25,25 @@ import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.ims.Augmenter;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
+import org.gbif.registry2.persistence.mapper.ContactMapper;
 import org.gbif.registry2.persistence.mapper.DatasetMapper;
+import org.gbif.registry2.persistence.mapper.EndpointMapper;
 import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NodeMapper;
 import org.gbif.registry2.persistence.mapper.OrganizationMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
+import org.gbif.registry2.ws.guice.Trim;
 import org.gbif.ws.server.interceptor.NullToNotFound;
 
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -46,7 +54,7 @@ import com.google.inject.Singleton;
 
 @Singleton
 @Path("node")
-public class NodeResource extends BaseNetworkEntityResource4<Node> implements NodeService {
+public class NodeResource extends BaseNetworkEntityResource<Node> implements NodeService {
 
   private final NodeMapper nodeMapper;
   private final OrganizationMapper organizationMapper;
@@ -58,6 +66,8 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
     NodeMapper nodeMapper,
     IdentifierMapper identifierMapper,
     CommentMapper commentMapper,
+    ContactMapper contactMapper,
+    EndpointMapper endpointMapper,
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     OrganizationMapper organizationMapper,
@@ -65,17 +75,20 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
     EventBus eventBus,
     Augmenter nodeAugmenter
   ) {
-    super(nodeMapper, commentMapper, identifierMapper, machineTagMapper, tagMapper, Node.class, eventBus);
+    super(nodeMapper, commentMapper, contactMapper, endpointMapper, identifierMapper, machineTagMapper, tagMapper,
+          Node.class, eventBus);
     this.nodeMapper = nodeMapper;
     this.organizationMapper = organizationMapper;
     this.nodeAugmenter = nodeAugmenter;
     this.datasetMapper = datasetMapper;
   }
 
+  @GET
+  @Path("{key}")
   @Nullable
   @NullToNotFound
   @Override
-  public Node get(UUID key) {
+  public Node get(@PathParam("key") UUID key) {
     return nodeAugmenter.augment(super.get(key));
   }
 
@@ -129,4 +142,24 @@ public class NodeResource extends BaseNetworkEntityResource4<Node> implements No
     return pagingResponse(page, null, datasetMapper.listDatasetsEndorsedBy(nodeKey, page));
   }
 
+  @GET
+  @Path("{key}/contact")
+  @Override
+  public List<Contact> listContacts(@PathParam("key") UUID targetEntityKey) {
+    throw new UnsupportedOperationException("Contacts are manually managed in IMS");
+  }
+
+  @DELETE
+  @Path("{key}/contact/{contactKey}")
+  @Override
+  public void deleteContact(@PathParam("key") UUID targetEntityKey, @PathParam("contactKey") int contactKey) {
+    throw new UnsupportedOperationException("Contacts are manually managed in IMS");
+  }
+
+  @POST
+  @Path("{key}/contact")
+  @Override
+  public int addContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
+    throw new UnsupportedOperationException("Contacts are manually managed in IMS");
+  }
 }

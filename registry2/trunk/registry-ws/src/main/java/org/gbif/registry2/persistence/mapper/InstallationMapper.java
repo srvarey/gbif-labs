@@ -17,6 +17,6 @@ package org.gbif.registry2.persistence.mapper;
 
 import org.gbif.api.model.registry2.Installation;
 
-public interface InstallationMapper extends BaseNetworkEntityMapper2<Installation> {
+public interface InstallationMapper extends BaseNetworkEntityMapper<Installation> {
 
 }

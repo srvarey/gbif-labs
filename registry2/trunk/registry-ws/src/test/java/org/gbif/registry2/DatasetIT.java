@@ -146,44 +146,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   }
 
   @Test
-  public void testContacts() {
-    Dataset dataset = create(newEntity(), 1);
-    ContactTests.testAddDelete(service, dataset);
-  }
-
-  @Test
-  public void testEndpoints() {
-    Dataset dataset = create(newEntity(), 1);
-    EndpointTests.testAddDelete(service, dataset);
-  }
-
-  @Test
-  public void testMachineTags() {
-    Dataset dataset = create(newEntity(), 1);
-    MachineTagTests.testAddDelete(service, dataset);
-  }
-
-  @Test
-  public void testTags() {
-    Dataset dataset = create(newEntity(), 1);
-    TagTests.testAddDelete(service, dataset);
-    dataset = create(newEntity(), 2);
-    TagTests.testTagErroneousDelete(service, dataset);
-  }
-
-  @Test
-  public void testIdentifiers() {
-    Dataset dataset = create(newEntity(), 1);
-    IdentifierTests.testAddDelete(service, dataset);
-  }
-
-  @Test
-  public void testComments() {
-    Dataset dataset = create(newEntity(), 1);
-    CommentTests.testAddDelete(service, dataset);
-  }
-
-  @Test
   public void testConstituents() {
     Dataset parent = create(newEntity(), 1);
     for (int id = 0; id < 10; id++) {
@@ -230,12 +192,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertEquals("This installation should have only 1 hosted dataset", 1, hosted.getResults().size());
     assertEquals("The hosted installation should serve the dataset created", hosted.getResults().get(0).getKey(),
       dataset.getKey());
-  }
-
-  // Check that simple search covers contacts
-  @Test
-  public void testSimpleSearchContact() {
-    ContactTests.testSimpleSearch(service, service, create(newEntity(), 1));
   }
 
   @Test

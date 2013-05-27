@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Generic contact interface for entities.
  */
-interface Contactable {
+public interface Contactable {
 
   @Valid
   @NotNull

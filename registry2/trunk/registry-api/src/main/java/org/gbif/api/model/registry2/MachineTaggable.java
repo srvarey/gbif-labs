@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Generic machine tag interface for entities.
  */
-interface MachineTaggable {
+public interface MachineTaggable {
 
   @Valid
   @NotNull

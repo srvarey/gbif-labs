@@ -31,7 +31,6 @@ import org.gbif.registry2.metadata.parse.DatasetParser;
 import org.gbif.registry2.persistence.WithMyBatis;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
 import org.gbif.registry2.persistence.mapper.ContactMapper;
-import org.gbif.registry2.persistence.mapper.ContactableMapper;
 import org.gbif.registry2.persistence.mapper.DatasetMapper;
 import org.gbif.registry2.persistence.mapper.EndpointMapper;
 import org.gbif.registry2.persistence.mapper.IdentifierMapper;
@@ -74,14 +73,14 @@ import org.slf4j.LoggerFactory;
  */
 @Path("dataset")
 @Singleton
-public class DatasetResource extends BaseNetworkEntityResource3<Dataset>
+public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   implements DatasetService, DatasetSearchService {
 
   private static final Logger LOG = LoggerFactory.getLogger(DatasetResource.class);
 
   private final DatasetSearchService searchService;
   private final MetadataMapper metadataMapper;
-  private final ContactableMapper contactableMapper;
+  private final DatasetMapper datasetMapper;
   private final ContactMapper contactMapper;
 
   @Inject
@@ -92,7 +91,7 @@ public class DatasetResource extends BaseNetworkEntityResource3<Dataset>
       Dataset.class, eventBus);
     this.searchService = searchService;
     this.metadataMapper = metadataMapper;
-    this.contactableMapper = datasetMapper;
+    this.datasetMapper = datasetMapper;
     this.contactMapper = contactMapper;
   }
 
@@ -121,19 +120,13 @@ public class DatasetResource extends BaseNetworkEntityResource3<Dataset>
     return merge(getPreferredMetadataDataset(key), super.get(key));
   }
 
-  @GET
-  @Override
-  public PagingResponse<Dataset> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
-    return augmentWithMetadata(super.list(query, page));
-  }
-
   @Override
   public PagingResponse<Dataset> search(String query, @Nullable Pageable page) {
     return augmentWithMetadata(super.search(query, page));
   }
 
   @Override
-  public PagingResponse<Dataset> list(@Nullable @Context Pageable page) {
+  public PagingResponse<Dataset> list(@Nullable Pageable page) {
     return augmentWithMetadata(super.list(page));
   }
 
@@ -325,14 +318,14 @@ public class DatasetResource extends BaseNetworkEntityResource3<Dataset>
       updDataset.setModified(new Date());
       // persist contacts, overwriting any existing ones
       for (Contact c : dataset.getContacts()) {
-        contactableMapper.deleteContact(datasetKey, c.getKey());
+        datasetMapper.deleteContact(datasetKey, c.getKey());
       }
       for (Contact c : updDataset.getContacts()) {
         c.setCreatedBy(user);
         c.setCreated(new Date());
         c.setModifiedBy(user);
         c.setModified(new Date());
-        WithMyBatis.addContact(contactMapper, contactableMapper, datasetKey, c);
+        WithMyBatis.addContact(contactMapper, datasetMapper, datasetKey, c);
       }
       // now update the core dataset only, remove associated data which could break validation
       updDataset.getContacts().clear();
@@ -355,6 +348,13 @@ public class DatasetResource extends BaseNetworkEntityResource3<Dataset>
   public Metadata insertMetadata(@PathParam("key") UUID datasetKey, InputStream document) {
     // this method should never be called but from tests
     return insertMetadata(datasetKey, document, "UNKNOWN USER");
+  }
+
+  @Path("{key}/constituents")
+  @GET
+  @Override
+  public PagingResponse<Dataset> listConstituents(@PathParam("key") UUID datasetKey, @Context Pageable page) {
+    return pagingResponse(page, null, datasetMapper.listConstituents(datasetKey, page));
   }
 
   @Path("{key}/metadata")

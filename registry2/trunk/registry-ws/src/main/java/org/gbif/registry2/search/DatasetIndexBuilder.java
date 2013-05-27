@@ -3,9 +3,15 @@ package org.gbif.registry2.search;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry2.Comment;
+import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.model.registry2.Endpoint;
+import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.Installation;
+import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.Organization;
+import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NetworkEntityService;
@@ -16,6 +22,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.cache.CacheBuilder;
@@ -142,6 +150,96 @@ public class DatasetIndexBuilder {
 
     @Override
     public PagingResponse<T> search(String query, Pageable page) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public int addComment(@NotNull UUID targetEntityKey, @NotNull Comment comment) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteComment(@NotNull UUID targetEntityKey, int commentKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public List<Comment> listComments(@NotNull UUID targetEntityKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public int addContact(@NotNull UUID targetEntityKey, @NotNull Contact contact) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteContact(@NotNull UUID targetEntityKey, int contactKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public List<Contact> listContacts(@NotNull UUID targetEntityKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public int addEndpoint(@NotNull UUID targetEntityKey, @NotNull Endpoint endpoint) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteEndpoint(@NotNull UUID targetEntityKey, int endpointKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public List<Endpoint> listEndpoints(@NotNull UUID targetEntityKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public int addIdentifier(@NotNull UUID targetEntityKey, @NotNull Identifier identifier) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteIdentifier(@NotNull UUID targetEntityKey, int identifierKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public List<Identifier> listIdentifiers(@NotNull UUID targetEntityKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public int addMachineTag(@NotNull UUID targetEntityKey, @NotNull MachineTag machineTag) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteMachineTag(@NotNull UUID targetEntityKey, int machineTagKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public List<MachineTag> listMachineTags(@NotNull UUID targetEntityKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public int addTag(@NotNull UUID targetEntityKey, @NotNull String value) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteTag(@NotNull UUID taggedEntityKey, int tagKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public List<Tag> listTags(@NotNull UUID taggedEntityKey, @Nullable String owner) {
       throw new IllegalStateException("Method not supported in caching service");
     }
   }

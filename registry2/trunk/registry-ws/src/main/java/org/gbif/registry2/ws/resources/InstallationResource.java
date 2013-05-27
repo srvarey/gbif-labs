@@ -21,12 +21,12 @@ import org.gbif.registry2.persistence.mapper.CommentMapper;
 import org.gbif.registry2.persistence.mapper.ContactMapper;
 import org.gbif.registry2.persistence.mapper.DatasetMapper;
 import org.gbif.registry2.persistence.mapper.EndpointMapper;
+import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.InstallationMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 
 import java.util.UUID;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,7 +41,7 @@ import com.google.inject.Singleton;
  */
 @Path("installation")
 @Singleton
-public class InstallationResource extends BaseNetworkEntityResource2<Installation> implements InstallationService {
+public class InstallationResource extends BaseNetworkEntityResource<Installation> implements InstallationService {
 
   private final DatasetMapper datasetMapper;
 
@@ -50,6 +50,7 @@ public class InstallationResource extends BaseNetworkEntityResource2<Installatio
     InstallationMapper installationMapper,
     ContactMapper contactMapper,
     EndpointMapper endpointMapper,
+    IdentifierMapper identifierMapper,
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     CommentMapper commentMapper,
@@ -59,6 +60,7 @@ public class InstallationResource extends BaseNetworkEntityResource2<Installatio
       commentMapper,
       contactMapper,
       endpointMapper,
+      identifierMapper,
       machineTagMapper,
       tagMapper,
       Installation.class,

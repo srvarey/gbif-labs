@@ -210,7 +210,31 @@
       contact_key = contact.key AND 
       organization_key = #{targetEntityKey,jdbcType=OTHER} AND contact_key = #{contactKey,jdbcType=INTEGER}
   </delete>  
-  
+
+  <!-- IDENTIFIERS -->
+  <insert id="addIdentifier">
+    INSERT INTO organization_identifier(organization_key,identifier_key)
+    VALUES(
+     #{targetEntityKey,jdbcType=OTHER},
+     #{identifierKey,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <select id="listIdentifiers" resultType="Identifier">
+    SELECT <include refid="org.gbif.registry2.persistence.mapper.IdentifierMapper.IDENTIFIER_FIELDS"/>
+    FROM identifier INNER JOIN organization_identifier ON identifier_key = key
+    WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}
+    ORDER BY created DESC
+  </select>
+
+  <!-- Joined delete of identifier to trigger cascade delete of the join table -->
+  <delete id="deleteIdentifier">
+    DELETE FROM identifier USING organization_identifier
+    WHERE
+      identifier_key = identifier.key AND
+      organization_key = #{targetEntityKey,jdbcType=OTHER} AND identifier_key = #{identifierKey,jdbcType=INTEGER}
+  </delete>
+
   <!-- ENDPOINTS -->
   <insert id="addEndpoint">
     INSERT INTO organization_endpoint(organization_key,endpoint_key)
@@ -234,31 +258,7 @@
       endpoint_key = endpoint.key AND 
       organization_key = #{targetEntityKey,jdbcType=OTHER} AND endpoint_key = #{endpointKey,jdbcType=INTEGER}
   </delete>    
-  
-  <!-- IDENTIFIERS -->
-  <insert id="addIdentifier">
-    INSERT INTO organization_identifier(organization_key,identifier_key)
-    VALUES(
-     #{targetEntityKey,jdbcType=OTHER},
-     #{identifierKey,jdbcType=INTEGER}
-    )
-  </insert>
-  
-  <select id="listIdentifiers" resultType="Identifier">
-    SELECT <include refid="org.gbif.registry2.persistence.mapper.IdentifierMapper.IDENTIFIER_FIELDS"/>
-    FROM identifier INNER JOIN organization_identifier ON identifier_key = key
-    WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}
-    ORDER BY created DESC
-  </select>
-  
-  <!-- Joined delete of identifier to trigger cascade delete of the join table --> 
-  <delete id="deleteIdentifier">
-    DELETE FROM identifier USING organization_identifier
-    WHERE
-      identifier_key = identifier.key AND 
-      organization_key = #{targetEntityKey,jdbcType=OTHER} AND identifier_key = #{identifierKey,jdbcType=INTEGER}
-  </delete>    
-  
+
   <!-- MACHINE TAGS -->
   <insert id="addMachineTag">
     INSERT INTO organization_machine_tag(organization_key,machine_tag_key)

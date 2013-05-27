@@ -18,13 +18,11 @@ import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Organization;
 
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 public interface OrganizationService
-  extends NetworkEntityService<Organization>, ContactService, EndpointService, MachineTagService, TagService,
-  IdentifierService, CommentService {
+  extends NetworkEntityService<Organization> {
 
 
   /**

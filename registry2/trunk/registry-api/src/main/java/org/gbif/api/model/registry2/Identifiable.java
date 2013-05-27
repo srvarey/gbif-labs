@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Generic identifier interface for entities.
  */
-interface Identifiable {
+public interface Identifiable {
 
   @Valid
   @NotNull

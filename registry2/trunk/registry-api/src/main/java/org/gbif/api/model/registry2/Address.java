@@ -23,7 +23,7 @@ import javax.validation.constraints.Size;
 /**
  * A package visible providing the commonality for addresses, including the constraint validations.
  */
-interface Address {
+public interface Address {
 
   @Nullable
   @Size(min = 5)

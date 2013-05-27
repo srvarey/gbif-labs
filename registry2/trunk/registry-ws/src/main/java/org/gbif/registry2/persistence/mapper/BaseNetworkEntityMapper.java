@@ -18,16 +18,9 @@ package org.gbif.registry2.persistence.mapper;
 import org.gbif.api.model.registry2.NetworkEntity;
 
 /**
- * These mappers (BaseNetworkEntityMapper*) define a common interface for all our Network entities. We have five
- * different ones (Datasets, Installations, Networks, Nodes and Organizations) and they can be grouped in four
- * different categories:
- * <ul>
- * <li>BaseNetworkEntityMapper: Comments, Machine tags and tags</li>
- * <li>BaseNetworkEntityMapper2: Comments, Machine tags, tags, contacts and endpoints (Installation and Network)</li>
- * <li>BaseNetworkEntityMapper3: Comments, Machine tags, tags, contacts, identifiers and endpoints (Datasets and
- * Organizations)</li>
- * <li>BaseNetworkEntityMapper4: Comments, Machine tags, tags, contacts, identifiers (Node)</li>
- * </ul>
+ * The BaseNetworkEntityMapper defines a common interface for all our Network entities.
  */
-public interface BaseNetworkEntityMapper<T extends NetworkEntity>
-  extends NetworkEntityMapper<T>, CommentableMapper, MachineTaggableMapper, TaggableMapper {}
+public interface BaseNetworkEntityMapper<T extends NetworkEntity> extends NetworkEntityMapper<T>,
+  ContactableMapper, CommentableMapper, MachineTaggableMapper, TaggableMapper, EndpointableMapper, IdentifiableMapper {
+
+}

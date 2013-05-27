@@ -28,7 +28,6 @@ import java.util.UUID;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -68,50 +67,6 @@ public class InstallationIT extends NetworkEntityTest<Installation> {
     this.service = service;
     this.organizationService = organizationService;
     this.nodeService = nodeService;
-  }
-
-  @Test
-  public void testContacts() {
-    Installation installation = create(newEntity(), 1);
-    ContactTests.testAddDelete(service, installation);
-  }
-
-  @Test
-  public void testEndpoints() {
-    Installation installation;
-    try {
-      installation = create(newEntity(), 1);
-      EndpointTests.testAddDelete(service, installation);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  @Test
-  public void testMachineTags() {
-    Installation installation = create(newEntity(), 1);
-    MachineTagTests.testAddDelete(service, installation);
-  }
-
-  @Test
-  public void testTags() {
-    Installation installation = create(newEntity(), 1);
-    TagTests.testAddDelete(service, installation);
-    installation = create(newEntity(), 2);
-    TagTests.testTagErroneousDelete(service, installation);
-  }
-
-  @Test
-  public void testComments() {
-    Installation installation = create(newEntity(), 1);
-    CommentTests.testAddDelete(service, installation);
-  }
-
-  // Check that simple search covers contacts
-  @Test
-  public void testSimpleSearchContact() {
-    ContactTests.testSimpleSearch(service, service, create(newEntity(), 1));
   }
 
   @Override

@@ -29,7 +29,8 @@ import com.google.common.collect.Lists;
 /**
  * A technical installation which can serve dataset(s).
  */
-public class Installation implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable {
+public class Installation implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable,
+  Identifiable {
 
   private UUID key;
   private UUID organizationKey;
@@ -45,6 +46,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   private List<Endpoint> endpoints = Lists.newArrayList();
   private List<MachineTag> machineTags = Lists.newArrayList();
   private List<Tag> tags = Lists.newArrayList();
+  private List<Identifier> identifiers = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
 
   @Override
@@ -186,6 +188,16 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   }
 
   @Override
+  public List<Identifier> getIdentifiers() {
+    return identifiers;
+  }
+
+  @Override
+  public void setIdentifiers(List<Identifier> identifiers) {
+    this.identifiers = identifiers;
+  }
+
+  @Override
   public List<Comment> getComments() {
     return comments;
   }
@@ -211,6 +223,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
                             endpoints,
                             machineTags,
                             tags,
+                            identifiers,
                             comments);
   }
 
@@ -232,6 +245,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
              && Objects.equal(this.endpoints, that.endpoints)
              && Objects.equal(this.machineTags, that.machineTags)
              && Objects.equal(this.tags, that.tags)
+             && Objects.equal(this.identifiers, that.identifiers)
              && Objects.equal(this.comments, that.comments);
     }
     return false;
@@ -254,6 +268,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
       .add("endpoints", endpoints)
       .add("machineTags", machineTags)
       .add("tags", tags)
+      .add("identifiers", identifiers)
       .add("comments", comments)
       .toString();
   }
