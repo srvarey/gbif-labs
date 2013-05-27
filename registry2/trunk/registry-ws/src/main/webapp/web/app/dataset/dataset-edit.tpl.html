@@ -1,0 +1,27 @@
+<h4>Overview</h4>
+<p class="muted">This information appears on the dataset profile, organization pages, search results, and beyond.  It should be the same as found in the GBIF internal systems, such as the IMS</p>
+<hr/>
+<form id="datasetEdit" novalidate class="form-horizontal">
+  <fieldset class="control-group">
+    <label class="control-label" for="title">Title</label>
+    <div class="controls">
+      <input id="title" maxlength="255" type="text" name="title" ng-model="dataset.title" value="{{dataset.title}}">
+      <p class="muted"><small>Enter an accurate dataset title as it is used in many key places.</small></p>
+    </div>      
+      
+    <label class="control-label" for="description">Description</label>
+    <div class="controls">
+      <textarea name="description id="description" ng-model="dataset.description" value="{{dataset.description}}"></textarea>
+      <p class="muted"><small>Provide a meaningful description of the dataset, so a user will understand what the dataset is.</small></p>
+    </div>
+      
+    <div class="form-actions">
+      <button class="btn primary-btn" ng-click="cancelEdit()">Cancel</button>
+      <button class="btn primary-btn" ng-click="save(dataset)" type="submit">Save changes</button>
+    </div>            
+    <div class="form-actions">
+      <small><a href="">Delete this dataset</a></small>
+      <p><small class="muted">A deletion may be reverted at a later date</small></p>
+    </div>            
+  </fieldset>
+</form>

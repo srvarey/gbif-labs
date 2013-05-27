@@ -1,5 +1,10 @@
-angular.module('node', ['ngResource', 'resources.node', 'services.notifications', 
-  'identifier', 'tag', 'machinetag', 'comment'])
+angular.module('node', [
+  'ngResource', 
+  'services.notifications', 
+  'identifier', 
+  'tag', 
+  'machinetag', 
+  'comment'])
 
 /**
  * Nested stated provider using dot notation (item.detail has a parent of item) and the 
@@ -8,7 +13,7 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams, Node) {
   $stateProvider.state('node', {
-    url: '/{type}/{key}',  // {type} to provide context to things like identifier 
+    url: '/node/{key}',  
     abstract: true, 
     templateUrl: 'app/node/node-main.tpl.html',
     controller: 'NodeCtrl',
@@ -31,24 +36,56 @@ angular.module('node', ['ngResource', 'resources.node', 'services.notifications'
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
+    context: 'node', // necessary for reusing the components
   })
   .state('node.tag', {  
     url: '/tag',   
     templateUrl: 'app/common/tag-list.tpl.html',
     controller: "TagCtrl",  
+    context: 'node', // necessary for reusing the components
   })
   .state('node.machinetag', {  
     url: '/machineTag',   
     templateUrl: 'app/common/machinetag-list.tpl.html',
     controller: "MachinetagCtrl",  
+    context: 'node', // necessary for reusing the components
   })
   .state('node.comment', {  
     url: '/comment',   
     templateUrl: 'app/common/comment-list.tpl.html',
     controller: "CommentCtrl",  
+    context: 'node', // necessary for reusing the components
   })
 }])
 
+/**
+ * RESTfully backed Node resource
+ */
+.factory('Node', function ($resource, $q) {
+  var Node = $resource('../node/:key', {key : '@key'}, {
+    save : {method:'PUT'}
+  });  
+  
+  // A synchronous get, with a failure callback on error
+  Node.getSync = function (key, failureCb) {
+    var deferred = $q.defer();
+    Node.get({key: key}, function(successData) {
+      deferred.resolve(successData); 
+    }, function(errorData) {
+      deferred.reject(); // you could optionally pass error data here
+      if (failureCb) {
+        failureCb();
+      }
+    });
+    return deferred.promise;
+  };
+  
+  return Node;
+})
+
+/**
+ * All operations relating to CRUD go through this controller. 
+ */
 .controller('NodeCtrl', function ($scope, $state, $resource, item, Node, notifications) {
   $scope.node = item;
   

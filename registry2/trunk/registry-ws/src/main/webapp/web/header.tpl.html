@@ -7,7 +7,16 @@
             <a href="#/home">Home</a>
           </li>
           <li>
-            <a href="#nodeSearch">Nodes</a>
+            <a ng-class="{ active: $state.includes('organization') }" href="">Organization</a>
+          </li>
+          <li>
+            <a ng-class="{ active: $state.includes('dataset') }" href="">Datasets</a>
+          </li>
+          <li>
+            <a ng-class="{ active: $state.includes('installation') }" href="">Installation</a>
+          </li>
+          <li>
+            <a ng-class="{ active: $state.includes('node') }" href="">Node</a>
           </li>
         </ul>
         

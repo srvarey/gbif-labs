@@ -1,4 +1,8 @@
-angular.module('search', ['resources.node']) 
+angular.module('search', [
+  'organization',
+  'dataset',
+  'installation',
+  'node']) 
 
 .config(['$stateProvider', function ($stateProvider, $stateParams) {
   $stateProvider.state('search', {

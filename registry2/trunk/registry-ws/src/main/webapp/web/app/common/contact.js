@@ -21,7 +21,7 @@ angular.module('identifier', [])
   ];	
   
   var Identifier = $resource('../:type/:key/identifier/:identifierKey', {
-    type : $stateParams.type,
+    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
     key : $stateParams.key,  
     identifierKey : '@key'}, {
       save : {method:'PUT'}

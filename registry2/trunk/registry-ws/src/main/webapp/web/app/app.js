@@ -3,8 +3,9 @@ angular.module('app', [
   'ngSanitize', // for the likes of bind-html
   'services.notifications',
   'search',
+  'dataset',
   'node',
-  'resources.node'])
+  ])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('', {redirectTo: '/search'});
