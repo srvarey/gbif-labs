@@ -86,13 +86,17 @@
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
     <commons-beanutils.version>1.8.3</commons-beanutils.version>
     <commons-digester.version>3.2</commons-digester.version>
-    <gbif-api.version>0.2</gbif-api.version>
-    <gbif-common.version>0.10</gbif-common.version>
-    <gbif-common-mybatis.version>0.5</gbif-common-mybatis.version>
+    <gbif-api.version>0.4-SNAPSHOT</gbif-api.version>
+    <gbif-common.version>0.11</gbif-common.version>
+    <gbif-common-mybatis.version>0.6</gbif-common-mybatis.version>
+    <gbif-common-ws.version>0.8-SNAPSHOT</gbif-common-ws.version>
+    <gbif-api.version>0.4-SNAPSHOT</gbif-api.version>
+    <gbif-common.version>0.11</gbif-common.version>
+    <gbif-common-mybatis.version>0.6</gbif-common-mybatis.version>
     <gbif-common-ws.version>0.8-SNAPSHOT</gbif-common-ws.version>
     <gbif-common-test.version>0.5</gbif-common-test.version>
-    <gbif-common-service.version>0.4</gbif-common-service.version>
-    <gbif-common-search.version>0.7-SNAPSHOT</gbif-common-search.version>
+    <gbif-common-service.version>0.5</gbif-common-service.version>
+    <gbif-common-search.version>0.7</gbif-common-search.version>
     <gbif-parsers.version>0.4</gbif-parsers.version>
     <filemaker.version>12.2.94</filemaker.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
@@ -102,7 +106,7 @@
     <jackson.version>1.9.11</jackson.version>
     <jersey.version>1.17.1</jersey.version>
     <jsr311-api.version>1.0</jsr311-api.version>
-    <logback.version>1.0.11</logback.version>
+    <logback.version>1.0.13</logback.version>
     <mockito.version>1.9.5</mockito.version>
     <mybatis.version>3.2.2</mybatis.version>
     <mybatis-guice.version>3.3</mybatis-guice.version>
@@ -116,7 +120,7 @@
     <validation-api.version>1.1.0.Final</validation-api.version>
     <junit.version>4.11</junit.version>
     <bval.version>0.5</bval.version>
-    <solr.version>4.2.1</solr.version>
+    <solr.version>4.3.0</solr.version>
     <grizzly-servlet-webserver.version>1.9.57</grizzly-servlet-webserver.version>
     <liquibase.version>2.0.5</liquibase.version>
   </properties>
