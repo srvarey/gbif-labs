@@ -179,6 +179,9 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertEquals("The organization should have only 1 dataset", 1, owned.getResults().size());
     assertEquals("The organization should own the dataset created", owned.getResults().get(0).getKey(),
       dataset.getKey());
+
+    assertEquals("The organization should have 1 dataset count", 1,
+      organizationService.get(dataset.getOwningOrganizationKey()).getNumDatasets());
   }
 
   // Easier to test this here than InstallationIT due to our utility dataset factory
