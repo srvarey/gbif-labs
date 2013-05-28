@@ -5,7 +5,7 @@
   <!-- Auto-mapping and eager loading of sub resources  -->
   <resultMap id="ORGANIZATION_MAP" type="Organization" autoMapping="true">
     <id property="key" column="key"/>
-    <association property="numDatasets" column="key" select="countDatasets" />
+    <association property="numOwnedDatasets" column="key" select="countOwnedDatasets" />
     <collection property="contacts" column="key" select="listContacts"/>
     <collection property="endpoints" column="key" select="listEndpoints"/>
     <collection property="machineTags" column="key" select="listMachineTags"/>
@@ -95,7 +95,7 @@
     #{modifiedBy}
   </sql>
   
-  <select id="countDatasets" resultType="int">
+  <select id="countOwnedDatasets" resultType="int">
     SELECT COUNT(*) AS num_datasets FROM dataset WHERE deleted IS NULL AND owning_organization_key = #{key}
   </select>
 

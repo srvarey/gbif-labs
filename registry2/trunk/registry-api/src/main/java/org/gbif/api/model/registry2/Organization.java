@@ -57,7 +57,7 @@ public class Organization
   private String postalCode;
   private BigDecimal latitude;
   private BigDecimal longitude;
-  private int numDatasets;
+  private int numOwnedDatasets;
   private String createdBy;
   private String modifiedBy;
   private Date created;
@@ -285,12 +285,12 @@ public class Organization
   }
 
   @Min(0)
-  public int getNumDatasets() {
-    return numDatasets;
+  public int getNumOwnedDatasets() {
+    return numOwnedDatasets;
   }
 
-  public void setNumDatasets(int numDatasets) {
-    this.numDatasets = numDatasets;
+  public void setNumOwnedDatasets(int numOwnedDatasets) {
+    this.numOwnedDatasets = numOwnedDatasets;
   }
 
   @NotNull
@@ -393,8 +393,7 @@ public class Organization
                             country,
                             postalCode,
                             latitude,
-                            longitude,
-                            numDatasets,
+                            longitude, numOwnedDatasets,
                             createdBy,
                             modifiedBy,
                             created,
@@ -431,7 +430,7 @@ public class Organization
              && Objects.equal(this.postalCode, that.postalCode)
              && Objects.equal(this.latitude, that.latitude)
              && Objects.equal(this.longitude, that.longitude)
-             && Objects.equal(this.numDatasets, that.numDatasets)
+             && Objects.equal(this.numOwnedDatasets, that.numOwnedDatasets)
              && Objects.equal(this.createdBy, that.createdBy)
              && Objects.equal(this.modifiedBy, that.modifiedBy)
              && Objects.equal(this.created, that.created)
@@ -469,7 +468,7 @@ public class Organization
       .add("postalCode", postalCode)
       .add("latitude", latitude)
       .add("longitude", longitude)
-      .add("numDatasets", numDatasets)
+      .add("numDatasets", numOwnedDatasets)
       .add("createdBy", createdBy)
       .add("modifiedBy", modifiedBy)
       .add("created", created)
