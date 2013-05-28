@@ -334,4 +334,17 @@
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
   </select>  
+
+  <!--
+   Append safe ordering, omitting deleted entities
+  -->
+  <select id="organizationsByCountry" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o
+    WHERE o.deleted IS NULL AND o.country = #{country,jdbcType=OTHER}
+    ORDER BY o.created, o.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>
 </mapper>

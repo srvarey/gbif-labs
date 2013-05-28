@@ -58,7 +58,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.CharMatcher;
@@ -157,20 +156,6 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Override
   public T get(@PathParam("key") UUID key) {
     return WithMyBatis.get(mapper, key);
-  }
-
-  /**
-   * All network entities support simple (!) search with "&q=".
-   * This is to support the console user interface, and is in addition to any complex, faceted search that might
-   * additionally be supported, such as dataset search.
-   */
-  @GET
-  public PagingResponse<T> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
-    if (Strings.isNullOrEmpty(query)) {
-      return list(page);
-    } else {
-      return search(query, page);
-    }
   }
 
   /**

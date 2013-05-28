@@ -46,8 +46,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
+import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -91,6 +93,22 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   public Node get(@PathParam("key") UUID key) {
     return nodeAugmenter.augment(super.get(key));
   }
+
+
+  /**
+   * All network entities support simple (!) search with "&q=".
+   * This is to support the console user interface, and is in addition to any complex, faceted search that might
+   * additionally be supported, such as dataset search.
+   */
+  @GET
+  public PagingResponse<Node> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    if (Strings.isNullOrEmpty(query)) {
+      return list(page);
+    } else {
+      return search(query, page);
+    }
+  }
+
 
   @Override
   public PagingResponse<Node> list(@Nullable Pageable page) {

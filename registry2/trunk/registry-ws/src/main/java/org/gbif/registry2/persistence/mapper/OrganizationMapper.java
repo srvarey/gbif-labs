@@ -17,6 +17,7 @@ package org.gbif.registry2.persistence.mapper;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.registry2.Organization;
+import org.gbif.api.vocabulary.Country;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,5 +36,11 @@ public interface OrganizationMapper extends BaseNetworkEntityMapper<Organization
    * At higher levels this appears on the NodeService, but it makes a cleaner MyBatis implementation on this mapper.
    */
   List<Organization> pendingEndorsements(@Nullable @Param("page") Pageable page);
+
+  /**
+   * At higher levels this appears on the OrganizationService.
+   * Selects all organizations by the country of their address.
+   */
+  List<Organization> organizationsByCountry(@Param("country") Country country, @Nullable @Param("page") Pageable page);
 
 }

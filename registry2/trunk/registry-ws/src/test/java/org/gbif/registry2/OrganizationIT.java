@@ -18,6 +18,7 @@ import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.utils.Nodes;
 import org.gbif.registry2.utils.Organizations;
 import org.gbif.registry2.ws.resources.NodeResource;
@@ -86,6 +87,29 @@ public class OrganizationIT extends NetworkEntityTest<Organization> {
     this.getService().update(o);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 0);
     assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 1);
+  }
+
+  @Test
+  public void testByCountry() {
+    Node node = Nodes.newInstance();
+    nodeService.create(node);
+    node = nodeService.list(new PagingRequest()).getResults().get(0);
+
+    createOrgs(node.getKey(), Country.ANGOLA, Country.ANGOLA, Country.DENMARK, Country.FRANCE, Country.FRANCE,
+      Country.UNKNOWN);
+
+    assertResultsOfSize(service.listByCountry(Country.ANGOLA, new PagingRequest()), 2);
+    assertResultsOfSize(service.listByCountry(Country.FRANCE, new PagingRequest()), 2);
+    assertResultsOfSize(service.listByCountry(Country.UNKNOWN, new PagingRequest()), 1);
+    assertResultsOfSize(service.listByCountry(Country.GERMANY, new PagingRequest()), 0);
+  }
+
+  private void createOrgs(UUID nodeKey, Country ... countries) {
+    for (Country c : countries) {
+      Organization o = Organizations.newInstance(nodeKey);
+      o.setCountry(c);
+      o.setKey(service.create(o));
+    }
   }
 
   @Override
