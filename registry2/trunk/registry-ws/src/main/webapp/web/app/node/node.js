@@ -86,7 +86,7 @@ angular.module('node', [
 /**
  * All operations relating to CRUD go through this controller. 
  */
-.controller('NodeCtrl', function ($scope, $state, $resource, item, Node, notifications) {
+.controller('NodeCtrl', function ($scope, $state, $resource, $http, item, Node, notifications) {
   $scope.node = item;
   
   // To enable the nested views update the counts, for the side bar
@@ -97,6 +97,16 @@ angular.module('node', [
     machinetag : _.size($scope.node.machineTags || {}),
     comment : _.size($scope.node.comments || {})
   };
+  
+  // populate the dropdowns
+  var lookup = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope[parameter] = result});
+  }
+	lookup('../enumeration/org.gbif.api.vocabulary.registry2.ParticipationStatus','participationStatuses');  
+	lookup('../enumeration/org.gbif.api.vocabulary.registry2.GbifRegion','gbifRegions');  
+	lookup('../enumeration/org.gbif.api.vocabulary.registry2.Continent','continents');  
+	lookup('../enumeration/org.gbif.api.vocabulary.Country','countries');  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
