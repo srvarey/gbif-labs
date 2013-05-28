@@ -15,6 +15,8 @@
  */
 package org.gbif.registry2.ws.resources;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Network;
 import org.gbif.api.service.registry2.NetworkService;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
@@ -25,8 +27,13 @@ import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NetworkMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 
+import javax.annotation.Nullable;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 
+import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -58,6 +65,21 @@ public class NetworkResource extends BaseNetworkEntityResource<Network> implemen
           tagMapper,
           Network.class,
           eventBus);
+  }
+
+
+  /**
+   * All network entities support simple (!) search with "&q=".
+   * This is to support the console user interface, and is in addition to any complex, faceted search that might
+   * additionally be supported, such as dataset search.
+   */
+  @GET
+  public PagingResponse<Network> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    if (Strings.isNullOrEmpty(query)) {
+      return list(page);
+    } else {
+      return search(query, page);
+    }
   }
 
 }

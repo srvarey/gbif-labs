@@ -17,9 +17,12 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.ws.client.guice.RegistryWs;
+import org.gbif.ws.client.QueryParamBuilder;
 
 import java.util.UUID;
+import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
@@ -43,6 +46,11 @@ public class OrganizationWsClient extends BaseNetworkEntityClient<Organization>
   @Override
   public PagingResponse<Dataset> ownedDatasets(UUID organizationKey, Pageable page) {
     return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(organizationKey), "ownedDataset");
+  }
+
+  @Override
+  public PagingResponse<Organization> listByCountry(Country country, @Nullable Pageable page) {
+    return get(GenericTypes.PAGING_ORGANIZATION, null, QueryParamBuilder.create("country", country).build(), page);
   }
 
 }

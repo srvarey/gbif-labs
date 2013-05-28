@@ -16,6 +16,7 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Organization;
+import org.gbif.api.vocabulary.Country;
 
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -23,7 +24,6 @@ import javax.validation.constraints.NotNull;
 
 public interface OrganizationService
   extends NetworkEntityService<Organization> {
-
 
   /**
    * Provides paging service to list datasets hosted by a specific organization.
@@ -34,4 +34,10 @@ public interface OrganizationService
    * Provides paging service to list datasets owned by a specific organization.
    */
   PagingResponse<Dataset> ownedDatasets(@NotNull UUID organizationKey, @Nullable Pageable page);
+
+  /**
+   * Provides access to all organizations from a country.
+   */
+  PagingResponse<Organization> listByCountry(Country country, @Nullable Pageable page);
+
 }

@@ -59,6 +59,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 import com.google.common.io.ByteStreams;
@@ -118,6 +119,21 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Override
   public Dataset get(@PathParam("key") UUID key) {
     return merge(getPreferredMetadataDataset(key), super.get(key));
+  }
+
+
+  /**
+   * All network entities support simple (!) search with "&q=".
+   * This is to support the console user interface, and is in addition to any complex, faceted search that might
+   * additionally be supported, such as dataset search.
+   */
+  @GET
+  public PagingResponse<Dataset> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    if (Strings.isNullOrEmpty(query)) {
+      return list(page);
+    } else {
+      return search(query, page);
+    }
   }
 
   @Override

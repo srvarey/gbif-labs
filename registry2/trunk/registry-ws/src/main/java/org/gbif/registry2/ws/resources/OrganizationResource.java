@@ -17,6 +17,7 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.persistence.mapper.CommentMapper;
 import org.gbif.registry2.persistence.mapper.ContactMapper;
 import org.gbif.registry2.persistence.mapper.DatasetMapper;
@@ -27,11 +28,14 @@ import org.gbif.registry2.persistence.mapper.OrganizationMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 
 import java.util.UUID;
+import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
+import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -44,6 +48,7 @@ import com.google.inject.Singleton;
 public class OrganizationResource extends BaseNetworkEntityResource<Organization> implements OrganizationService {
 
   private final DatasetMapper datasetMapper;
+  private final OrganizationMapper orgMapper;
 
   @Inject
   public OrganizationResource(
@@ -66,19 +71,44 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
       Organization.class,
       eventBus);
     this.datasetMapper = datasetMapper;
+    this.orgMapper = organizationMapper;
+  }
+
+  /**
+   * All network entities support simple (!) search with "&q=".
+   * This is to support the console user interface, and is in addition to any complex, faceted search that might
+   * additionally be supported, such as dataset search.
+   *
+   * Organizations can also be filtered by their country, but a search and country filter cannot be combined.
+   */
+  @GET
+  public PagingResponse<Organization> list(@Nullable @QueryParam("country") Country country,
+    @Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    if (country != null) {
+      return listByCountry(country, page);
+    } else if (!Strings.isNullOrEmpty(query)) {
+      return search(query, page);
+    } else {
+      return list(page);
+    }
   }
 
   @GET
   @Path("{key}/hostedDataset")
   @Override
   public PagingResponse<Dataset> hostedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
-    return new PagingResponse<Dataset>(page, null, datasetMapper.listDatasetsHostedBy(organizationKey, page));
+    return pagingResponse(page, null, datasetMapper.listDatasetsHostedBy(organizationKey, page));
   }
 
   @GET
   @Path("{key}/ownedDataset")
   @Override
   public PagingResponse<Dataset> ownedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
-    return new PagingResponse<Dataset>(page, null, datasetMapper.listDatasetsOwnedBy(organizationKey, page));
+    return pagingResponse(page, null, datasetMapper.listDatasetsOwnedBy(organizationKey, page));
+  }
+
+  @Override
+  public PagingResponse<Organization> listByCountry(Country country, @Nullable Pageable page) {
+    return pagingResponse(page, null, orgMapper.organizationsByCountry(country, page));
   }
 }
