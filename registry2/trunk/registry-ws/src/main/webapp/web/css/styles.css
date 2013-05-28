@@ -57,6 +57,10 @@ dl.spaced-list dd {
   height: 100%; 
 }
 
+/* Empty DD need a height - fix for bootstrap */
+.dl-horizontal dd {
+  min-height: 20px;
+}
 
 /* Override bootstrap for menu */
 .nav > li > a.active {
