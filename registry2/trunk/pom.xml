@@ -96,7 +96,7 @@
     <gbif-common-ws.version>0.8-SNAPSHOT</gbif-common-ws.version>
     <gbif-common-test.version>0.5</gbif-common-test.version>
     <gbif-common-service.version>0.5</gbif-common-service.version>
-    <gbif-common-search.version>0.7</gbif-common-search.version>
+    <gbif-common-search.version>0.8-SNAPSHOT</gbif-common-search.version>
     <gbif-parsers.version>0.4</gbif-parsers.version>
     <filemaker.version>12.2.94</filemaker.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
