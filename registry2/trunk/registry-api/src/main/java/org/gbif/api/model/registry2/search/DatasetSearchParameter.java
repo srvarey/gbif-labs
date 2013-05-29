@@ -16,10 +16,10 @@
 package org.gbif.api.model.registry2.search;
 
 import org.gbif.api.model.common.search.SearchParameter;
-import org.gbif.api.vocabulary.Continent;
 import org.gbif.api.vocabulary.Country;
-import org.gbif.api.vocabulary.DatasetSubtype;
-import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.registry2.Continent;
+import org.gbif.api.vocabulary.registry2.DatasetSubtype;
+import org.gbif.api.vocabulary.registry2.DatasetType;
 
 import java.util.UUID;
 
@@ -34,7 +34,7 @@ public enum DatasetSearchParameter implements SearchParameter {
   NETWORK_ORIGIN(UUID.class),
 
   /**
-   * {@link org.gbif.api.vocabulary.DatasetType} enumeration value.
+   * {@link org.gbif.api.vocabulary.registry2.DatasetType} enumeration value.
    */
   TYPE(DatasetType.class),
 
