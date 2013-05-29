@@ -31,17 +31,21 @@ public class SolrInitializer extends ExternalResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(SolrInitializer.class);
   private final SolrServer solrServer;
+  private final DatasetIndexUpdateListener datasetIndexUpdater;
 
-  public SolrInitializer(SolrServer solrServer) {
+  public SolrInitializer(SolrServer solrServer, DatasetIndexUpdateListener datasetIndexUpdater) {
+    this.datasetIndexUpdater = datasetIndexUpdater;
     this.solrServer = solrServer;
   }
 
   @Override
   protected void before() throws Throwable {
-    Preconditions.checkNotNull(this.solrServer, "Misuse of class. SOLR Server has not been set");
+    Preconditions.checkNotNull(this.solrServer, "SolrServer is required");
+    DatasetSearchUpdateUtils.awaitUpdates(datasetIndexUpdater);
     LOG.info("Truncating SOLR");
     solrServer.deleteByQuery("*:*");
     solrServer.commit();
+    System.out.println("SOLR truncated: " + solrServer);
     LOG.info("SOLR truncated");
   }
 }
