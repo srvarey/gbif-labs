@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Stopwatch;
@@ -394,10 +393,10 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     createCountryDatasets(Country.DJIBOUTI, 1);
     createCountryDatasets(Country.HAITI, 7);
 
-    assertResultsOfSize(service.listByCountry(Country.UNKNOWN, new PagingRequest()), 0);
-    assertResultsOfSize(service.listByCountry(Country.ANDORRA, new PagingRequest()), 3);
-    assertResultsOfSize(service.listByCountry(Country.DJIBOUTI, new PagingRequest()), 1);
-    assertResultsOfSize(service.listByCountry(Country.HAITI, new PagingRequest()), 7);
+    assertResultsOfSize(service.listByCountry(Country.UNKNOWN, null, new PagingRequest()), 0);
+    assertResultsOfSize(service.listByCountry(Country.ANDORRA, null, new PagingRequest()), 3);
+    assertResultsOfSize(service.listByCountry(Country.DJIBOUTI, null, new PagingRequest()), 1);
+    assertResultsOfSize(service.listByCountry(Country.HAITI, null, new PagingRequest()), 7);
   }
 
   private void createCountryDatasets(Country country, int number){

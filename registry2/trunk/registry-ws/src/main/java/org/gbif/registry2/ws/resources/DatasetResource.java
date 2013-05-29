@@ -26,6 +26,7 @@ import org.gbif.api.model.registry2.search.DatasetSuggestRequest;
 import org.gbif.api.service.registry2.DatasetSearchService;
 import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.DatasetType;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.metadata.EMLWriter;
 import org.gbif.registry2.metadata.parse.DatasetParser;
@@ -130,9 +131,11 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
    */
   @GET
   public PagingResponse<Dataset> list(@Nullable @QueryParam("country") Country country,
-    @Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    @Nullable @QueryParam("type") DatasetType type,
+    @Nullable @QueryParam("q") String query,
+    @Nullable @Context Pageable page) {
     if (country != null) {
-      return listByCountry(country, page);
+      return listByCountry(country, type, page);
     } else if (!Strings.isNullOrEmpty(query)) {
       return search(query, page);
     } else {
@@ -141,8 +144,8 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   }
 
   @Override
-  public PagingResponse<Dataset> listByCountry(Country country, Pageable page) {
-    return pagingResponse(page, null, datasetMapper.listDatasetsPublishedFrom(country, page));
+  public PagingResponse<Dataset> listByCountry(Country country, DatasetType type, Pageable page) {
+    return pagingResponse(page, null, datasetMapper.listDatasetsPublishedFrom(country, type, page));
   }
 
 
