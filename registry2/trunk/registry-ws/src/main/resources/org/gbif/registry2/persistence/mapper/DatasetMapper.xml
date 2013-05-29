@@ -169,9 +169,17 @@
     <if test="query != null" >
       <include refid="SIMPLE_SEARCH"/>
     </if>
+  </select>
+
+  <select id="countWithFilter" resultType="Integer">
+    SELECT COUNT(*)
+    FROM dataset d
+    WHERE deleted IS NULL
+    <if test="query != null" >
+      <include refid="SIMPLE_SEARCH"/>
+    </if>
     <if test="type != null" >
       AND d.type = #{type,jdbcType=OTHER}
-      AND type =
     </if>
     <if test="organizationKey != null" >
       AND d.owning_organization_key = #{organizationKey,jdbcType=OTHER}

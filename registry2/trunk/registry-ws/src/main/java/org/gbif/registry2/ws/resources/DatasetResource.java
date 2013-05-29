@@ -47,6 +47,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -145,7 +146,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
 
   @Override
   public PagingResponse<Dataset> listByCountry(Country country, DatasetType type, Pageable page) {
-    long total = datasetMapper.count(null, country, type, null, null, null);
+    long total = datasetMapper.countWithFilter(null, country, type, null, null, null);
     return pagingResponse(page, total, datasetMapper.listDatasetsPublishedFrom(country, type, page));
   }
 
@@ -183,7 +184,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
 
   /**
    * Augments a list of datasets with information from their preferred metadata document.
-   *
+   * 
    * @return a the same paging response with a new list of augmented dataset instances
    */
   private PagingResponse<Dataset> augmentWithMetadata(PagingResponse<Dataset> resp) {
@@ -199,10 +200,9 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
    * Merges an original dataset with another dataset, overwriting all persisted properties, i.e. excluding all
    * extended EML properties. If the second dataset contains null values, these will replace any existing values
    * in the original dataset.
-   *
-   * @param d  original dataset, if null a new instance will be created
+   * 
+   * @param d original dataset, if null a new instance will be created
    * @param d2 the dataset that is used to update the original d
-   *
    * @return the orignal dataset instance with merged information from d2
    */
   private Dataset merge(@Nullable Dataset d, Dataset d2) {
@@ -268,7 +268,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Consumes(MediaType.APPLICATION_XML)
   public Metadata insertMetadata(@PathParam("key") UUID datasetKey, @Context HttpServletRequest request,
     @Context SecurityContext security) {
-    //TODO: temporary until we implement the security bit
+    // TODO: temporary until we implement the security bit
     String user = (security != null && security.getUserPrincipal() != null) ? security.getUserPrincipal().getName()
       : "GBIF Document Upload";
     try {
@@ -323,9 +323,10 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
 
     // check if we should update our registered base information
     if (dataset.isLockedForAutoUpdate()) {
-      LOG.info(
-        "Dataset {} locked for automatic updates. Uploaded metadata document not does not modify registered dataset information",
-        datasetKey);
+      LOG
+        .info(
+          "Dataset {} locked for automatic updates. Uploaded metadata document not does not modify registered dataset information",
+          datasetKey);
 
     } else {
       // we retrieve the preferred document and only update if this new metadata is the preferred one
