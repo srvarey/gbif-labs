@@ -19,6 +19,7 @@ import org.gbif.api.vocabulary.registry2.DatasetType;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
@@ -62,7 +63,8 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
   /**
    * Count all datasets having all non null filters given.
    */
-  int count(@Nullable @Param("query") String query, @Nullable @Param("country") Country country, @Nullable @Param("type") DatasetType type,
+  int countWithFilter(@Nullable @Param("query") String query, @Nullable @Param("country") Country country,
+    @Nullable @Param("type") DatasetType type,
     @Nullable @Param("organizationKey") UUID organizationKey, @Nullable @Param("parentKey") UUID parentKey,
     @Nullable @Param("installationKey") UUID installationKey);
 
