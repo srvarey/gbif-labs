@@ -145,7 +145,8 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
 
   @Override
   public PagingResponse<Dataset> listByCountry(Country country, DatasetType type, Pageable page) {
-    return pagingResponse(page, null, datasetMapper.listDatasetsPublishedFrom(country, type, page));
+    long total = datasetMapper.count(null, country, type, null, null, null);
+    return pagingResponse(page, total, datasetMapper.listDatasetsPublishedFrom(country, type, page));
   }
 
 

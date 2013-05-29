@@ -169,8 +169,21 @@
     <if test="query != null" >
       <include refid="SIMPLE_SEARCH"/>
     </if>
-  </select>  
-  
+    <if test="type != null" >
+      AND d.type = #{type,jdbcType=OTHER}
+      AND type =
+    </if>
+    <if test="organizationKey != null" >
+      AND d.owning_organization_key = #{organizationKey,jdbcType=OTHER}
+    </if>
+    <if test="parentKey != null" >
+      AND d.parent_dataset_key = #{parentKey,jdbcType=OTHER}
+    </if>
+    <if test="installationKey != null" >
+      AND d.installation_key = #{installationKey,jdbcType=OTHER}
+    </if>
+  </select>
+
   <!-- TAGS -->
   <insert id="addTag">
     INSERT INTO dataset_tag(dataset_key,tag_key)
