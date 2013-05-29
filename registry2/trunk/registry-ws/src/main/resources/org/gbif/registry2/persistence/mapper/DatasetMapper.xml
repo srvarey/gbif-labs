@@ -391,6 +391,9 @@
     INNER JOIN organization o ON d.owning_organization_key = o.key
     WHERE o.country = #{country,jdbcType=OTHER}
     AND d.deleted IS NULL
+    <if test="type != null" >
+      AND d.type = #{type,jdbcType=OTHER}
+    </if>
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}

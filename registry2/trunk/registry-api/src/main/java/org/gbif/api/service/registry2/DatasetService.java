@@ -17,6 +17,7 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Metadata;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.DatasetType;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 
 import java.io.InputStream;
@@ -37,9 +38,12 @@ public interface DatasetService
 
   /**
    * Provides paging service to list datasets published, i.e. owned by organizations from a given country.
+   * @param country the hosting country
+   * @param type the optional dataset type filter
+   *
    * @return list of datasets ordered by creation date with latest coming first
    */
-  PagingResponse<Dataset> listByCountry(@NotNull Country country, @Nullable Pageable page);
+  PagingResponse<Dataset> listByCountry(@NotNull Country country, @Nullable DatasetType type, @Nullable Pageable page);
 
   /**
    * Lists all metadata descriptions available for a dataset and optionally filters them by document type.
