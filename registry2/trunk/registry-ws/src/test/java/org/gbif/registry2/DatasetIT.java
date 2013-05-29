@@ -28,6 +28,7 @@ import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.DatasetType;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.grizzly.RegistryServer;
 import org.gbif.registry2.search.DatasetIndexUpdateListener;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Stopwatch;
@@ -199,6 +201,22 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   }
 
   @Test
+  public void testTypedSearch() {
+    Dataset d = newEntity();
+    d.setType(DatasetType.CHECKLIST);
+    d = create(d, 1);
+    awaitUpdates(); // SOLR updates are asynchronous
+    assertSearch(d.getTitle(), 1); // 1 result expected for a simple search
+
+    DatasetSearchRequest req = new DatasetSearchRequest();
+    req.addTypeFilter(DatasetType.CHECKLIST);
+    SearchResponse<DatasetSearchResult, DatasetSearchParameter> resp = searchService.search(req);
+    assertNotNull(resp.getCount());
+    assertEquals("SOLR does not have the expected number of results for query[" + req + "]", Long.valueOf(1),
+      resp.getCount());
+  }
+
+  @Test
   public void testSearchListener() {
     Dataset d = newEntity();
     d = create(d, 1);
@@ -268,7 +286,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertNotNull(resp.getCount());
     assertEquals("SOLR does not have the expected number of results for query[" + query + "]", Long.valueOf(expected),
       resp.getCount());
-
   }
 
   @Override
