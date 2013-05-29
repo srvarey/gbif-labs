@@ -39,6 +39,7 @@ import org.gbif.registry2.guice.RegistryTestModules;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.validation.ValidationException;
 
 import com.google.common.base.Preconditions;
@@ -57,8 +58,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * A generic test for all network entities that implement all interfaces required by the BaseNetworkEntityResource.
  */
-public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & Taggable & MachineTaggable &
-  Commentable & Endpointable & Identifiable> {
+public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & Taggable & MachineTaggable & Commentable & Endpointable & Identifiable> {
 
   // Flushes the database on each run
   @ClassRule
@@ -83,12 +83,12 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
     this.service = service;
     // not so nice, but we know what we deal with in the tests
     // and this bundles most basic tests into one base test class without copy paste redundancy
-    contactService = (ContactService) service;
-    endpointService = (EndpointService) service;
-    machineTagService = (MachineTagService) service;
-    tagService = (TagService) service;
-    commentService = (CommentService) service;
-    identifierService = (IdentifierService) service;
+    contactService = service;
+    endpointService = service;
+    machineTagService = service;
+    tagService = service;
+    commentService = service;
+    identifierService = service;
   }
 
   @Test(expected = IllegalArgumentException.class)

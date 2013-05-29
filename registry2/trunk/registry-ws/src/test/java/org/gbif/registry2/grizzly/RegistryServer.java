@@ -125,7 +125,7 @@ public class RegistryServer implements TestRule {
   }
 
   public SolrServer getSolrServer() {
-    Preconditions.checkNotNull(datasetUpdater, "Misuse of class. SolrServer has not been set");
+    Preconditions.checkNotNull(solrServer, "Misuse of class. SolrServer has not been set");
     return solrServer;
   }
 

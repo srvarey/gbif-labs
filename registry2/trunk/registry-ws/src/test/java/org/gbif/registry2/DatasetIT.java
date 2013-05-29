@@ -32,6 +32,7 @@ import org.gbif.api.vocabulary.registry2.DatasetType;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.grizzly.RegistryServer;
 import org.gbif.registry2.search.DatasetIndexUpdateListener;
+import org.gbif.registry2.search.DatasetSearchUpdateUtils;
 import org.gbif.registry2.search.SolrInitializer;
 import org.gbif.registry2.utils.Datasets;
 import org.gbif.registry2.utils.Installations;
@@ -46,11 +47,9 @@ import org.gbif.utils.file.FileUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nullable;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -61,8 +60,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.gbif.registry2.guice.RegistryTestModules.webservice;
 import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
@@ -83,12 +80,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class DatasetIT extends NetworkEntityTest<Dataset> {
 
-  // how often to poll and wait for SOLR to update
-  private static final int SOLR_UPDATE_TIMEOUT_SECS = 10;
-  private static final int SOLR_UPDATE_POLL_MSECS = 10;
-
-  private static final Logger LOG = LoggerFactory.getLogger(DatasetIT.class);
-
   // Resets SOLR between each method
   @Rule
   public final SolrInitializer solrRule;
@@ -104,7 +95,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   public static Iterable<Object[]> data() {
     final Injector client = webserviceClient();
     final Injector webservice = webservice();
-
     return ImmutableList.<Object[]>of(
       new Object[] {
         webservice.getInstance(DatasetResource.class),
@@ -144,7 +134,8 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     solrServer = solrServer == null ? RegistryServer.INSTANCE.getSolrServer() : solrServer;
     this.datasetIndexUpdater =
       datasetIndexUpdater == null ? RegistryServer.INSTANCE.getDatasetUpdater() : datasetIndexUpdater;
-    this.solrRule = new SolrInitializer(solrServer);
+
+    this.solrRule = new SolrInitializer(solrServer, this.datasetIndexUpdater);
   }
 
   @Test
@@ -204,7 +195,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     Dataset d = newEntity();
     d.setType(DatasetType.CHECKLIST);
     d = create(d, 1);
-    awaitUpdates(); // SOLR updates are asynchronous
     assertSearch(d.getTitle(), 1); // 1 result expected for a simple search
 
     DatasetSearchRequest req = new DatasetSearchRequest();
@@ -278,7 +268,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
    * Utility to verify that after waiting for SOLR to update, the given query returns the expected count of results.
    */
   private void assertSearch(String query, int expected) {
-    awaitUpdates(); // SOLR updates are asynchronous
+    DatasetSearchUpdateUtils.awaitUpdates(datasetIndexUpdater); // SOLR updates are asynchronous
     DatasetSearchRequest req = new DatasetSearchRequest();
     req.setQ(query);
     SearchResponse<DatasetSearchResult, DatasetSearchParameter> resp = searchService.search(req);
@@ -306,26 +296,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     Dataset d = Datasets.newInstance(organizationKey);
     d.setInstallationKey(installationKey);
     return d;
-  }
-
-  /**
-   * Waits for SOLR update threads to finish.
-   */
-  public void awaitUpdates() {
-    try {
-      Stopwatch stopWatch = new Stopwatch().start();
-      while (datasetIndexUpdater.queuedUpdates() > 0) {
-        Thread.sleep(TimeUnit.MILLISECONDS.toMillis(SOLR_UPDATE_POLL_MSECS));
-        if (stopWatch.elapsed(TimeUnit.SECONDS) > SOLR_UPDATE_TIMEOUT_SECS) {
-          throw new IllegalStateException("Failing test due to unreasonable timeout on SOLR update");
-        }
-      }
-      LOG.debug("Waited {} msecs for SOLR update backlog to clear successfully",
-        stopWatch.elapsed(TimeUnit.MILLISECONDS));
-
-    } catch (InterruptedException e) {
-      throw Throwables.propagate(e);
-    }
   }
 
   @Test
@@ -385,8 +355,6 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertEquals("Created data should not change", d1.getCreated(), d3.getCreated());
   }
 
-
-
   @Test
   public void testByCountry() {
     createCountryDatasets(Country.ANDORRA, 3);
@@ -399,7 +367,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertResultsOfSize(service.listByCountry(Country.HAITI, null, new PagingRequest()), 7);
   }
 
-  private void createCountryDatasets(Country country, int number){
+  private void createCountryDatasets(Country country, int number) {
     Dataset d = newEntity();
     service.create(d);
 
@@ -409,7 +377,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     organizationService.update(org);
 
     // create datasets for it
-    for (int x=1; x<number; x++) {
+    for (int x = 1; x < number; x++) {
       service.create(newEntity(org.getKey(), d.getInstallationKey()));
     }
   }
