@@ -185,7 +185,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     UUID d2Key = datasetService.create(d2);
 
     // test node service
-    PagingResponse<Dataset> resp = nodeService.publishedDatasets(node.getKey(), null);
+    PagingResponse<Dataset> resp = nodeService.endorsedDatasets(node.getKey(), null);
     assertEquals(2, resp.getResults().size());
     // the last created dataset should be the first in the list
     assertEquals(d2Key, resp.getResults().get(0).getKey());

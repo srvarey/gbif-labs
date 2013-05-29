@@ -17,6 +17,7 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Metadata;
 import org.gbif.api.service.registry2.DatasetService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.QueryParamBuilder;
@@ -52,6 +53,11 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
       .type(MediaType.APPLICATION_XML)
       .entity(document)
       .post(Metadata.class);
+  }
+
+  @Override
+  public PagingResponse<Dataset> listByCountry(Country country, @Nullable Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, null, QueryParamBuilder.create("country", country).build(), page);
   }
 
   @Override

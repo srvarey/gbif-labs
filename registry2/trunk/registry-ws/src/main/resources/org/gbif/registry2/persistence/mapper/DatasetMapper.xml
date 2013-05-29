@@ -382,6 +382,21 @@
     </if>
   </select>
 
+  <!--
+   Append safe ordering, omitting deleted entities
+  -->
+  <select id="listDatasetsPublishedFrom" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    INNER JOIN organization o ON d.owning_organization_key = o.key
+    WHERE o.country = #{country,jdbcType=OTHER}
+    AND d.deleted IS NULL
+    ORDER BY d.created DESC, d.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>
+
   <select id="listConstituents" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
     FROM dataset d

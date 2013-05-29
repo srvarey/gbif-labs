@@ -156,7 +156,7 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   @GET
   @Override
   @Path("{key}/dataset")
-  public PagingResponse<Dataset> publishedDatasets(@PathParam("key")  UUID nodeKey, @Context Pageable page) {
+  public PagingResponse<Dataset> endorsedDatasets(@PathParam("key") UUID nodeKey, @Context Pageable page) {
     return pagingResponse(page, null, datasetMapper.listDatasetsEndorsedBy(nodeKey, page));
   }
 

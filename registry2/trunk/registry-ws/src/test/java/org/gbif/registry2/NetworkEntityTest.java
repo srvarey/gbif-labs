@@ -361,4 +361,11 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
     return service;
   }
 
+  protected void assertResultsOfSize(PagingResponse<T> results, int size) {
+    assertNotNull(results);
+    assertNotNull(results.getResults());
+    assertEquals("Unexpected result size for current test state", size, results.getResults().size());
+  }
+
+
 }

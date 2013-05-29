@@ -25,6 +25,7 @@ import org.gbif.api.model.registry2.search.DatasetSearchResult;
 import org.gbif.api.model.registry2.search.DatasetSuggestRequest;
 import org.gbif.api.service.registry2.DatasetSearchService;
 import org.gbif.api.service.registry2.DatasetService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.metadata.EMLWriter;
 import org.gbif.registry2.metadata.parse.DatasetParser;
@@ -128,13 +129,22 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
    * additionally be supported, such as dataset search.
    */
   @GET
-  public PagingResponse<Dataset> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
-    if (Strings.isNullOrEmpty(query)) {
-      return list(page);
-    } else {
+  public PagingResponse<Dataset> list(@Nullable @QueryParam("country") Country country,
+    @Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    if (country != null) {
+      return listByCountry(country, page);
+    } else if (!Strings.isNullOrEmpty(query)) {
       return search(query, page);
+    } else {
+      return list(page);
     }
   }
+
+  @Override
+  public PagingResponse<Dataset> listByCountry(Country country, Pageable page) {
+    return pagingResponse(page, null, datasetMapper.listDatasetsPublishedFrom(country, page));
+  }
+
 
   @Override
   public PagingResponse<Dataset> search(String query, @Nullable Pageable page) {
