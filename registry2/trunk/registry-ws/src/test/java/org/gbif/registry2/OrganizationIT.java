@@ -13,7 +13,6 @@
 package org.gbif.registry2;
 
 import org.gbif.api.model.common.paging.PagingRequest;
-import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.NodeService;
@@ -35,9 +34,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import static org.gbif.registry2.guice.RegistryTestModules.webservice;
 import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * This is parameterized to run the same test routines for the following:
@@ -118,12 +114,6 @@ public class OrganizationIT extends NetworkEntityTest<Organization> {
     Node node = nodeService.get(key);
     Organization o = Organizations.newInstance(node.getKey());
     return o;
-  }
-
-  private void assertResultsOfSize(PagingResponse<Organization> results, int size) {
-    assertNotNull(results);
-    assertNotNull(results.getResults());
-    assertEquals("Unexpected result size for current test state", size, results.getResults().size());
   }
 
 }

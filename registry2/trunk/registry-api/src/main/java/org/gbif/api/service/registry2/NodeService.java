@@ -58,9 +58,8 @@ public interface NodeService extends NetworkEntityService<Node> {
   List<Country> listNodeCountries();
 
   /**
-   * Provides paging service to list datasets published by organizations endorsed by the given node.
+   * Provides paging service to list datasets published, i.e. owned by organizations endorsed by the given node.
    * @return list of datasets ordered by creation date with latest coming first
    */
-  PagingResponse<Dataset> publishedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page);
-
+  PagingResponse<Dataset> endorsedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page);
 }

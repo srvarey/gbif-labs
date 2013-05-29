@@ -27,6 +27,7 @@ import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 import org.gbif.registry2.grizzly.RegistryServer;
 import org.gbif.registry2.search.DatasetIndexUpdateListener;
@@ -277,10 +278,14 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     // owning organization (required field)
     Organization o = Organizations.newInstance(nodeKey);
     UUID organizationKey = organizationService.create(o);
-    // hosting technical installation (required field)
+
     Installation i = Installations.newInstance(organizationKey);
     UUID installationKey = installationService.create(i);
 
+    return newEntity(organizationKey, installationKey);
+  }
+
+  private Dataset newEntity(UUID organizationKey, UUID installationKey) {
     // the dataset
     Dataset d = Datasets.newInstance(organizationKey);
     d.setInstallationKey(installationKey);
@@ -363,4 +368,34 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertEquals("Tanzanian Entomological Collection", d3.getTitle());
     assertEquals("Created data should not change", d1.getCreated(), d3.getCreated());
   }
+
+
+
+  @Test
+  public void testByCountry() {
+    createCountryDatasets(Country.ANDORRA, 3);
+    createCountryDatasets(Country.DJIBOUTI, 1);
+    createCountryDatasets(Country.HAITI, 7);
+
+    assertResultsOfSize(service.listByCountry(Country.UNKNOWN, new PagingRequest()), 0);
+    assertResultsOfSize(service.listByCountry(Country.ANDORRA, new PagingRequest()), 3);
+    assertResultsOfSize(service.listByCountry(Country.DJIBOUTI, new PagingRequest()), 1);
+    assertResultsOfSize(service.listByCountry(Country.HAITI, new PagingRequest()), 7);
+  }
+
+  private void createCountryDatasets(Country country, int number){
+    Dataset d = newEntity();
+    service.create(d);
+
+    // assign a controlled country based organization
+    Organization org = organizationService.get(d.getOwningOrganizationKey());
+    org.setCountry(country);
+    organizationService.update(org);
+
+    // create datasets for it
+    for (int x=1; x<number; x++) {
+      service.create(newEntity(org.getKey(), d.getInstallationKey()));
+    }
+  }
+
 }

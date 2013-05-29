@@ -14,6 +14,7 @@ package org.gbif.registry2.persistence.mapper;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.vocabulary.Country;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +51,11 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
    */
   List<Dataset> listDatasetsEndorsedBy(@Param("nodeKey") UUID nodeKey,
     @Nullable @Param("page") Pageable page);
+
+  /**
+   * Obtains a list of all the datasets owned by an organization from a given country.
+   */
+  List<Dataset> listDatasetsPublishedFrom(@Param("country") Country country, @Nullable @Param("page") Pageable page);
 
   /**
    * Obtains a list of all the datasets hosted by the given installation.

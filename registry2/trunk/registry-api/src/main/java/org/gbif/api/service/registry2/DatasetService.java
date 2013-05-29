@@ -16,12 +16,14 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Metadata;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.registry2.MetadataType;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 public interface DatasetService
   extends NetworkEntityService<Dataset> {
@@ -32,6 +34,12 @@ public interface DatasetService
    * @param datasetKey the parent datasets key
    */
   PagingResponse<Dataset> listConstituents(UUID datasetKey, @Nullable Pageable page);
+
+  /**
+   * Provides paging service to list datasets published, i.e. owned by organizations from a given country.
+   * @return list of datasets ordered by creation date with latest coming first
+   */
+  PagingResponse<Dataset> listByCountry(@NotNull Country country, @Nullable Pageable page);
 
   /**
    * Lists all metadata descriptions available for a dataset and optionally filters them by document type.

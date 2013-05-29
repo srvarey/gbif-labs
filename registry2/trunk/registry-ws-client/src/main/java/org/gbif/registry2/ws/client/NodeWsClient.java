@@ -60,7 +60,7 @@ public class NodeWsClient extends BaseNetworkEntityClient<Node> implements NodeS
   }
 
   @Override
-  public PagingResponse<Dataset> publishedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page) {
+  public PagingResponse<Dataset> endorsedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page) {
     return get(GenericTypes.PAGING_DATASET, page, nodeKey.toString(), "dataset");
   }
 }
