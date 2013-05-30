@@ -1,6 +1,7 @@
 package org.gbif.api.model.registry2.search;
 
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.Continent;
 import org.gbif.api.vocabulary.registry2.DatasetSubtype;
 import org.gbif.api.vocabulary.registry2.DatasetType;
 
@@ -25,7 +26,8 @@ public class DatasetSearchResult {
   private String hostingOrganizationTitle;
   private String publisherTitle;
   private Set<Country> countryCoverage;
-  private UUID networkOfOriginKey;
+  private Set<Continent> continent;
+  private Country publishingCountry;
   private UUID owningOrganizationKey;
   private String owningOrganizationTitle;
   private List<Integer> decades;
@@ -103,6 +105,10 @@ public class DatasetSearchResult {
     this.publisherTitle = publisherTitle;
   }
 
+  /**
+   * Currently not populated.
+   * TODO: http://dev.gbif.org/issues/browse/REG-393
+   */
   public Set<Country> getCountryCoverage() {
     return countryCoverage;
   }
@@ -111,12 +117,24 @@ public class DatasetSearchResult {
     this.countryCoverage = countryCoverage;
   }
 
-  public UUID getNetworkOfOriginKey() {
-    return networkOfOriginKey;
+  /**
+   * Currently not populated.
+   * TODO: http://dev.gbif.org/issues/browse/REG-393
+   */
+  public Set<Continent> getContinent() {
+    return continent;
   }
 
-  public void setNetworkOfOriginKey(UUID networkOfOriginKey) {
-    this.networkOfOriginKey = networkOfOriginKey;
+  public void setContinent(Set<Continent> continent) {
+    this.continent = continent;
+  }
+
+  public Country getPublishingCountry() {
+    return publishingCountry;
+  }
+
+  public void setPublishingCountry(Country publishingCountry) {
+    this.publishingCountry = publishingCountry;
   }
 
   public UUID getOwningOrganizationKey() {
@@ -154,7 +172,7 @@ public class DatasetSearchResult {
   @Override
   public int hashCode() {
     return Objects.hashCode(key, title, description, type, subtype, fullText, hostingOrganizationKey,
-      hostingOrganizationTitle, publisherTitle, countryCoverage, networkOfOriginKey, owningOrganizationKey,
+      hostingOrganizationTitle, publisherTitle, countryCoverage, continent, publishingCountry, owningOrganizationKey,
       owningOrganizationTitle, decades, keywords);
   }
 
@@ -172,7 +190,8 @@ public class DatasetSearchResult {
         && Objects.equal(this.hostingOrganizationTitle, that.hostingOrganizationTitle)
         && Objects.equal(this.publisherTitle, that.publisherTitle)
         && Objects.equal(this.countryCoverage, that.countryCoverage)
-        && Objects.equal(this.networkOfOriginKey, that.networkOfOriginKey)
+        && Objects.equal(this.continent, that.continent)
+        && Objects.equal(this.publishingCountry, that.publishingCountry)
         && Objects.equal(this.owningOrganizationKey, that.owningOrganizationKey)
         && Objects.equal(this.owningOrganizationTitle, that.owningOrganizationTitle)
         && Objects.equal(this.decades, that.decades)
@@ -194,7 +213,8 @@ public class DatasetSearchResult {
       .add("hostingOrganizationTitle", hostingOrganizationTitle)
       .add("publisherTitle", publisherTitle)
       .add("countryCoverage", countryCoverage)
-      .add("networkOfOriginKey", networkOfOriginKey)
+      .add("continent", continent)
+      .add("publishingCountry", publishingCountry)
       .add("owningOrganizationKey", owningOrganizationKey)
       .add("owningOrganizationTitle", owningOrganizationTitle)
       .add("decades", decades)

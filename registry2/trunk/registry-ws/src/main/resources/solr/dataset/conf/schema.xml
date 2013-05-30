@@ -138,10 +138,10 @@
 			required="false" multiValued="true" />
 		<field name="full_text" type="text" indexed="true" stored="false"
 			required="false" multiValued="false" />
-		<field name="iso_country_code" type="lowercase" indexed="true"
+		<field name="country" type="lowercase" indexed="true"
 			stored="true" required="false" multiValued="true" />
-		<field name="continent" type="lowercase" indexed="true" stored="true"
-			required="false" multiValued="true" />
+    <field name="publishing_country" type="lowercase" indexed="true"
+  			stored="true" required="false" multiValued="false" />
 	</fields>
 
 	<!-- Field to use to determine and enforce document uniqueness. Unless this 

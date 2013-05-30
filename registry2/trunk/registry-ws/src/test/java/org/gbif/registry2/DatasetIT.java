@@ -47,7 +47,6 @@ import org.gbif.utils.file.FileUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
@@ -55,6 +54,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import org.apache.solr.client.solrj.SolrServer;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -277,6 +277,25 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
       resp.getCount());
   }
 
+  /**
+   * Utility to verify that after waiting for SOLR to update, the given query returns the expected count of results.
+   */
+  private void assertSearch(Country publishingCountry, Country country, int expected) {
+    DatasetSearchUpdateUtils.awaitUpdates(datasetIndexUpdater); // SOLR updates are asynchronous
+    DatasetSearchRequest req = new DatasetSearchRequest();
+    if (country != null) {
+      req.addCountryFilter(country);
+    }
+    if (publishingCountry != null) {
+      req.addPublishingCountryFilter(publishingCountry);
+    }
+    SearchResponse<DatasetSearchResult, DatasetSearchParameter> resp = searchService.search(req);
+    assertNotNull(resp.getCount());
+    assertEquals("SOLR does not have the expected number of results for country[" + country +
+                 "] and publishingCountry[" + publishingCountry + "]", Long.valueOf(expected),
+      resp.getCount());
+  }
+
   @Override
   protected Dataset newEntity() {
     // endorsing node for the organization
@@ -357,29 +376,76 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
 
   @Test
   public void testByCountry() {
-    createCountryDatasets(Country.ANDORRA, 3);
-    createCountryDatasets(Country.DJIBOUTI, 1);
-    createCountryDatasets(Country.HAITI, 7);
+    createCountryDatasets(DatasetType.OCCURRENCE, Country.ANDORRA, 3);
+    createCountryDatasets(DatasetType.OCCURRENCE, Country.DJIBOUTI, 1);
+    createCountryDatasets(DatasetType.METADATA, Country.HAITI, 7);
+    createCountryDatasets(DatasetType.OCCURRENCE, Country.HAITI, 3);
+    createCountryDatasets(DatasetType.CHECKLIST, Country.HAITI, 2);
 
     assertResultsOfSize(service.listByCountry(Country.UNKNOWN, null, new PagingRequest()), 0);
     assertResultsOfSize(service.listByCountry(Country.ANDORRA, null, new PagingRequest()), 3);
     assertResultsOfSize(service.listByCountry(Country.DJIBOUTI, null, new PagingRequest()), 1);
-    assertResultsOfSize(service.listByCountry(Country.HAITI, null, new PagingRequest()), 7);
+    assertResultsOfSize(service.listByCountry(Country.HAITI, null, new PagingRequest()), 12);
+
+    assertResultsOfSize(service.listByCountry(Country.ANDORRA, DatasetType.CHECKLIST, new PagingRequest()), 0);
+    assertResultsOfSize(service.listByCountry(Country.HAITI, DatasetType.OCCURRENCE, new PagingRequest()), 3);
+    assertResultsOfSize(service.listByCountry(Country.HAITI, DatasetType.CHECKLIST, new PagingRequest()), 2);
+    assertResultsOfSize(service.listByCountry(Country.HAITI, DatasetType.METADATA, new PagingRequest()), 7);
   }
 
-  private void createCountryDatasets(Country country, int number) {
-    Dataset d = newEntity();
+  @Test
+  @Ignore("Country coverage not populated yet: http://dev.gbif.org/issues/browse/REG-393")
+  public void testCountrySearch() {
+    createCountryDatasets(Country.ANDORRA, 3);
+    createCountryDatasets(DatasetType.OCCURRENCE, Country.DJIBOUTI, 1, Country.DJIBOUTI);
+    createCountryDatasets(DatasetType.OCCURRENCE, Country.HAITI, 3, Country.AFGHANISTAN, Country.DENMARK);
+    createCountryDatasets(DatasetType.CHECKLIST, Country.HAITI, 4, Country.GABON, Country.FIJI);
+    createCountryDatasets(DatasetType.OCCURRENCE, Country.DOMINICA, 2, Country.DJIBOUTI);
+
+    assertSearch(Country.ALBANIA, null, 0);
+    assertSearch(Country.ANDORRA, null, 3);
+    assertSearch(Country.DJIBOUTI, null, 1);
+    assertSearch(Country.HAITI, null, 7);
+    assertSearch(Country.UNKNOWN, null, 0);
+
+    assertSearch(Country.HAITI, Country.GABON, 4);
+    assertSearch(Country.HAITI, Country.FIJI, 4);
+    assertSearch(Country.HAITI, Country.DENMARK, 3);
+    assertSearch(Country.DJIBOUTI, Country.DENMARK, 0);
+    assertSearch(Country.DJIBOUTI, Country.DJIBOUTI, 1);
+    assertSearch(Country.DJIBOUTI, Country.GERMANY, 0);
+    assertSearch(null, Country.DJIBOUTI, 3);
+  }
+
+  private void createCountryDatasets(Country publishingCountry, int number) {
+    createCountryDatasets(DatasetType.OCCURRENCE, publishingCountry, number, null);
+  }
+  private void createCountryDatasets(DatasetType type, Country publishingCountry, int number, Country ... countries) {
+    Dataset d = addCountryCoverage(newEntity(), countries);
+    d.setType(type);
     service.create(d);
 
     // assign a controlled country based organization
     Organization org = organizationService.get(d.getOwningOrganizationKey());
-    org.setCountry(country);
+    org.setCountry(publishingCountry);
     organizationService.update(org);
 
     // create datasets for it
     for (int x = 1; x < number; x++) {
-      service.create(newEntity(org.getKey(), d.getInstallationKey()));
+      d = addCountryCoverage(newEntity(org.getKey(), d.getInstallationKey()));
+      d.setType(type);
+      service.create(d);
     }
   }
 
+  private Dataset addCountryCoverage(Dataset d, Country ... countries) {
+    if (countries != null) {
+      for (Country c : countries) {
+        if (c != null) {
+          d.getCountryCoverage().add(c);
+        }
+      }
+    }
+    return d;
+  }
 }

@@ -162,7 +162,7 @@
     </if>
   </select>  
 
-  <select id="count" resultType="Integer">
+  <select id="count" resultType="Integer" parameterType="map">
     SELECT COUNT(*)
     FROM dataset d
     WHERE deleted IS NULL
@@ -174,21 +174,15 @@
   <select id="countWithFilter" resultType="Integer">
     SELECT COUNT(*)
     FROM dataset d
-    WHERE deleted IS NULL
-    <if test="query != null" >
-      <include refid="SIMPLE_SEARCH"/>
+    <if test="country != null" >
+      INNER JOIN organization o ON d.owning_organization_key = o.key
     </if>
+    WHERE d.deleted IS NULL
     <if test="type != null" >
       AND d.type = #{type,jdbcType=OTHER}
     </if>
-    <if test="organizationKey != null" >
-      AND d.owning_organization_key = #{organizationKey,jdbcType=OTHER}
-    </if>
-    <if test="parentKey != null" >
-      AND d.parent_dataset_key = #{parentKey,jdbcType=OTHER}
-    </if>
-    <if test="installationKey != null" >
-      AND d.installation_key = #{installationKey,jdbcType=OTHER}
+    <if test="country != null" >
+      AND o.country = #{country,jdbcType=OTHER}
     </if>
   </select>
 

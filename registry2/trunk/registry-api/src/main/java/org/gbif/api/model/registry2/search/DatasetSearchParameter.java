@@ -67,7 +67,12 @@ public enum DatasetSearchParameter implements SearchParameter {
   DECADE(Integer.class),
 
   /**
-   * ISO 2 letter country code of the geospatial coverage of a dataset.
+   * The owning organizations country.
+   */
+  PUBLISHING_COUNTRY(Country.class),
+
+  /**
+   * Country of the geospatial coverage of a dataset.
    */
   COUNTRY(Country.class),
 
