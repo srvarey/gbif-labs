@@ -5,6 +5,7 @@ import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.NetworkEntityService;
+import org.gbif.api.vocabulary.Country;
 import org.gbif.registry2.search.util.DecadeExtractor;
 
 import java.util.List;
@@ -39,7 +40,7 @@ class SolrAnnotatedDatasetBuilder {
     sad.setTitle(d.getTitle());
     sad.setType(d.getType());
     sad.setSubtype(d.getSubtype());
-    // Cannot be done until the Dataset object is fleshed out
+    //TODO: http://dev.gbif.org/issues/browse/REG-393
     sad.setCountryCoverage(d.getCountryCoverage());
     List<String> kw = Lists.newArrayList();
     for (Tag t : d.getTags()) {
@@ -51,13 +52,19 @@ class SolrAnnotatedDatasetBuilder {
 
     Organization owner =
       d.getOwningOrganizationKey() != null ? organizationService.get(d.getOwningOrganizationKey()) : null;
+
     Installation installation =
       d.getInstallationKey() != null ? installationService.get(d.getInstallationKey()) : null;
+
     Organization host =
       installation != null && installation.getOrganizationKey() != null ? organizationService.get(installation
         .getOrganizationKey()) : null;
+
     if (owner != null) {
       sad.setOwningOrganizationTitle(owner.getTitle());
+      sad.setPublishingCountry(owner.getCountry());
+    } else {
+      sad.setPublishingCountry(Country.UNKNOWN);
     }
     if (host != null) {
       sad.setHostingOrganizationKey(String.valueOf(host.getKey()));

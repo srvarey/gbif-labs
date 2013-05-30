@@ -30,13 +30,15 @@ import org.apache.solr.client.solrj.beans.Field;
     @FacetField(name = "OWNING_ORG", field = "owning_organization_key"),
     @FacetField(name = "HOSTING_ORG", field = "hosting_organization_key"),
     @FacetField(name = "DECADE", field = "decade", sort = FacetField.SortOrder.INDEX),
-    @FacetField(name = "COUNTRY", field = "iso_country_code", sort = FacetField.SortOrder.INDEX)
+    @FacetField(name = "COUNTRY", field = "country", sort = FacetField.SortOrder.INDEX),
+    @FacetField(name = "PUBLISHING_COUNTRY", field = "publishing_country", sort = FacetField.SortOrder.INDEX)
   },
   fulltextFields = {
     @FullTextSearchField(field = "dataset_title", highlightField = "dataset_title", exactMatchScore = 10.0d,
       partialMatchScore = 1.0d),
     @FullTextSearchField(field = "keyword", partialMatching = WildcardPadding.NONE, exactMatchScore = 4.0d),
-    @FullTextSearchField(field = "iso_country_code", partialMatching = WildcardPadding.NONE, exactMatchScore = 3.0d),
+    @FullTextSearchField(field = "country", partialMatching = WildcardPadding.NONE, exactMatchScore = 3.0d),
+    @FullTextSearchField(field = "publishing_country", partialMatching = WildcardPadding.NONE, exactMatchScore = 1.0d),
     @FullTextSearchField(field = "owning_organization_title", highlightField = "owning_organization_title",
       partialMatching = WildcardPadding.NONE, exactMatchScore = 2.0d),
     @FullTextSearchField(field = "hosting_organization_title", partialMatching = WildcardPadding.NONE,
@@ -47,7 +49,7 @@ import org.apache.solr.client.solrj.beans.Field;
 @SuggestMapping(field = "dataset_title_ngram", phraseQueryField = "dataset_title_nedge")
 public class SolrAnnotatedDataset extends DatasetSearchResult {
 
-  @Field("iso_country_code")
+  @Field("country")
   public void setCountryCoverage(List<String> isoCountryCodes) {
     Set<Country> countries = Sets.newHashSet();
     for (String iso : isoCountryCodes) {
@@ -57,6 +59,15 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
       }
     }
     super.setCountryCoverage(countries);
+  }
+
+  @Field("publishing_country")
+  public void setPublishingCountry(String iso) {
+    Country c = Country.fromIsoCode(iso);
+    if (c == null) {
+      c = Country.UNKNOWN;
+    }
+    super.setPublishingCountry(c);
   }
 
   @Field("decade")

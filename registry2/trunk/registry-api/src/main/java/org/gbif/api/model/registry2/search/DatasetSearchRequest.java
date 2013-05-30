@@ -31,6 +31,13 @@ public class DatasetSearchRequest extends FacetedSearchRequest<DatasetSearchPara
   }
 
   /**
+   * Filters dataset by the owning organizations country.
+   */
+  public void addPublishingCountryFilter(Country country) {
+    addParameter(DatasetSearchParameter.PUBLISHING_COUNTRY, country.getIso2LetterCode());
+  }
+
+  /**
    * Filters dataset by a country of the geospatial coverage.
    *
    * @param country appearing in geospatial coverage

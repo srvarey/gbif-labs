@@ -47,7 +47,6 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -135,7 +134,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     @Nullable @QueryParam("type") DatasetType type,
     @Nullable @QueryParam("q") String query,
     @Nullable @Context Pageable page) {
-    if (country != null) {
+    if (country != null || type != null) {
       return listByCountry(country, type, page);
     } else if (!Strings.isNullOrEmpty(query)) {
       return search(query, page);
@@ -146,7 +145,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
 
   @Override
   public PagingResponse<Dataset> listByCountry(Country country, DatasetType type, Pageable page) {
-    long total = datasetMapper.countWithFilter(null, country, type, null, null, null);
+    long total = datasetMapper.countWithFilter(country, type);
     return pagingResponse(page, total, datasetMapper.listDatasetsPublishedFrom(country, type, page));
   }
 
