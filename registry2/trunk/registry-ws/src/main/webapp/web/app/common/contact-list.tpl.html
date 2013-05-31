@@ -1,23 +1,43 @@
-<h4>Identifiers</h4> 
+<h4>{{typeLabel}} contacts</h4> 
+
+<a href="" ng-click="editing = true">create new</a>
+<form ng-show="editing" novalidate class="form-horizontal">
+  
+  
+  <fieldset ng-show="editing" novalidate class="control-group">
+	<ng-include src=" 'app/common/contact-form.tpl.html'"></ng-include>
+    <div class="form-actions">
+      <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
+      <button class="btn primary-btn" ng-click="save(machinetag)" type="submit">Save</button>
+    </div>            
+  </fieldset>  
+</form>
+
 <hr/>    
-<ul class="unstyled list-hover" ng-ctrl="IdentifierCtrl">
-  <div data-ng-repeat="identifier in identifiers">
-    <li ng-hide="editing" ng-click="editing = true">
-      <strong><a href="">{{identifier.identifier}}</a></strong> <span class="muted"><small>{{identifier.type | lowercase}}</small></span><br/>
-      <span class="muted"><small>Created {{identifier.created | timeAgo}} by {{identifier.creator || "anonymous"}}</small></span>
+<ul class="unstyled list-hover" ng-ctrl="ContactCtrl">
+  <div data-ng-repeat="contact in contacts">
+    <li>
+      <strong>{{contact.firstName}} {{contact.lastName}}</strong> <span class="muted"><small>{{contact.type | lowercase}}</small></span><br/>
+      <span class="muted"><small>Created {{contact.created | timeAgo}} by {{contact.creator || "anonymous"}}</small></span>
+      <small><a ng-click="delete(contact)" class="pull-right" href="">Delete this contact</a></small>
     </li>
     
-    <li ng-show="editing" ng-submit="editing = false">
+    <li ng-show="NEVER" ng-submit="editing = false">
     
-<form id="identifierEdit" novalidate class="form-horizontal">
-  <input maxlength="255" type="text" ng-model="identifier.identifier" value="{{identifier.identifier}}">
-  
-  <select ng-model="identifier.type" ng-options="t for t in types"></select>  
+<form id="contactEdit" novalidate class="form-horizontal">
+  <fieldset ng-show="editing" novalidate class="control-group">
+    <ng-include src=" 'app/common/contact-form.tpl.html'"></ng-include>
+    <div class="form-actions">
+      <button class="btn primary-btn" ng-click="editing = false">Cancel</button>
+      <button class="btn primary-btn" ng-click="save(machinetag)" type="submit">Save</button>
+    </div>            
+  </fieldset>  
   
   <button class="btn primary-btn" ng-click="cancelEdit($index)">Cancel</button>
-  <button class="btn primary-btn" ng-click="save(identifier)" type="submit">Save</button><br/>
-  <small><a href="">Delete this identifier</a></small>
+  <button class="btn primary-btn" ng-click="save(contact)" type="submit">Save</button><br/>
+  <small><a href="">Delete this contact</a></small>
 
     </li>
+    
    </div>
  </ul>
