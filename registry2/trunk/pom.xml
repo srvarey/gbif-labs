@@ -90,7 +90,6 @@
     <gbif-common.version>0.11</gbif-common.version>
     <gbif-common-mybatis.version>0.6</gbif-common-mybatis.version>
     <gbif-common-ws.version>0.8-SNAPSHOT</gbif-common-ws.version>
-    <gbif-api.version>0.4-SNAPSHOT</gbif-api.version>
     <gbif-common.version>0.11</gbif-common.version>
     <gbif-common-mybatis.version>0.6</gbif-common-mybatis.version>
     <gbif-common-ws.version>0.8-SNAPSHOT</gbif-common-ws.version>
@@ -391,6 +390,11 @@
       <dependency>
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-solrj</artifactId>
+        <version>${solr.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-core</artifactId>
         <version>${solr.version}</version>
       </dependency>
       <dependency>
