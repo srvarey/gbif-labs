@@ -72,6 +72,8 @@ public class RegistrySearchModule extends PrivateServiceModule {
     bind(DatasetIndexBuilder.class).in(Scopes.SINGLETON);
     expose(DatasetSearchService.class);
     expose(DatasetIndexUpdateListener.class); // for testing
+    expose(OrganizationService.class); // for testing
+    expose(InstallationService.class); // for testing
   }
 
   /**

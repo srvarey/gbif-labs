@@ -20,6 +20,7 @@ import org.gbif.registry2.search.guice.RegistrySearchModule;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
 import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
+import org.gbif.registry2.ws.resources.IptResource;
 import org.gbif.registry2.ws.resources.NetworkResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
-
 import javax.sql.DataSource;
 
 import com.google.common.base.Throwables;
@@ -79,6 +79,7 @@ public class RegistryTestModules {
               bind(InstallationResource.class);
               bind(DatasetResource.class);
               bind(NetworkResource.class);
+              bind(IptResource.class);
             }
           }, new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(),
             new ValidationModule());
