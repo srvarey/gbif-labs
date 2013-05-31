@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +21,6 @@ import com.google.inject.Module;
 import com.google.inject.matcher.Matchers;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.bval.guice.Validate;
 import org.apache.bval.guice.ValidationModule;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
@@ -58,7 +54,7 @@ public class StringTrimInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-    Validate validate = invocation.getMethod().getAnnotation(Validate.class); // ensure it is annotated
+    Trim validate = invocation.getMethod().getAnnotation(Trim.class); // ensure it is annotated
     if (validate != null) {
       Annotation[][] paramAnnotations = invocation.getMethod().getParameterAnnotations();
       for (int i = 0; i < paramAnnotations.length; i++) {
@@ -83,7 +79,7 @@ public class StringTrimInterceptor implements MethodInterceptor {
         if (orig != null) {
           String trimmed = Strings.emptyToNull(orig.trim());
           if (!Objects.equal(orig, trimmed)) {
-            LOG.debug("Overriding value of [{}] from [{}] with [{}]", prop, orig, trimmed);
+            LOG.debug("Overriding value of [{}] from [{}] to [{}]", prop, orig, trimmed);
             wrapped.set(prop, trimmed);
           }
         }

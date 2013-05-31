@@ -45,6 +45,7 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -123,6 +124,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @POST
   @Validate
+  @Trim
   @Transactional
   @Override
   public UUID create(@NotNull @Valid @Trim T entity) {
@@ -178,6 +180,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @Validate
   @Transactional
+  @Trim
   @Override
   public void update(@NotNull @Valid @Trim T entity) {
     T oldEntity = get(entity.getKey());
@@ -190,6 +193,8 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
    */
   @PUT
   @Path("{key}")
+  @Validate
+  @Trim
   @Transactional
   public void update(@PathParam("key") UUID key, @NotNull @Valid @Trim T entity) {
     checkArgument(key.equals(entity.getKey()), "Provided entity must have the same key as the resource URL");
@@ -199,6 +204,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @POST
   @Path("{key}/comment")
   @Validate
+  @Trim
   @Transactional
   @Override
   public int addComment(@NotNull @PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Comment comment) {
@@ -224,6 +230,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @POST
   @Path("{key}/machinetag")
   @Validate
+  @Trim
   @Transactional
   @Override
   public int addMachineTag(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim MachineTag machineTag) {
@@ -274,6 +281,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @POST
   @Path("{key}/contact")
   @Validate
+  @Trim
   @Transactional
   @Override
   public int addContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
@@ -297,6 +305,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @POST
   @Path("{key}/endpoint")
   @Validate
+  @Trim
   @Transactional
   @Override
   public int addEndpoint(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Endpoint endpoint) {
@@ -321,6 +330,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @POST
   @Path("{key}/identifier")
   @Validate
+  @Trim
   @Transactional
   @Override
   public int addIdentifier(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Identifier identifier) {

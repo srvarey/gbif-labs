@@ -65,8 +65,8 @@ angular.module('installation', [
   var Installation = $resource('../installation/:key', {key : '@key'}, {
     save : {method:'PUT'}
   });  
-  
-  // A synchronous get, with a failure callback on error
+ 
+   // A synchronous get, with a failure callback on error
   Installation.getSync = function (key, failureCb) {
     var deferred = $q.defer();
     Installation.get({key: key}, function(successData) {
@@ -83,11 +83,36 @@ angular.module('installation', [
   return Installation;
 })
 
+.filter('prettifyType', function () {
+  return function(name) {
+    switch (name) {
+      case "BIOCASE_INSTALLATION": return "BioCASe";
+      case "TAPIR_INSTALLATION": return "TAPIR";
+      case "HTTP_INSTALLATION": return "HTTP";
+      case "IPT_INSTALLATION": return "IPT";
+      case "DIGIR_INSTALLATION": return "DiGIR";
+      default: return name;  
+    }
+  };
+})
+
+
 /**
  * All operations relating to CRUD go through this controller. 
  */
-.controller('InstallationCtrl', function ($scope, $state, $resource, item, Installation, notifications) {
+.controller('InstallationCtrl', function ($scope, $state, $http, $resource, item, Installation, notifications) {
   $scope.installation = item;
+  
+  // get the organization
+  $http( { method:'GET', url: "../organization/" + item.organizationKey})
+    .success(function (result) { $scope.organization = result});
+  
+  // populate the dropdowns
+  var lookup = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope[parameter] = result});
+  }
+	lookup('../enumeration/org.gbif.api.vocabulary.registry2.InstallationType','installationTypes');  
   
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
@@ -114,6 +139,10 @@ angular.module('installation', [
       }
     );
   }
+  
+  $scope.openOrganization = function (organizationKey) {
+    $state.transitionTo('organization.detail', {key : organizationKey});
+  }  
   
   $scope.cancelEdit = function () {
     $scope.installation = Installation.get({ key: item.key });

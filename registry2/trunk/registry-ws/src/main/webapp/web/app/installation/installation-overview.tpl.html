@@ -1,12 +1,30 @@
-<h4>Overview</h4>
+<h4>Installation overview</h4>
 <p class="muted">This information appears on the installation profile, organization pages, search results, and beyond.</p>
 <hr/>
+<p ng-show="installation.deleted!=null">
+  <span class="label label-important">Important</span> <span class="text-error">This installation was deleted {{installation.deleted | timeAgo}} by {{installation.modifiedBy}}.<span><br/>
+  <small class="muted">{{installation.deleted}}</small>
+</p>
 
 <dl class="dl-horizontal spaced-list">
-  <dt>Title<dt>
-  <dd>{{installation.title}}<dd>
-  <dt>Description<dt>
-  <dd>{{installation.description}}<dd>
+  <dt>Installation type</dt>
+  <dd><span class="label label-success">{{installation.type | prettifyType}}</span></dd>
+  <dt>Owning organization</dt>
+  <dd>
+    <a href="" ng-click="openOrganization(installation.organizationKey)">{{organization.title}}</a>  
+  </dd>
+  <dt>Title</dt>
+  <dd>{{installation.title}}</dd>
+  <dt>Description</dt>
+  <dd>{{installation.description}}</dd>
+  <dt>Created</dt>
+  <dd>{{installation.created | timeAgo}} <br/><small class="muted">{{installation.created}}</small></dd>
+  <dt>Created by</dt>
+  <dd>{{installation.createdBy}}</dd>
+  <dt>Modified</dt>
+  <dd>{{installation.modified | timeAgo}} <br/><small class="muted">{{installation.modified}}</small></dd>
+  <dt>Modified by</dt>
+  <dd>{{installation.modifiedBy}}</dd>
 </dl>
 <div class="form-actions">
   <small><a href="" ng-click="transitionTo('edit')">Edit these details</a></small>
