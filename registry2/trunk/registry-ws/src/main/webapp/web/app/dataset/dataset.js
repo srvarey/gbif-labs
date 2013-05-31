@@ -1,6 +1,7 @@
 angular.module('dataset', [
   'ngResource', 
   'services.notifications', 
+  'contact', 
   'identifier', 
   'tag', 
   'machinetag', 
@@ -39,6 +40,12 @@ angular.module('dataset', [
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
+    context: 'dataset', // necessary for reusing the components
+  })
+  .state('dataset.contact', {  
+    url: '/contact',   
+    templateUrl: 'app/common/contact-list.tpl.html',
+    controller: "ContactCtrl",  
     context: 'dataset', // necessary for reusing the components
   })
   .state('dataset.tag', {  
@@ -95,10 +102,11 @@ angular.module('dataset', [
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
     // collesce with || and use _ for sizing
+    contact : _.size($scope.dataset.contacts || {}),
     identifier : _.size($scope.dataset.identifiers || {}), 
     tag : _.size($scope.dataset.tags || {}),
     machinetag : _.size($scope.dataset.machineTags || {}),
-    comment : _.size($scope.dataset.comments || {})
+    comment : _.size($scope.dataset.comments || {})    
   };
 	
 	// transitions to a new view, correctly setting up the path

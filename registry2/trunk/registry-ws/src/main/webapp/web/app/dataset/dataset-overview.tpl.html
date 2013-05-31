@@ -1,12 +1,61 @@
-<h4>Overview</h4>
+<h4>Dataset overview</h4>
 <p class="muted">This information appears on the dataset profile, organization pages, search results, and beyond.</p>
 <hr/>
+<p ng-show="dataset.deleted!=null">
+  <span class="label label-important">Important</span> <span class="text-error">This dataset was deleted {{dataset.deleted | timeAgo}} by {{dataset.modifiedBy}}.<span><br/>
+  <small class="muted">{{dataset.deleted}}</small>
+</p>
 
 <dl class="dl-horizontal spaced-list">
-  <dt>Title<dt>
-  <dd>{{dataset.title}}<dd>
-  <dt>Description<dt>
-  <dd>{{dataset.description}}<dd>
+  <dt>Dataset type</dt>
+  <dd>{{dataset.type}}</dd>
+  <dt>Dataset sub-type</dt>
+  <dd>{{dataset.subType}}</dd>
+  <dt>Is external?</dt>
+  <dd>{{dataset.external}}</dd>
+  <dt>Is locked for auto updating</dt>
+  <dd>{{dataset.lockedForAutoUpdate}}</dd>
+
+  <dt>Title</dt>
+  <dd>{{dataset.title}}</dd>
+  <dt>Alias</dt>
+  <dd>{{dataset.alias}}</dd>
+  <dt>Abbreviation</dt>
+  <dd>{{dataset.abbreviation}}</dd>
+  <dt>Description</dt>
+  <dd>{{dataset.description}}</dd>
+	
+	<dt>Owning organization</dt>
+  <dd>{{dataset.owningOrganizationKey}}</dd>
+  <dt>Serving installation</dt>
+  <dd>{{dataset.installationKey}}</dd>
+  <dt>Parent dataset</dt>
+  <dd>{{dataset.parentDatasetKey}}</dd>
+  <dt>Duplicate of dataset</dt>
+  <dd>{{dataset.duplicateOfDatasetKey}}</dd>
+
+  <dt>Citation</dt>
+  <dd>{{dataset.citation}}</dd>
+  <dt>Citation identifier</dt>
+  <dd>{{dataset.citationIdentifier}}</dd>
+  <dt>Rights</dt>
+  <dd>{{dataset.rights}}</dd>
+
+  <dt>Homepage</dt>
+  <dd><a href="{{dataset.homepage}}" target="_blank">{{dataset.homepage}}</a></dd>
+  <dt>Logo url</dt>
+  <dd>{{dataset.logoUrl}}</dd>
+  <dt>Language</dt>
+  <dd>{{dataset.language}}</dd>
+
+  <dt>Created</dt>
+  <dd>{{dataset.created | timeAgo}} <br/><small class="muted">{{dataset.created}}</small></dd>
+  <dt>Created by</dt>
+  <dd>{{dataset.createdBy}}</dd>
+  <dt>Modified</dt>
+  <dd>{{dataset.modified | timeAgo}} <br/><small class="muted">{{dataset.modified}}</small></dd>
+  <dt>Modified by</dt>
+  <dd>{{dataset.modifiedBy}}</dd>
 </dl>
 <div class="form-actions">
   <small><a href="" ng-click="transitionTo('edit')">Edit these details</a></small>

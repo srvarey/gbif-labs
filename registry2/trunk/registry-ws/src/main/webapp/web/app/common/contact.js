@@ -1,42 +1,42 @@
-// A reusable directive for identifiers
-angular.module('identifier', [])
+angular.module('contact', [])
 
-.controller('IdentifierCtrl', function ($scope, $state, $stateParams, $resource) {
+.controller('ContactCtrl', function ($scope, $state, $stateParams, $resource) {
+  // help provide context with a label to the user
+  var typeLabel = $state.current.context;
+  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
+
   // keep a copy to allow a revert on cancelling the edit
-  $scope.orig = angular.copy($scope.identifiers);
+  $scope.orig = angular.copy($scope.contacts);
 	
   $scope.types = [
-    'SOURCE_ID',
-    'URL',
-    'LSID',
-    'HANDLER',
-    'DOI',
-    'UUID',
-    'FTP',
-    'URI',
-    'UNKNOWN',
-    'GBIF_PORTAL',
-    'GBIF_NODE',
-    'GBIF_PARTICIPANT'
+    'ADMINISTRATIVE',
+    'TECHNICAL'
   ];	
-  
-  var Identifier = $resource('../:type/:key/identifier/:identifierKey', {
+  	
+  var Contact = $resource('../:type/:key/contact/:contactKey', {
     type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
     key : $stateParams.key,  
-    identifierKey : '@key'}, {
+    contactKey : '@id'}, {
       save : {method:'PUT'}
   });  
+
+  // loads the identifiers, and updates the scope
+  var refreshScope = function() {
+    Contact.query(function(data) {
+      $scope.contacts = data;
+      $scope.counts.contact = data.length; // update parent counts
+    });
+  }
+  refreshScope();
   
 
-  console.log($stateParams.type);
-
   $scope.save = function(item) {
-    Identifier.save(item);  
+    Contact.save(item);  
   }
 
   $scope.cancelEdit = function(index) {
     // reset only the one being cancelled
-    $scope.identifiers[index] = angular.copy($scope.orig[index]);
+    $scope.contacts[index] = angular.copy($scope.orig[index]);
   }
     
 });
