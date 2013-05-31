@@ -122,6 +122,14 @@
     <solr.version>4.3.0</solr.version>
     <grizzly-servlet-webserver.version>1.9.57</grizzly-servlet-webserver.version>
     <liquibase.version>2.0.5</liquibase.version>
+    <commons-lang3.version>3.1</commons-lang3.version>
+    <commons-validator.version>1.4.0</commons-validator.version>
+    <httputils.version>0.4</httputils.version>
+    <jaxb-api.version>2.2.9</jaxb-api.version>
+    <commons-codec.version>1.8</commons-codec.version>
+    <httpclient.version>4.2.3</httpclient.version>
+    <httpcore.version>4.2.3</httpcore.version>
+    <jersey-server.version>1.17.1</jersey-server.version>
   </properties>
 
   <!--
@@ -422,6 +430,46 @@
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
         <version>${liquibase.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-validator</groupId>
+        <artifactId>commons-validator</artifactId>
+        <version>${commons-validator.version}</version>
+      </dependency>
+      <!-- Related to registry-ws IptResource -->
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${jaxb-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons-codec.version}</version>
+      </dependency>
+      <!-- Related to registry-ws IptResourceIT with test scope -->
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-httputils</artifactId>
+        <version>${httputils.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${httpclient.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${httpcore.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
