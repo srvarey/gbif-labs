@@ -86,8 +86,13 @@ angular.module('organization', [
 /**
  * All operations relating to CRUD go through this controller. 
  */
-.controller('OrganizationCtrl', function ($scope, $state, $resource, item, Organization, notifications) {
+.controller('OrganizationCtrl', function ($scope, $state, $http, $resource, item, Organization, notifications) {
   $scope.organization = item;
+  
+  // get the endorsing node
+  $http( { method:'GET', url: "../node/" + item.endorsingNodeKey})
+      .success(function (result) { $scope.endorsingNode = result});
+
   
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
@@ -114,6 +119,10 @@ angular.module('organization', [
       }
     );
   }
+  
+  $scope.openNode = function (nodeKey) {
+    $state.transitionTo('node.detail', {key : nodeKey});
+  }  
   
   $scope.cancelEdit = function () {
     $scope.organization = Organization.get({ key: item.key });

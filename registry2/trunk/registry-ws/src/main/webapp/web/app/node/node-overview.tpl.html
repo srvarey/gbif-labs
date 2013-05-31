@@ -1,6 +1,10 @@
-<h4>Overview</h4>
+<h4>Node overview</h4>
 <p class="muted">This information appears on the node profile, organization pages, search results, and beyond.</p>
 <hr/>
+<p ng-show="node.deleted!=null">
+  <span class="label label-important">Important</span> <span class="text-error">This node was deleted {{node.deleted | timeAgo}} by {{node.modifiedBy}}.<span><br/>
+  <small class="muted">{{node.deleted}}</small>
+</p>
 
 <dl class="dl-horizontal spaced-list">
   <dt>Title</dt>

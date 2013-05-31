@@ -1,4 +1,4 @@
-<h4>Overview</h4>
+<h4>Installation overview</h4>
 <p class="muted">This information appears on the installation profile, organization pages, search results, and beyond.  It should be the same as found in the GBIF internal systems, such as the IMS</p>
 <hr/>
 <form id="installationEdit" novalidate class="form-horizontal">
@@ -13,6 +13,21 @@
     <div class="controls">
       <textarea name="description id="description" ng-model="installation.description" value="{{installation.description}}"></textarea>
       <p class="muted"><small>Provide a meaningful description of the installation, so a user will understand what the installation is.</small></p>
+    </div>
+    
+    <label class="control-label" for="organizationKey">Owning organization</label>
+    <div class="controls">
+      <input id="organizationKey" maxlength="255" type="text" name="organizationKey" ng-model="installation.organizationKey" value="{{installation.organizationKey}}">
+      <p><span class="label label-important">Important</span> <span class="text-error">Changing this will update hosting organization on all occurrence records.<span></p>
+      <p class="muted"><small>It is expected that this may be changed occasionally, but be vigilant in changes as this has potential to spawn significant processing for occurrence records, metrics and maps</small></p>
+    </div>      
+    
+    <label class="control-label" for="type">Installation type</label>
+    <div class="controls">
+      <select ng-model="installation.type" ng-options="o for o in installationTypes"></select>
+      <p><span class="label label-important">Important</span> <span class="text-error">Has significant impact on crawlers<span></p>
+      <p class="muted"><small>When changing this, verify all services are also updated for the installation, and every dataset served.  Most likley you do not want to change this field, but rather create a new installation of the correct type, and migrate datasets.  
+      Use this with extreme caution</small></p>
     </div>
       
     <div class="form-actions">
