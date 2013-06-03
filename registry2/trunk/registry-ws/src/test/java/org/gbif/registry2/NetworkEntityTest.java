@@ -264,7 +264,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   @Test
   public void testContacts() {
     T entity = create(newEntity(), 1);
-    ContactTests.testAddDelete(contactService, entity);
+    ContactTests.testAddDeleteUpdate(contactService, entity);
   }
 
   @Test

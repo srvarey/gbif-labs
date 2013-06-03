@@ -1,6 +1,8 @@
 angular.module('installation', [
   'ngResource', 
   'services.notifications', 
+  'contact',
+  'endpoint',
   'identifier', 
   'tag', 
   'machinetag', 
@@ -32,6 +34,18 @@ angular.module('installation', [
     url: '/edit',
     templateUrl: 'app/installation/installation-edit.tpl.html',
   })  
+  .state('installation.contact', {  
+    url: '/contact',   
+    templateUrl: 'app/common/contact-list.tpl.html',
+    controller: "ContactCtrl",  
+    context: 'installation', // necessary for reusing the components
+  })
+  .state('installation.endpoint', {  
+    url: '/endpoint',   
+    templateUrl: 'app/common/endpoint-list.tpl.html',
+    controller: "EndpointCtrl",  
+    context: 'installation', // necessary for reusing the components
+  })
   .state('installation.identifier', {  
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
@@ -117,6 +131,8 @@ angular.module('installation', [
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
     // collesce with || and use _ for sizing
+    contact : _.size($scope.installation.contacts || {}),
+    endpoint : _.size($scope.installation.endpoints || {}), 
     identifier : _.size($scope.installation.identifiers || {}), 
     tag : _.size($scope.installation.tags || {}),
     machinetag : _.size($scope.installation.machineTags || {}),

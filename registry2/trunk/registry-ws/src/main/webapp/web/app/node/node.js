@@ -1,6 +1,7 @@
 angular.module('node', [
   'ngResource', 
   'services.notifications', 
+  'endpoint',
   'identifier', 
   'tag', 
   'machinetag', 
@@ -36,6 +37,12 @@ angular.module('node', [
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
+    context: 'node', // necessary for reusing the components
+  })
+  .state('node.endpoint', {  
+    url: '/endpoint',   
+    templateUrl: 'app/common/endpoint-list.tpl.html',
+    controller: "EndpointCtrl",  
     context: 'node', // necessary for reusing the components
   })
   .state('node.tag', {  
@@ -93,6 +100,7 @@ angular.module('node', [
   $scope.counts = {
     // collesce with || and use _ for sizing
     identifier : _.size($scope.node.identifiers || {}), 
+    endpoint : _.size($scope.node.endpoints || {}), 
     tag : _.size($scope.node.tags || {}),
     machinetag : _.size($scope.node.machineTags || {}),
     comment : _.size($scope.node.comments || {})

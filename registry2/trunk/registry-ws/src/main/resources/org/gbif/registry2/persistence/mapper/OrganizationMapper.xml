@@ -208,6 +208,15 @@
     ORDER BY created DESC
   </select>
   
+  <select id="areRelated" resultType="boolean">
+    SELECT true 
+    FROM organization_contact 
+    WHERE organization_key = #{targetEntityKey,jdbcType=OTHER} 
+      AND contact_key = #{contactKey,jdbcType=INTEGER}
+    LIMIT 1 
+  </select>
+  
+  
   <!-- Joined delete of contact to trigger cascade delete of the join table --> 
   <delete id="deleteContact">
     DELETE FROM contact USING organization_contact 

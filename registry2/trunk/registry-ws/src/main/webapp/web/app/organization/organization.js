@@ -1,6 +1,8 @@
 angular.module('organization', [
   'ngResource', 
   'services.notifications', 
+  'contact',
+  'organization',
   'identifier', 
   'tag', 
   'machinetag', 
@@ -32,6 +34,18 @@ angular.module('organization', [
     url: '/edit',
     templateUrl: 'app/organization/organization-edit.tpl.html',
   })  
+  .state('organization.contact', {  
+    url: '/contact',   
+    templateUrl: 'app/common/contact-list.tpl.html',
+    controller: "ContactCtrl",  
+    context: 'organization', // necessary for reusing the components
+  })
+  .state('organization.endpoint', {  
+    url: '/endpoint',   
+    templateUrl: 'app/common/endpoint-list.tpl.html',
+    controller: "EndpointCtrl",  
+    context: 'organization', // necessary for reusing the components
+  })
   .state('organization.identifier', {  
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
@@ -97,6 +111,8 @@ angular.module('organization', [
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
     // collesce with || and use _ for sizing
+    contact : _.size($scope.organization.contacts || {}),
+    endpoint : _.size($scope.organization.endpoints || {}),
     identifier : _.size($scope.organization.identifiers || {}), 
     tag : _.size($scope.organization.tags || {}),
     machinetag : _.size($scope.organization.machineTags || {}),

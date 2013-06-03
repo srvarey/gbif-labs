@@ -96,6 +96,22 @@ public class WithMyBatis {
     return contact.getKey();
   }
 
+  @Transactional
+  public static int updateContact(ContactMapper contactMapper, ContactableMapper contactableMapper,
+    UUID targetEntityKey, Contact contact) {
+    checkArgument(contact.getKey() != null, "Unable to update an entity with no key");
+    // null safe checking follows
+    checkArgument(Boolean.TRUE.equals(contactableMapper.areRelated(targetEntityKey, contact.getKey())),
+      "The provided contact is not connected to the given entity");
+    contactMapper.updateContact(contact);
+    // is this a primary contact? We need to make sure it only exists once per type
+    if (contact.isPrimary()) {
+      contactableMapper.updatePrimaryContacts(targetEntityKey, contact.getType());
+    }
+    contactMapper.updateContact(contact);
+    return contact.getKey();
+  }
+
   public static void deleteContact(ContactableMapper contactableMapper, UUID targetEntityKey, int contactKey) {
     contactableMapper.deleteContact(targetEntityKey, contactKey);
   }

@@ -7,6 +7,9 @@
 </p>
 
 <dl class="dl-horizontal spaced-list">
+  <dt>Title</dt>
+  <dd>{{dataset.title}}</dd>
+
   <dt>Dataset type</dt>
   <dd>{{dataset.type}}</dd>
   <dt>Dataset sub-type</dt>
@@ -16,8 +19,6 @@
   <dt>Is locked for auto updating</dt>
   <dd>{{dataset.lockedForAutoUpdate}}</dd>
 
-  <dt>Title</dt>
-  <dd>{{dataset.title}}</dd>
   <dt>Alias</dt>
   <dd>{{dataset.alias}}</dd>
   <dt>Abbreviation</dt>
@@ -25,14 +26,14 @@
   <dt>Description</dt>
   <dd>{{dataset.description}}</dd>
 	
-	<dt>Owning organization</dt>
-  <dd>{{dataset.owningOrganizationKey}}</dd>
+  <dt>Owning organization</dt>
+  <dd><a href="" ng-click="redirectTo('organization', dataset.owningOrganizationKey)">{{owningOrganization.title}}</a></dd>
   <dt>Serving installation</dt>
-  <dd>{{dataset.installationKey}}</dd>
+  <dd><a href="" ng-click="redirectTo('installation', dataset.installationKey)">{{installation.title}} <span class="muted"><small>{{installation.type}}</small></span></a></dd>
   <dt>Parent dataset</dt>
-  <dd>{{dataset.parentDatasetKey}}</dd>
+  <dd><a href="" ng-click="redirectTo('dataset', dataset.parentDatasetKey)">{{parentDataset.title}}</a></dd>
   <dt>Duplicate of dataset</dt>
-  <dd>{{dataset.duplicateOfDatasetKey}}</dd>
+  <dd><a href="" ng-click="redirectTo('dataset', dataset.duplicateOfDatasetKey)">{{duplicateOfDataset.title}}</a></dd>
 
   <dt>Citation</dt>
   <dd>{{dataset.citation}}</dd>

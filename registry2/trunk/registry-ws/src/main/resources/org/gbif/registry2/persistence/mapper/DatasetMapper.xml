@@ -220,6 +220,14 @@
      #{isPrimary,jdbcType=BOOLEAN}
     )
   </insert>
+  
+  <select id="areRelated" resultType="boolean">
+    SELECT true 
+    FROM dataset_contact 
+    WHERE dataset_key = #{targetEntityKey,jdbcType=OTHER} 
+      AND contact_key = #{contactKey,jdbcType=INTEGER}
+    LIMIT 1 
+  </select>
 
   <!-- Update existing primary contacts of a type to false -->
   <update id="updatePrimaryContacts">
