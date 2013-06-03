@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +27,7 @@ public interface ContactableMapper {
     @Param("contactKey") int contactKey,
     @Param("type") ContactType contactType,
     @Param("isPrimary") boolean isPrimary
-  );
+    );
 
   /**
    * Updates the current primary contact of the given type if it exists and makes it non primary.
@@ -41,4 +38,10 @@ public interface ContactableMapper {
 
   List<Contact> listContacts(@Param("targetEntityKey") UUID targetEntityKey);
 
+  /**
+   * Checks if the contact is associated with the entity.
+   * 
+   * @return true only if the contact and entity are related
+   */
+  Boolean areRelated(@Param("targetEntityKey") UUID targetEntityKey, @Param("contactKey") int contactKey);
 }

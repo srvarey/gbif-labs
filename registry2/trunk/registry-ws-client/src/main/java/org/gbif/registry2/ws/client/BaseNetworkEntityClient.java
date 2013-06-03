@@ -22,8 +22,10 @@ import org.gbif.ws.client.QueryParamBuilder;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
@@ -91,6 +93,14 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
   public int addContact(UUID targetEntityKey, Contact contact) {
     // post the contact to .../uuid/contact and expect an int back
     return post(Integer.class, contact, targetEntityKey.toString(), "contact");
+  }
+
+  @Override
+  public void updateContact(UUID targetEntityKey, Contact contact) {
+    Preconditions.checkNotNull(contact.getKey(), "Contact key is required to update the contact");
+    Preconditions.checkNotNull(targetEntityKey, "The target entity is required to update the contact");
+    // put the contact to .../uuid/contact/id
+    put(contact, targetEntityKey.toString(), "contact", contact.getKey().toString());
   }
 
   @Override

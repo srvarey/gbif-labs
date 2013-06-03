@@ -2,6 +2,7 @@ angular.module('dataset', [
   'ngResource', 
   'services.notifications', 
   'contact', 
+  'endpoint',
   'identifier', 
   'tag', 
   'machinetag', 
@@ -36,6 +37,12 @@ angular.module('dataset', [
     url: '/edit',
     templateUrl: 'app/dataset/dataset-edit.tpl.html',
   })  
+  .state('dataset.endpoint', {  
+    url: '/identifier',   
+    templateUrl: 'app/common/endpoint-list.tpl.html',
+    controller: "EndpointCtrl",  
+    context: 'dataset', // necessary for reusing the components
+  })
   .state('dataset.identifier', {  
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
@@ -96,22 +103,40 @@ angular.module('dataset', [
 /**
  * All operations relating to CRUD go through this controller. 
  */
-.controller('DatasetCtrl', function ($scope, $state, $resource, item, Dataset, notifications) {
+.controller('DatasetCtrl', function ($scope, $state, $resource, $http, item, Dataset, notifications) {
   $scope.dataset = item;
   
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
     // collesce with || and use _ for sizing
     contact : _.size($scope.dataset.contacts || {}),
+    endpoint : _.size($scope.dataset.endpoints || {}),
     identifier : _.size($scope.dataset.identifiers || {}), 
     tag : _.size($scope.dataset.tags || {}),
     machinetag : _.size($scope.dataset.machineTags || {}),
     comment : _.size($scope.dataset.comments || {})    
   };
+  
+  // get the organization, installation, parent dataset and the this duplicates (if any)
+  var lookup = function(urlPrefix, urlSuffix, property) {
+    if (urlSuffix != undefined) {
+      $http( { method:'GET', url: urlPrefix + urlSuffix})
+        .success(function (result) { $scope[property] = result});  
+    
+    }
+  }
+  lookup("../organization/", item.owningOrganizationKey, 'owningOrganization');
+  lookup("../installation/",  item.installationKey, 'installation');
+  lookup("../dataset/",  item.parentDatasetKey, 'parentDataset');
+  lookup("../dataset/", item.duplicateOfDatasetKey, 'duplicateOfDataset');
+  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
     $state.transitionTo('dataset.' + target, { key: item.key, type: "dataset" }); 
+  }
+  $scope.redirectTo = function (type, key) {
+    $state.transitionTo(type + '.detail', { key: key, type: type }); 
   }
 	
 	$scope.save = function (dataset) {
@@ -130,4 +155,5 @@ angular.module('dataset', [
     $scope.dataset = Dataset.get({ key: item.key });
     $scope.transitionTo("detail");
   }
+  
 });

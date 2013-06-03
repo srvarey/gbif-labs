@@ -8,8 +8,10 @@
   <directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.RAMDirectoryFactory}"/>                      
 
   <indexConfig>
-    <ramBufferSizeMB>128</ramBufferSizeMB>
-    <lockType>native</lockType>
+    <ramBufferSizeMB>1024</ramBufferSizeMB>
+    <!--  No need to take file locks, we are single instance in memory -->
+    <lockType>single</lockType>
+    <unlockOnStartup>true</unlockOnStartup>  
   </indexConfig>
 
   <jmx />

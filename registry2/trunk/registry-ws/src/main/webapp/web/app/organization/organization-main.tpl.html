@@ -7,6 +7,8 @@
   
   <ul class="nav side-nav nav-tabs nav-stacked">
     <li ng-class="{active: $state.includes('organization.detail') || $state.includes('organization.edit')}"><a href="" ng-click="transitionTo('detail')">Overview <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.contact')}"><a href="" ng-click="transitionTo('contact')">Contacts ({{counts.contact}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.endpoint')}"><a href="" ng-click="transitionTo('endpoint')">Endpoints ({{counts.endpoint}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.identifier')}"><a href="" ng-click="transitionTo('identifier')">Identifiers ({{counts.identifier}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.tag')}"><a href="" ng-click="transitionTo('tag')">Tags ({{counts.tag}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.machinetag')}"><a href="" ng-click="transitionTo('machinetag')">Machine tags ({{counts.machinetag}}) <i class="icon-chevron-right"></i></a></li>

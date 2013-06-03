@@ -28,9 +28,32 @@
     now(), <!-- modified -->
     #{modifiedBy}
   </sql>
-
+  
+  <sql id="CONTACT_UPDATE">
+    first_name = #{firstName, jdbcType=VARCHAR},
+    last_name = #{lastName, jdbcType=VARCHAR},
+    description = #{description, jdbcType=VARCHAR},
+    position = #{position, jdbcType=VARCHAR},
+    email = #{email, jdbcType=VARCHAR}, 
+    phone = #{phone, jdbcType=VARCHAR}, 
+    organization = #{organization, jdbcType=VARCHAR}, 
+    address = #{address, jdbcType=VARCHAR}, 
+    city = #{city, jdbcType=VARCHAR}, 
+    province = #{province, jdbcType=VARCHAR}, 
+    country = #{country, jdbcType=CHAR}, 
+    postal_code = #{postalCode, jdbcType=VARCHAR},
+    modified = now(),
+    modified_by = #{modifiedBy}
+  </sql>
+	  
   <insert id="createContact" parameterType="Contact" useGeneratedKeys="true" keyProperty="key">
     INSERT INTO contact(<include refid="WRITABLE_CONTACT_FIELDS"/>)
     VALUES(<include refid="WRITABLE_CONTACT_FIELD_TYPES"/>)
   </insert>
+  
+  <update id="updateContact" parameterType="Contact">
+    UPDATE contact
+    SET <include refid="CONTACT_UPDATE"/>
+    WHERE key = #{key,jdbcType=INTEGER}
+  </update>
 </mapper>

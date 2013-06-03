@@ -178,6 +178,14 @@
       installation_key = #{targetEntityKey,jdbcType=OTHER} AND contact_key = #{contactKey,jdbcType=INTEGER}
   </delete>  
   
+  <select id="areRelated" resultType="boolean">
+    SELECT true 
+    FROM installation_contact 
+    WHERE installation_key = #{targetEntityKey,jdbcType=OTHER} 
+      AND contact_key = #{contactKey,jdbcType=INTEGER}
+    LIMIT 1 
+  </select>  
+  
   <!-- IDENTIFIERS -->
   <insert id="addIdentifier">
     INSERT INTO installation_identifier(installation_key,identifier_key)

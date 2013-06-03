@@ -62,6 +62,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import org.apache.bval.guice.Validate;
@@ -286,6 +287,29 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Override
   public int addContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
     return WithMyBatis.addContact(contactMapper, mapper, targetEntityKey, contact);
+  }
+
+  @PUT
+  @Path("{key}/contact/{contactKey}")
+  @Validate
+  @Trim
+  @Transactional
+  public void updateContact(@PathParam("key") UUID targetEntityKey, @PathParam("contactKey") int contactKey,
+    @NotNull @Valid @Trim Contact contact) {
+    // for safety, and to match a nice RESTful URL structure
+    Preconditions.checkArgument(Integer.valueOf(contactKey).equals(contact.getKey()),
+      "Provided contact (key) does not match the path provided");
+    updateContact(targetEntityKey, contact);
+  }
+
+  @Validate
+  @Trim
+  @Transactional
+  @Override
+  public void updateContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
+    Preconditions.checkNotNull(contact, "The contactkey must be provided");
+    Preconditions.checkNotNull(targetEntityKey, "The target entity key must be provided");
+    WithMyBatis.updateContact(contactMapper, mapper, targetEntityKey, contact);
   }
 
   @DELETE

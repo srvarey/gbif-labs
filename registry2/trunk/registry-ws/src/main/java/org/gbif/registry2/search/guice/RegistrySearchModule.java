@@ -91,7 +91,8 @@ public class RegistrySearchModule extends PrivateServiceModule {
     File solrDir = new File(Resources.getResource("solr").toURI());
     File conf = new File(solrDir, "solr.xml");
     try {
-      return new EmbeddedSolrServer(new CoreContainer(solrDir.getAbsolutePath(), conf), "dataset");
+      EmbeddedSolrServer solr = new EmbeddedSolrServer(new CoreContainer(solrDir.getAbsolutePath(), conf), "dataset");
+      return solr;
     } catch (FileNotFoundException e) {
       throw Throwables.propagate(e);
     }

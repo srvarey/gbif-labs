@@ -198,6 +198,14 @@
       network_key = #{targetEntityKey,jdbcType=OTHER} AND contact_key = #{contactKey,jdbcType=INTEGER}
   </delete>  
   
+  <select id="areRelated" resultType="boolean">
+    SELECT true 
+    FROM network_contact 
+    WHERE network_key = #{targetEntityKey,jdbcType=OTHER} 
+      AND contact_key = #{contactKey,jdbcType=INTEGER}
+    LIMIT 1 
+  </select>    
+  
   <!-- IDENTIFIERS -->
   <insert id="addIdentifier">
     INSERT INTO network_identifier(network_key,identifier_key)

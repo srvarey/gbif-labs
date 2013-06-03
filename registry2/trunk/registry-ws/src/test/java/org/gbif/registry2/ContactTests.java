@@ -31,15 +31,17 @@ import org.gbif.api.service.registry2.NetworkEntityService;
 import org.gbif.registry2.utils.Contacts;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ContactTests {
 
-  public static <T extends NetworkEntity> void testAddDelete(ContactService service, T entity) {
+  public static <T extends NetworkEntity> void testAddDeleteUpdate(ContactService service, T entity) {
 
     // check there are none on a newly created entity
     List<Contact> contacts = service.listContacts(entity.getKey());
@@ -55,7 +57,6 @@ public class ContactTests {
     assertFalse("Older contact should not be primary anymore", contacts.get(1).isPrimary());
     assertTrue("Newer contact should be primary", contacts.get(0).isPrimary());
 
-
     // test deletion, ensuring correct one is deleted
     service.deleteContact(entity.getKey(), contacts.get(1).getKey());
     contacts = service.listContacts(entity.getKey());
@@ -67,6 +68,21 @@ public class ContactTests {
     expected.setCreated(created.getCreated());
     expected.setModified(created.getModified());
     assertEquals("Created contact does not read as expected", expected, created);
+
+    // try and update a contact
+    contacts = service.listContacts(entity.getKey());
+    contacts.get(0).setFirstName("Timmay");
+    service.updateContact(entity.getKey(), contacts.get(0));
+    contacts = service.listContacts(entity.getKey());
+    assertNotNull(contacts);
+    assertEquals("The update does not reflect the change", "Timmay", contacts.get(0).getFirstName());
+
+    try {
+      service.updateContact(UUID.randomUUID(), contacts.get(0));
+      fail("Contact update supplied an illegal entity key but was not caught");
+    } catch (IllegalArgumentException e) {
+      // expected
+    }
   }
 
   /**
