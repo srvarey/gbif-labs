@@ -62,6 +62,7 @@ CREATE TABLE installation
 (
   key uuid NOT NULL PRIMARY KEY,
   organization_key uuid NOT NULL REFERENCES organization(key),
+  password varchar(255),
   type enum_installation_type NOT NULL,
   title varchar(255) CHECK (assert_min_length(title, 2)),
   description text CHECK (assert_min_length(description, 10)),
