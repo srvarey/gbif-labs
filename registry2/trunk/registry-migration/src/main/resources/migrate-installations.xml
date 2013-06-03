@@ -16,7 +16,8 @@
           COALESCE(a.modified, a.created, now()) AS modified,
           a.deleted,
           'ADMIN' AS created_by,
-          'ADMIN' AS modified_by     
+          'ADMIN' AS modified_by,
+          a.ws_password AS password
         FROM agent a
         JOIN agent_relation arHostingOrg ON a.id=arHostingOrg.to_agent_id
         JOIN agent aHostingOrg ON aHostingOrg.id=arHostingOrg.from_agent_id
@@ -26,9 +27,9 @@
         
         <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
         <script connection-id="new-registry">
-            INSERT INTO installation(key,organization_key,
+            INSERT INTO installation(key,organization_key,password,
               type,title,description,created,modified,deleted,created_by,modified_by)
-            VALUES(?uuid_key::uuid,?organization_key::uuid,
+            VALUES(?uuid_key::uuid,?organization_key::uuid,?password,
               ?type::enum_installation_type,?title,?description,
               ?created,?modified,?deleted,?created_by,?modified_by);
         </script>
