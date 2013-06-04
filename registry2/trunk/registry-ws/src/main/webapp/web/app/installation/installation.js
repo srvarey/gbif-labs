@@ -14,6 +14,7 @@ angular.module('installation', [
  * governs the actions on the page. 
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams, Installation) {
+
   $stateProvider.state('installation', {
     url: '/installation/{key}',  
     abstract: true, 
@@ -24,11 +25,13 @@ angular.module('installation', [
       item: function(Installation, $state, $stateParams) {
         return Installation.getSync($stateParams.key);          
       }          
-    }
+    },
+    context: 'installation', // necessary for reusing the components
   })
   .state('installation.detail', {  
     url: '',   
-    templateUrl: 'app/installation/installation-overview.tpl.html'
+    templateUrl: 'app/installation/installation-overview.tpl.html',
+    context: 'installation', // necessary for reusing the components
   })
   .state('installation.edit', {
     url: '/edit',
@@ -68,6 +71,11 @@ angular.module('installation', [
     url: '/comment',   
     templateUrl: 'app/common/comment-list.tpl.html',
     controller: "CommentCtrl",  
+    context: 'installation', // necessary for reusing the components
+  })
+  .state('installation.dataset', {  
+    url: '/dataset',   
+    templateUrl: 'app/common/dataset-list.tpl.html',
     context: 'installation', // necessary for reusing the components
   })
 }])
@@ -117,6 +125,11 @@ angular.module('installation', [
 .controller('InstallationCtrl', function ($scope, $state, $http, $resource, item, Installation, notifications) {
   $scope.installation = item;
   
+  // TODO: should we clean this up?
+  var typeLabel = $state.current.context;
+  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
+  
+  
   // get the organization
   $http( { method:'GET', url: "../organization/" + item.organizationKey})
     .success(function (result) { $scope.organization = result});
@@ -141,10 +154,12 @@ angular.module('installation', [
   
   var count = function(url, parameter) {
     $http( { method:'GET', url: url})
-      .success(function (result) {$scope.counts[parameter] = result.count});
+      .success(function (result) {
+        $scope.counts[parameter] = result.count;
+        $scope[parameter] = result.results;
+      });
   }
-  count('../installation/' + $scope.installation.key + '/dataset','datasets');
-  
+  count('../installation/' + $scope.installation.key + '/dataset?limit=1000','datasets');
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
