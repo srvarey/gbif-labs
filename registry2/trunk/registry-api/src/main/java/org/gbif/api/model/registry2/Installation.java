@@ -20,6 +20,7 @@ import org.gbif.api.vocabulary.registry2.InstallationType;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,6 +35,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
 
   private UUID key;
   private UUID organizationKey;
+  private String password;
   private InstallationType type;
   private String title;
   private String description;
@@ -116,6 +118,15 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
 
   public void setOrganizationKey(UUID organizationKey) {
     this.organizationKey = organizationKey;
+  }
+
+  @Nullable
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   @NotNull
@@ -211,6 +222,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   public int hashCode() {
     return Objects.hashCode(key,
                             organizationKey,
+                            password,
                             type,
                             title,
                             description,
@@ -233,6 +245,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
       Installation that = (Installation) object;
       return Objects.equal(this.key, that.key)
              && Objects.equal(this.organizationKey, that.organizationKey)
+             && Objects.equal(this.password, that.password)
              && Objects.equal(this.type, that.type)
              && Objects.equal(this.title, that.title)
              && Objects.equal(this.description, that.description)
@@ -256,6 +269,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
     return Objects.toStringHelper(this)
       .add("key", key)
       .add("organizationKey", organizationKey)
+      .add("password", password)
       .add("type", type)
       .add("title", title)
       .add("description", description)

@@ -464,7 +464,6 @@ public class IptResourceIT {
 
   /**
    * Populate credentials used in IPT update ws request.
-   * TODO: use ipt.getWsPassword() in place of hard coded "password"
    * </br>
    * Note: this method is copied directly out of the IPT.
    *
@@ -473,7 +472,7 @@ public class IptResourceIT {
    * @return credentials
    */
   private UsernamePasswordCredentials iptCredentials(Installation ipt) {
-    return new UsernamePasswordCredentials(ipt.getKey().toString(), "password");
+    return new UsernamePasswordCredentials(ipt.getKey().toString(), ipt.getPassword());
   }
 
   /**

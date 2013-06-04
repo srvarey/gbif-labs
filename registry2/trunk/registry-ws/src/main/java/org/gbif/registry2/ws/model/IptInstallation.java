@@ -43,7 +43,6 @@ public class IptInstallation extends Installation {
   private String primaryContactName;
   private EndpointType endpointType;
   private String endpointUrl;
-  private String wsPassword;
 
   // created from combination of fields after injection
   private Contact primaryContact;
@@ -72,7 +71,7 @@ public class IptInstallation extends Installation {
    * @param organizationKey organization key as UUID
    */
   @FormParam(ORGANIZATION_KEY_PARAM)
-  public void setHostingOrganizationKey(String organizationKey) throws IllegalArgumentException {
+  public void setHostingOrganizationKey(String organizationKey) {
     try {
       this.setOrganizationKey(UUID.fromString(Strings.nullToEmpty(organizationKey)));
     } catch (IllegalArgumentException e) {
@@ -182,12 +181,12 @@ public class IptInstallation extends Installation {
   @XmlTransient
   @Nullable
   public String getWsPassword() {
-    return wsPassword;
+    return getPassword();
   }
 
   @FormParam("wsPassword")
   public void setWsPassword(String wsPassword) {
-    this.wsPassword = wsPassword;
+    setPassword(Strings.nullToEmpty(wsPassword));
   }
 
   /**

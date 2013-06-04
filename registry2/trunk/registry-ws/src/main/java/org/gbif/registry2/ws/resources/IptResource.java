@@ -35,7 +35,6 @@ public class IptResource {
 
   private final InstallationService installationService;
   private final OrganizationService organizationService;
-  //private final ContactService contactService;
   // used to ensure Response is not cached, forcing the IPT to make a new request
   private static final CacheControl CACHE_CONTROL_DISABLED = CacheControl.valueOf("no-cache");
 
@@ -43,7 +42,6 @@ public class IptResource {
   public IptResource(InstallationService installationService, OrganizationService organizationService) {
     this.installationService = installationService;
     this.organizationService = organizationService;
-    //this.contactService = contactService;
   }
 
   /**
