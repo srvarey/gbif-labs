@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -81,18 +78,18 @@ public class NodeIT extends NetworkEntityTest<Node> {
   @Parameters
   public static Iterable<Object[]> data() {
     return ImmutableList.<Object[]>of(
-                    new Object[] {
-                      RegistryTestModules.webservice().getInstance(NodeResource.class),
-                      RegistryTestModules.webservice().getInstance(OrganizationResource.class),
-                      RegistryTestModules.webservice().getInstance(InstallationResource.class),
-                      RegistryTestModules.webservice().getInstance(DatasetResource.class)
-                    },
-                    new Object[] {
-                      RegistryTestModules.webserviceClient().getInstance(NodeService.class),
-                      RegistryTestModules.webserviceClient().getInstance(OrganizationService.class),
-                      RegistryTestModules.webserviceClient().getInstance(InstallationService.class),
-                      RegistryTestModules.webserviceClient().getInstance(DatasetService.class)
-                    });
+      new Object[] {
+        RegistryTestModules.webservice().getInstance(NodeResource.class),
+        RegistryTestModules.webservice().getInstance(OrganizationResource.class),
+        RegistryTestModules.webservice().getInstance(InstallationResource.class),
+        RegistryTestModules.webservice().getInstance(DatasetResource.class)
+      },
+      new Object[] {
+        RegistryTestModules.webserviceClient().getInstance(NodeService.class),
+        RegistryTestModules.webserviceClient().getInstance(OrganizationService.class),
+        RegistryTestModules.webserviceClient().getInstance(InstallationService.class),
+        RegistryTestModules.webserviceClient().getInstance(DatasetService.class)
+      });
   }
 
   public NodeIT(NodeService nodeService, OrganizationService organizationService,
@@ -103,7 +100,6 @@ public class NodeIT extends NetworkEntityTest<Node> {
     this.installationService = installationService;
     this.datasetService = datasetService;
   }
-
 
   @Test
   public void testGetByCountry() {
@@ -187,6 +183,8 @@ public class NodeIT extends NetworkEntityTest<Node> {
     // test node service
     PagingResponse<Dataset> resp = nodeService.endorsedDatasets(node.getKey(), null);
     assertEquals(2, resp.getResults().size());
+    assertEquals("Paging is not returning the correct count", Long.valueOf(2), resp.getCount());
+
     // the last created dataset should be the first in the list
     assertEquals(d2Key, resp.getResults().get(0).getKey());
   }
@@ -209,6 +207,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
   /**
    * Node contacts are IMS managed and the service throws exceptions
    */
+  @Override
   @Test(expected = UnsupportedOperationException.class)
   public void testContacts() {
     Node n = create(newEntity(), 1);

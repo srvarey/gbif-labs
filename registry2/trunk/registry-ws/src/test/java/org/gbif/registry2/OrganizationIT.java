@@ -35,6 +35,8 @@ import org.junit.runners.Parameterized.Parameters;
 import static org.gbif.registry2.guice.RegistryTestModules.webservice;
 import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * This is parameterized to run the same test routines for the following:
  * <ol>
@@ -71,18 +73,25 @@ public class OrganizationIT extends NetworkEntityTest<Organization> {
     nodeService.create(node);
     node = nodeService.list(new PagingRequest()).getResults().get(0);
 
-    assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 0);
+    assertResultsOfSize(nodeService.endorsedOrganizations(node.getKey(), new PagingRequest()), 0);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 0);
 
     Organization o = Organizations.newInstance(node.getKey());
     o.setKey(this.getService().create(o));
-    assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 0);
+    assertResultsOfSize(nodeService.endorsedOrganizations(node.getKey(), new PagingRequest()), 0);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 1);
+    assertResultsOfSize(nodeService.pendingEndorsements(node.getKey(), new PagingRequest()), 1);
+    assertEquals("Paging is not returning the correct count", Long.valueOf(1),
+      nodeService.pendingEndorsements(new PagingRequest()).getCount());
 
     o.setEndorsementApproved(true);
     this.getService().update(o);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 0);
-    assertResultsOfSize(nodeService.organizationsEndorsedBy(node.getKey(), new PagingRequest()), 1);
+    assertEquals("Paging is not returning the correct count", Long.valueOf(0),
+      nodeService.pendingEndorsements(new PagingRequest()).getCount());
+    assertResultsOfSize(nodeService.endorsedOrganizations(node.getKey(), new PagingRequest()), 1);
+    assertEquals("Paging is not returning the correct count", Long.valueOf(1),
+      nodeService.endorsedOrganizations(node.getKey(), new PagingRequest()).getCount());
   }
 
   @Test
@@ -95,12 +104,14 @@ public class OrganizationIT extends NetworkEntityTest<Organization> {
       Country.UNKNOWN);
 
     assertResultsOfSize(service.listByCountry(Country.ANGOLA, new PagingRequest()), 2);
+    assertEquals("Paging is not returning the correct count", Long.valueOf(2),
+      service.listByCountry(Country.ANGOLA, new PagingRequest()).getCount());
     assertResultsOfSize(service.listByCountry(Country.FRANCE, new PagingRequest()), 2);
     assertResultsOfSize(service.listByCountry(Country.UNKNOWN, new PagingRequest()), 1);
     assertResultsOfSize(service.listByCountry(Country.GERMANY, new PagingRequest()), 0);
   }
 
-  private void createOrgs(UUID nodeKey, Country ... countries) {
+  private void createOrgs(UUID nodeKey, Country... countries) {
     for (Country c : countries) {
       Organization o = Organizations.newInstance(nodeKey);
       o.setCountry(c);

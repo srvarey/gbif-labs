@@ -333,16 +333,35 @@
     </if>
   </select>  
   
+  <select id="countOrganizationsEndorsedBy" resultType="Long">
+    SELECT count(*)
+    FROM organization o
+    INNER JOIN node n ON o.endorsing_node_key = n.key 
+    WHERE o.deleted IS NULL AND n.deleted IS NULL AND n.key = #{nodeKey,jdbcType=OTHER} AND o.endorsement_approved = true 
+  </select>
+    
   <!-- Append safe ordering, omitting deleted entities -->
   <select id="pendingEndorsements" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
     SELECT <include refid="ORGANIZATION_FIELDS"/>
     FROM organization o
-    WHERE o.deleted IS NULL AND o.endorsement_approved = false 
+    WHERE o.deleted IS NULL AND o.endorsement_approved = false
+    <if test="nodeKey != null" >
+      AND o.endorsing_node_key= #{nodeKey,jdbcType=OTHER}
+    </if>
     ORDER BY o.created, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
   </select>  
+  
+  <select id="countPendingEndorsements" resultType="Long">
+    SELECT count(*)
+    FROM organization o
+    WHERE o.deleted IS NULL AND o.endorsement_approved = false
+    <if test="nodeKey != null" >
+      AND o.endorsing_node_key= #{nodeKey,jdbcType=OTHER}
+    </if>
+  </select>    
 
   <!--
    Append safe ordering, omitting deleted entities
@@ -355,5 +374,10 @@
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
+  </select>
+  <select id="countOrganizationsByCountry" resultType="Long">
+    SELECT count(*)
+    FROM organization o
+    WHERE o.deleted IS NULL AND o.country = #{country,jdbcType=OTHER}
   </select>
 </mapper>

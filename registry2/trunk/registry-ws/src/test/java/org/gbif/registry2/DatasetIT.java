@@ -47,6 +47,7 @@ import org.gbif.utils.file.FileUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
@@ -186,6 +187,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     PagingResponse<Dataset> hosted =
       installationService.hostedDatasets(dataset.getInstallationKey(), new PagingRequest());
     assertEquals("This installation should have only 1 hosted dataset", 1, hosted.getResults().size());
+    assertEquals("Paging response counts are not being set", Long.valueOf(1), hosted.getCount());
     assertEquals("The hosted installation should serve the dataset created", hosted.getResults().get(0).getKey(),
       dataset.getKey());
   }
@@ -292,7 +294,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     SearchResponse<DatasetSearchResult, DatasetSearchParameter> resp = searchService.search(req);
     assertNotNull(resp.getCount());
     assertEquals("SOLR does not have the expected number of results for country[" + country +
-                 "] and publishingCountry[" + publishingCountry + "]", Long.valueOf(expected),
+      "] and publishingCountry[" + publishingCountry + "]", Long.valueOf(expected),
       resp.getCount());
   }
 
@@ -420,7 +422,8 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   private void createCountryDatasets(Country publishingCountry, int number) {
     createCountryDatasets(DatasetType.OCCURRENCE, publishingCountry, number, null);
   }
-  private void createCountryDatasets(DatasetType type, Country publishingCountry, int number, Country ... countries) {
+
+  private void createCountryDatasets(DatasetType type, Country publishingCountry, int number, Country... countries) {
     Dataset d = addCountryCoverage(newEntity(), countries);
     d.setType(type);
     service.create(d);
@@ -438,7 +441,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     }
   }
 
-  private Dataset addCountryCoverage(Dataset d, Country ... countries) {
+  private Dataset addCountryCoverage(Dataset d, Country... countries) {
     if (countries != null) {
       for (Country c : countries) {
         if (c != null) {

@@ -15,6 +15,7 @@ package org.gbif.registry2.ws.resources;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.api.vocabulary.Country;
@@ -23,11 +24,13 @@ import org.gbif.registry2.persistence.mapper.ContactMapper;
 import org.gbif.registry2.persistence.mapper.DatasetMapper;
 import org.gbif.registry2.persistence.mapper.EndpointMapper;
 import org.gbif.registry2.persistence.mapper.IdentifierMapper;
+import org.gbif.registry2.persistence.mapper.InstallationMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.OrganizationMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -48,7 +51,8 @@ import com.google.inject.Singleton;
 public class OrganizationResource extends BaseNetworkEntityResource<Organization> implements OrganizationService {
 
   private final DatasetMapper datasetMapper;
-  private final OrganizationMapper orgMapper;
+  private final OrganizationMapper organizationMapper;
+  private final InstallationMapper installationMapper;
 
   @Inject
   public OrganizationResource(
@@ -60,6 +64,7 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
     IdentifierMapper identifierMapper,
     CommentMapper commentMapper,
     DatasetMapper datasetMapper,
+    InstallationMapper installationMapper,
     EventBus eventBus) {
     super(organizationMapper,
       commentMapper,
@@ -71,14 +76,14 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
       Organization.class,
       eventBus);
     this.datasetMapper = datasetMapper;
-    this.orgMapper = organizationMapper;
+    this.organizationMapper = organizationMapper;
+    this.installationMapper = installationMapper;
   }
 
   /**
    * All network entities support simple (!) search with "&q=".
    * This is to support the console user interface, and is in addition to any complex, faceted search that might
    * additionally be supported, such as dataset search.
-   *
    * Organizations can also be filtered by their country, but a search and country filter cannot be combined.
    */
   @GET
@@ -97,18 +102,29 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
   @Path("{key}/hostedDataset")
   @Override
   public PagingResponse<Dataset> hostedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
-    return pagingResponse(page, null, datasetMapper.listDatasetsHostedBy(organizationKey, page));
+    return pagingResponse(page, datasetMapper.countDatasetsHostedBy(organizationKey),
+      datasetMapper.listDatasetsHostedBy(organizationKey, page));
   }
 
   @GET
   @Path("{key}/ownedDataset")
   @Override
   public PagingResponse<Dataset> ownedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
-    return pagingResponse(page, null, datasetMapper.listDatasetsOwnedBy(organizationKey, page));
+    return pagingResponse(page, datasetMapper.countDatasetsOwnedBy(organizationKey),
+      datasetMapper.listDatasetsOwnedBy(organizationKey, page));
   }
 
   @Override
   public PagingResponse<Organization> listByCountry(Country country, @Nullable Pageable page) {
-    return pagingResponse(page, null, orgMapper.organizationsByCountry(country, page));
+    return pagingResponse(page, organizationMapper.countOrganizationsByCountry(country),
+      organizationMapper.organizationsByCountry(country, page));
+  }
+
+  @GET
+  @Path("{key}/installation")
+  @Override
+  public PagingResponse<Installation> installations(@PathParam("key") UUID organizationKey, @Context Pageable page) {
+    return pagingResponse(page, installationMapper.countInstallationsByOrganization(organizationKey),
+      installationMapper.listInstallationsByOrganization(organizationKey, page));
   }
 }

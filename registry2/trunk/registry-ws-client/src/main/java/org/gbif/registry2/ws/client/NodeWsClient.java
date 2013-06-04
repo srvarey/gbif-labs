@@ -15,6 +15,7 @@ package org.gbif.registry2.ws.client;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.NodeService;
@@ -23,9 +24,11 @@ import org.gbif.registry2.ws.client.guice.RegistryWs;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
 
@@ -40,7 +43,7 @@ public class NodeWsClient extends BaseNetworkEntityClient<Node> implements NodeS
   }
 
   @Override
-  public PagingResponse<Organization> organizationsEndorsedBy(UUID nodeKey, Pageable page) {
+  public PagingResponse<Organization> endorsedOrganizations(UUID nodeKey, Pageable page) {
     return get(GenericTypes.PAGING_ORGANIZATION, null, null, page, nodeKey.toString(), "organization");
   }
 
@@ -62,5 +65,16 @@ public class NodeWsClient extends BaseNetworkEntityClient<Node> implements NodeS
   @Override
   public PagingResponse<Dataset> endorsedDatasets(@NotNull UUID nodeKey, @Nullable Pageable page) {
     return get(GenericTypes.PAGING_DATASET, page, nodeKey.toString(), "dataset");
+  }
+
+  @Override
+  public PagingResponse<Organization> pendingEndorsements(UUID nodeKey, Pageable page) {
+    Preconditions.checkNotNull(nodeKey, "Node key required to list the pending endorsements for a given node");
+    return get(GenericTypes.PAGING_ORGANIZATION, null, null, page, String.valueOf(nodeKey), "pendingEndorsement");
+  }
+
+  @Override
+  public PagingResponse<Installation> installations(UUID nodeKey, Pageable page) {
+    return get(GenericTypes.PAGING_INSTALLATION, null, null, page, String.valueOf(nodeKey), "installation");
   }
 }

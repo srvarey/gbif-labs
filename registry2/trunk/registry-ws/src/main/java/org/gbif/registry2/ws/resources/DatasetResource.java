@@ -47,6 +47,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -384,7 +385,8 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @GET
   @Override
   public PagingResponse<Dataset> listConstituents(@PathParam("key") UUID datasetKey, @Context Pageable page) {
-    return pagingResponse(page, null, datasetMapper.listConstituents(datasetKey, page));
+    return pagingResponse(page, datasetMapper.countConstituents(datasetKey),
+      datasetMapper.listConstituents(datasetKey, page));
   }
 
   @Path("{key}/metadata")

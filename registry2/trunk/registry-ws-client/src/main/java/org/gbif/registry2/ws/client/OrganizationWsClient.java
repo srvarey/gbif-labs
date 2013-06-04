@@ -15,6 +15,7 @@ package org.gbif.registry2.ws.client;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.api.vocabulary.Country;
@@ -22,6 +23,7 @@ import org.gbif.registry2.ws.client.guice.RegistryWs;
 import org.gbif.ws.client.QueryParamBuilder;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
@@ -53,4 +55,8 @@ public class OrganizationWsClient extends BaseNetworkEntityClient<Organization>
     return get(GenericTypes.PAGING_ORGANIZATION, null, QueryParamBuilder.create("country", country).build(), page);
   }
 
+  @Override
+  public PagingResponse<Installation> installations(UUID organizationKey, Pageable page) {
+    return get(GenericTypes.PAGING_INSTALLATION, null, null, page, String.valueOf(organizationKey), "installation");
+  }
 }
