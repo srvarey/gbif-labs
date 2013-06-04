@@ -13,5 +13,6 @@
   <include file="liquibase/007-super-entity.xml" />
   <include file="liquibase/008-fk_indices.xml" />
   <include file="liquibase/009-org_country_idx.xml" />
+  <include file="liquibase/010-installation_password.xml" />
 
 </databaseChangeLog>

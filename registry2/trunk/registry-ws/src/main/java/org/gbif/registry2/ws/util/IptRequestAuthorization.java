@@ -20,7 +20,7 @@ public class IptRequestAuthorization {
 
   private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 
-  private HttpContext httpContext;
+  private final HttpContext httpContext;
   private OrganizationService organizationService;
   private InstallationService installationService;
 
@@ -106,9 +106,9 @@ public class IptRequestAuthorization {
     String user = getUserFromAuthenticationKey(decryptedAuthorizationKey);
     // get the password from the BASE-64 encoded authorization key, equal to installation ws password
     String password = getPasswordFromAuthenticationKey(decryptedAuthorizationKey);
-    // TODO replace hard coded "password" with installation.getWsPassword
+
     return (user != null && password != null) && user.equalsIgnoreCase(installation.getKey().toString()) && password
-      .equals("password");
+      .equals(installation.getPassword());
   }
 
   /**

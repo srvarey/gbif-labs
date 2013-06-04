@@ -13,11 +13,11 @@
   </resultMap>
 
   <sql id="WRITABLE_INSTALLATION_FIELDS">
-    key,organization_key,type,title,description,created,created_by,modified,modified_by
+    key,organization_key,password,type,title,description,created,created_by,modified,modified_by
   </sql>
   
   <sql id="INSTALLATION_FIELDS">
-    i.key,i.organization_key,i.type,i.title,i.description,i.created,i.created_by,i.modified,i.modified_by,i.deleted
+    i.key,i.organization_key,i.password,i.type,i.title,i.description,i.created,i.created_by,i.modified,i.modified_by,i.deleted
   </sql>
   
   <!-- 
@@ -42,6 +42,7 @@
    -->
   <sql id="INSTALLATION_UPDATE">
     organization_key = #{organizationKey,jdbcType=OTHER},
+    password = #{password,jdbcType=VARCHAR},
     type = #{type,jdbcType=OTHER},
     title = #{title,jdbcType=VARCHAR},
     description = #{description,jdbcType=VARCHAR},
@@ -52,6 +53,7 @@
   <sql id="WRITABLE_INSTALLATION_FIELD_TYPES">
     #{key,jdbcType=OTHER},
     #{organizationKey,jdbcType=OTHER},
+    #{password,jdbcType=VARCHAR},
     #{type,jdbcType=OTHER},
     #{title,jdbcType=VARCHAR},
     #{description,jdbcType=VARCHAR},
