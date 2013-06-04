@@ -103,7 +103,6 @@ public class WithMyBatis {
     // null safe checking follows
     checkArgument(Boolean.TRUE.equals(contactableMapper.areRelated(targetEntityKey, contact.getKey())),
       "The provided contact is not connected to the given entity");
-    contactMapper.updateContact(contact);
     // is this a primary contact? We need to make sure it only exists once per type
     if (contact.isPrimary()) {
       contactableMapper.updatePrimaryContacts(targetEntityKey, contact.getType());
