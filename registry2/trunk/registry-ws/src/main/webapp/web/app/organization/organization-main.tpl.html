@@ -13,10 +13,10 @@
     <li ng-class="{active: $state.includes('organization.tag')}"><a href="" ng-click="transitionTo('tag')">Tags ({{counts.tag}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.machinetag')}"><a href="" ng-click="transitionTo('machinetag')">Machine tags ({{counts.machinetag}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.comment')}"><a href="" ng-click="transitionTo('comment')">Comments ({{counts.comment}}) <i class="icon-chevron-right"></i></a></li>
-    <!--li><a href="#" class="alert-error"><i class="icon-warning-sign"></i> Pending endorsements (1)<i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Endorsed organisations (3) <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Endorsed datasets (323) <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Change history (12) <i class="icon-chevron-right"></i></a></li-->
+    <li><a href="#">Published datasets ({{counts.ownedDatasets}}) <i class="icon-chevron-right"></i></a></li>
+    <li><a href="#">Hosted datasets ({{counts.hostedDatasets}}) <i class="icon-chevron-right"></i></a></li>
+    <li><a href="#">Installations ({{counts.installations}}) <i class="icon-chevron-right"></i></a></li>
+    <!--li><a href="#">Change history (12) <i class="icon-chevron-right"></i></a></li-->
   </ul>
 </div>
 <div class="span8">

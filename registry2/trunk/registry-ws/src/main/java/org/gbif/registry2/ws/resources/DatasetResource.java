@@ -385,7 +385,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @GET
   @Override
   public PagingResponse<Dataset> listConstituents(@PathParam("key") UUID datasetKey, @Context Pageable page) {
-    return pagingResponse(page, datasetMapper.countConstituents(datasetKey),
+    return pagingResponse(page, (long) datasetMapper.countConstituents(datasetKey),
       datasetMapper.listConstituents(datasetKey, page));
   }
 

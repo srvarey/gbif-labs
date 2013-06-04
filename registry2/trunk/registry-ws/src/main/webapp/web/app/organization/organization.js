@@ -118,6 +118,15 @@ angular.module('organization', [
     machinetag : _.size($scope.organization.machineTags || {}),
     comment : _.size($scope.organization.comments || {})
   };
+  
+  var count = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope.counts[parameter] = result.count});
+  }
+  count('../organization/' + $scope.organization.key + '/ownedDataset','ownedDatasets');
+  count('../organization/' + $scope.organization.key + '/hostedDataset','hostedDatasets');
+  count('../organization/' + $scope.organization.key + '/installation','installations');
+  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {

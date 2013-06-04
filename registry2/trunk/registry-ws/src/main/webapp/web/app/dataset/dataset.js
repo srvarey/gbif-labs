@@ -130,6 +130,12 @@ angular.module('dataset', [
   lookup("../dataset/",  item.parentDatasetKey, 'parentDataset');
   lookup("../dataset/", item.duplicateOfDatasetKey, 'duplicateOfDataset');
   
+  var count = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope.counts[parameter] = result.count});
+  }
+  count('../dataset/' + $scope.dataset.key + '/constituents','subDatasets');
+  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {

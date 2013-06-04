@@ -443,6 +443,7 @@
     SELECT count(*)
     FROM dataset d
     INNER JOIN organization o ON d.owning_organization_key = o.key AND o.deleted IS NULL AND o.endorsement_approved=true
+    WHERE o.key = #{organizationKey,jdbcType=OTHER}
     AND d.deleted IS NULL
   </select>
   

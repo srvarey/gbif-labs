@@ -138,6 +138,13 @@ angular.module('installation', [
     machinetag : _.size($scope.installation.machineTags || {}),
     comment : _.size($scope.installation.comments || {})
   };
+  
+  var count = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope.counts[parameter] = result.count});
+  }
+  count('../installation/' + $scope.installation.key + '/dataset','datasets');
+  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
