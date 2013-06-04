@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +16,7 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.NodeService;
@@ -29,6 +27,7 @@ import org.gbif.registry2.persistence.mapper.ContactMapper;
 import org.gbif.registry2.persistence.mapper.DatasetMapper;
 import org.gbif.registry2.persistence.mapper.EndpointMapper;
 import org.gbif.registry2.persistence.mapper.IdentifierMapper;
+import org.gbif.registry2.persistence.mapper.InstallationMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.NodeMapper;
 import org.gbif.registry2.persistence.mapper.OrganizationMapper;
@@ -38,6 +37,7 @@ import org.gbif.ws.server.interceptor.NullToNotFound;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -60,6 +60,7 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
 
   private final NodeMapper nodeMapper;
   private final OrganizationMapper organizationMapper;
+  private final InstallationMapper installationMapper;
   private final DatasetMapper datasetMapper;
   private final Augmenter nodeAugmenter;
 
@@ -74,15 +75,16 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
     TagMapper tagMapper,
     OrganizationMapper organizationMapper,
     DatasetMapper datasetMapper,
+    InstallationMapper installationMapper,
     EventBus eventBus,
-    Augmenter nodeAugmenter
-  ) {
+    Augmenter nodeAugmenter) {
     super(nodeMapper, commentMapper, contactMapper, endpointMapper, identifierMapper, machineTagMapper, tagMapper,
-          Node.class, eventBus);
+      Node.class, eventBus);
     this.nodeMapper = nodeMapper;
     this.organizationMapper = organizationMapper;
     this.nodeAugmenter = nodeAugmenter;
     this.datasetMapper = datasetMapper;
+    this.installationMapper = installationMapper;
   }
 
   @GET
@@ -122,15 +124,25 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   @GET
   @Path("{key}/organization")
   @Override
-  public PagingResponse<Organization> organizationsEndorsedBy(@PathParam("key") UUID nodeKey, @Context Pageable page) {
-    return new PagingResponse<Organization>(page, null, organizationMapper.organizationsEndorsedBy(nodeKey, page));
+  public PagingResponse<Organization> endorsedOrganizations(@PathParam("key") UUID nodeKey, @Context Pageable page) {
+    return new PagingResponse<Organization>(page, organizationMapper.countOrganizationsEndorsedBy(nodeKey),
+      organizationMapper.organizationsEndorsedBy(nodeKey, page));
   }
 
   @GET
   @Path("pendingEndorsement")
   @Override
   public PagingResponse<Organization> pendingEndorsements(@Context Pageable page) {
-    return new PagingResponse<Organization>(page, null, organizationMapper.pendingEndorsements(page));
+    return new PagingResponse<Organization>(page, organizationMapper.countPendingEndorsements(null),
+      organizationMapper.pendingEndorsements(null, page));
+  }
+
+  @GET
+  @Path("{key}/pendingEndorsement")
+  @Override
+  public PagingResponse<Organization> pendingEndorsements(@PathParam("key") UUID nodeKey, @Context Pageable page) {
+    return new PagingResponse<Organization>(page, organizationMapper.countPendingEndorsements(nodeKey),
+      organizationMapper.pendingEndorsements(nodeKey, page));
   }
 
   @GET
@@ -157,7 +169,8 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   @Override
   @Path("{key}/dataset")
   public PagingResponse<Dataset> endorsedDatasets(@PathParam("key") UUID nodeKey, @Context Pageable page) {
-    return pagingResponse(page, null, datasetMapper.listDatasetsEndorsedBy(nodeKey, page));
+    return pagingResponse(page, datasetMapper.countDatasetsEndorsedBy(nodeKey),
+      datasetMapper.listDatasetsEndorsedBy(nodeKey, page));
   }
 
   @GET
@@ -179,5 +192,13 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   @Override
   public int addContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
     throw new UnsupportedOperationException("Contacts are manually managed in IMS");
+  }
+
+  @GET
+  @Path("{key}/installation")
+  @Override
+  public PagingResponse<Installation> installations(@PathParam("key") UUID nodeKey, @Context Pageable page) {
+    return pagingResponse(page, installationMapper.countInstallationsEndorsedBy(nodeKey),
+      installationMapper.listInstallationsEndorsedBy(nodeKey, page));
   }
 }

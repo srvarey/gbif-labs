@@ -36,7 +36,7 @@ public class InstallationWsClient extends BaseNetworkEntityClient<Installation> 
 
   @Override
   public PagingResponse<Dataset> hostedDatasets(UUID installationKey, Pageable page) {
-    return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(installationKey), "datasets");
+    return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(installationKey), "dataset");
   }
 
 }

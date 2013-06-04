@@ -19,6 +19,7 @@ import org.gbif.api.vocabulary.registry2.DatasetType;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import org.apache.ibatis.annotations.Param;
@@ -69,4 +70,20 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
    */
   List<Dataset> listDatasetsByInstallation(@Param("installationKey") UUID installationKey,
     @Nullable @Param("page") Pageable page);
+
+  /**
+   * Count of datasets hosted by the given installation.
+   */
+  long countDatasetsByInstallation(@Param("installationKey") UUID installationKey);
+
+  /**
+   * Count of datasets owned by an organization that is endorsed by the given node.
+   */
+  long countDatasetsEndorsedBy(@Param("nodeKey") UUID nodeKey);
+
+  long countDatasetsHostedBy(@Param("organizationKey") UUID organizationKey);
+
+  long countDatasetsOwnedBy(@Param("organizationKey") UUID organizationKey);
+
+  long countConstituents(@Param("key") UUID datasetKey);
 }

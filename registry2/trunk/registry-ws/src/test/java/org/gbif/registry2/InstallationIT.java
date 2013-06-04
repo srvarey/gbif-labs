@@ -12,7 +12,10 @@
  */
 package org.gbif.registry2;
 
+import org.gbif.api.model.common.paging.PagingRequest;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Installation;
+import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NodeService;
@@ -28,12 +31,15 @@ import java.util.UUID;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static org.gbif.registry2.guice.RegistryTestModules.webservice;
 import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This is parameterized to run the same test routines for the following:
@@ -77,6 +83,20 @@ public class InstallationIT extends NetworkEntityTest<Installation> {
     Organization organization = organizationService.get(key);
     Installation i = Installations.newInstance(organization.getKey());
     return i;
+  }
+
+  // Easier to test this here than other places due to our utility factory
+  @Test
+  public void testHostedByInstallationList() {
+    Installation installation = create(newEntity(), 1);
+    Organization organization = organizationService.get(installation.getOrganizationKey());
+    Node node = nodeService.get(organization.getEndorsingNodeKey());
+
+    PagingResponse<Installation> resp = nodeService.installations(node.getKey(), new PagingRequest());
+    assertEquals("Paging counts are not being set", Long.valueOf(1), resp.getCount());
+
+    resp = organizationService.installations(organization.getKey(), new PagingRequest());
+    assertEquals("Paging counts are not being set", Long.valueOf(1), resp.getCount());
   }
 
 }

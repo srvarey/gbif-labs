@@ -15,10 +15,12 @@ package org.gbif.api.service.registry2;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.vocabulary.Country;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
@@ -34,6 +36,11 @@ public interface OrganizationService
    * Provides paging service to list datasets owned by a specific organization.
    */
   PagingResponse<Dataset> ownedDatasets(@NotNull UUID organizationKey, @Nullable Pageable page);
+
+  /**
+   * Provides paging service to list installations for the organization.
+   */
+  PagingResponse<Installation> installations(@NotNull UUID organizationKey, @Nullable Pageable page);
 
   /**
    * Provides access to all organizations from a country.

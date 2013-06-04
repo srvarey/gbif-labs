@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,10 +19,11 @@ import org.gbif.api.vocabulary.registry2.ContactType;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.ibatis.annotations.Param;
+
 /**
  * For simplicity we keep ContactableMapper part of the BaseNetworkEntityMapper, but this NodeMapper
  * does not implement those mapper methods but will throw exceptions instead !
- *
  * For a Node all contacts are managed in the GBIF Filemaker IMS which we only access for reads
  * and cannot manipulate though our Java API.
  */
@@ -33,10 +31,11 @@ public interface NodeMapper extends BaseNetworkEntityMapper<Node> {
 
   List<Country> listNodeCountries();
 
-  Node getByCountry(Country country);
+  Node getByCountry(@Param("country") Country country);
 
   /**
    * This method is not supported by the NodeMapper.
+   * 
    * @throws
    */
   @Override
@@ -44,6 +43,7 @@ public interface NodeMapper extends BaseNetworkEntityMapper<Node> {
 
   /**
    * This method is not supported by the NodeMapper.
+   * 
    * @throws
    */
   @Override
@@ -51,6 +51,7 @@ public interface NodeMapper extends BaseNetworkEntityMapper<Node> {
 
   /**
    * This method is not supported by the NodeMapper.
+   * 
    * @throws
    */
   @Override

@@ -362,8 +362,8 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   }
 
   protected void assertResultsOfSize(PagingResponse<T> results, int size) {
-    assertNotNull(results);
-    assertNotNull(results.getResults());
+    assertNotNull("PagingResponse (itself) is null; hint: no paging response should EVER do this", results);
+    assertNotNull("PagingResponse results are null", results.getResults());
     assertEquals("Unexpected result size for current test state", size, results.getResults().size());
   }
 

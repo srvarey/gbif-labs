@@ -27,6 +27,7 @@ import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -87,9 +88,10 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
   }
 
   @GET
-  @Path("{key}/datasets")
+  @Path("{key}/dataset")
   @Override
   public PagingResponse<Dataset> hostedDatasets(@PathParam("key") UUID installationKey, @Context Pageable page) {
-    return new PagingResponse<Dataset>(page, null, datasetMapper.listDatasetsByInstallation(installationKey, page));
+    return new PagingResponse<Dataset>(page, datasetMapper.countDatasetsByInstallation(installationKey),
+      datasetMapper.listDatasetsByInstallation(installationKey, page));
   }
 }

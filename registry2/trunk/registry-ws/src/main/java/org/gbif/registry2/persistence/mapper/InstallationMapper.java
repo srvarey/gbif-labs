@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +12,26 @@
  */
 package org.gbif.registry2.persistence.mapper;
 
+import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.registry2.Installation;
 
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
+import org.apache.ibatis.annotations.Param;
+
 public interface InstallationMapper extends BaseNetworkEntityMapper<Installation> {
+
+  long countInstallationsEndorsedBy(@Param("nodeKey") UUID nodeKey);
+
+  List<Installation>
+    listInstallationsEndorsedBy(@Param("nodeKey") UUID nodeKey, @Nullable @Param("page") Pageable page);
+
+  long countInstallationsByOrganization(@Param("organizationKey") UUID organizationKey);
+
+  List<Installation> listInstallationsByOrganization(@Param("organizationKey") UUID organizationKey,
+    @Nullable @Param("page") Pageable page);
 
 }
