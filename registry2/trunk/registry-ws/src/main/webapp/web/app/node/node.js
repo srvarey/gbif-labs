@@ -116,6 +116,16 @@ angular.module('node', [
 	lookup('../enumeration/org.gbif.api.vocabulary.registry2.Continent','continents');  
 	lookup('../enumeration/org.gbif.api.vocabulary.Country','countries');  
 	
+	// populate counts for sub resources
+  var count = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope.counts[parameter] = result.count});
+  }
+  count('../node/' + $scope.node.key + '/pendingEndorsement','pendingEndorsements');
+  count('../node/' + $scope.node.key + '/organization','organizations');
+  count('../node/' + $scope.node.key + '/dataset','datasets');
+  count('../node/' + $scope.node.key + '/installation','installations');
+	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
     $state.transitionTo('node.' + target, { key: item.key, type: "node" }); 

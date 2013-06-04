@@ -289,7 +289,7 @@
     FROM installation i
     INNER JOIN organization o ON i.organization_key=o.key AND o.deleted IS NULL
     INNER JOIN node n ON o.endorsing_node_key=n.key AND n.deleted IS NULL
-    WHERE i.deleted IS NULL
+    WHERE i.deleted IS NULL AND n.key=#{nodeKey,jdbcType=OTHER}
     ORDER BY created DESC, key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
@@ -301,7 +301,7 @@
     FROM installation i
     INNER JOIN organization o ON i.organization_key=o.key AND o.deleted IS NULL
     INNER JOIN node n ON o.endorsing_node_key=n.key AND n.deleted IS NULL
-    WHERE i.deleted IS NULL
+    WHERE i.deleted IS NULL AND n.key=#{nodeKey,jdbcType=OTHER}
   </select>  
 
   <select id="listInstallationsByOrganization" resultMap="INSTALLATION_MAP" parameterType="Pageable">

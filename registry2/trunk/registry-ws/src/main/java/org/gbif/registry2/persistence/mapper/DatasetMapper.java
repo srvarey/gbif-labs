@@ -85,5 +85,6 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
 
   long countDatasetsOwnedBy(@Param("organizationKey") UUID organizationKey);
 
-  long countConstituents(@Param("key") UUID datasetKey);
+  // sigh - required by the model object, but the paging is long
+  int countConstituents(@Param("key") UUID datasetKey);
 }
