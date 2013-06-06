@@ -26,12 +26,10 @@ angular.module('installation', [
         return Installation.getSync($stateParams.key);          
       }          
     },
-    context: 'installation', // necessary for reusing the components
   })
   .state('installation.detail', {  
     url: '',   
     templateUrl: 'app/installation/installation-overview.tpl.html',
-    context: 'installation', // necessary for reusing the components
   })
   .state('installation.edit', {
     url: '/edit',
@@ -42,41 +40,48 @@ angular.module('installation', [
     templateUrl: 'app/common/contact-list.tpl.html',
     controller: "ContactCtrl",  
     context: 'installation', // necessary for reusing the components
+    heading: 'Installation contacts', // title for the sub pane         
   })
   .state('installation.endpoint', {  
     url: '/endpoint',   
     templateUrl: 'app/common/endpoint-list.tpl.html',
     controller: "EndpointCtrl",  
-    context: 'installation', // necessary for reusing the components
+    context: 'installation', 
+    heading: 'Installation endpoints',
   })
   .state('installation.identifier', {  
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
-    context: 'installation', // necessary for reusing the components
+    context: 'installation', 
+    heading: 'Installation identifiers',
   })
   .state('installation.tag', {  
     url: '/tag',   
     templateUrl: 'app/common/tag-list.tpl.html',
     controller: "TagCtrl",  
-    context: 'installation', // necessary for reusing the components
+    context: 'installation', 
+    heading: 'Installation tags',
   })
   .state('installation.machinetag', {  
     url: '/machineTag',   
     templateUrl: 'app/common/machinetag-list.tpl.html',
     controller: "MachinetagCtrl",  
-    context: 'installation', // necessary for reusing the components
+    context: 'installation', 
+    heading: 'Installation machine tags',
   })
   .state('installation.comment', {  
     url: '/comment',   
     templateUrl: 'app/common/comment-list.tpl.html',
     controller: "CommentCtrl",  
-    context: 'installation', // necessary for reusing the components
+    context: 'installation', 
+    heading: 'Installation comments',
   })
   .state('installation.dataset', {  
     url: '/dataset',   
     templateUrl: 'app/common/dataset-list.tpl.html',
-    context: 'installation', // necessary for reusing the components
+    context: 'installation', 
+    heading: 'Datasets served by the installation',
   })
 }])
 
@@ -124,11 +129,7 @@ angular.module('installation', [
  */
 .controller('InstallationCtrl', function ($scope, $state, $http, $resource, item, Installation, notifications) {
   $scope.installation = item;
-  
-  // TODO: should we clean this up?
-  var typeLabel = $state.current.context;
-  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
-  
+    
   
   // get the organization
   $http( { method:'GET', url: "../organization/" + item.organizationKey})
@@ -151,7 +152,7 @@ angular.module('installation', [
     machinetag : _.size($scope.installation.machineTags || {}),
     comment : _.size($scope.installation.comments || {})
   };
-  
+    
   var count = function(url, parameter) {
     $http( { method:'GET', url: url})
       .success(function (result) {

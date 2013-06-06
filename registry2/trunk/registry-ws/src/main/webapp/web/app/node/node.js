@@ -38,51 +38,59 @@ angular.module('node', [
     templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
     context: 'node', // necessary for reusing the components
+    heading: 'Node identifiers', // title for the sub pane         
   })
   .state('node.endpoint', {  
     url: '/endpoint',   
     templateUrl: 'app/common/endpoint-list.tpl.html',
     controller: "EndpointCtrl",  
-    context: 'node', // necessary for reusing the components
+    context: 'node', 
+    heading: 'Node endpoints',          
   })
   .state('node.tag', {  
     url: '/tag',   
     templateUrl: 'app/common/tag-list.tpl.html',
     controller: "TagCtrl",  
-    context: 'node', // necessary for reusing the components
+    context: 'node', 
+    heading: 'Node tags',          
   })
   .state('node.machinetag', {  
     url: '/machineTag',   
     templateUrl: 'app/common/machinetag-list.tpl.html',
     controller: "MachinetagCtrl",  
-    context: 'node', // necessary for reusing the components
+    context: 'node', 
+    heading: 'Node machine tags',
   })
   .state('node.comment', {  
     url: '/comment',   
     templateUrl: 'app/common/comment-list.tpl.html',
     controller: "CommentCtrl",  
-    context: 'node', // necessary for reusing the components
+    context: 'node', 
+    heading: 'Node comments',
   })
   .state('node.pending', {  
     url: '/pending',   
     templateUrl: 'app/common/organization-list.tpl.html',
-    context: 'node', // necessary for reusing the components
-    content: 'pendingEndorsements' 
+    context: 'node', 
+    heading: 'Organizations awaiting endorsement by the node',
   })
   .state('node.organization', {  
     url: '/organization',   
     templateUrl: 'app/common/organization-list.tpl.html',
-    context: 'node', // necessary for reusing the components
+    context: 'node', 
+    heading: 'Organizations endorsed by the node',
   })
   .state('node.dataset', {  
     url: '/dataset',   
     templateUrl: 'app/common/dataset-list.tpl.html',
-    context: 'node', // necessary for reusing the components
+    context: 'node', 
+    heading: 'Datasets published through the Nodes endorsement',
   })
   .state('node.installation', {  
     url: '/installation',   
     templateUrl: 'app/common/installation-list.tpl.html',
-    context: 'node', // necessary for reusing the components
+    context: 'node', 
+    heading: 'Installations endorsed by the node',
   })  
 }])
 

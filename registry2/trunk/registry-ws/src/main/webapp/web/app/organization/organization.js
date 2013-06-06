@@ -39,51 +39,60 @@ angular.module('organization', [
     templateUrl: 'app/common/contact-list.tpl.html',
     controller: "ContactCtrl",  
     context: 'organization', // necessary for reusing the components
+    heading: 'Organization contacts', // title for the sub pane 
   })
   .state('organization.endpoint', {  
     url: '/endpoint',   
     templateUrl: 'app/common/endpoint-list.tpl.html',
     controller: "EndpointCtrl",  
-    context: 'organization', // necessary for reusing the components
+    context: 'organization', 
+    heading: 'Organization endpoints', 
   })
   .state('organization.identifier', {  
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
-    context: 'organization', // necessary for reusing the components
+    context: 'organization', 
+    heading: 'Organization identifiers', 
   })
   .state('organization.tag', {  
     url: '/tag',   
     templateUrl: 'app/common/tag-list.tpl.html',
     controller: "TagCtrl",  
-    context: 'organization', // necessary for reusing the components
+    context: 'organization',
+    heading: 'Organization tags', 
   })
   .state('organization.machinetag', {  
     url: '/machineTag',   
     templateUrl: 'app/common/machinetag-list.tpl.html',
     controller: "MachinetagCtrl",  
-    context: 'organization', // necessary for reusing the components
+    context: 'organization', 
+    heading: 'Organization machine tags', 
   })
   .state('organization.comment', {  
     url: '/comment',   
     templateUrl: 'app/common/comment-list.tpl.html',
     controller: "CommentCtrl",  
-    context: 'organization', // necessary for reusing the components
+    context: 'organization', 
+    heading: 'Organization comments', 
   })
   .state('organization.owned', {  
     url: '/owned',   
     templateUrl: 'app/common/dataset-list.tpl.html',
-    context: 'organization', // necessary for reusing the components
+    context: 'organization',
+    heading: 'Datasets published by the organization', 
   })
   .state('organization.hosted', {  
     url: '/hosted',   
-    templateUrl: 'app/common/dataset-list.tpl.html',
-    context: 'organization', // necessary for reusing the components
+    templateUrl: 'app/common/dataset-hosted-list.tpl.html',
+    context: 'organization', 
+    heading: 'Datasets hosted by the organization', 
   })
   .state('organization.installation', {  
     url: '/installation',   
     templateUrl: 'app/common/installation-list.tpl.html',
     context: 'organization', // necessary for reusing the components
+    heading: 'Installations hosted by the organization', 
   })  
   
 }])
@@ -142,8 +151,20 @@ angular.module('organization', [
     });
   }
   count('../organization/' + $scope.organization.key + '/ownedDataset','ownedDatasets');
-  count('../organization/' + $scope.organization.key + '/hostedDataset','hostedDatasets');
   count('../organization/' + $scope.organization.key + '/installation','installations');
+
+  // populate the titles of the organization the hosted datasets are hosted for 
+  $http( { method:'GET', url: '../organization/' + $scope.organization.key + '/hostedDataset?limit=1000'}).success(function (result) {
+    $scope['hostedDatasets'] = result.results;
+    $scope.counts['hostedDatasets'] = result.count;
+      
+    $.each(result.results, function(index, dataset) {
+      $http( { method:'GET', url: '../organization/' + dataset.owningOrganizationKey}).success(function (organization) {
+        dataset.owningOrganizationTitle = organization.title;
+      });
+    });
+  });
+
   
 	
 	// transitions to a new view, correctly setting up the path
@@ -179,5 +200,4 @@ angular.module('organization', [
       return $scope['ownedDatasets'];
     }
   }
-
 });

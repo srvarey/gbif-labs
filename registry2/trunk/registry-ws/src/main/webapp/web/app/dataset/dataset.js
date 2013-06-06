@@ -24,9 +24,6 @@ angular.module('dataset', [
       item: function(Dataset, $state, $stateParams) {
         return Dataset.getSync($stateParams.key);          
       }          
-    },
-    data: {
-      type: 'dataset', // provides the context to things like Identifier
     }
   })
   .state('dataset.detail', {  
@@ -38,40 +35,46 @@ angular.module('dataset', [
     templateUrl: 'app/dataset/dataset-edit.tpl.html',
   })  
   .state('dataset.endpoint', {  
-    url: '/identifier',   
+    url: '/endpoint',   
     templateUrl: 'app/common/endpoint-list.tpl.html',
     controller: "EndpointCtrl",  
     context: 'dataset', // necessary for reusing the components
+    heading: 'Dataset contacts', // title for the sub pane     
   })
   .state('dataset.identifier', {  
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
     controller: "IdentifierCtrl",  
-    context: 'dataset', // necessary for reusing the components
+    context: 'dataset', 
+    heading: 'Dataset identifiers', 
   })
   .state('dataset.contact', {  
     url: '/contact',   
     templateUrl: 'app/common/contact-list.tpl.html',
     controller: "ContactCtrl",  
-    context: 'dataset', // necessary for reusing the components
+    context: 'dataset', 
+    heading: 'Dataset contacts', 
   })
   .state('dataset.tag', {  
     url: '/tag',   
     templateUrl: 'app/common/tag-list.tpl.html',
     controller: "TagCtrl",  
-    context: 'dataset', // necessary for reusing the components
+    context: 'dataset', 
+    heading: 'Dataset tags', 
   })
   .state('dataset.machinetag', {  
     url: '/machineTag',   
     templateUrl: 'app/common/machinetag-list.tpl.html',
     controller: "MachinetagCtrl",  
-    context: 'dataset', // necessary for reusing the components
+    context: 'dataset', 
+    heading: 'Dataset machine tags', 
   })
   .state('dataset.comment', {  
     url: '/comment',   
     templateUrl: 'app/common/comment-list.tpl.html',
     controller: "CommentCtrl",  
-    context: 'dataset', // necessary for reusing the components
+    context: 'dataset', 
+    heading: 'Dataset comments', 
   })
 }])
 
