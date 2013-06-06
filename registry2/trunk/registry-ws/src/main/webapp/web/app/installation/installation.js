@@ -186,4 +186,8 @@ angular.module('installation', [
     $scope.installation = Installation.get({ key: item.key });
     $scope.transitionTo("detail");
   }
+  
+  $scope.getDatasets = function () {
+    return $scope.datasets;
+  }
 });

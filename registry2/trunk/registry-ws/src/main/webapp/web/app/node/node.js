@@ -63,6 +63,27 @@ angular.module('node', [
     controller: "CommentCtrl",  
     context: 'node', // necessary for reusing the components
   })
+  .state('node.pending', {  
+    url: '/pending',   
+    templateUrl: 'app/common/organization-list.tpl.html',
+    context: 'node', // necessary for reusing the components
+    content: 'pendingEndorsements' 
+  })
+  .state('node.organization', {  
+    url: '/organization',   
+    templateUrl: 'app/common/organization-list.tpl.html',
+    context: 'node', // necessary for reusing the components
+  })
+  .state('node.dataset', {  
+    url: '/dataset',   
+    templateUrl: 'app/common/dataset-list.tpl.html',
+    context: 'node', // necessary for reusing the components
+  })
+  .state('node.installation', {  
+    url: '/installation',   
+    templateUrl: 'app/common/installation-list.tpl.html',
+    context: 'node', // necessary for reusing the components
+  })  
 }])
 
 /**
@@ -119,7 +140,10 @@ angular.module('node', [
 	// populate counts for sub resources
   var count = function(url, parameter) {
     $http( { method:'GET', url: url})
-      .success(function (result) {$scope.counts[parameter] = result.count});
+      .success(function (result) {
+        $scope.counts[parameter] = result.count;
+        $scope[parameter] = result.results;
+      });
   }
   count('../node/' + $scope.node.key + '/pendingEndorsement','pendingEndorsements');
   count('../node/' + $scope.node.key + '/organization','organizations');
@@ -146,5 +170,18 @@ angular.module('node', [
   $scope.cancelEdit = function () {
     $scope.node = Node.get({ key: item.key });
     $scope.transitionTo("detail");
+  }
+  
+  // switch depending on the scope, which are visible
+  $scope.getOrganizations = function() {
+    if ($state.includes('node.pending')) {
+      return $scope['pendingEndorsements'];
+    } else {
+      return $scope['organizations'];
+    }
+  }
+  
+  $scope.getDatasets = function() {
+    return $scope['datasets'];
   }
 });
