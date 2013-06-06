@@ -1,9 +1,14 @@
 <h4>Node overview</h4>
 <p class="muted">This information appears on the node profile, organization pages, search results, and beyond.<p/>
-<hr/>
 <p>
   <span class="label label-important">Important</span> <span class="text-error">Content should appear as found in the GBIF internal systems, such as the IMS.<span>
 </p>
+
+<p class="pull-right" ng-show="advancedMode != true">
+  <a href="" ng-click="advancedMode = true">Enable advanced editing mode</a>
+</p>
+<hr/>
+</br/>
 
 <form id="nodeEdit" novalidate class="form-horizontal">
   <fieldset class="control-group">
@@ -13,6 +18,7 @@
       <p class="muted"><small>Enter an accurate node title as it is used in many key places.</small></p>
     </div>      
       
+    <span ng-show="advancedMode">  
     <label class="control-label" for="participationStatus">Participation Status</label>
     <div class="controls">
       <select ng-model="node.participationStatus" ng-options="o for o in participationStatuses"></select>
@@ -42,6 +48,7 @@
       </select>
       <p class="muted"><small>This is used for reporting purposes</small></p>
     </div>
+    </span>
       
     <div class="form-actions">
       <button class="btn primary-btn" ng-click="cancelEdit()">Cancel</button>

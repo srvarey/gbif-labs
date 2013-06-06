@@ -1,6 +1,10 @@
 <h4>Organization overview</h4>
 <p class="muted">This information appears on the organization profile, organization pages, search results, and beyond.  It should be the same as found in the GBIF internal systems, such as the IMS</p>
+<p class="pull-right" ng-show="advancedMode != true">
+  <a href="" ng-click="advancedMode = true">Enable advanced editing mode</a>
+</p>
 <hr/>
+</br/>
 
 <form id="organizationEdit" novalidate class="form-horizontal">
   <fieldset class="control-group">
@@ -23,6 +27,7 @@
       <p class="muted"><small></small></p>
     </div>      
   
+    <span ng-show="advancedMode">
     <label class="control-label" for="endorsingNodeKey">Endorsing node</label>
     <div class="controls">
       <input id="endorsingNodeKey" maxlength="255" type="text" name="endorsingNodeKey" ng-model="organization.endorsingNodeKey" value="{{organization.endorsingNodeKey}}">
@@ -42,7 +47,8 @@
     <div class="controls">
       <input id="password" maxlength="255" type="text" name="password" ng-model="organization.password" value="{{organization.password}}">
       <p class="muted"><small></small></p>
-    </div>      
+    </div>
+    </span>      
   
     <label class="control-label" for="homepage">Homepage</label>
     <div class="controls">
