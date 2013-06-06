@@ -1,6 +1,10 @@
 <h4>Dataset overview</h4>
 <p class="muted">This information appears on the dataset profile, organization pages, search results, and beyond.  It should be the same as found in the GBIF internal systems, such as the IMS</p>
+<p class="pull-right" ng-show="advancedMode != true">
+  <a href="" ng-click="advancedMode = true">Enable advanced editing mode</a>
+</p>
 <hr/>
+</br/>
 <form id="datasetEdit" novalidate class="form-horizontal">
   <fieldset class="control-group">
 
@@ -24,7 +28,8 @@
       </select>
       <p class='muted'><small></small></p>
     </div>
-  
+	
+	<span ng-show="advancedMode">  
     <label class='control-label' for='lockedForAutoUpdate'>Lock auto updates</label>
     <div class='controls'>
       <select id="lockedForAutoUpdate" ng-model="dataset.lockedForAutoUpdate">
@@ -32,9 +37,9 @@
         <option>false</option>
       </select>
       <p><span class="label label-important">Important</span> <span class="text-error">Use with caution - disables automated updates<span></p>
-      <p class='muted'><small>Controls permissions for crawlers updating metadata, contacts etc</small></p>
-      
+      <p class='muted'><small>Controls permissions for crawlers updating metadata, contacts etc</small></p>      
     </div>
+    </span>
   
     <label class='control-label' for='title'>Title</label>
     <div class='controls'>
@@ -60,32 +65,40 @@
       <p class='muted'><small></small></p>
     </div>
   
+    <span ng-show="advancedMode">
     <label class='control-label' for='owningOrganizationKey'>Owning Organization</label>
     <div class='controls'>
       <input id='owningOrganizationKey' maxlength='255' type='text' ng-model='dataset.owningOrganizationKey'>
       <p><span class="label label-important">Important</span> <span class="text-error">Changing this will update all occurrence records<span></p>
       <p class='muted'><small>It is expected that this may be changed occasionally, but be vigilant in changes as this has potential to spawn significant processing for occurrence records, metrics and maps</small></p>
     </div>
+    </span>
   
+    <span ng-show="advancedMode">
     <label class='control-label' for='installationKey'>Installation</label>
     <div class='controls'>
       <input id='installationKey' maxlength='255' type='text' ng-model='dataset.installationKey'>
       <p><span class="label label-important">Important</span> <span class="text-error">Changing this will update all occurrence records<span></p>
       <p class='muted'><small>It is expected that this may be changed occasionally, but be vigilant in changes as this has potential to spawn significant processing for occurrence records, metrics.  Please verify the services are as expected on change</small></p>
     </div>
+    </span>
   
+    <span ng-show="advancedMode">
     <label class='control-label' for='parentDatasetKey'>Parent dataset</label>
     <div class='controls'>
       <input id='parentDatasetKey' maxlength='255' type='text' ng-model='dataset.parentDatasetKey'>
       <p class='muted'><small>For use in declaring dataset relationships, such as the constituent parts of the Catalogue of Life</small></p>
     </div>
+    </span>
   
+    <span ng-show="advancedMode">
     <label class='control-label' for='duplicateOfDatasetKey'>Duplicate Dataset</label>
     <div class='controls'>
       <input id='duplicateOfDatasetKey' maxlength='255' type='text' ng-model='dataset.duplicateOfDatasetKey'>
       <p><span class="label label-important">Important</span> <span class="text-error">Changing this will DELETE all occurrence records<span></p>
       <p class='muted'><small>When a dataset is found to be a duplicate of another, then it should be updated.  This will effectively trigger a de-index which is the same as a deletion.  It may be that you ALSO need to set the parent dataset if this has been aggregated.</small></p>
     </div>
+    </span>
   
     <label class='control-label' for='citation'>Citation</label>
     <div class='controls'>
