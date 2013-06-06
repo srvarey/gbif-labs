@@ -1,7 +1,7 @@
 <h4>{{typeLabel}} datasets</h4> 
 <hr/>    
 <ul class="unstyled list-hover">
-  <div data-ng-repeat="dataset in datasets">
+  <div data-ng-repeat="dataset in getDatasets()">
     <li ng-click=" $state.transitionTo('dataset.detail', {key:dataset.key})">
       <strong><a href="">{{dataset.title}}</a></strong> <span class="muted"><small>{{dataset.type | lowercase}}</small></span>
       <span class="muted pull-right"><small>Edited {{dataset.modified | timeAgo}}</small></span><br/>

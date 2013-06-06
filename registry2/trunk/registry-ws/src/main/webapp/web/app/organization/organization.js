@@ -70,6 +70,22 @@ angular.module('organization', [
     controller: "CommentCtrl",  
     context: 'organization', // necessary for reusing the components
   })
+  .state('organization.owned', {  
+    url: '/owned',   
+    templateUrl: 'app/common/dataset-list.tpl.html',
+    context: 'organization', // necessary for reusing the components
+  })
+  .state('organization.hosted', {  
+    url: '/hosted',   
+    templateUrl: 'app/common/dataset-list.tpl.html',
+    context: 'organization', // necessary for reusing the components
+  })
+  .state('organization.installation', {  
+    url: '/installation',   
+    templateUrl: 'app/common/installation-list.tpl.html',
+    context: 'organization', // necessary for reusing the components
+  })  
+  
 }])
 
 /**
@@ -120,8 +136,10 @@ angular.module('organization', [
   };
   
   var count = function(url, parameter) {
-    $http( { method:'GET', url: url})
-      .success(function (result) {$scope.counts[parameter] = result.count});
+    $http( { method:'GET', url: url}).success(function (result) {
+      $scope.counts[parameter] = result.count;
+      $scope[parameter] = result.results;
+    });
   }
   count('../organization/' + $scope.organization.key + '/ownedDataset','ownedDatasets');
   count('../organization/' + $scope.organization.key + '/hostedDataset','hostedDatasets');
@@ -153,4 +171,13 @@ angular.module('organization', [
     $scope.organization = Organization.get({ key: item.key });
     $scope.transitionTo("detail");
   }
+  
+  $scope.getDatasets = function() {
+    if ($state.includes('organization.hosted')) {
+      return $scope['hostedDatasets'];
+    } else {
+      return $scope['ownedDatasets'];
+    }
+  }
+
 });

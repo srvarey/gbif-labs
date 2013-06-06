@@ -13,7 +13,7 @@
     <li ng-class="{active: $state.includes('dataset.tag')}"><a href="" ng-click="transitionTo('tag')">Tags ({{counts.tag}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('dataset.machinetag')}"><a href="" ng-click="transitionTo('machinetag')">Machine tags ({{counts.machinetag}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('dataset.comment')}"><a href="" ng-click="transitionTo('comment')">Comments ({{counts.comment}}) <i class="icon-chevron-right"></i></a></li>
-    <li><a href="#">Sub-datasets ({{counts.subDatasets}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-show="counts.subDatasets>0"><a href="#">Subdatasets ({{counts.subDatasets}}) <i class="icon-chevron-right"></i></a></li>
     <!--li><a href="#">Change history (12) <i class="icon-chevron-right"></i></a></li-->
   </ul>
 </div>
