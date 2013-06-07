@@ -158,8 +158,10 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     Dataset dataset = create(newEntity(), 1);
     Installation i = installationService.get(dataset.getInstallationKey());
     assertNotNull("Dataset should have an installation", i);
+    PagingResponse<Dataset> owned = organizationService.ownedDatasets(i.getOrganizationKey(), new PagingRequest());
     PagingResponse<Dataset> hosted = organizationService.hostedDatasets(i.getOrganizationKey(), new PagingRequest());
-    assertEquals("This installation should have only 1 hosted dataset", 1, hosted.getResults().size());
+    assertEquals("This installation should have only 1 owned dataset", 1, owned.getResults().size());
+    assertTrue("This installation should not have any hosted datasets", hosted.getResults().isEmpty());
     assertEquals("The hosted installation should serve the dataset created", hosted.getResults().get(0).getKey(),
       dataset.getKey());
   }
