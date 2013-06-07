@@ -66,7 +66,8 @@
     latitude = #{latitude,jdbcType=DOUBLE},
     longitude = #{longitude,jdbcType=DOUBLE},
     modified = now(),    
-    modified_by = #{modifiedBy}
+    modified_by = #{modifiedBy},
+    deleted = null <!-- if we're updating it can't be deleted -->
   </sql>
   
   <sql id="WRITABLE_ORGANIZATION_FIELD_TYPES">
@@ -111,11 +112,10 @@
     VALUES(<include refid="WRITABLE_ORGANIZATION_FIELD_TYPES"/>)
   </insert>  
   
-  <!-- For safety, deleted entities are never modified -->
   <update id="update" parameterType="Organization">
     UPDATE organization
     SET <include refid="ORGANIZATION_UPDATE"/>
-    WHERE key = #{key,jdbcType=OTHER} AND deleted IS NULL
+    WHERE key = #{key,jdbcType=OTHER}
   </update>  
   
   <!-- For safety, should it be already deleted nothing is done -->

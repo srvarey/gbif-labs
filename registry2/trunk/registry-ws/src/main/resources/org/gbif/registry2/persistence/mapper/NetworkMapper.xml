@@ -57,7 +57,8 @@
     country = #{country,jdbcType=CHAR},
     postal_code = #{postalCode,jdbcType=VARCHAR},
     modified = now(),    
-    modified_by = #{modifiedBy}
+    modified_by = #{modifiedBy},
+    deleted = null <!-- if we're updating it can't be deleted -->
   </sql>
   
   <sql id="WRITABLE_NETWORK_FIELD_TYPES">
@@ -92,11 +93,10 @@
     VALUES(<include refid="WRITABLE_NETWORK_FIELD_TYPES"/>)
   </insert>  
   
-  <!-- For safety, deleted entities are never modified -->
   <update id="update" parameterType="Network">
     UPDATE network
     SET <include refid="NETWORK_UPDATE"/>
-    WHERE key = #{key,jdbcType=OTHER} AND deleted IS NULL
+    WHERE key = #{key,jdbcType=OTHER}
   </update>  
   
   <!-- For safety, should it be already deleted nothing is done -->

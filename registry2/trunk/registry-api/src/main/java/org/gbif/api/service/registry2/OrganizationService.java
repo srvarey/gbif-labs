@@ -28,7 +28,7 @@ public interface OrganizationService
   extends NetworkEntityService<Organization> {
 
   /**
-   * Provides paging service to list datasets hosted by a specific organization.
+   * Provides paging service to list datasets hosted by, but not owned by, a specific organization.
    */
   PagingResponse<Dataset> hostedDatasets(@NotNull UUID organizationKey, @Nullable Pageable page);
 
