@@ -53,7 +53,16 @@ public class WithMyBatis {
     checkNotNull(entity, "Unable to update an entity when it is not provided");
     T existing = mapper.get(entity.getKey());
     checkNotNull(existing, "Unable to update a non existing entity");
-    checkArgument(existing.getDeleted() == null, "Unable to update a previously deleted entity");
+
+    if (existing.getDeleted() != null) {
+      // allow updates ONLY if they are undeleting too
+      checkArgument(entity.getDeleted() == null,
+        "Unable to update a previously deleted entity unless you clear the deletion timestamp");
+    } else {
+      // do not allow deletion here (for safety) - we have an explicity deletion service
+      checkArgument(entity.getDeleted() == null, "Cannot delete using the update service.  Use the deletion service");
+    }
+
     mapper.update(entity);
   }
 

@@ -129,7 +129,6 @@ angular.module('installation', [
  */
 .controller('InstallationCtrl', function ($scope, $state, $http, $resource, item, Installation, notifications) {
   $scope.installation = item;
-    
   
   // get the organization
   $http( { method:'GET', url: "../organization/" + item.organizationKey})
@@ -184,8 +183,26 @@ angular.module('installation', [
   }  
   
   $scope.cancelEdit = function () {
+    // todo - check this
     $scope.installation = Installation.get({ key: item.key });
     $scope.transitionTo("detail");
+  }
+  
+  $scope.delete = function (installation) {
+    Installation.delete(installation,
+      function() {
+        notifications.pushForNextRoute("Installation successfully deleted", 'info');
+        Installation.get({ key: item.key }, function(data) { 
+          $scope.installation = data 
+        });
+      }
+    );
+    $scope.transitionTo("detail");
+  }
+  
+  $scope.restore = function (installation) {
+    installation.deleted = undefined;
+    $scope.save(installation);
   }
   
   $scope.getDatasets = function () {

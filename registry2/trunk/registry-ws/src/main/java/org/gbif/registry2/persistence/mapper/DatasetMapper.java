@@ -43,7 +43,7 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
     @Nullable @Param("page") Pageable page);
 
   /**
-   * Obtains a list of all the datasets hosted by the given organization.
+   * Obtains a list of all the datasets hosted by, but not owned by, the given organization.
    */
   List<Dataset> listDatasetsHostedBy(@Param("organizationKey") UUID organizationKey,
     @Nullable @Param("page") Pageable page);

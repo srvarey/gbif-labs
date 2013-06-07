@@ -1,7 +1,7 @@
 <h4>Installation overview</h4>
 <p class="muted">This information appears on the installation profile, organization pages, search results, and beyond.  It should be the same as found in the GBIF internal systems, such as the IMS</p>
 <p class="pull-right" ng-show="advancedMode != true">
-  <a href="" ng-click="advancedMode = true">Enable advanced editing mode</a>
+  <a href="" ng-click="advancedMode = true"><small>Enable advanced editing mode</small></a>
 </p>
 <hr/>
 </br/>
@@ -40,9 +40,23 @@
       <button class="btn primary-btn" ng-click="cancelEdit()">Cancel</button>
       <button class="btn primary-btn" ng-click="save(installation)" type="submit">Save changes</button>
     </div>            
-    <div class="form-actions">
-      <small><a href="">Delete this installation</a></small>
+    
+    <div class="form-actions" ng-show="advancedMode">
+      <small><a href="#deleteConfirm" data-toggle="modal">Delete this installation</a></small>
       <p><small class="muted">A deletion may be reverted at a later date</small></p>
-    </div>            
+    </div>
+    <div id="deleteConfirm" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="title">Delete?</h3>
+      </div>
+      <div class="modal-body">
+        <p><span class="label label-important">Important</span> <span class="text-error">While a deletion may be undone, it will likely trigger significant processing<span></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary btn-danger" data-dismiss="modal" ng-click="delete(installation)">Yes, delete it!</button>
+      </div>
+    </div>
   </fieldset>
 </form>
