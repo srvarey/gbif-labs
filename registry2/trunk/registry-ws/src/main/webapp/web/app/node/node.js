@@ -33,6 +33,10 @@ angular.module('node', [
     url: '/edit',
     templateUrl: 'app/node/node-edit.tpl.html',
   })  
+  .state('node.contact', {  
+    url: '/contact',   
+    templateUrl: 'app/node/contact-list.tpl.html' // not common since read only
+  })
   .state('node.identifier', {  
     url: '/identifier',   
     templateUrl: 'app/common/identifier-list.tpl.html',
@@ -124,10 +128,11 @@ angular.module('node', [
  */
 .controller('NodeCtrl', function ($scope, $state, $resource, $http, item, Node, notifications) {
   $scope.node = item;
-  
+    
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
     // collesce with || and use _ for sizing
+    contact : _.size($scope.node.contacts || {}), 
     identifier : _.size($scope.node.identifiers || {}), 
     endpoint : _.size($scope.node.endpoints || {}), 
     tag : _.size($scope.node.tags || {}),

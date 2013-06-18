@@ -52,6 +52,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import com.google.inject.name.Names;
+import org.apache.ibatis.logging.LogFactory;
 
 /**
  * Sets up the persistence layer using the properties supplied.
@@ -100,6 +101,7 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     protected void initialize() {
       // makes things like logo_url map to logoUrl
       bindConstant().annotatedWith(Names.named("mybatis.configuration.mapUnderscoreToCamelCase")).to(true);
+      LogFactory.useSlf4jLogging();
       super.initialize();
     }
 

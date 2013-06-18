@@ -59,4 +59,19 @@ public class OrganizationWsClient extends BaseNetworkEntityClient<Organization>
   public PagingResponse<Installation> installations(UUID organizationKey, Pageable page) {
     return get(GenericTypes.PAGING_INSTALLATION, null, null, page, String.valueOf(organizationKey), "installation");
   }
+
+  @Override
+  public PagingResponse<Organization> listDeleted(Pageable page) {
+    return get(GenericTypes.PAGING_ORGANIZATION, null, null, page, "deleted");
+  }
+
+  @Override
+  public PagingResponse<Organization> listPendingEndorsement(Pageable page) {
+    return get(GenericTypes.PAGING_ORGANIZATION, null, null, page, "pending");
+  }
+
+  @Override
+  public PagingResponse<Organization> listNonPublishing(Pageable page) {
+    return get(GenericTypes.PAGING_ORGANIZATION, null, null, page, "nonPublishing");
+  }
 }
