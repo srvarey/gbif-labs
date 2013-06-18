@@ -1,0 +1,13 @@
+<div class="span4">
+    
+  <div class="well">
+    <form ng-submit="$state.transitionTo('dataset-search.search')">
+      <input type="text" class="search-query" placeholder="Search datasets" ng-model="q"></input>
+      <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" ng-click="search(q)"/>
+      <small class="muted"> Find an dataset to edit or <a href="" ng-click="$state.transitionTo('dataset-search.create')">create a new one</a></small>
+    </form>
+  </div>
+</div>
+<div class="span8">
+  <div class="content" ui-view>></div>
+</div>
