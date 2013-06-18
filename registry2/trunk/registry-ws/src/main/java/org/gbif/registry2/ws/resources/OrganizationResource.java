@@ -110,7 +110,7 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
   @Path("{key}/ownedDataset")
   @Override
   public PagingResponse<Dataset> ownedDatasets(@PathParam("key") UUID organizationKey, @Context Pageable page) {
-    return pagingResponse(page, (long) datasetMapper.countDatasetsOwnedBy(organizationKey),
+    return pagingResponse(page, datasetMapper.countDatasetsOwnedBy(organizationKey),
       datasetMapper.listDatasetsOwnedBy(organizationKey, page));
   }
 
@@ -126,5 +126,27 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
   public PagingResponse<Installation> installations(@PathParam("key") UUID organizationKey, @Context Pageable page) {
     return pagingResponse(page, installationMapper.countInstallationsByOrganization(organizationKey),
       installationMapper.listInstallationsByOrganization(organizationKey, page));
+  }
+
+  @GET
+  @Path("deleted")
+  @Override
+  public PagingResponse<Organization> listDeleted(@Context Pageable page) {
+    return pagingResponse(page, organizationMapper.countDeleted(), organizationMapper.deleted(page));
+  }
+
+  @GET
+  @Path("pending")
+  @Override
+  public PagingResponse<Organization> listPendingEndorsement(@Context Pageable page) {
+    return pagingResponse(page, organizationMapper.countPendingEndorsements(null),
+      organizationMapper.pendingEndorsements(null, page));
+  }
+
+  @GET
+  @Path("nonPublishing")
+  @Override
+  public PagingResponse<Organization> listNonPublishing(@Context Pageable page) {
+    return pagingResponse(page, organizationMapper.countNonPublishing(), organizationMapper.nonPublishing(page));
   }
 }

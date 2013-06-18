@@ -25,19 +25,19 @@ angular.module('search', [
   $scope.q = $location.search().q;
   if ($scope.q==null) $scope.q="";
   
-  $http.get('../organization?q=' + $scope.q).success(function(data) { 
+  $http.get('../organization?limit=100&q=' + $scope.q).success(function(data) { 
     $scope.organizations = data;
     $scope.organizationsLabel = 'organization'.pluralize(data.count);
   });
-  $http.get('../dataset?q=' + $scope.q).success(function(data) { 
+  $http.get('../dataset?limit=100&q=' + $scope.q).success(function(data) { 
     $scope.datasets = data;
     $scope.datasetsLabel = "dataset".pluralize(data.count);
   });
-  $http.get('../installation?q=' + $scope.q).success(function(data) { 
+  $http.get('../installation?limit=100&q=' + $scope.q).success(function(data) { 
     $scope.installations = data;
     $scope.installationsLabel = "installation".pluralize(data.count);
   });
-  $http.get('../node?q=' + $scope.q).success(function(data) { 
+  $http.get('../node?limit=100&q=' + $scope.q).success(function(data) { 
     $scope.nodes = data;
     $scope.nodesLabel = "node".pluralize(data.count);
   });

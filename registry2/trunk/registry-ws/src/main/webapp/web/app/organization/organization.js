@@ -102,7 +102,8 @@ angular.module('organization', [
  */
 .factory('Organization', function ($resource, $q) {
   var Organization = $resource('../organization/:key', {key : '@key'}, {
-    save : {method:'PUT'}
+    save : {method:'PUT'},
+    create : {method:'POST'},
   });  
   
   // A synchronous get, with a failure callback on error
@@ -127,12 +128,7 @@ angular.module('organization', [
  */
 .controller('OrganizationCtrl', function ($scope, $state, $http, $resource, item, Organization, notifications) {
   $scope.organization = item;
-  
-  // get the endorsing node
-  $http( { method:'GET', url: "../node/" + item.endorsingNodeKey})
-      .success(function (result) { $scope.endorsingNode = result});
-
-  
+    
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
     // collesce with || and use _ for sizing
@@ -143,6 +139,10 @@ angular.module('organization', [
     machinetag : _.size($scope.organization.machineTags || {}),
     comment : _.size($scope.organization.comments || {})
   };
+  
+  // get the endorsing node if there is one
+  $http( { method:'GET', url: "../node/" + item.endorsingNodeKey})
+    .success(function (result) { $scope.endorsingNode = result});
   
   var count = function(url, parameter) {
     $http( { method:'GET', url: url}).success(function (result) {
@@ -164,8 +164,6 @@ angular.module('organization', [
       });
     });
   });
-
-  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {

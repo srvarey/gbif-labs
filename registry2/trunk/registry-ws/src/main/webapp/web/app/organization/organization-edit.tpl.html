@@ -1,6 +1,7 @@
-<h4>Organization overview</h4>
+<h4 ng-hide="organization.key == undefined">Organization overview</h4>
+<h4 ng-show="organization.key == undefined">Create a new Organization</h4>
 <p class="muted">This information appears on the organization profile, organization pages, search results, and beyond.  It should be the same as found in the GBIF internal systems, such as the IMS</p>
-<p class="pull-right" ng-show="advancedMode != true">
+<p class="pull-right" ng-show="advancedMode != true && organization.key != undefined">
   <a href="" ng-click="advancedMode = true"><small>Enable advanced editing mode</small></a>
 </p>
 <hr/>
@@ -27,11 +28,12 @@
       <p class="muted"><small></small></p>
     </div>      
   
-    <span ng-show="advancedMode">
+    <span ng-show="advancedMode || organization.key == undefined">
     <label class="control-label" for="endorsingNodeKey">Endorsing node</label>
     <div class="controls">
       <input id="endorsingNodeKey" maxlength="255" type="text" name="endorsingNodeKey" ng-model="organization.endorsingNodeKey" value="{{organization.endorsingNodeKey}}">
-      <p class="muted"><small></small></p>
+      <span class="label label-important">Important</span>
+      <p class="muted"><small>The node that has verified the organization should publish through GBIF</small></p>
     </div>      
   
     <label class="control-label" for="endorsementApproved">Endorsement approved</label>
@@ -40,13 +42,15 @@
         <option>true</option>
         <option>false</option>
       </select>
-      <p class="muted"><small></small></p>
+      <span class="label label-important">Important</span>
+      <p class="muted"><small>Has the endorsement been approved?</small></p>
     </div>      
   
     <label class="control-label" for="password">Password</label>
     <div class="controls">
       <input id="password" maxlength="255" type="text" name="password" ng-model="organization.password" value="{{organization.password}}">
-      <p class="muted"><small></small></p>
+      <span class="label label-important">Important</span>
+      <p class="muted"><small>Used for security through web services</small></p>
     </div>
     </span>      
   
@@ -64,7 +68,7 @@
   
     <label class="control-label" for="language">Language</label>
     <div class="controls">
-      <input id="language" maxlength="255" type="text" name="language" ng-model="organization.title" value="{{organization.language}}">
+      <input id="language" maxlength="255" type="text" name="language" ng-model="organization.language" value="{{organization.language}}">
       <p class="muted"><small></small></p>
     </div>      
   
@@ -126,7 +130,7 @@
       <button class="btn primary-btn" ng-click="cancelEdit()">Cancel</button>
       <button class="btn primary-btn" ng-click="save(organization)" type="submit">Save changes</button>
     </div>            
-    <div class="form-actions">
+    <div class="form-actions" ng-show="organization.key != undefined">
       <small><a href="">Delete this organization</a></small>
       <p><small class="muted">A deletion may be reverted at a later date</small></p>
     </div>            

@@ -47,4 +47,18 @@ public interface OrganizationService
    */
   PagingResponse<Organization> listByCountry(Country country, @Nullable Pageable page);
 
+  /**
+   * Provides access to deleted organizations.
+   */
+  PagingResponse<Organization> listDeleted(@Nullable Pageable page);
+
+  /**
+   * Provides access to organizations that are awaiting their endorsement approval.
+   */
+  PagingResponse<Organization> listPendingEndorsement(@Nullable Pageable page);
+
+  /**
+   * Provides access to organizations that are not publishing (e.g. owning) any datasets.
+   */
+  PagingResponse<Organization> listNonPublishing(@Nullable Pageable page);
 }

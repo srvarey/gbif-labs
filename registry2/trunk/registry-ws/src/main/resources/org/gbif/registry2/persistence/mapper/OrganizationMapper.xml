@@ -327,7 +327,7 @@
     FROM organization o
     INNER JOIN node n ON o.endorsing_node_key = n.key 
     WHERE o.deleted IS NULL AND n.deleted IS NULL AND n.key = #{nodeKey,jdbcType=OTHER} AND o.endorsement_approved = true 
-    ORDER BY o.created, o.key
+    ORDER BY o.created DESC, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -348,7 +348,7 @@
     <if test="nodeKey != null" >
       AND o.endorsing_node_key= #{nodeKey,jdbcType=OTHER}
     </if>
-    ORDER BY o.created, o.key
+    ORDER BY o.created DESC, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -370,7 +370,7 @@
     SELECT <include refid="ORGANIZATION_FIELDS"/>
     FROM organization o
     WHERE o.deleted IS NULL AND o.country = #{country,jdbcType=OTHER}
-    ORDER BY o.created, o.key
+    ORDER BY o.created DESC, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -380,4 +380,37 @@
     FROM organization o
     WHERE o.deleted IS NULL AND o.country = #{country,jdbcType=OTHER}
   </select>
+  
+  <select id="deleted" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o
+    WHERE o.deleted IS NOT NULL
+    ORDER BY o.created DESC, o.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countDeleted" resultType="Long">
+    SELECT count(*)
+    FROM organization o
+    WHERE o.deleted IS NOT NULL
+  </select>    
+  
+  <select id="nonPublishing" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o 
+    LEFT JOIN dataset ds ON o.key = ds.owning_organization_key 
+    WHERE o.deleted IS NULL AND ds.key IS NULL
+    ORDER BY o.created DESC, o.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countNonPublishing" resultType="Long">
+    SELECT count(*)
+    FROM organization o
+    LEFT JOIN dataset ds ON o.key = ds.owning_organization_key 
+    WHERE o.deleted IS NULL AND ds.key IS NULL
+  </select>    
+  
 </mapper>

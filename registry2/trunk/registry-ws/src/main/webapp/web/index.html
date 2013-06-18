@@ -18,12 +18,14 @@
     <script src="lib/underscore-min.js"></script>
         
     <script src="app/app.js"></script>
+    <script src="app/home/home.js"></script>
     <script src="app/services/notifications.js"></script>
     <script src="app/search/search.js"></script>
     <script src="app/dataset/dataset.js"></script>
     <script src="app/organization/organization.js"></script>
     <script src="app/installation/installation.js"></script>
     <script src="app/node/node.js"></script>
+    <script src="app/organization-search/organization-search.js"></script>
     <script src="app/common/comment.js"></script>
     <script src="app/common/contact.js"></script>
     <script src="app/common/endpoint.js"></script>
@@ -36,8 +38,8 @@
     <div class="container">
       <div ng-include="'header.tpl.html'"></div>
       <div ng-include="'notifications.tpl.html'" class="container-fluid" ></div>
-    <div class="page">
-      <div class="row" ui-view></div>
-    </div>
+      <div class="page">
+        <div class="row" ui-view></div>
+      </div>
   </body>
 </html>

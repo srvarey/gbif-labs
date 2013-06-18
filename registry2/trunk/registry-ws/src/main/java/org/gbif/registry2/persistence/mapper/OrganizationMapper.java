@@ -53,5 +53,28 @@ public interface OrganizationMapper extends BaseNetworkEntityMapper<Organization
    */
   long countPendingEndorsements(@Nullable @Param("nodeKey") UUID nodeKey);
 
+  /**
+   * @return The count of all organizations for the given country
+   */
   long countOrganizationsByCountry(@Param("country") Country country);
+
+  /**
+   * @return The count of organizations marked as deleted
+   */
+  long countDeleted();
+
+  /**
+   * @return The organizations marked as deleted
+   */
+  List<Organization> deleted(@Param("page") Pageable page);
+
+  /**
+   * @return The count of organizations that publish no datasets
+   */
+  long countNonPublishing();
+
+  /**
+   * @return The organizations that publish no datasets
+   */
+  List<Organization> nonPublishing(@Param("page") Pageable page);
 }
