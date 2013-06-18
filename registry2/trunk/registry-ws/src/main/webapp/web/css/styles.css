@@ -34,7 +34,7 @@ div.home-well a:hover {
   text-decoration: none;
 }
 
-div.home-well div:hover {
+div.home-well div.summary {
   cursor: pointer;
   background-color: #e5f5fa;
   -webkit-border-radius: 4px 4px 4px 4px;
