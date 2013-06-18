@@ -9,6 +9,9 @@ angular.module('app', [
   'installation',
   'node',
   'organization-search',
+  'dataset-search',
+  'node-search',
+  'installation-search',
   ])
 
 .config(['$routeProvider', function ($routeProvider) {
