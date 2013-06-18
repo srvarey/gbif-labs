@@ -10,13 +10,13 @@ angular.module('home', [])
 
 .controller('HomeCtrl', function ($scope, $state, $http) {
   
-  $http( { method:'GET', url: "../organization" })
+  $http( { method:'GET', url: "../organization?limit=1" })
     .success(function (result) { $scope.organization = result});
-  $http( { method:'GET', url: "../dataset" })
+  $http( { method:'GET', url: "../dataset?limit=1" })
     .success(function (result) { $scope.dataset = result});
-  $http( { method:'GET', url: "../installation" })
+  $http( { method:'GET', url: "../installation?limit=1" })
     .success(function (result) { $scope.installation = result});
-  $http( { method:'GET', url: "../node" })
+  $http( { method:'GET', url: "../node?limit=1" })
     .success(function (result) { $scope.node = result});
   
   $scope.redirectTo = function (type) {
