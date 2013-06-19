@@ -47,7 +47,6 @@ import org.gbif.utils.file.FileUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
@@ -68,6 +67,7 @@ import static org.gbif.registry2.guice.RegistryTestModules.webserviceClient;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -344,6 +344,11 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     assertNotNull("Citation should never be null", dRead.getCitation());
     assertEquals(identifier, dRead.getCitation().getIdentifier());
     assertEquals(text, dRead.getCitation().getText());
+  }
+
+  @Test
+  public void test404() throws IOException {
+    assertNull(service.get(UUID.randomUUID()));
   }
 
   @Test
