@@ -82,6 +82,7 @@ public class ImsModule extends PrivateServiceModule {
 
     @Override
     protected void initialize() {
+      LOG.info("Configuring IMS connection");
       // makes things like logo_url map to logoUrl
       bindConstant().annotatedWith(Names.named("mybatis.configuration.mapUnderscoreToCamelCase")).to(true);
       super.initialize();

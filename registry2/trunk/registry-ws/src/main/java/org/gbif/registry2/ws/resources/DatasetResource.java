@@ -47,7 +47,6 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -205,7 +204,12 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
    * @param d2 the dataset that is used to update the original d
    * @return the orignal dataset instance with merged information from d2
    */
-  private Dataset merge(@Nullable Dataset d, Dataset d2) {
+  private Dataset merge(@Nullable Dataset d, @Nullable Dataset d2) {
+    // if the original is missing dont do anything
+    if (d2 == null) {
+      return null;
+    }
+
     if (d == null) {
       d = new Dataset();
     }
