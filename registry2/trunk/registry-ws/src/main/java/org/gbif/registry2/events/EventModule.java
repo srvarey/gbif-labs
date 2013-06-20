@@ -14,11 +14,6 @@ package org.gbif.registry2.events;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
 
 /**
  * One can either extend and bind listeners in this class, or bind them in other modules.
@@ -32,22 +27,6 @@ public class EventModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(EventBus.class).toInstance(eventBus);
-
-    // From: http://spin.atomicobject.com/2012/01/13/the-guava-eventbus-on-guice/
-    bindListener(Matchers.any(), new TypeListener() {
-
-      @Override
-      public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-        encounter.register(new InjectionListener<I>() {
-
-          @Override
-          public void afterInjection(I injectee) {
-            eventBus.register(injectee);
-          }
-        });
-      }
-    });
-
     bindEventListeners();
   }
 

@@ -23,7 +23,6 @@ import org.gbif.ws.server.guice.GbifServletListener;
 
 import java.util.List;
 import java.util.Properties;
-
 import javax.servlet.ServletContextEvent;
 
 import com.google.common.collect.Lists;
