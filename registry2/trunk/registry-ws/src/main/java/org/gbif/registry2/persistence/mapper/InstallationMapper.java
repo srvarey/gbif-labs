@@ -34,4 +34,12 @@ public interface InstallationMapper extends BaseNetworkEntityMapper<Installation
   List<Installation> listInstallationsByOrganization(@Param("organizationKey") UUID organizationKey,
     @Nullable @Param("page") Pageable page);
 
+  List<Installation> deleted(@Nullable @Param("page") Pageable page);
+
+  long countDeleted();
+
+  long countNonPublishing();
+
+  List<Installation> nonPublishing(@Nullable @Param("page") Pageable page);
+
 }

@@ -48,6 +48,7 @@ import com.google.inject.Singleton;
 public class InstallationResource extends BaseNetworkEntityResource<Installation> implements InstallationService {
 
   private final DatasetMapper datasetMapper;
+  private final InstallationMapper installationMapper;
 
   @Inject
   public InstallationResource(
@@ -70,6 +71,7 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
       Installation.class,
       eventBus);
     this.datasetMapper = datasetMapper;
+    this.installationMapper = installationMapper;
   }
 
 
@@ -93,5 +95,19 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
   public PagingResponse<Dataset> hostedDatasets(@PathParam("key") UUID installationKey, @Context Pageable page) {
     return new PagingResponse<Dataset>(page, datasetMapper.countDatasetsByInstallation(installationKey),
       datasetMapper.listDatasetsByInstallation(installationKey, page));
+  }
+
+  @GET
+  @Path("deleted")
+  @Override
+  public PagingResponse<Installation> listDeleted(@Context Pageable page) {
+    return pagingResponse(page, installationMapper.countDeleted(), installationMapper.deleted(page));
+  }
+
+  @GET
+  @Path("nonPublishing")
+  @Override
+  public PagingResponse<Installation> listNonPublishing(@Context Pageable page) {
+    return pagingResponse(page, installationMapper.countNonPublishing(), installationMapper.nonPublishing(page));
   }
 }

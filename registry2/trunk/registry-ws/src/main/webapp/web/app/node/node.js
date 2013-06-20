@@ -162,6 +162,9 @@ angular.module('node', [
   count('../node/' + $scope.node.key + '/organization','organizations');
   count('../node/' + $scope.node.key + '/dataset','datasets');
   count('../node/' + $scope.node.key + '/installation','installations');
+  $http( { method:'GET', url: '../node/' + $scope.node.key + '/tag'})
+    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
+  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {

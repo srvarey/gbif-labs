@@ -115,7 +115,6 @@ angular.module('dataset', [
     contact : _.size($scope.dataset.contacts || {}),
     endpoint : _.size($scope.dataset.endpoints || {}),
     identifier : _.size($scope.dataset.identifiers || {}), 
-    tag : _.size($scope.dataset.tags || {}),
     machinetag : _.size($scope.dataset.machineTags || {}),
     comment : _.size($scope.dataset.comments || {})    
   };
@@ -138,7 +137,17 @@ angular.module('dataset', [
       .success(function (result) {$scope.counts[parameter] = result.count});
   }
   count('../dataset/' + $scope.dataset.key + '/constituents','subDatasets');
-  
+  $http( { method:'GET', url: '../dataset/' + $scope.dataset.key + '/tag'})
+    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
+
+
+  // TODO: should we start reusing functions? 
+  // populate the dropdowns 
+  var lookup = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope[parameter] = result});
+  }
+	lookup('../enumeration/org.gbif.api.vocabulary.registry2.DatasetType','datasetTypes');  
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {

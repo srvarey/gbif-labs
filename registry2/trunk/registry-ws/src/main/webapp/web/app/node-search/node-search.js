@@ -53,7 +53,7 @@ angular.module('node-search', [])
           $state.transitionTo('node.detail', { key: data.replace(/["]/g,''), type: "node" }); 
         })
         .error(function(response) {
-          notifications.pushForCurrentRoute(response.data, 'error');
+          notifications.pushForCurrentRoute(response, 'error');
         });
     }
   }

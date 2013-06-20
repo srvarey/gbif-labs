@@ -11,6 +11,14 @@ angular.module('installation-search', [])
     url: '',
     templateUrl: 'app/installation-search/installation-results.tpl.html'
   })
+  .state('installation-search.deleted', {  
+    url: '/deleted',   
+    templateUrl: 'app/installation-search/installation-deleted.tpl.html'
+  })
+  .state('installation-search.nonPublishing', {  
+    url: 'nonPublishing',   
+    templateUrl: 'app/installation-search/installation-nonPublishing.tpl.html'
+  })  
   .state('installation-search.create', {  
     url: '/create',   
     templateUrl: 'app/installation/installation-edit.tpl.html',
@@ -30,6 +38,17 @@ angular.module('installation-search', [])
     });
   }
   $scope.search(""); // start with empty search
+  
+  // load quick lists
+  $http.get('../installation/deleted?limit=1000').success(function (data) {
+    $scope.deletedCount = data.count;
+    $scope.deleted = data.results;
+  })
+  $http.get('../installation/nonPublishing?limit=1000').success(function (data) {
+    $scope.nonPublishingCount = data.count;
+    $scope.nonPublishing = data.results;
+  })
+  
   
   $scope.openInstallation = function(installation) {
     $state.transitionTo('installation.detail', {key: installation.key})
@@ -53,7 +72,7 @@ angular.module('installation-search', [])
           $state.transitionTo('installation.detail', { key: data.replace(/["]/g,''), type: "installation" }); 
         })
         .error(function(response) {
-          notifications.pushForCurrentRoute(response.data, 'error');
+          notifications.pushForCurrentRoute(response, 'error');
         });
     }
   }

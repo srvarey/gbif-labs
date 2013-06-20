@@ -160,6 +160,8 @@ angular.module('installation', [
       });
   }
   count('../installation/' + $scope.installation.key + '/dataset?limit=1000','datasets');
+  $http( { method:'GET', url: '../installation/' + $scope.installation.key + '/tag'})
+    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {

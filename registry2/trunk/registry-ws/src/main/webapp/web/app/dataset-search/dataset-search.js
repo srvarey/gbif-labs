@@ -11,6 +11,18 @@ angular.module('dataset-search', [])
     url: '',
     templateUrl: 'app/dataset-search/dataset-results.tpl.html'
   })
+  .state('dataset-search.deleted', {  
+    url: '/deleted',   
+    templateUrl: 'app/dataset-search/dataset-deleted.tpl.html'
+  })
+  .state('dataset-search.duplicate', {  
+    url: '/duplicate',   
+    templateUrl: 'app/dataset-search/dataset-duplicate.tpl.html'
+  })
+  .state('dataset-search.subDataset', {  
+    url: '/subDataset',   
+    templateUrl: 'app/dataset-search/dataset-subDataset.tpl.html'
+  })
   .state('dataset-search.create', {  
     url: '/create',   
     templateUrl: 'app/dataset/dataset-edit.tpl.html',
@@ -31,9 +43,39 @@ angular.module('dataset-search', [])
   }
   $scope.search(""); // start with empty search
   
+  // load quick lists
+  $http.get('../dataset/deleted?limit=1000').success(function (data) {
+    $scope.deletedCount = data.count;
+    $scope.deleted = data.results;
+  })
+  $http.get('../dataset/duplicate?limit=1000').success(function (data) {
+    $scope.duplicateCount = data.count;
+    $scope.duplicate = data.results;
+  })
+  $http.get('../dataset/subDataset?limit=1000').success(function (data) {
+    $scope.subDatasetCount = data.count;
+    $scope.subDataset = data.results;
+  })
+  
+  
   $scope.openDataset = function(dataset) {
     $state.transitionTo('dataset.detail', {key: dataset.key})
   }
+  
+  // TODO: should we start reusing functions? I mean seriously... this is copied from dataset.js
+  // populate the dropdowns 
+  var lookup = function(url, parameter) {
+    $http( { method:'GET', url: url})
+      .success(function (result) {$scope[parameter] = result});
+  }
+	lookup('../enumeration/org.gbif.api.vocabulary.registry2.DatasetType','datasetTypes');  
+	lookup('../enumeration/org.gbif.api.vocabulary.registry2.DatasetSubtype','datasetSubTypes');  
+	lookup('../enumeration/org.gbif.api.vocabulary.Language','languages');  
+	
+	// sensible defaults for creation
+	$scope.dataset = {};
+	$scope.dataset.type="OCCURRENCE"; 
+	$scope.dataset.language="ENGLISH"; 
 })
 
 
@@ -53,9 +95,9 @@ angular.module('dataset-search', [])
           $state.transitionTo('dataset.detail', { key: data.replace(/["]/g,''), type: "dataset" }); 
         })
         .error(function(response) {
-          notifications.pushForCurrentRoute(response.data, 'error');
+          notifications.pushForCurrentRoute(response, 'error');
         });
-    }
+    }        
   }
   
   $scope.cancelEdit = function() {

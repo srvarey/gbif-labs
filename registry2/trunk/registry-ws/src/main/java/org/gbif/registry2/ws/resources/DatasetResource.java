@@ -47,6 +47,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -420,6 +421,27 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Override
   public void deleteMetadata(@PathParam("key") int metadataKey) {
     metadataMapper.delete(metadataKey);
+  }
+
+  @GET
+  @Path("deleted")
+  @Override
+  public PagingResponse<Dataset> listDeleted(@Context Pageable page) {
+    return pagingResponse(page, datasetMapper.countDeleted(), datasetMapper.deleted(page));
+  }
+
+  @GET
+  @Path("duplicate")
+  @Override
+  public PagingResponse<Dataset> listDuplicates(@Context Pageable page) {
+    return pagingResponse(page, datasetMapper.countDuplicates(), datasetMapper.duplicates(page));
+  }
+
+  @GET
+  @Path("subDataset")
+  @Override
+  public PagingResponse<Dataset> listSubdatasets(@Context Pageable page) {
+    return pagingResponse(page, datasetMapper.countSubdatasets(), datasetMapper.subdatasets(page));
   }
 
 }

@@ -152,6 +152,9 @@ angular.module('organization', [
   }
   count('../organization/' + $scope.organization.key + '/ownedDataset','ownedDatasets');
   count('../organization/' + $scope.organization.key + '/installation','installations');
+  $http( { method:'GET', url: '../organization/' + $scope.organization.key + '/tag'})
+    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
+  
 
   // populate the titles of the organization the hosted datasets are hosted for 
   $http( { method:'GET', url: '../organization/' + $scope.organization.key + '/hostedDataset?limit=1000'}).success(function (result) {
