@@ -444,4 +444,11 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     return pagingResponse(page, datasetMapper.countSubdatasets(), datasetMapper.subdatasets(page));
   }
 
+  @GET
+  @Path("withNoEndpoint")
+  @Override
+  public PagingResponse<Dataset> listDatasetsWithNoEndpoint(@Context Pageable page) {
+    return pagingResponse(page, datasetMapper.countWithNoEndpoint(), datasetMapper.withNoEndpoint(page));
+  }
+
 }

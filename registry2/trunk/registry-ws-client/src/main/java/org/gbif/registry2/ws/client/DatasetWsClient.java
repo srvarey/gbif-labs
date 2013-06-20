@@ -103,4 +103,9 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
   public PagingResponse<Dataset> listSubdatasets(Pageable page) {
     return get(GenericTypes.PAGING_DATASET, null, null, page, "subDataset");
   }
+
+  @Override
+  public PagingResponse<Dataset> listDatasetsWithNoEndpoint(Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, null, null, page, "withNoEndpoint");
+  }
 }

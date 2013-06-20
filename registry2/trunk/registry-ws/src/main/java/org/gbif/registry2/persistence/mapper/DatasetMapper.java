@@ -99,4 +99,8 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
   List<Dataset> subdatasets(@Nullable @Param("page") Pageable page);
 
   long countSubdatasets();
+
+  List<Dataset> withNoEndpoint(@Nullable @Param("page") Pageable page);
+
+  long countWithNoEndpoint();
 }
