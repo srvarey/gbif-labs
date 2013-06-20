@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -60,13 +61,15 @@ public class DatasetIndexUpdateListener {
     @Named("performIndexSync") boolean performIndexSync,
     @Named("Dataset") SolrServer solrServer,
     OrganizationService organizationService,
-    InstallationService installationService) {
+    InstallationService installationService,
+    EventBus eventBus) {
     this.indexBuilder = indexBuilder;
     this.performIndexSync = performIndexSync;
     this.solrServer = solrServer;
     this.sadBuilder = new SolrAnnotatedDatasetBuilder(organizationService, installationService);
     this.organizationService = organizationService;
     this.installationService = installationService;
+    eventBus.register(this);
     Thread updateThread = new Thread(new Consumer());
     updateThread.start();
   }
