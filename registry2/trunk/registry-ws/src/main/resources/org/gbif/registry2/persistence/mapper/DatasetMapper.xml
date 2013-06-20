@@ -510,4 +510,22 @@
     WHERE parent_dataset_key IS NOT NULL AND deleted IS NULL
   </select>    
   
+  <select id="withNoEndpoint" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    LEFT JOIN dataset_endpoint de ON de.dataset_key=d.key
+    WHERE de.dataset_key IS NULL AND d.deleted IS NULL AND d.external IS false AND d.parent_dataset_key IS NULL
+    ORDER BY d.created DESC, d.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countWithNoEndpoint" resultType="Long">
+    SELECT count(*)
+    FROM dataset d
+    LEFT JOIN dataset_endpoint de ON de.dataset_key=d.key
+    WHERE de.dataset_key IS NULL AND d.deleted IS NULL AND d.external IS false AND d.parent_dataset_key IS NULL
+  </select>    
+  
+  
 </mapper>

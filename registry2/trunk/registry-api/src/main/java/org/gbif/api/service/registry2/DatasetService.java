@@ -101,4 +101,9 @@ public interface DatasetService
    */
   PagingResponse<Dataset> listSubdatasets(@Nullable Pageable page);
 
+  /**
+   * Provides access to internal (e.g. not marked as external) datasets, that are not sub datasets that have no
+   * endpoint.
+   */
+  PagingResponse<Dataset> listDatasetsWithNoEndpoint(@Nullable Pageable page);
 }

@@ -23,6 +23,10 @@ angular.module('dataset-search', [])
     url: '/subDataset',   
     templateUrl: 'app/dataset-search/dataset-subDataset.tpl.html'
   })
+  .state('dataset-search.withNoEndpoint', {  
+    url: '/withNoEndpoint',   
+    templateUrl: 'app/dataset-search/dataset-withNoEndpoint.tpl.html'
+  })
   .state('dataset-search.create', {  
     url: '/create',   
     templateUrl: 'app/dataset/dataset-edit.tpl.html',
@@ -55,6 +59,10 @@ angular.module('dataset-search', [])
   $http.get('../dataset/subDataset?limit=1000').success(function (data) {
     $scope.subDatasetCount = data.count;
     $scope.subDataset = data.results;
+  })
+  $http.get('../dataset/withNoEndpoint?limit=1000').success(function (data) {
+    $scope.withNoEndpointCount = data.count;
+    $scope.withNoEndpoint = data.results;
   })
   
   
