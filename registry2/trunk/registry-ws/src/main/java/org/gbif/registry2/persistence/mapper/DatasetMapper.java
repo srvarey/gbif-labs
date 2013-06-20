@@ -85,6 +85,18 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
 
   long countDatasetsOwnedBy(@Param("organizationKey") UUID organizationKey);
 
-  // sigh - required by the model object, but the paging is long
+  // sigh - int required by the model object, but the paging is long
   int countConstituents(@Param("key") UUID datasetKey);
+
+  List<Dataset> deleted(@Nullable @Param("page") Pageable page);
+
+  long countDeleted();
+
+  List<Dataset> duplicates(@Nullable @Param("page") Pageable page);
+
+  long countDuplicates();
+
+  List<Dataset> subdatasets(@Nullable @Param("page") Pageable page);
+
+  long countSubdatasets();
 }

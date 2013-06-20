@@ -80,7 +80,7 @@ angular.module('organization-search', [])
           $state.transitionTo('organization.detail', { key: data.replace(/["]/g,''), type: "organization" }); 
         })
         .error(function(response) {
-          notifications.pushForCurrentRoute(response.data, 'error');
+          notifications.pushForCurrentRoute(response, 'error');
         });
     }
   }

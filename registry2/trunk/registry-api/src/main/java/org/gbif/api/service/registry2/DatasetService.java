@@ -23,6 +23,7 @@ import org.gbif.api.vocabulary.registry2.MetadataType;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
@@ -32,15 +33,16 @@ public interface DatasetService
   /**
    * Pages through constituents of a dataset, i.e. returns datasets which have a parentDatasetKey
    * equals to the one requested.
+   * 
    * @param datasetKey the parent datasets key
    */
   PagingResponse<Dataset> listConstituents(UUID datasetKey, @Nullable Pageable page);
 
   /**
    * Provides paging service to list datasets published, i.e. owned by organizations from a given country.
+   * 
    * @param country the hosting country
    * @param type the optional dataset type filter
-   *
    * @return list of datasets ordered by creation date with latest coming first
    */
   PagingResponse<Dataset> listByCountry(@NotNull Country country, @Nullable DatasetType type, @Nullable Pageable page);
@@ -50,7 +52,7 @@ public interface DatasetService
    * The list is sorted by priority with the first result ranking highest.
    * Highest priority in this sense means most relevant for augmenting/updating a dataset with EML being the most
    * relevant cause informative type.
-   *
+   * 
    * @return the list of metadata entries sorted by priority
    */
   List<Metadata> listMetadata(UUID datasetKey, @Nullable MetadataType type);
@@ -68,7 +70,7 @@ public interface DatasetService
   /**
    * Inserts a metadata document, replacing any previously existing document of the same type.
    * The document type is discovered by the service and returned in the Metadata instance.
-   *
+   * 
    * @throws IllegalArgumentException if document is not parsable
    */
   Metadata insertMetadata(UUID datasetKey, InputStream document);
@@ -82,5 +84,21 @@ public interface DatasetService
    * Gets the actual metadata document content by its key.
    */
   InputStream getMetadataDocument(int metadataKey);
+
+  /**
+   * Provides access to deleted datasets.
+   */
+  PagingResponse<Dataset> listDeleted(@Nullable Pageable page);
+
+  /**
+   * Provides access to datasets that are marked as a duplicate of another. When 2 datasets are considered duplicates,
+   * one is marked as a duplicate of the other. Only the marked dataset is returned in this call.
+   */
+  PagingResponse<Dataset> listDuplicates(@Nullable Pageable page);
+
+  /**
+   * Provides access to datasets that are marked as a sub dataset (e.g. have a parent dataset).
+   */
+  PagingResponse<Dataset> listSubdatasets(@Nullable Pageable page);
 
 }

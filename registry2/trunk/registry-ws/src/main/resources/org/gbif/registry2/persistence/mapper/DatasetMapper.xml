@@ -453,7 +453,6 @@
     INNER JOIN installation i ON d.installation_key = i.key AND i.deleted IS NULL
     WHERE i.key = #{installationKey,jdbcType=OTHER}
   </select>
-  
 
   <select id="listConstituents" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
@@ -465,4 +464,50 @@
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
   </select>
+  
+  <select id="deleted" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    WHERE d.deleted IS NOT NULL
+    ORDER BY d.created DESC, d.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countDeleted" resultType="Long">
+    SELECT count(*)
+    FROM dataset
+    WHERE deleted IS NOT NULL
+  </select>    
+  
+  <select id="duplicates" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    WHERE d.duplicate_of_dataset_key IS NOT NULL AND d.deleted IS NULL
+    ORDER BY d.created DESC, d.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countDuplicates" resultType="Long">
+    SELECT count(*)
+    FROM dataset 
+    WHERE duplicate_of_dataset_key IS NOT NULL AND deleted IS NULL
+  </select>    
+  
+  <select id="subdatasets" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT <include refid="DATASET_FIELDS"/>
+    FROM dataset d
+    WHERE d.parent_dataset_key IS NOT NULL AND d.deleted IS NULL
+    ORDER BY d.created DESC, d.key
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countSubdatasets" resultType="Long">
+    SELECT count(*)
+    FROM dataset
+    WHERE parent_dataset_key IS NOT NULL AND deleted IS NULL
+  </select>    
+  
 </mapper>

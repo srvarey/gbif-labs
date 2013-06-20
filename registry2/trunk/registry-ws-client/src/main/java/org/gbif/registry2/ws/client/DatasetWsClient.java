@@ -27,6 +27,7 @@ import org.gbif.ws.util.InputStreamUtils;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 
@@ -69,7 +70,8 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
 
   @Override
   public List<Metadata> listMetadata(UUID datasetKey, @Nullable MetadataType type) {
-    return get(GenericTypes.LIST_METADATA, QueryParamBuilder.create("type", type).build(), datasetKey.toString(), "metadata");
+    return get(GenericTypes.LIST_METADATA, QueryParamBuilder.create("type", type).build(), datasetKey.toString(),
+      "metadata");
   }
 
   @Override
@@ -85,5 +87,20 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
   @Override
   public void deleteMetadata(int metadataKey) {
     delete(String.valueOf(metadataKey));
+  }
+
+  @Override
+  public PagingResponse<Dataset> listDeleted(Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, null, null, page, "deleted");
+  }
+
+  @Override
+  public PagingResponse<Dataset> listDuplicates(Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, null, null, page, "duplicate");
+  }
+
+  @Override
+  public PagingResponse<Dataset> listSubdatasets(Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, null, null, page, "subDataset");
   }
 }

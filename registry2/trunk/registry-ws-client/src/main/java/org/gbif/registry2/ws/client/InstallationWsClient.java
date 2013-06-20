@@ -39,4 +39,13 @@ public class InstallationWsClient extends BaseNetworkEntityClient<Installation> 
     return get(GenericTypes.PAGING_DATASET, null, null, page, String.valueOf(installationKey), "dataset");
   }
 
+  @Override
+  public PagingResponse<Installation> listDeleted(Pageable page) {
+    return get(GenericTypes.PAGING_INSTALLATION, null, null, page, "deleted");
+  }
+
+  @Override
+  public PagingResponse<Installation> listNonPublishing(Pageable page) {
+    return get(GenericTypes.PAGING_INSTALLATION, null, null, page, "nonPublishing");
+  }
 }
