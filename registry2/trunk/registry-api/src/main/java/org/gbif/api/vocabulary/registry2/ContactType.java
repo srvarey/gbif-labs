@@ -21,6 +21,11 @@ import org.gbif.api.util.VocabularyUtils;
  * Enumeration for all contact types.
  * See vocabulary used by the IPT:
  * http://rs.gbif.org/vocabulary/gbif/agent_role.xml
+ *
+ * The IMS contains these types, most of them are not mappable to this enumeration:
+ * <ul>
+ *
+ * </ul>
  */
 public enum ContactType {
 
@@ -46,7 +51,11 @@ public enum ContactType {
   REGIONAL_NODE_REPRESENTATIVE,
   VICE_CHAIR,
   NODE_MANAGER,
-  NODE_STAFF;
+  NODE_STAFF,
+
+  TEMPORARY_DELEGATE,
+  SECRETARIAT_SUPPORT,
+  EX_OFFICIO_MEMBER;
 
   /**
    * @return the matching ContactType or null
