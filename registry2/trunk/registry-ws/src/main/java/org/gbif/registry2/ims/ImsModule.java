@@ -21,6 +21,7 @@ import org.gbif.api.model.registry2.Node;
 import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.Language;
+import org.gbif.api.vocabulary.registry2.ContactType;
 import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.mybatis.type.UriTypeHandler;
 import org.gbif.registry2.persistence.mapper.handler.CountryTypeHandler;
@@ -101,8 +102,6 @@ public class ImsModule extends PrivateServiceModule {
 
       addAlias("Country").to(Country.class);
       addAlias("Language").to(Language.class);
-      addAlias("LanguageTypeHandler").to(LanguageTypeHandler.class);
-      addAlias("CountryTypeHandler").to(CountryTypeHandler.class);
     }
 
     @Override
@@ -111,6 +110,7 @@ public class ImsModule extends PrivateServiceModule {
       handleType(URI.class).with(UriTypeHandler.class);
       handleType(Country.class).with(CountryTypeHandler.class);
       handleType(Language.class).with(LanguageTypeHandler.class);
+      handleType(ContactType.class).with(ContactTypeHandler.class);
     }
 
     @Override
