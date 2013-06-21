@@ -9,8 +9,8 @@
     <query id="installation_machine_tags" connection-id="old-registry">
         SELECT a.uuid AS installation_key, 
         	t.id AS machine_tag_key 
-        FROM agent a, tag t
-        WHERE a.id = t.agent_id AND a.type = 14100 AND a.deleted IS NULL AND t.namespace_id IS NOT NULL
+        FROM agent a, mtags t
+        WHERE a.id = t.agent_id AND a.type = 14100 AND a.deleted IS NULL <!--AND t.namespace_id IS NOT NULL-->
          			
 		<script connection-id="new-registry">
 		INSERT INTO installation_machine_tag(installation_key, machine_tag_key)

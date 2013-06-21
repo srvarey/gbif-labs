@@ -9,8 +9,8 @@
     <query id="dataset_machine_tags" connection-id="old-registry">
         SELECT a.uuid AS dataset_key, 
         	t.id AS machine_tag_key 
-        FROM agent a, tag t
-        WHERE a.id = t.agent_id AND a.type = 14020 AND a.deleted IS NULL AND t.namespace_id IS NOT NULL
+        FROM agent a, mtags t
+        WHERE a.id = t.agent_id AND a.type = 14020 AND a.deleted IS NULL <!--AND t.namespace_id IS NOT NULL-->
          			
 		<script connection-id="new-registry">
 		INSERT INTO dataset_machine_tag(dataset_key, machine_tag_key)
