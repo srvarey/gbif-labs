@@ -29,21 +29,30 @@
     WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country Participant') AND p."__kp_ID" = #{imsId}
   </select>  
 
+  <!--
+   This SQL relies on stable group ids in the IMS !!!
+   The groups denoted in the where filter represent:
+     node staff
+     voting participant
+     associate country participant
+     other associate participant
+  -->
   <select id="listContacts" resultType="Contact" resultMap="CONTACT_MAP">
-      SELECT pc."_kf_ContactID" AS cid, pc."_kf_ParticipantID", pc."_kf_NodeID",
+      SELECT pc."_kf_ContactID" AS cid, gr."_kf_GroupID", pc."_kf_ParticipantID", pc."_kf_NodeID",
            c.Name_First AS first_name, c.Name_Last AS last_name, gr.Name AS type,
            c.Address, c.City, c.ZipCode, ca.Name AS country, i.Name_Full__lct AS organization,
            c.Email AS email, c.Fax, c.Phone_And_Phone__lct AS phone, c.URL AS homepage,
-           c.Job_Position AS "position", c.Job_Description AS description,
+           c.Job_Position AS job_position, c.Job_Description AS description,
            c."zz__Created_Account__lxt" AS created_by, c."zz__Created_Timestamp__lxm" AS created,
            c."zz__Modified_Account__lxt" AS modified_by, c."zz__Modified_Timestamp__lxm" AS modified
-      FROM "__ContactGrouproleNodeParticipant" pc
+      FROM "__Node" n
+      JOIN "__ContactGrouproleNodeParticipant" pc ON (n."_kf_ParticipantID" = pc."_kf_ParticipantID" OR n."__kp_ID" = pc."_kf_NodeID")
         JOIN "__Contact" c ON pc."_kf_ContactID" = c."__kp_ID"
         LEFT JOIN "__Grouprole" gr ON pc."_kf_GrouproleID" = gr."__kp_ID"
         LEFT JOIN "__Country" ca ON c."_kf_CountryID_Address" = ca."__kp_ID"
         LEFT JOIN "__Institution" i ON c."_kf_InstitutionID" = i."__kp_ID"
-      WHERE pc."_kf_ParticipantID" = #{imsId}
-      ORDER BY 1
+      WHERE pc.Active!=0 AND gr."_kf_GroupID" in (11,12,13,31) AND n."_kf_ParticipantID" = #{imsId}
+      ORDER BY 7,1
   </select>
 
 </mapper>
