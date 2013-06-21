@@ -204,7 +204,7 @@ CREATE TABLE machine_tag
   key serial NOT NULL PRIMARY KEY,
   namespace varchar(255) NOT NULL CHECK (assert_min_length(value, 1)),
   name varchar(255) NOT NULL CHECK (assert_min_length(value, 1)),
-  value varchar(255) NOT NULL CHECK (assert_min_length(value, 1)),
+  value varchar(700) NOT NULL,
   created_by varchar(255) NOT NULL CHECK (assert_min_length(created_by, 3)),
   created timestamp with time zone NOT NULL DEFAULT now()
 );
