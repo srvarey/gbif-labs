@@ -9,7 +9,7 @@
     <query id="node_machine_tags" connection-id="old-registry">
         SELECT a.uuid AS node_key, 
         	t.id AS machine_tag_key 
-        FROM agent a, tag t
+        FROM agent a, mtags t
         WHERE a.id = t.agent_id AND a.type = 14000 AND a.deleted IS NULL
          			
 		<script connection-id="new-registry">
