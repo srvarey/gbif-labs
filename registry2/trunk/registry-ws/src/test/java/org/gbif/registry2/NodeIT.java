@@ -41,7 +41,6 @@ import java.util.UUID;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -191,7 +190,10 @@ public class NodeIT extends NetworkEntityTest<Node> {
 
 
   @Test
-  @Ignore("A manual test requiring a local filemaker IMS copy")
+  /**
+   * A test that requires a configured IMS with real spanish data.
+   * Jenkins is configured for this, so we activate this test to make sure IMS connections are working!
+   */
   public void testIms() throws Exception {
     initCountryNodes();
     Node es = nodeService.getByCountry(Country.SPAIN);
