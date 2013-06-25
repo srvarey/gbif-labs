@@ -236,6 +236,14 @@
     WHERE dataset_key=#{targetEntityKey,jdbcType=OTHER} AND type=#{type,jdbcType=OTHER}
   </update>
 
+  <!-- Update contact type and is_primary -->
+  <update id="updateContact">
+    UPDATE dataset_contact
+    SET is_primary=#{primary,jdbcType=BOOLEAN},
+    type=#{type,jdbcType=OTHER}
+    WHERE dataset_key=#{targetEntityKey,jdbcType=OTHER}
+  </update>
+
   <select id="listContacts" resultType="Contact">
     SELECT <include refid="org.gbif.registry2.persistence.mapper.ContactMapper.CONTACT_FIELDS"/>
     FROM contact INNER JOIN dataset_contact ON contact_key = key
@@ -450,7 +458,7 @@
   <select id="countDatasetsByInstallation" resultType="Long">
     SELECT count(*)
     FROM dataset d
-    INNER JOIN installation i ON d.installation_key = i.key AND i.deleted IS NULL
+    INNER JOIN installation i ON d.installation_key = i.key AND i.deleted IS NULL AND d.deleted IS NULL
     WHERE i.key = #{installationKey,jdbcType=OTHER}
   </select>
 

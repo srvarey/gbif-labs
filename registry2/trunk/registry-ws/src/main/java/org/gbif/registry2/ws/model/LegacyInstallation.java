@@ -6,6 +6,8 @@ import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.vocabulary.registry2.ContactType;
 import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
+import org.gbif.registry2.ws.util.LegacyResourceConstants;
+import org.gbif.registry2.ws.util.LegacyResourceUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -22,20 +24,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to create or update an Installation of type IPT_INSTALLATION from a set of HTTP Form parameters coming
- * from an IPT POST request.
+ * Class used to create or update an Installation for legacy (GBRDS/IPT) API. A set of HTTP Form parameters coming from
+ * a POST request are injected.
  * </br>
  * Its fields are injected using the @FormParam. It is assumed the following parameters exist in the HTTP request:
  * 'organisationKey', 'name', 'description', 'primaryContactName', 'primaryContactEmail', 'primaryContactType',
  * 'serviceTypes', 'serviceURLs', and 'wsPassword'.
  * </br>
  * JAXB annotations allow the class to be converted into an XML document, that gets included in the Response following
- * a successful registration or update. @XmlElement is used to specify element names that an IPT expects to find.
+ * a successful registration or update. @XmlElement is used to specify element names that consumers of legacy services
+ * expect to find.
  */
 @XmlRootElement(name = "IptInstallation")
-public class IptInstallation extends Installation {
+public class LegacyInstallation extends Installation {
 
-  private static final Logger LOG = LoggerFactory.getLogger(IptInstallation.class);
+  private static final Logger LOG = LoggerFactory.getLogger(LegacyInstallation.class);
 
   // injected from HTTP form parameters
   private ContactType primaryContactType;
@@ -50,19 +53,15 @@ public class IptInstallation extends Installation {
 
   // IPT constants
   private static final String RSS_ENDPOINT_TYPE = "RSS";
-  private static final String ADMINISTRATIVE_CONTACT_TYPE = "administrative";
-  public static final String USER = "GBIF Registry Web Services";
-  // TODO: remove once security implemented
-  public static final String ORGANIZATION_KEY_PARAM = "organisationKey";
 
   /**
-   * Default constructor always sets type (IPT_INSTALLATION), created, createdBy, modified, modifiedBy.
+   * Default constructor.
    */
-  public IptInstallation() {
+  public LegacyInstallation() {
     setType(InstallationType.IPT_INSTALLATION);
     // TODO: remove, will be set by authenticated account
-    setCreatedBy(USER);
-    setModifiedBy(USER);
+    setCreatedBy(LegacyResourceConstants.USER);
+    setModifiedBy(LegacyResourceConstants.USER);
   }
 
   /**
@@ -70,7 +69,7 @@ public class IptInstallation extends Installation {
    *
    * @param organizationKey organization key as UUID
    */
-  @FormParam(ORGANIZATION_KEY_PARAM)
+  @FormParam(LegacyResourceConstants.ORGANIZATION_KEY_PARAM)
   public void setHostingOrganizationKey(String organizationKey) {
     try {
       this.setOrganizationKey(UUID.fromString(Strings.nullToEmpty(organizationKey)));
@@ -79,13 +78,13 @@ public class IptInstallation extends Installation {
     }
   }
 
-  @XmlElement(name = ORGANIZATION_KEY_PARAM)
+  @XmlElement(name = LegacyResourceConstants.ORGANIZATION_KEY_PARAM)
   @NotNull
   public String getHostingOrganizationKey() {
     return (getOrganizationKey() != null) ? getOrganizationKey().toString() : null;
   }
 
-  @XmlElement(name = "key")
+  @XmlElement(name = LegacyResourceConstants.KEY_PARAM)
   @Nullable
   public String getIptInstallationKey() {
     return (getKey() != null) ? getKey().toString() : null;
@@ -93,12 +92,16 @@ public class IptInstallation extends Installation {
 
   /**
    * Set the title.
+   * </br>
+   * The title must be at least 2 characters long, a limit set in the database schema. Since older versions
+   * of the IPT may not have imposed the same limit, the field is padded if necessary so as to avoid problems
+   * during persistence.
    *
    * @param name title of the installation
    */
-  @FormParam("name")
+  @FormParam(LegacyResourceConstants.NAME_PARAM)
   public void setIptName(String name) {
-    this.setTitle(name);
+    this.setTitle(LegacyResourceUtils.validateField(name, 2));
   }
 
   /**
@@ -115,12 +118,16 @@ public class IptInstallation extends Installation {
 
   /**
    * Set the description.
+   * </br>
+   * The description must be at least 10 characters long, a limit set in the database schema. Since older versions
+   * of the IPT may not have imposed the same limit, the field is padded if necessary so as to avoid problems
+   * during persistence.
    *
    * @param description of the installation
    */
-  @FormParam("description")
+  @FormParam(LegacyResourceConstants.DESCRIPTION_PARAM)
   public void setIptDescription(String description) {
-    this.setDescription(description);
+    this.setDescription(LegacyResourceUtils.validateField(description, 10));
   }
 
   /**
@@ -151,7 +158,7 @@ public class IptInstallation extends Installation {
    *
    * @param endpointType endpoint type
    */
-  @FormParam("serviceTypes")
+  @FormParam(LegacyResourceConstants.SERVICE_TYPES_PARAM)
   public void setEndpointType(String endpointType) {
     this.endpointType =
       (endpointType.equalsIgnoreCase(RSS_ENDPOINT_TYPE)) ? EndpointType.FEED : EndpointType.fromString(endpointType);
@@ -173,7 +180,7 @@ public class IptInstallation extends Installation {
    *
    * @param endpointUrl endpoint URL
    */
-  @FormParam("serviceURLs")
+  @FormParam(LegacyResourceConstants.SERVICE_URLS_PARAM)
   public void setEndpointUrl(String endpointUrl) {
     this.endpointUrl = endpointUrl;
   }
@@ -184,7 +191,7 @@ public class IptInstallation extends Installation {
     return getPassword();
   }
 
-  @FormParam("wsPassword")
+  @FormParam(LegacyResourceConstants.WS_PASSWORD_PARAM)
   public void setWsPassword(String wsPassword) {
     setPassword(Strings.nullToEmpty(wsPassword));
   }
@@ -206,7 +213,7 @@ public class IptInstallation extends Installation {
    *
    * @param primaryContactName primary contact name
    */
-  @FormParam("primaryContactName")
+  @FormParam(LegacyResourceConstants.PRIMARY_CONTACT_NAME_PARAM)
   public void setPrimaryContactName(String primaryContactName) {
     this.primaryContactName = primaryContactName;
   }
@@ -229,7 +236,7 @@ public class IptInstallation extends Installation {
    *
    * @param primaryContactEmail primary contact email address
    */
-  @FormParam("primaryContactEmail")
+  @FormParam(LegacyResourceConstants.PRIMARY_CONTACT_EMAIL_PARAM)
   public void setPrimaryContactEmail(String primaryContactEmail) {
     EmailValidator validator = EmailValidator.getInstance();
     if (!validator.isValid(primaryContactEmail)) {
@@ -257,13 +264,16 @@ public class IptInstallation extends Installation {
    *
    * @param primaryContactType primary contact type
    */
-  @FormParam("primaryContactType")
+  @FormParam(LegacyResourceConstants.PRIMARY_CONTACT_TYPE_PARAM)
   public void setPrimaryContactType(String primaryContactType) {
-    if (Strings.isNullOrEmpty(primaryContactType)) {
+    if (Strings.nullToEmpty(primaryContactType).equalsIgnoreCase(LegacyResourceConstants.ADMINISTRATIVE_CONTACT_TYPE)) {
+      this.primaryContactType = ContactType.ADMINISTRATIVE_POINT_OF_CONTACT;
+    } else if (Strings.nullToEmpty(primaryContactType)
+      .equalsIgnoreCase(LegacyResourceConstants.TECHNICAL_CONTACT_TYPE)) {
+      this.primaryContactType = ContactType.TECHNICAL_POINT_OF_CONTACT;
+    } else if (Strings.isNullOrEmpty(primaryContactType)) {
       LOG.error("No primary contact type has ben provided");
     }
-    this.primaryContactType = (Strings.nullToEmpty(primaryContactType).equalsIgnoreCase(ADMINISTRATIVE_CONTACT_TYPE))
-      ? ContactType.ADMINISTRATIVE_POINT_OF_CONTACT : ContactType.TECHNICAL_POINT_OF_CONTACT;
   }
 
   /**
@@ -320,12 +330,10 @@ public class IptInstallation extends Installation {
   /**
    * Generates the primary technical contact, and adds it to the installation. This method must be called after all
    * primary contact parameters have been set.
-   *
-   * @return new primary contact added
    */
-  private Contact addPrimaryContact() {
+  private void addPrimaryContact() {
     Contact contact = null;
-    if (!Strings.isNullOrEmpty(primaryContactName) && !Strings.isNullOrEmpty(primaryContactEmail)) {
+    if (!Strings.isNullOrEmpty(primaryContactEmail) && getPrimaryContactType() != null) {
 
       // check if the primary contact with this type exists already
       for (Contact c : getContacts()) {
@@ -338,30 +346,25 @@ public class IptInstallation extends Installation {
       if (contact == null) {
         contact = new Contact();
         contact.setCreated(new Date());
-        contact.setCreatedBy(USER);
+        contact.setCreatedBy(LegacyResourceConstants.USER);
+        contact.setPrimary(true);
+        contact.setType(getPrimaryContactType());
       }
       // set/update other properties
-      contact.setPrimary(true);
       contact.setModified(new Date());
-      contact.setModifiedBy(USER);
+      contact.setModifiedBy(LegacyResourceConstants.USER);
       contact.setFirstName(getPrimaryContactName());
       contact.setEmail(getPrimaryContactEmail());
-      contact.setType(getPrimaryContactType());
-      setPrimaryContact(contact);
 
-      // add to installation's list
-      getContacts().add(contact);
+      setPrimaryContact(contact);
     }
-    return contact;
   }
 
   /**
    * Generates an Endpoint, and adds it to the installation. This method must be called after all
    * endpoint related parameters have been set.
-   *
-   * @return new Endpoint added
    */
-  private Endpoint addEndpoint() {
+  private void addEndpoint() {
     Endpoint endpoint = null;
     if (!Strings.isNullOrEmpty(getEndpointUrl()) && getEndpointType() != null) {
       // check if the endpoint with type FEED exists already
@@ -375,18 +378,15 @@ public class IptInstallation extends Installation {
       if (endpoint == null) {
         endpoint = new Endpoint();
         endpoint.setCreated(new Date());
-        endpoint.setCreatedBy(USER);
+        endpoint.setCreatedBy(LegacyResourceConstants.USER);
+        endpoint.setType(getEndpointType());
       }
       // set/update other properties
       endpoint.setModified(new Date());
-      endpoint.setModifiedBy(USER);
+      endpoint.setModifiedBy(LegacyResourceConstants.USER);
       endpoint.setUrl(getEndpointUrl());
-      endpoint.setType(getEndpointType());
-      setFeedEndpoint(endpoint);
 
-      // add to installation's list
-      getEndpoints().add(endpoint);
+      setFeedEndpoint(endpoint);
     }
-    return endpoint;
   }
 }

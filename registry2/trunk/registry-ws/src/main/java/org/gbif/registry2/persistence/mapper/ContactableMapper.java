@@ -34,6 +34,11 @@ public interface ContactableMapper {
    */
   void updatePrimaryContacts(@Param("targetEntityKey") UUID entityKey, @Param("type") ContactType contactType);
 
+  /**
+   * Updates the contact if it exists, updating the type and is_primary columns.
+   */
+  void updateContact(@Param("targetEntityKey") UUID entityKey, @Param("type") ContactType contactType, @Param("primary") boolean primary);
+
   int deleteContact(@Param("targetEntityKey") UUID entityKey, @Param("contactKey") int contactKey);
 
   List<Contact> listContacts(@Param("targetEntityKey") UUID targetEntityKey);

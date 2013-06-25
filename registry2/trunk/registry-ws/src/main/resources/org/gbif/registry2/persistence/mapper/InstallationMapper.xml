@@ -165,6 +165,14 @@
     WHERE installation_key=#{targetEntityKey,jdbcType=OTHER} AND type=#{type,jdbcType=OTHER}
   </update>
 
+  <!-- Update contact type and is_primary -->
+  <update id="updateContact">
+    UPDATE installation_contact
+    SET is_primary=#{primary,jdbcType=BOOLEAN},
+    type=#{type,jdbcType=OTHER}
+    WHERE installation_key=#{targetEntityKey,jdbcType=OTHER}
+  </update>
+
   <select id="listContacts" resultType="Contact">
     SELECT <include refid="org.gbif.registry2.persistence.mapper.ContactMapper.CONTACT_FIELDS"/>
     FROM contact INNER JOIN installation_contact ON contact_key = key

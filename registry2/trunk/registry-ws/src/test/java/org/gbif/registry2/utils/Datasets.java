@@ -15,15 +15,34 @@
  */
 package org.gbif.registry2.utils;
 
+import org.gbif.api.model.registry2.Citation;
 import org.gbif.api.model.registry2.Dataset;
+import org.gbif.api.service.registry2.DatasetService;
+import org.gbif.api.vocabulary.Language;
+import org.gbif.registry2.guice.RegistryTestModules;
+import org.gbif.registry2.ws.resources.DatasetResource;
 
 import java.util.UUID;
 
+import com.google.inject.Injector;
 import org.codehaus.jackson.type.TypeReference;
 
 public class Datasets extends JsonBackedData<Dataset> {
 
   private static final Datasets INSTANCE = new Datasets();
+  private static DatasetService datasetService;
+
+  public static final String DATASET_ALIAS = "BGBM";
+  public static final String DATASET_ABBREVIATION = "BGBM";
+  public static final Language DATASET_LANGUAGE = Language.DANISH;
+  public static final String DATASET_RIGHTS = "The rights";
+  public static final Citation DATASET_CITATION = new Citation("This is a citation text", "ABC");
+
+  public Datasets() {
+    super("data/dataset.json", new TypeReference<Dataset>() {});
+    Injector i = RegistryTestModules.webservice();
+    datasetService = i.getInstance(DatasetResource.class);
+  }
 
   public static Dataset newInstance(UUID owningOrganizationKey) {
     Dataset d = INSTANCE.newTypedInstance();
@@ -31,8 +50,20 @@ public class Datasets extends JsonBackedData<Dataset> {
     return d;
   }
 
-  public Datasets() {
-    super("data/dataset.json", new TypeReference<Dataset>() {});
+  /**
+   * Persist a new Dataset associated to an owning organization and installation for use in Unit Tests.
+   *
+   * @param organizationKey owning organization key
+   * @param installationKey installation key
+   *
+   * @return persisted Dataset
+   */
+  public static Dataset newPersistedInstance(UUID organizationKey, UUID installationKey) {
+    Dataset dataset = Datasets.newInstance(organizationKey);
+    dataset.setInstallationKey(installationKey);
+    UUID key = datasetService.create(dataset);
+    // some properties like created, modified are only set when the dataset is retrieved anew
+    return datasetService.get(key);
   }
 
 }
