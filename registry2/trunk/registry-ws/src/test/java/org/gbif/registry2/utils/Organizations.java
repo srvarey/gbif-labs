@@ -16,14 +16,30 @@
 package org.gbif.registry2.utils;
 
 import org.gbif.api.model.registry2.Organization;
+import org.gbif.api.service.registry2.NodeService;
+import org.gbif.api.service.registry2.OrganizationService;
+import org.gbif.registry2.guice.RegistryTestModules;
+import org.gbif.registry2.ws.resources.NodeResource;
+import org.gbif.registry2.ws.resources.OrganizationResource;
 
 import java.util.UUID;
 
+import com.google.inject.Injector;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.codehaus.jackson.type.TypeReference;
 
 public class Organizations extends JsonBackedData<Organization> {
 
   private static final Organizations INSTANCE = new Organizations();
+  private static NodeService nodeService;
+  private static OrganizationService organizationService;
+
+  private Organizations() {
+    super("data/organization.json", new TypeReference<Organization>() {});
+    Injector i = RegistryTestModules.webservice();
+    nodeService = i.getInstance(NodeResource.class);
+    organizationService = i.getInstance(OrganizationResource.class);
+  }
 
   public static Organization newInstance(UUID endorsingNodeKey) {
     Organization o = INSTANCE.newTypedInstance();
@@ -31,8 +47,26 @@ public class Organizations extends JsonBackedData<Organization> {
     return o;
   }
 
-  private Organizations() {
-    super("data/organization.json", new TypeReference<Organization>() {});
+  /**
+   * Persist a new Organization for use in Unit Tests.
+   *
+   * @return persisted Organization
+   */
+  public static Organization newPersistedInstance() {
+    UUID nodeKey = nodeService.create(Nodes.newInstance());
+    Organization organization = newInstance(nodeKey);
+    UUID organizationKey = organizationService.create(organization);
+    return organizationService.get(organizationKey);
   }
 
+  /**
+   * Populate credentials used in ws requests.
+   *
+   * @param organization Organization
+   *
+   * @return credentials
+   */
+  public static UsernamePasswordCredentials credentials(Organization organization) {
+    return new UsernamePasswordCredentials(organization.getKey().toString(), organization.getPassword());
+  }
 }

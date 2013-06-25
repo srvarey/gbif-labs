@@ -3,6 +3,7 @@ package org.gbif.registry2.search.guice;
 import org.gbif.api.service.registry2.DatasetSearchService;
 import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.service.registry2.InstallationService;
+import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.common.search.inject.SolrModule;
 import org.gbif.common.search.solr.builders.EmbeddedServerBuilder;
@@ -11,6 +12,7 @@ import org.gbif.registry2.search.DatasetIndexUpdateListener;
 import org.gbif.registry2.search.DatasetSearchServiceSolr;
 import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
+import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
 import org.gbif.service.guice.PrivateServiceModule;
 
@@ -67,6 +69,7 @@ public class RegistrySearchModule extends PrivateServiceModule {
     bind(DatasetSearchService.class).to(DatasetSearchServiceSolr.class).in(Scopes.SINGLETON);
     bind(DatasetService.class).to(DatasetResource.class).in(Scopes.SINGLETON);
     bind(OrganizationService.class).to(OrganizationResource.class).in(Scopes.SINGLETON);
+    bind(NodeService.class).to(NodeResource.class).in(Scopes.SINGLETON);
     bind(InstallationService.class).to(InstallationResource.class).in(Scopes.SINGLETON);
     bind(DatasetIndexUpdateListener.class).asEagerSingleton();
     bind(DatasetIndexBuilder.class).in(Scopes.SINGLETON);
@@ -74,6 +77,8 @@ public class RegistrySearchModule extends PrivateServiceModule {
     expose(DatasetIndexUpdateListener.class); // for testing
     expose(OrganizationService.class); // for testing
     expose(InstallationService.class); // for testing
+    expose(DatasetService.class); // for testing
+    expose(NodeService.class); // for testing
   }
 
   /**

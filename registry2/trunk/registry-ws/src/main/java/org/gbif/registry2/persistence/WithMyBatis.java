@@ -117,6 +117,8 @@ public class WithMyBatis {
       contactableMapper.updatePrimaryContacts(targetEntityKey, contact.getType());
     }
     contactMapper.updateContact(contact);
+    // update the type and is_primary (is_primary will have been set to false by updatePrimaryContacts above)
+    contactableMapper.updateContact(targetEntityKey, contact.getType(), contact.isPrimary());
     return contact.getKey();
   }
 

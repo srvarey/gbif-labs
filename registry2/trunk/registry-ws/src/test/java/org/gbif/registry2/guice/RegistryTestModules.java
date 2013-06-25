@@ -20,10 +20,10 @@ import org.gbif.registry2.search.guice.RegistrySearchModule;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
 import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
-import org.gbif.registry2.ws.resources.IptResource;
 import org.gbif.registry2.ws.resources.NetworkResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
+import org.gbif.registry2.ws.resources.legacy.IptResource;
 
 import java.io.IOException;
 import java.sql.Driver;
