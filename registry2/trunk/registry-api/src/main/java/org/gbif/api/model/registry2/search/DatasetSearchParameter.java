@@ -29,11 +29,6 @@ import java.util.UUID;
 public enum DatasetSearchParameter implements SearchParameter {
 
   /**
-   * The key of the network of origin.
-   */
-  NETWORK_ORIGIN(UUID.class),
-
-  /**
    * {@link org.gbif.api.vocabulary.registry2.DatasetType} enumeration value.
    */
   TYPE(DatasetType.class),
