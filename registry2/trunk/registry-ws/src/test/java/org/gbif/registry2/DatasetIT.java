@@ -47,6 +47,7 @@ import org.gbif.utils.file.FileUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
@@ -322,28 +323,25 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   @Test
   public void testCitation() {
     Dataset dataset = create(newEntity(), 1);
+    dataset = service.get(dataset.getKey());
+    assertNotNull("Citation should never be null", dataset.getCitation());
+    assertEquals("ABC", dataset.getCitation().getIdentifier());
+    assertEquals("This is a citation text", dataset.getCitation().getText());
 
-    // empty when new
-    Dataset dRead = service.get(dataset.getKey());
-    assertNotNull("Citation should never be null", dRead.getCitation());
-    assertEquals("ABC", dRead.getCitation().getIdentifier());
-    assertEquals("This is a citation text", dRead.getCitation().getText());
-
+    // update it
     dataset.getCitation().setIdentifier("doi:123");
     dataset.getCitation().setText("GOD publishing, volume 123");
-    assertCitationChange(dataset, "doi:123", "GOD publishing, volume 123");
-
-    dataset.getCitation().setText(null);
-    assertCitationChange(dataset, "doi:123", null);
-  }
-
-  private void assertCitationChange(Dataset dataset, String identifier, String text) {
     service.update(dataset);
+    dataset = service.get(dataset.getKey());
+    assertEquals("doi:123", dataset.getCitation().getIdentifier());
+    assertEquals("GOD publishing, volume 123", dataset.getCitation().getText());
 
-    Dataset dRead = service.get(dataset.getKey());
-    assertNotNull("Citation should never be null", dRead.getCitation());
-    assertEquals(identifier, dRead.getCitation().getIdentifier());
-    assertEquals(text, dRead.getCitation().getText());
+    // setting to null should make it the default using the org:dataset titles
+    dataset.getCitation().setText(null);
+    service.update(dataset);
+    dataset = service.get(dataset.getKey());
+    assertEquals("doi:123", dataset.getCitation().getIdentifier());
+    assertEquals("The BGBM: Pontaurus", dataset.getCitation().getText());
   }
 
   @Test

@@ -31,7 +31,9 @@
   <sql id="DATASET_FIELDS">
     d.key,d.parent_dataset_key,d.duplicate_of_dataset_key,d.installation_key,d.owning_organization_key,
     d.external,d.type,d.sub_type,d.title,d.alias,d.abbreviation,d.description,d.language,
-    d.homepage,d.logo_url,d.citation,d.citation_identifier,d.rights,d.locked_for_auto_update,d.created,d.created_by,
+    d.homepage,d.logo_url,
+    COALESCE(d.citation, o.title || ': ' || d.title) as citation,
+    d.citation_identifier,d.rights,d.locked_for_auto_update,d.created,d.created_by,
     d.modified,d.modified_by,d.deleted
   </sql>
   
@@ -112,7 +114,7 @@
   <!--  Note: you can get entities which are deleted -->
   <select id="get" resultMap="DATASET_MAP">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE d.key = #{key,jdbcType=OTHER}
   </select>
   
@@ -140,7 +142,7 @@
   -->
   <select id="list" resultType="Dataset"  resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE d.deleted IS NULL
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
@@ -151,12 +153,12 @@
   <!-- Basic paging search functionality -->
   <select id="search" resultMap="DATASET_MAP">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
-    WHERE deleted IS NULL
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
+    WHERE d.deleted IS NULL
     <if test="query != null" >
       <include refid="SIMPLE_SEARCH"/>
     </if>
-    ORDER BY created DESC, key
+    ORDER BY d.created DESC, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
@@ -357,7 +359,7 @@
 
   <select id="listDatasetsInNetwork" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d INNER JOIN dataset_network dn ON dn.dataset_key = d.key
+    FROM dataset d INNER JOIN dataset_network dn ON dn.dataset_key = d.key LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE dn.network_key = #{networkKey,jdbcType=OTHER} AND d.deleted IS NULL 
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
@@ -379,11 +381,11 @@
       
   <select id="listDatasetsHostedBy" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d 
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     INNER JOIN installation i ON d.installation_key = i.key
-    INNER JOIN organization o ON i.organization_key = o.key
-    WHERE o.key = #{organizationKey,jdbcType=OTHER} 
-    AND d.deleted IS NULL AND d.owning_organization_key != o.key
+    INNER JOIN organization host ON i.organization_key = host.key
+    WHERE host.key = #{organizationKey,jdbcType=OTHER} 
+    AND d.deleted IS NULL AND d.owning_organization_key != host.key
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
@@ -392,7 +394,7 @@
   
   <select id="listDatasetsEndorsedBy" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d 
     INNER JOIN organization o ON d.owning_organization_key = o.key
     WHERE o.endorsing_node_key = #{nodeKey,jdbcType=OTHER}
     AND d.deleted IS NULL
@@ -404,7 +406,7 @@
 
   <select id="listDatasetsByInstallation" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d 
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE d.installation_key = #{installationKey,jdbcType=OTHER} 
     AND d.deleted IS NULL 
     ORDER BY d.created DESC, d.key
@@ -464,7 +466,7 @@
 
   <select id="listConstituents" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE d.parent_dataset_key = #{parentKey,jdbcType=OTHER}
     AND d.deleted IS NULL
     ORDER BY d.created DESC, d.key
@@ -475,7 +477,7 @@
   
   <select id="deleted" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE d.deleted IS NOT NULL
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
@@ -490,7 +492,7 @@
   
   <select id="duplicates" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE d.duplicate_of_dataset_key IS NOT NULL AND d.deleted IS NULL
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
@@ -505,7 +507,7 @@
   
   <select id="subdatasets" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     WHERE d.parent_dataset_key IS NOT NULL AND d.deleted IS NULL
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
@@ -520,7 +522,7 @@
   
   <select id="withNoEndpoint" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
-    FROM dataset d
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
     LEFT JOIN dataset_endpoint de ON de.dataset_key=d.key
     WHERE de.dataset_key IS NULL AND d.deleted IS NULL AND d.external IS false AND d.parent_dataset_key IS NULL
     ORDER BY d.created DESC, d.key
