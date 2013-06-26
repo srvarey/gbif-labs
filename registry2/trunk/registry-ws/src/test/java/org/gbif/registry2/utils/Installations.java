@@ -52,6 +52,8 @@ public class Installations extends JsonBackedData<Installation> {
    */
   public static Installation newPersistedInstance(UUID organizationKey) {
     Installation i = Installations.newInstance(organizationKey);
+    // password was not included in installation.json, so set it here
+    i.setPassword("password");
     UUID key = installationService.create(i);
     // some properties like created, modified are only set when the installation is retrieved anew
     return installationService.get(key);

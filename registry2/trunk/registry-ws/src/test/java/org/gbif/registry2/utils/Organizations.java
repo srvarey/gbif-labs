@@ -55,6 +55,8 @@ public class Organizations extends JsonBackedData<Organization> {
   public static Organization newPersistedInstance() {
     UUID nodeKey = nodeService.create(Nodes.newInstance());
     Organization organization = newInstance(nodeKey);
+    // password was not included in organization.json, so set it here
+    organization.setPassword("password");
     UUID organizationKey = organizationService.create(organization);
     return organizationService.get(organizationKey);
   }

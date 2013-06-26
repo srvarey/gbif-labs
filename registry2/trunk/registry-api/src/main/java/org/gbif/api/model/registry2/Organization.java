@@ -31,6 +31,7 @@ import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * A GBIF data publisher.
@@ -147,6 +148,13 @@ public class Organization
     this.endorsementApproved = endorsementApproved;
   }
 
+  /**
+   * Get the organization password. This method is to be ignored on serialization, so that the password is not
+   * revealed in the web service response.
+   *
+   * @return organization password
+   */
+  @JsonIgnore
   @Nullable
   public String getPassword() {
     return password;
