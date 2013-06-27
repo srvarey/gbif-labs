@@ -249,7 +249,7 @@ UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='41d4686c-
 UPDATE node SET type='OTHER', participation_status='ASSOCIATE' WHERE key='b8a5be24-9225-4ba5-b664-159308a4b537';
 UPDATE node SET type='OTHER', participation_status='ASSOCIATE' WHERE key='844f7db8-d78e-4f9a-98ba-2008b1f1461e';
 UPDATE node SET type='COUNTRY', participation_status='ASSOCIATE' WHERE key='cdc9736d-5ff7-4ece-9959-3c744360cdb3';
-UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='8dae0f8c-12bc-444d-b889-6b177550a8b2';
+UPDATE node SET type='COUNTRY', participation_status='FORMER' WHERE key='8dae0f8c-12bc-444d-b889-6b177550a8b2';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='086f5148-c0a8-469b-84cc-cce5342f9242';
 UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='ed988a18-81f8-4d5f-a88d-f93ef592b2f2';
 UPDATE node SET type='COUNTRY', participation_status='OBSERVER' WHERE key='cfe0cad9-2bf4-4d16-ae33-c3dfb0da1ed9';
@@ -266,7 +266,7 @@ UPDATE node SET type='OTHER', participation_status='ASSOCIATE' WHERE key='f74f85
 UPDATE node SET type='OTHER', participation_status='ASSOCIATE' WHERE key='4be1ac47-75ae-44f6-917a-f095306f4450';
 UPDATE node SET type='OTHER', participation_status='ASSOCIATE' WHERE key='58ef3cd5-e76a-4073-8ecd-744e137e9bc9';
 UPDATE node SET type='OTHER', participation_status='ASSOCIATE' WHERE key='9e5d504a-879e-446e-bab0-1816dce12e41';
-UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='2970c4c9-9169-41b6-91b7-a3a176e66946';
+UPDATE node SET type='COUNTRY', participation_status='FORMER' WHERE key='2970c4c9-9169-41b6-91b7-a3a176e66946';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='2c11b821-d22b-4c64-8cd3-c1578173b129';
 UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='c13e0e4a-bb5b-4bd8-8fa9-aa0dba71698a';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='dd514216-5c7c-45f3-910d-797424cb5be6';
@@ -289,7 +289,7 @@ UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='b324e8e
 UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='10df48ca-517f-49e6-a33c-b903bbbb07f7';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='0909d601-bda2-42df-9e63-a6d51847ebce';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='4f9fd726-20dd-445e-89a1-8ed93792276f';
-UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='767a5cb4-f2f0-41b3-b0ec-21e4751e2927';
+UPDATE node SET type='COUNTRY', participation_status='FORMER' WHERE key='767a5cb4-f2f0-41b3-b0ec-21e4751e2927';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='4f829580-180d-46a9-9c87-ed8ec959b545';
 UPDATE node SET type='COUNTRY', participation_status='ASSOCIATE' WHERE key='e3715f62-66fe-4ecc-8c9e-7531ed0bd14c';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='46e3639a-27f8-45af-bfbe-d19b77efb040';
@@ -310,5 +310,7 @@ UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='d897a5b
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='abd95ca6-3959-4db9-aaa6-2de1aeecf514';
 UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='8618c64a-93e0-4300-b546-7249e5148ed2';
 UPDATE node SET type='COUNTRY', participation_status='OBSERVER' WHERE key='a3ceb6dd-0a65-4f30-a385-30f6937c2096';
+
+
   </script>
 </etl>
