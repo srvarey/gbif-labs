@@ -35,7 +35,7 @@
     participation_status = #{participationStatus,jdbcType=OTHER},
     gbif_region = #{gbifRegion,jdbcType=OTHER},
     continent = #{continent,jdbcType=OTHER},
-    country = #{country,jdbcType=CHAR},
+    country = upper(#{country,jdbcType=CHAR}),
     modified = now(),
     modified_by = #{modifiedBy},
     deleted = null <!-- if we're updating it can't be deleted -->
