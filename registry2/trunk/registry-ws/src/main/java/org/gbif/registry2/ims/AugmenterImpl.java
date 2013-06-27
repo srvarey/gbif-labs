@@ -43,6 +43,7 @@ public class AugmenterImpl implements Augmenter {
           if (imsNode != null) {
             // update node with IMS info if it exists
             node.setContacts(imsNode.getContacts());
+            node.setAbbreviation(imsNode.getAbbreviation());
             node.setDescription(imsNode.getDescription());
             node.setParticipantSince(imsNode.getParticipantSince());
             node.setAddress(imsNode.getAddress());

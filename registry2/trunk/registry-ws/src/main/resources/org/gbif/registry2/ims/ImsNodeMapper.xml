@@ -5,7 +5,7 @@
   <!-- Auto-mapping and eager loading of sub resources  -->
   <resultMap id="NODE_MAP" type="Node" autoMapping="true">
     <id property="country" column="country"/>
-    <result property="" column="" />
+    <result property="participantSince" column="participantSince" typeHandler="org.gbif.registry2.ims.ParticipantSinceTypeHandler"/>
     <collection property="contacts" column="imsId" select="listContacts"/>
   </resultMap>
   
@@ -16,18 +16,19 @@
   </resultMap>
 
   <select id="get" resultType="Node" resultMap="NODE_MAP">
-    SELECT p."__kp_ID" AS imsId, c.ISO2 AS country, n.Name_Full AS title, n.Name_Acronym, n.URL AS homepage,
-      p.GBIFmembership, p.Member_AsOf AS participationSince, p.Member_Status, p.Name_Full,
-      p.Name_Short, p.Host_URL, p.zz__Modified_Timestamp__lxm AS modified, r.Region,
-      i.Address AS address, i.City AS city, i.ZipCode AS postalCode, i.State AS province, i.Telephone AS phone, i.Email AS email
-    FROM "__Node" n
-      JOIN "__Participant" p ON n."_kf_ParticipantID" = p."__kp_ID"
-      JOIN "__Region" r ON p."_kf_RegionID" = r."__kp_ID"
-      JOIN "__Country" c ON p."_kf_CountryID" = c."__kp_ID"
-      JOIN "__Institution" i ON p."_kf_InstitutionID" = i."__kp_ID"
-	
-    WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country Participant') AND p."__kp_ID" = #{imsId}
-  </select>  
+SELECT p."__kp_ID" AS imsId, c.ISO2 AS country, n.Name_Full AS title, n.Name_Acronym AS abbreviation, n.URL AS homepage,
+  p.Member_AsOf AS participantSince,
+  p.zz__Modified_Timestamp__lxm AS modified,
+  i.Address AS address, i.City AS city, i.ZipCode AS postalCode, i.State AS province, i.Telephone AS phone, i.Email AS email,
+  p.GBIFmembership, r.Region
+FROM "__Node" n
+  JOIN "__Participant" p ON n."_kf_ParticipantID" = p."__kp_ID"
+  JOIN "__Region" r ON p."_kf_RegionID" = r."__kp_ID"
+  JOIN "__Country" c ON p."_kf_CountryID" = c."__kp_ID"
+  JOIN "__Institution" i ON p."_kf_InstitutionID" = i."__kp_ID"
+
+WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country Participant') AND p."__kp_ID" = #{imsId}
+  </select>
 
   <!--
    This SQL relies on stable group ids in the IMS !!!
