@@ -39,6 +39,7 @@ import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.MetadataMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
+import org.gbif.ws.server.interceptor.NullToNotFound;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -119,6 +120,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @GET
   @Path("{key}")
   @Nullable
+  @NullToNotFound
   @Override
   public Dataset get(@PathParam("key") UUID key) {
     return merge(getPreferredMetadataDataset(key), super.get(key));
@@ -404,6 +406,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Path("metadata/{key}")
   @GET
   @Override
+  @NullToNotFound
   public Metadata getMetadata(@PathParam("key") int metadataKey) {
     return metadataMapper.get(metadataKey);
   }

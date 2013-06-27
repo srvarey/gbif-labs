@@ -41,6 +41,7 @@ import org.gbif.registry2.persistence.mapper.IdentifierMapper;
 import org.gbif.registry2.persistence.mapper.MachineTagMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 import org.gbif.registry2.ws.guice.Trim;
+import org.gbif.ws.server.interceptor.NullToNotFound;
 import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
@@ -156,6 +157,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @GET
   @Path("{key}")
   @Nullable
+  @NullToNotFound
   @Override
   public T get(@PathParam("key") UUID key) {
     return WithMyBatis.get(mapper, key);
