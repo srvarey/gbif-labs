@@ -207,6 +207,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     assertEquals("GBIF.ES", es.getAbbreviation());
     assertEquals("Madrid", es.getCity());
     assertEquals("28014", es.getPostalCode());
+    assertEquals("Real Jardín Botánico de Madrid (CSIC)", es.getInstitution());
     assertNotNull(es.getAddress());
     assertTrue(es.getContacts().size() > 5);
 

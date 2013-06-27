@@ -19,7 +19,7 @@
 SELECT p."__kp_ID" AS imsId, c.ISO2 AS country, n.Name_Full AS title, n.Name_Acronym AS abbreviation, n.URL AS homepage,
   p.Member_AsOf AS participantSince,
   p.zz__Modified_Timestamp__lxm AS modified,
-  i.Address AS address, i.City AS city, i.ZipCode AS postalCode, i.State AS province, i.Telephone AS phone, i.Email AS email,
+  i.Name AS institution, i.Address AS address, i.City AS city, i.ZipCode AS postalCode, i.State AS province, i.Telephone AS phone, i.Email AS email,
   p.GBIFmembership, r.Region
 FROM "__Node" n
   JOIN "__Participant" p ON n."_kf_ParticipantID" = p."__kp_ID"
