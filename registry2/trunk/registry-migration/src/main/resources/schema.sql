@@ -2,8 +2,8 @@
 --  node
 --
 
-CREATE TYPE enum_node_type AS ENUM ('COUNTRY', 'ORGANIZATION');
-CREATE TYPE enum_node_participation_status AS ENUM ('VOTING', 'ASSOCIATE');
+CREATE TYPE enum_node_type AS ENUM ('COUNTRY', 'OTHER');
+CREATE TYPE enum_node_participation_status AS ENUM ('VOTING', 'ASSOCIATE', 'OBSERVER', 'FORMER');
 CREATE TYPE enum_node_gbif_region AS ENUM ('AFRICA', 'ASIA', 'EUROPE', 'NORTH_AMERICA', 'OCEANIA', 'LATIN_AMERICA');
 CREATE TYPE enum_node_continent AS ENUM ('AFRICA', 'ASIA', 'EUROPE', 'NORTH_AMERICA', 'OCEANIA', 'SOUTH_AMERICA', 'ANTARCTICA');
 CREATE TABLE node

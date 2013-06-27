@@ -23,7 +23,7 @@ import org.gbif.api.util.VocabularyUtils;
 public enum NodeType {
 
   COUNTRY,
-  ORGANIZATION;
+  OTHER;
 
   /**
    * @return the matching NodeType or null
