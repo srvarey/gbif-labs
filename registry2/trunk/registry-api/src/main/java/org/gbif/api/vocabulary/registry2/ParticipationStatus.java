@@ -23,7 +23,9 @@ import org.gbif.api.util.VocabularyUtils;
 public enum ParticipationStatus {
 
   VOTING,
-  ASSOCIATE;
+  ASSOCIATE,
+  OBSERVER,
+  FORMER;
 
   /**
    * @param participationStatus GBIF node's participation status
