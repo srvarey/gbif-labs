@@ -61,7 +61,7 @@
     address = #{address,jdbcType=VARCHAR},
     city = #{city,jdbcType=VARCHAR},
     province = #{province,jdbcType=VARCHAR},
-    country = #{country,jdbcType=CHAR},
+    country = upper(#{country,jdbcType=CHAR}),
     postal_code = #{postalCode,jdbcType=VARCHAR},
     latitude = #{latitude,jdbcType=DOUBLE},
     longitude = #{longitude,jdbcType=DOUBLE},
