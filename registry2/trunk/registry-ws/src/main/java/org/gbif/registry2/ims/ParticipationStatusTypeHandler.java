@@ -15,18 +15,19 @@
  */
 package org.gbif.registry2.ims;
 
-import org.gbif.api.vocabulary.registry2.ContactType;
+import org.gbif.api.vocabulary.registry2.ParticipationStatus;
 
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-public class ContactTypeHandler extends EnumDictTypeHandler<ContactType> {
-  private static final Map<String, ContactType> DICT = ImmutableMap.<String, ContactType>builder()
-    .put("nodes staff", ContactType.NODE_STAFF)
+public class ParticipationStatusTypeHandler extends EnumDictTypeHandler<ParticipationStatus> {
+  private static final Map<String, ParticipationStatus> DICT = ImmutableMap.<String, ParticipationStatus>builder()
+    .put("voting participant", ParticipationStatus.VOTING)
+    .put("associate country participant", ParticipationStatus.ASSOCIATE)
     .build();
 
-  public ContactTypeHandler() {
-    super(ContactType.class, null, DICT);
+  public ParticipationStatusTypeHandler() {
+    super(ParticipationStatus.class, null, DICT);
   }
 }

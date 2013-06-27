@@ -24,7 +24,9 @@ import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.NodeService;
 import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.registry2.GbifRegion;
 import org.gbif.api.vocabulary.registry2.IdentifierType;
+import org.gbif.api.vocabulary.registry2.ParticipationStatus;
 import org.gbif.registry2.guice.RegistryTestModules;
 import org.gbif.registry2.utils.Datasets;
 import org.gbif.registry2.utils.Installations;
@@ -118,6 +120,8 @@ public class NodeIT extends NetworkEntityTest<Node> {
       Node n = newEntity();
       n.setCountry(c);
       n.setTitle("GBIF Node " + c.getTitle());
+      n.setParticipationStatus(ParticipationStatus.VOTING);
+      n.setGbifRegion(GbifRegion.AFRICA);
       n = create(n, count + 1);
       count++;
 
@@ -197,6 +201,10 @@ public class NodeIT extends NetworkEntityTest<Node> {
   public void testIms() throws Exception {
     initCountryNodes();
     Node es = nodeService.getByCountry(Country.SPAIN);
+    assertEquals((Integer) 2001, es.getParticipantSince());
+    assertEquals(ParticipationStatus.VOTING, es.getParticipationStatus());
+    assertEquals(GbifRegion.AFRICA, es.getGbifRegion());
+    assertEquals("GBIF.ES", es.getAbbreviation());
     assertEquals("Madrid", es.getCity());
     assertEquals("28014", es.getPostalCode());
     assertNotNull(es.getAddress());

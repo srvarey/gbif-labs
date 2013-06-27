@@ -45,6 +45,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   private GbifRegion gbifRegion;
   private Continent continent;
   private String title;
+  private String abbreviation;
   private String description;
   private String email;
   private String phone;
@@ -85,6 +86,16 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   @Override
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  @Nullable
+  @Size(min = 1, max = 10)
+  public String getAbbreviation() {
+    return abbreviation;
+  }
+
+  public void setAbbreviation(String abbreviation) {
+    this.abbreviation = abbreviation;
   }
 
   @Override
@@ -145,6 +156,9 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
     this.participationStatus = participationStatus;
   }
 
+  /**
+   * 4 digit year since the node participant first joined GBIF.
+   */
   @Nullable
   public Integer getParticipantSince() {
     return participantSince;
@@ -348,6 +362,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
                             gbifRegion,
                             continent,
                             title,
+                            abbreviation,
                             description,
                             email,
                             phone,
@@ -382,6 +397,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
              && Objects.equal(this.gbifRegion, that.gbifRegion)
              && Objects.equal(this.continent, that.continent)
              && Objects.equal(this.title, that.title)
+             && Objects.equal(this.abbreviation, that.abbreviation)
              && Objects.equal(this.description, that.description)
              && Objects.equal(this.email, that.email)
              && Objects.equal(this.phone, that.phone)
@@ -417,6 +433,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       .add("gbifRegion", gbifRegion)
       .add("continent", continent)
       .add("title", title)
+      .add("abbreviation", abbreviation)
       .add("description", description)
       .add("email", email)
       .add("phone", phone)
