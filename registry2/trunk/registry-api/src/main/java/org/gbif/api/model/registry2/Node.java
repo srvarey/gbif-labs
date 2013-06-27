@@ -51,6 +51,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   private String phone;
   private URI homepage;
   private URI logoUrl;
+  private String institution;
   private String address;
   private String city;
   private String province;
@@ -225,6 +226,15 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   }
 
   @Nullable
+  public String getInstitution() {
+    return institution;
+  }
+
+  public void setInstitution(String institution) {
+    this.institution = institution;
+  }
+
+  @Nullable
   @Size(min = 1)
   public String getAddress() {
     return address;
@@ -368,6 +378,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
                             phone,
                             homepage,
                             logoUrl,
+                            institution,
                             address,
                             city,
                             province,
@@ -403,6 +414,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
              && Objects.equal(this.phone, that.phone)
              && Objects.equal(this.homepage, that.homepage)
              && Objects.equal(this.logoUrl, that.logoUrl)
+             && Objects.equal(this.institution, that.institution)
              && Objects.equal(this.address, that.address)
              && Objects.equal(this.city, that.city)
              && Objects.equal(this.province, that.province)
@@ -439,6 +451,7 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       .add("phone", phone)
       .add("homepage", homepage)
       .add("logoUrl", logoUrl)
+      .add("institution", institution)
       .add("address", address)
       .add("city", city)
       .add("province", province)
