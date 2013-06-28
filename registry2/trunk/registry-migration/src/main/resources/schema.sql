@@ -549,14 +549,13 @@ CREATE TABLE dataset_network
 -- 
 --  metadata
 -- 
-CREATE TYPE enum_metadata_type AS ENUM ('EML');
+CREATE TYPE enum_metadata_type AS ENUM ('EML','DC');
 CREATE TABLE metadata
 (
   key serial NOT NULL PRIMARY KEY,
   dataset_key uuid NOT NULL UNIQUE REFERENCES dataset(key),
   type enum_metadata_type NOT NULL,
-  version varchar(50) NOT NULL CHECK (assert_min_length(version, 1)),
-  content text NOT NULL CHECK (assert_min_length(content, 1)),
+  content bytea NOT NULL,
   created_by varchar(255) NOT NULL CHECK (assert_min_length(created_by, 3)),
   modified_by varchar(255) NOT NULL CHECK (assert_min_length(modified_by, 3)),
   created timestamp with time zone NOT NULL DEFAULT now(),
