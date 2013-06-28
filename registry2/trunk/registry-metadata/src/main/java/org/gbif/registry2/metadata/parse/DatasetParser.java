@@ -125,6 +125,7 @@ public class DatasetParser {
     try {
         digester.parse(xml);
     } catch (ConversionException e) {
+      // swallow
     } catch (SAXException e) {
       if (e.getException() == null || !e.getException().getClass().equals(ConversionException.class)) {
         // allow type conversions to happen

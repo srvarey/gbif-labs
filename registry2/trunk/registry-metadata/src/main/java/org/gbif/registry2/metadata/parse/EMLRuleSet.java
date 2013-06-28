@@ -24,14 +24,19 @@ import org.gbif.api.vocabulary.PreservationMethodType;
 import org.gbif.api.vocabulary.Rank;
 import org.gbif.api.vocabulary.registry2.ContactType;
 import org.gbif.api.vocabulary.registry2.IdentifierType;
+import org.gbif.registry2.metadata.parse.converter.ContactTypeConverter;
+import org.gbif.registry2.metadata.parse.converter.CountryTypeConverter;
+import org.gbif.registry2.metadata.parse.converter.DateConverter;
+import org.gbif.registry2.metadata.parse.converter.GreedyUriConverter;
+import org.gbif.registry2.metadata.parse.converter.IdentifierTypeConverter;
+import org.gbif.registry2.metadata.parse.converter.LanguageTypeConverter;
+import org.gbif.registry2.metadata.parse.converter.PreservationMethodTypeConverter;
 
 import java.net.URI;
 import java.util.Date;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
-import org.apache.commons.beanutils.converters.DateConverter;
-import org.apache.commons.beanutils.converters.DateTimeConverter;
 import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.digester3.AbstractObjectCreationFactory;
 import org.apache.commons.digester3.Digester;
@@ -59,9 +64,8 @@ public class EMLRuleSet extends RuleSetBase {
     IdentifierTypeConverter identifierTypeConverter = new IdentifierTypeConverter(IdentifierType.UNKNOWN);
     ConvertUtils.register(identifierTypeConverter, IdentifierType.class);
 
-    DateTimeConverter dtConverter = new DateConverter();
-    dtConverter.setPattern("yyyy-MM-dd");
-    ConvertUtils.register(dtConverter, Date.class);
+    DateConverter dateConverter = new DateConverter();
+    ConvertUtils.register(dateConverter, Date.class);
 
     CountryTypeConverter countryTypeConverter = new CountryTypeConverter();
     ConvertUtils.register(countryTypeConverter, Country.class);

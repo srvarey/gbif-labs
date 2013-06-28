@@ -392,6 +392,9 @@ public class DatasetWrapper {
    */
   public void setSpecimenPreservationMethod(PreservationMethodType type) {
     if (target.getCollections() != null) {
+      if (target.getCollections().isEmpty()) {
+        target.getCollections().add(new Collection());
+      }
       target.getCollections().get(0).setSpecimenPreservationMethod(type);
     }
   }

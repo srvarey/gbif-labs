@@ -1,6 +1,8 @@
 package org.gbif.registry2.metadata.parse;
 
 import org.gbif.api.vocabulary.Language;
+import org.gbif.registry2.metadata.parse.converter.GreedyUriConverter;
+import org.gbif.registry2.metadata.parse.converter.LanguageTypeConverter;
 
 import java.net.URI;
 
