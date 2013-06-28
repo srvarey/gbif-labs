@@ -55,9 +55,9 @@ public interface DatasetMapper extends BaseNetworkEntityMapper<Dataset> {
     @Nullable @Param("page") Pageable page);
 
   /**
-   * Obtains a list of all the datasets owned by an organization from a given country.
+   * Obtains a list of all the datasets filter optionally by a given country and optionally by a type.
    */
-  List<Dataset> listDatasetsPublishedFrom(@Param("country") Country country, @Nullable @Param("type") DatasetType type,
+  List<Dataset> listWithFilter(@Nullable @Param("country") Country country, @Nullable @Param("type") DatasetType type,
     @Nullable @Param("page") Pageable page);
 
   /**
