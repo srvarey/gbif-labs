@@ -137,7 +137,9 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     @Nullable @QueryParam("type") DatasetType type,
     @Nullable @QueryParam("q") String query,
     @Nullable @Context Pageable page) {
-    if (country != null || type != null) {
+    if (country == null && type != null) {
+      return listByType(type, page);
+    } else if (country != null) {
       return listByCountry(country, type, page);
     } else if (!Strings.isNullOrEmpty(query)) {
       return search(query, page);
@@ -149,7 +151,12 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Override
   public PagingResponse<Dataset> listByCountry(Country country, DatasetType type, Pageable page) {
     long total = datasetMapper.countWithFilter(country, type);
-    return pagingResponse(page, total, datasetMapper.listDatasetsPublishedFrom(country, type, page));
+    return pagingResponse(page, total, datasetMapper.listWithFilter(country, type, page));
+  }
+
+  public PagingResponse<Dataset> listByType(DatasetType type, Pageable page) {
+    long total = datasetMapper.countWithFilter(null, type);
+    return pagingResponse(page, total, datasetMapper.listWithFilter(null, type, page));
   }
 
 

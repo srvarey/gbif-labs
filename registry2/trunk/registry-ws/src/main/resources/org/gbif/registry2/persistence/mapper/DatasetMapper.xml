@@ -418,12 +418,14 @@
   <!--
    Append safe ordering, omitting deleted entities
   -->
-  <select id="listDatasetsPublishedFrom" resultMap="DATASET_MAP" parameterType="Pageable">
+  <select id="listWithFilter" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
     FROM dataset d
     INNER JOIN organization o ON d.owning_organization_key = o.key
-    WHERE o.country = #{country,jdbcType=OTHER}
-    AND d.deleted IS NULL
+    WHERE d.deleted IS NULL
+    <if test="country != null" >
+      AND o.country = #{country,jdbcType=OTHER}
+    </if>
     <if test="type != null" >
       AND d.type = #{type,jdbcType=OTHER}
     </if>
