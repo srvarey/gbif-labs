@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.core.InjectParam;
 import org.slf4j.Logger;
@@ -172,28 +173,31 @@ public class LegacyEndpointResource {
           .cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED).build();
       }
     } else if (datasetKey != null) {
-      Dataset dataset = datasetService.get(datasetKey);
-      if (dataset == null) {
+      try {
+        // verify Dataset with key exists, otherwise NotFoundException gets thrown
+        datasetService.get(datasetKey);
+
+        LOG.debug("Get all Endpoints for Dataset, key={}", datasetKey);
+        List<LegacyEndpointResponse> endpoints = Lists.newArrayList();
+
+        LOG.debug("Requesting all endpoints for dataset, key={}", datasetKey);
+        List<Endpoint> response = datasetService.listEndpoints(datasetKey);
+        for (Endpoint e : response) {
+          endpoints.add(new LegacyEndpointResponse(e, datasetKey));
+        }
+
+        LOG.debug("Get all Endpoints for Dataset finished");
+        // return array, required for serialization otherwise get com.sun.jersey.api.MessageException: A message body
+        // writer for Java class java.util.ArrayList
+        LegacyEndpointResponse[] array = endpoints.toArray(new LegacyEndpointResponse[endpoints.size()]);
+        return Response.status(Response.Status.OK).entity(array)
+          .cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED).build();
+      } catch (NotFoundException e) {
+        LOG.error("The dataset with key {} specified by query parameter does not exist", datasetKey);
         // the dataset didn't exist, and expected response is "{Error: "No services associated to the organisation}"
         return Response.status(Response.Status.OK).entity(new ErrorResponse("No dataset matches the key provided"))
           .cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED).build();
       }
-      LOG.debug("Get all Endpoints for Dataset, key={}", datasetKey);
-      List<LegacyEndpointResponse> endpoints = Lists.newArrayList();
-
-      LOG.debug("Requesting all endpoints for dataset, key={}", datasetKey);
-      List<Endpoint> response = datasetService.listEndpoints(datasetKey);
-      for (Endpoint e : response) {
-        endpoints.add(new LegacyEndpointResponse(e, datasetKey));
-      }
-
-      LOG.debug("Get all Endpoints for Dataset finished");
-      // return array, required for serialization otherwise get com.sun.jersey.api.MessageException: A message body
-      // writer for Java class java.util.ArrayList
-      LegacyEndpointResponse[] array = endpoints.toArray(new LegacyEndpointResponse[endpoints.size()]);
-      return Response.status(Response.Status.OK).entity(array)
-        .cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED).build();
-
     }
     return Response.status(Response.Status.BAD_REQUEST).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
       .build();
