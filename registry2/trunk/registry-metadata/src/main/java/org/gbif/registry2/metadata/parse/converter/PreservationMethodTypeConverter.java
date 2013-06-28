@@ -1,4 +1,4 @@
-package org.gbif.registry2.metadata.parse;
+package org.gbif.registry2.metadata.parse.converter;
 
 import org.gbif.api.vocabulary.PreservationMethodType;
 

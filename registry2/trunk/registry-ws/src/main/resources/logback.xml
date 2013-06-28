@@ -41,7 +41,8 @@
   </appender>
 
   <logger name="org.gbif" level="DEBUG"/>
-  <logger name="org.apache.solr" level="WARN"/>  
+  <logger name="org.gbif.registry2.metadata.parse" level="INFO"/>
+  <logger name="org.apache.solr" level="WARN"/>
   <logger name="org.gbif.registry2.persistence.mapper" level="INFO"/>
   <logger name="org.apache.tomcat.util.digester.Digester" level="WARN"/>
 
