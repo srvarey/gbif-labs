@@ -4,7 +4,6 @@ import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry2.Contact;
 import org.gbif.api.model.registry2.Dataset;
-import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.service.registry2.InstallationService;
 import org.gbif.api.service.registry2.OrganizationService;
@@ -32,6 +31,7 @@ import javax.ws.rs.core.Response;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.core.InjectParam;
 import org.slf4j.Logger;
@@ -201,9 +201,11 @@ public class LegacyDatasetResource {
   public Response datasetsForOrganization(@QueryParam("organisationKey") UUID organizationKey) {
 
     if (organizationKey != null) {
-      Organization organization = organizationService.get(organizationKey);
-      if (organization != null) {
+      try {
         LOG.debug("Get all Datasets owned by Organization, key={}", organizationKey);
+        // verify organization with key exists, otherwise NotFoundException gets thrown
+        organizationService.get(organizationKey);
+
         List<LegacyDatasetResponse> datasets = Lists.newArrayList();
         PagingRequest page = new PagingRequest(0, LegacyResourceConstants.WS_PAGE_SIZE);
         PagingResponse<Dataset> response;
@@ -221,6 +223,8 @@ public class LegacyDatasetResource {
         // writer for Java class java.util.ArrayList
         LegacyDatasetResponse[] array = datasets.toArray(new LegacyDatasetResponse[datasets.size()]);
         return Response.status(Response.Status.OK).entity(array).build();
+      } catch (NotFoundException e) {
+        LOG.error("The organization with key {} specified by query parameter does not exist", organizationKey);
       }
     }
     return Response.status(Response.Status.OK).entity(new ErrorResponse("No organisation matches the key provided"))
@@ -240,12 +244,15 @@ public class LegacyDatasetResource {
   @Consumes(MediaType.TEXT_PLAIN)
   public Response readDataset(@PathParam("key") UUID datasetKey) {
     if (datasetKey != null) {
-      Dataset dataset = datasetService.get(datasetKey);
-      if (dataset != null) {
+      try {
         LOG.debug("Get Dataset, key={}", datasetKey);
+        // verify Dataset with key exists, otherwise NotFoundException gets thrown
+        Dataset dataset = datasetService.get(datasetKey);
         Contact contact = LegacyResourceUtils.getPrimaryContact(dataset);
         return Response.status(Response.Status.OK).entity(new LegacyDatasetResponse(dataset, contact))
           .cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED).build();
+      } catch (NotFoundException e) {
+        LOG.error("The dataset with key {} specified by path parameter does not exist", datasetKey);
       }
     }
     return Response.status(Response.Status.OK).entity(new ErrorResponse("No resource matches the key provided"))

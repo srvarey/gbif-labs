@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.google.common.base.Strings;
+import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.core.HttpContext;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -154,8 +155,10 @@ public class LegacyRequestAuthorization {
     }
 
     // validate organization key belongs to an existing organization
-    Organization organization = organizationService.get(organizationKey);
-    if (organization == null) {
+    Organization organization;
+    try {
+      organization = organizationService.get(organizationKey);
+    } catch (NotFoundException e) {
       LOG.error("The owning organization specified in the credentials does not exist");
       return null;
     }
