@@ -167,7 +167,7 @@ public class DatasetIndexUpdateListener {
           }
 
           // and now we can safely declare update the queued event count, since it is serviced
-          queuedUpdates.set(queue.size());
+          queuedUpdates.decrementAndGet();
 
         }
       } catch (InterruptedException ex) {
