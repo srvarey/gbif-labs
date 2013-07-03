@@ -34,9 +34,9 @@
   <url>http://sites.gbif.org/registry</url>
 
   <scm>
-    <connection>scm:svn:http://gbif-registry.googlecode.com/svn/registry/trunk</connection>
-    <developerConnection>scm:svn:https://gbif-registry.googlecode.com/svn/registry/trunk</developerConnection>
-    <url>http://code.google.com/p/gbif-registry/source/browse/#svn/registry/trunk</url>
+    <connection>scm:svn:http://gbif-labs.googlecode.com/svn/registry2/trunk</connection>
+    <developerConnection>scm:svn:https://gbif-labs.googlecode.com/svn/registry2/trunk</developerConnection>
+    <url>http://code.google.com/p/gbif-labs/source/browse/#svn/registry2/trunk</url>
   </scm>
 
   <issueManagement>
