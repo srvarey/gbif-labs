@@ -1,0 +1,46 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+
+		<script connection-id="old-registry">    
+    		DROP TABLE IF EXISTS mtags;
+    		CREATE TABLE mtags (id int, agent_id int, namespace varchar(255), name varchar(255), value varchar(700), created_by varchar(255), created timestamp ) AS 
+				(SELECT (@counter:=@counter+1) AS id, agent_id, namespace, name, value, created_by, created FROM sub_view, (SELECT @counter:=0) rst);
+		</script>
+
+    <query id="machine_tags" connection-id="old-registry">
+
+		
+			SELECT id AS `key`, 
+		        	namespace AS namespace,
+		        	name AS name,
+		        	value AS value,
+		        	created_by,
+		        CASE            
+		        	WHEN created IS NULL THEN NOW()
+		            ELSE created END AS created 
+		        FROM mtags;
+		            		
+		<!--
+		SELECT t.id AS `key`, 
+		        	n.namespace AS namespace,
+		        	t.name AS name,
+		        	t.value AS value,
+		        	'ADMIN' AS created_by,
+		        CASE            
+		        	WHEN t.created IS NULL THEN NOW()
+		            ELSE t.created END AS created 
+		        FROM tag t, namespace n
+		        WHERE t.namespace_id = n.id; -->
+         			
+		<script connection-id="new-registry">
+		INSERT INTO machine_tag(namespace,name,value,created_by,created)
+		VALUES (?namespace,?name,?value,?created_by,?created);
+        </script>
+    </query>
+</etl>
