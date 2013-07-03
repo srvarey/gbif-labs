@@ -1,0 +1,33 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="nodes" connection-id="old-registry">
+        SELECT uuid AS uuid_key,
+          name AS title,
+          CASE WHEN char_length(trim(iso_country_code))=2 THEN upper(iso_country_code) ELSE null END AS country,
+          COALESCE(created, modified, now()) AS created,
+          COALESCE(modified, created, now()) AS modified,
+          deleted,
+          CASE WHEN char_length(trim(iso_country_code))=2 THEN 'COUNTRY' ELSE 'OTHER' END AS type,
+          CASE WHEN char_length(trim(iso_country_code))=2 THEN 'VOTING' ELSE 'ASSOCIATE' END AS participation_status,
+          <!-- hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
+          'AFRICA' AS continent,
+          'ADMIN' AS created_by,
+          'ADMIN' AS modified_by     
+        FROM agent WHERE type=14000
+        <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
+        <script connection-id="new-registry">
+            INSERT INTO node(key,title,country,
+              created,modified,deleted,type,participation_status,
+              continent, created_by, modified_by )
+            VALUES(?uuid_key::uuid,?title,?country,
+              ?created,?modified,?deleted,?type::enum_node_type,?participation_status::enum_node_participation_status,
+              ?continent::enum_node_continent,?created_by,?modified_by);
+        </script>
+    </query>
+</etl>
