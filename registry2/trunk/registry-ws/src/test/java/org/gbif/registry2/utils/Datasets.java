@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,28 +36,28 @@ public class Datasets extends JsonBackedData<Dataset> {
   public static final Citation DATASET_CITATION = new Citation("This is a citation text", "ABC");
 
   public Datasets() {
-    super("data/dataset.json", new TypeReference<Dataset>() {});
+    super("data/dataset.json", new TypeReference<Dataset>() {
+    });
     Injector i = RegistryTestModules.webservice();
     datasetService = i.getInstance(DatasetResource.class);
   }
 
-  public static Dataset newInstance(UUID owningOrganizationKey) {
+  public static Dataset newInstance(UUID owningOrganizationKey, UUID installationKey) {
     Dataset d = INSTANCE.newTypedInstance();
     d.setOwningOrganizationKey(owningOrganizationKey);
+    d.setInstallationKey(installationKey);
     return d;
   }
 
   /**
    * Persist a new Dataset associated to an owning organization and installation for use in Unit Tests.
-   *
+   * 
    * @param organizationKey owning organization key
    * @param installationKey installation key
-   *
    * @return persisted Dataset
    */
   public static Dataset newPersistedInstance(UUID organizationKey, UUID installationKey) {
-    Dataset dataset = Datasets.newInstance(organizationKey);
-    dataset.setInstallationKey(installationKey);
+    Dataset dataset = Datasets.newInstance(organizationKey, installationKey);
     UUID key = datasetService.create(dataset);
     // some properties like created, modified are only set when the dataset is retrieved anew
     return datasetService.get(key);

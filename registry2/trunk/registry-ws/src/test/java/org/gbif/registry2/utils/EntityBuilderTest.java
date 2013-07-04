@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +14,7 @@ package org.gbif.registry2.utils;
 
 import java.util.Set;
 import java.util.UUID;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
@@ -31,15 +29,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests that the builders in this package provide valid objects.
  */
-public class EntityBuilderTests {
+public class EntityBuilderTest {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityBuilderTests.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityBuilderTest.class);
 
   @Test
   public void testBuilders() {
     test(Comments.newInstance());
     test(Contacts.newInstance());
-    test(Datasets.newInstance(UUID.randomUUID()));
+    test(Datasets.newInstance(UUID.randomUUID(), UUID.randomUUID()));
     test(Endpoints.newInstance());
     test(Identifiers.newInstance());
     test(Installations.newInstance(UUID.randomUUID()));
@@ -57,9 +55,9 @@ public class EntityBuilderTests {
     Set<ConstraintViolation<T>> violations = validator.validate(entity);
     for (ConstraintViolation<T> cv : violations) {
       LOG.info("Class[{}] property[{}] failed validation with[{}]",
-               entity.getClass().getSimpleName(),
-               String.valueOf(cv.getPropertyPath()),
-               cv.getMessage());
+        entity.getClass().getSimpleName(),
+        String.valueOf(cv.getPropertyPath()),
+        cv.getMessage());
     }
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);

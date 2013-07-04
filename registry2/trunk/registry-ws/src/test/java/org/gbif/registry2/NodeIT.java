@@ -176,11 +176,9 @@ public class NodeIT extends NetworkEntityTest<Node> {
     Installation i = Installations.newInstance(organizationKey);
     UUID installationKey = installationService.create(i);
     // 2 datasets
-    Dataset d1 = Datasets.newInstance(organizationKey);
-    d1.setInstallationKey(installationKey);
+    Dataset d1 = Datasets.newInstance(organizationKey, installationKey);
     datasetService.create(d1);
-    Dataset d2 = Datasets.newInstance(organizationKey);
-    d2.setInstallationKey(installationKey);
+    Dataset d2 = Datasets.newInstance(organizationKey, installationKey);
     UUID d2Key = datasetService.create(d2);
 
     // test node service

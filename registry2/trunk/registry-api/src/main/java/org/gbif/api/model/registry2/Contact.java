@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +16,7 @@ import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.registry2.ContactType;
 
 import java.util.Date;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -26,7 +24,7 @@ import javax.validation.constraints.Size;
 import com.google.common.base.Objects;
 
 // TODO: Should have a cross-field validation for key & created
-public class Contact implements Address {
+public class Contact implements Address, LenientEquals<Contact> {
 
   private Integer key;
   private ContactType type;
@@ -237,7 +235,8 @@ public class Contact implements Address {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(key, type, primary, firstName, lastName, position, description, email, phone, organization, address, city,
+    return Objects.hashCode(key, type, primary, firstName, lastName, position, description, email, phone, organization,
+      address, city,
       province, country, postalCode, createdBy, modifiedBy, created, modified);
   }
 
@@ -250,12 +249,12 @@ public class Contact implements Address {
     if (object instanceof Contact) {
       Contact that = (Contact) object;
       return lenientEquals(that)
-             && Objects.equal(this.key, that.key)
-             && Objects.equal(this.primary, that.primary)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified);
+        && Objects.equal(this.key, that.key)
+        && Objects.equal(this.primary, that.primary)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified);
     }
     return false;
   }
@@ -274,25 +273,26 @@ public class Contact implements Address {
    * This implementation of the {@link #equals(Object)} method does only check <em>business equality</em> and disregards
    * automatically set and maintained fields like {@code createdBy, key} and others.
    */
+  @Override
   public boolean lenientEquals(Contact contact) {
     if (this == contact) {
       return true;
     }
 
     return Objects.equal(type, contact.type)
-           && Objects.equal(primary, contact.primary)
-           && Objects.equal(firstName, contact.firstName)
-           && Objects.equal(lastName, contact.lastName)
-           && Objects.equal(position, contact.position)
-           && Objects.equal(description, contact.description)
-           && Objects.equal(email, contact.email)
-           && Objects.equal(phone, contact.phone)
-           && Objects.equal(organization, contact.organization)
-           && Objects.equal(address, contact.address)
-           && Objects.equal(city, contact.city)
-           && Objects.equal(province, contact.province)
-           && Objects.equal(country, contact.country)
-           && Objects.equal(postalCode, contact.postalCode);
+      && Objects.equal(primary, contact.primary)
+      && Objects.equal(firstName, contact.firstName)
+      && Objects.equal(lastName, contact.lastName)
+      && Objects.equal(position, contact.position)
+      && Objects.equal(description, contact.description)
+      && Objects.equal(email, contact.email)
+      && Objects.equal(phone, contact.phone)
+      && Objects.equal(organization, contact.organization)
+      && Objects.equal(address, contact.address)
+      && Objects.equal(city, contact.city)
+      && Objects.equal(province, contact.province)
+      && Objects.equal(country, contact.country)
+      && Objects.equal(postalCode, contact.postalCode);
   }
 
 }
