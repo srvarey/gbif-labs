@@ -113,7 +113,8 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @GET
   @Override
   public List<DatasetSearchResult> suggest(@Context DatasetSuggestRequest suggestRequest) {
-    LOG.debug("Suggest operation received {}", suggestRequest);
+    //TODO: Commented out because DatasetSuggestRequest doesn't have a toString method yet
+    //LOG.debug("Suggest operation received {}", suggestRequest);
     return searchService.suggest(suggestRequest);
   }
 
