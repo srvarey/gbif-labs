@@ -6,7 +6,7 @@ import org.gbif.api.model.registry2.Organization;
 import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.NetworkEntityService;
 import org.gbif.api.vocabulary.Country;
-import org.gbif.registry2.search.util.DecadeExtractor;
+import org.gbif.registry2.search.util.TimeSeriesExtractor;
 
 import java.util.List;
 
@@ -19,6 +19,7 @@ class SolrAnnotatedDatasetBuilder {
 
   private final NetworkEntityService<Organization> organizationService;
   private final NetworkEntityService<Installation> installationService;
+  private final TimeSeriesExtractor timeSeriesExtractor = new TimeSeriesExtractor(1000, 2400, 1800, 2050);
 
   public SolrAnnotatedDatasetBuilder(NetworkEntityService<Organization> organizationService,
     NetworkEntityService<Installation> installationService) {
@@ -47,7 +48,7 @@ class SolrAnnotatedDatasetBuilder {
       kw.add(t.getValue());
     }
     sad.setKeywords(kw);
-    sad.setDecades(DecadeExtractor.extractDecades(d.getTemporalCoverages()));
+    sad.setDecades(timeSeriesExtractor.extractDecades(d.getTemporalCoverages()));
     sad.setOwningOrganizationKey(d.getOwningOrganizationKey());
 
     Organization owner =
