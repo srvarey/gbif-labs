@@ -22,13 +22,7 @@ import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.NetworkEntity;
 import org.gbif.api.model.registry2.Tag;
-import org.gbif.api.service.registry2.CommentService;
-import org.gbif.api.service.registry2.ContactService;
-import org.gbif.api.service.registry2.EndpointService;
-import org.gbif.api.service.registry2.IdentifierService;
-import org.gbif.api.service.registry2.MachineTagService;
 import org.gbif.api.service.registry2.NetworkEntityService;
-import org.gbif.api.service.registry2.TagService;
 import org.gbif.registry2.events.CreateEvent;
 import org.gbif.registry2.events.DeleteEvent;
 import org.gbif.registry2.events.UpdateEvent;
@@ -46,7 +40,6 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -84,13 +77,12 @@ import static com.google.common.base.Preconditions.checkArgument;
  * <li>MachineTag operations</li>
  * <li>Tag operations</li>
  * </ul>
- * 
+ *
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
 @Consumes(MediaType.APPLICATION_JSON)
-public class BaseNetworkEntityResource<T extends NetworkEntity> implements NetworkEntityService<T>,
-  ContactService, CommentService, MachineTagService, TagService, EndpointService, IdentifierService {
+public class BaseNetworkEntityResource<T extends NetworkEntity> implements NetworkEntityService<T> {
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseNetworkEntityResource.class);
   private final BaseNetworkEntityMapper<T> mapper;
@@ -140,7 +132,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Path("{key}")
   @Transactional
   @Override
-  @Consumes({MediaType.WILDCARD})
+  @Consumes(MediaType.WILDCARD)
   public void delete(@PathParam("key") UUID key) {
     T objectToDelete = get(key);
     if (objectToDelete == null || objectToDelete.getDeleted() != null) {
@@ -218,7 +210,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @DELETE
   @Path("{key}/comment/{commentKey}")
   @Override
-  @Consumes({MediaType.WILDCARD})
+  @Consumes(MediaType.WILDCARD)
   public void deleteComment(@NotNull @PathParam("key") UUID targetEntityKey, @PathParam("commentKey") int commentKey) {
     WithMyBatis.deleteComment(mapper, targetEntityKey, commentKey);
   }
@@ -237,16 +229,43 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Transactional
   @Override
   public int addMachineTag(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim MachineTag machineTag) {
+    // TODO: Fix this!
+    machineTag.setCreatedBy("TODO: FIXME");
     return WithMyBatis.addMachineTag(machineTagMapper, mapper, targetEntityKey, machineTag);
+  }
+
+  @Override
+  public int addMachineTag(
+    @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name, @NotNull String value
+  ) {
+    MachineTag machineTag = new MachineTag();
+    machineTag.setNamespace(namespace);
+    machineTag.setName(name);
+    machineTag.setValue(value);
+    return addMachineTag(targetEntityKey, machineTag);
   }
 
   // relax content-type to wildcard to allow angularjs
   @DELETE
   @Path("{key}/machinetag/{machinetagKey}")
   @Override
-  @Consumes({MediaType.WILDCARD})
+  @Consumes(MediaType.WILDCARD)
   public void deleteMachineTag(@PathParam("key") UUID targetEntityKey, @PathParam("machinetagKey") int machineTagKey) {
     WithMyBatis.deleteMachineTag(mapper, targetEntityKey, machineTagKey);
+  }
+
+  @Override
+  public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace) {
+    // TODO: Write implementation
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
+
+  @Override
+  public void deleteMachineTags(
+    @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name
+  ) {
+    // TODO: Write implementation
+    throw new UnsupportedOperationException("Not implemented yet");
   }
 
   @GET
@@ -268,7 +287,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @DELETE
   @Path("{key}/tag/{tagKey}")
   @Override
-  @Consumes({MediaType.WILDCARD})
+  @Consumes(MediaType.WILDCARD)
   public void deleteTag(@PathParam("key") UUID taggedEntityKey, @PathParam("tagKey") int tagKey) {
     WithMyBatis.deleteTag(mapper, taggedEntityKey, tagKey);
   }
@@ -379,7 +398,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   /**
    * Null safe builder to construct a paging response.
-   * 
+   *
    * @param page page to create response for, can be null
    */
   protected static <T> PagingResponse<T> pagingResponse(@Nullable Pageable page, Long count, List<T> result) {

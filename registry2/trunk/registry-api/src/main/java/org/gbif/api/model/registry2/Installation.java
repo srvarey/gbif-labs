@@ -31,6 +31,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 /**
  * A technical installation which can serve dataset(s).
  */
+// TODO: Only allow adding of Endpoints of the correct type, I would argue for removing all the set(List) methods
 public class Installation implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable,
   Identifiable {
 
@@ -187,6 +188,11 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   }
 
   @Override
+  public void addEndpoint(Endpoint endpoint) {
+    endpoints.add(endpoint);
+  }
+
+  @Override
   public List<MachineTag> getMachineTags() {
     return machineTags;
   }
@@ -194,6 +200,11 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   @Override
   public void setMachineTags(List<MachineTag> machineTags) {
     this.machineTags = machineTags;
+  }
+
+  @Override
+  public void addMachineTag(MachineTag machineTag) {
+    machineTags.add(machineTag);
   }
 
   @Override

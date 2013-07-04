@@ -25,7 +25,13 @@ public interface MachineTagService {
 
   int addMachineTag(@NotNull UUID targetEntityKey, @NotNull MachineTag machineTag);
 
+  int addMachineTag(@NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name, @NotNull String value);
+
   void deleteMachineTag(@NotNull UUID targetEntityKey, int machineTagKey);
+
+  void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace);
+
+  void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name);
 
   List<MachineTag> listMachineTags(@NotNull UUID targetEntityKey);
 

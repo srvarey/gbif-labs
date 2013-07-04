@@ -30,4 +30,6 @@ public interface MachineTaggable {
 
   void setMachineTags(List<MachineTag> machineTags);
 
+  void addMachineTag(MachineTag machineTag);
+
 }

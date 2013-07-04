@@ -98,7 +98,7 @@ public class DatasetIndexBuilder {
 
   /**
    * A lightweight cache to help improve performance of the builder.
-   * 
+   *
    * @param <T> The type of entity being wrapped
    */
   private static class CachingNetworkEntityService<T> implements NetworkEntityService<T> {
@@ -225,7 +225,24 @@ public class DatasetIndexBuilder {
     }
 
     @Override
+    public int addMachineTag(
+      @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name, @NotNull String value) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
     public void deleteMachineTag(@NotNull UUID targetEntityKey, int machineTagKey) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public void deleteMachineTags(
+      @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name) {
       throw new IllegalStateException("Method not supported in caching service");
     }
 

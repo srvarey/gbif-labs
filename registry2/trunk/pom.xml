@@ -436,7 +436,7 @@
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>${freemarker.version}</version>
-      </dependency>      
+      </dependency>
       <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
@@ -453,19 +453,15 @@
         <artifactId>commons-validator</artifactId>
         <version>${commons-validator.version}</version>
       </dependency>
-      <!-- required by SOLRJ -->
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>${httpclient.version}</version>
-        <scope>runtime</scope>
       </dependency>
-      <!-- required by SOLRJ -->
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
         <version>${httpcore.version}</version>
-        <scope>runtime</scope>
       </dependency>
       <!-- Related to registry-ws IptResource -->
       <dependency>

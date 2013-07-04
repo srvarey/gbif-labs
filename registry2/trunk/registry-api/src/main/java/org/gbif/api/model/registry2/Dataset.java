@@ -216,6 +216,7 @@ public class Dataset
 
   /**
    * TODO: Someone verify that what I've written here makes sense
+   * <p/>
    * If a dataset is registered with GBIF through more than one place we'll mark all but one as a duplicate by pointing
    * it to the canonical dataset. That is done using this field. If it is {@code null} then this is not a known
    * duplicate.
@@ -373,7 +374,7 @@ public class Dataset
   }
 
   /**
-   * The exact form of how to citate this dataset.
+   * The exact form of how to cite this dataset.
    */
   @Nullable
   public Citation getCitation() {
@@ -459,6 +460,11 @@ public class Dataset
   }
 
   @Override
+  public void addEndpoint(Endpoint endpoint) {
+    endpoints.add(endpoint);
+  }
+
+  @Override
   public List<MachineTag> getMachineTags() {
     return machineTags;
   }
@@ -466,6 +472,11 @@ public class Dataset
   @Override
   public void setMachineTags(List<MachineTag> machineTags) {
     this.machineTags = machineTags;
+  }
+
+  @Override
+  public void addMachineTag(MachineTag machineTag) {
+    machineTags.add(machineTag);
   }
 
   @Override

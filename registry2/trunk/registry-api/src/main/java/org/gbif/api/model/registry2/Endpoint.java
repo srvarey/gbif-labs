@@ -27,7 +27,7 @@ import javax.validation.constraints.Size;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
-public class Endpoint {
+public class Endpoint implements MachineTaggable {
 
   private Integer key;
   private EndpointType type;
@@ -119,6 +119,11 @@ public class Endpoint {
 
   public void setMachineTags(List<MachineTag> machineTags) {
     this.machineTags = machineTags;
+  }
+
+  @Override
+  public void addMachineTag(MachineTag machineTag) {
+    machineTags.add(machineTag);
   }
 
   @Override

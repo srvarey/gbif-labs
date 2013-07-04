@@ -258,6 +258,11 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   }
 
   @Override
+  public void addEndpoint(Endpoint endpoint) {
+    endpoints.add(endpoint);
+  }
+
+  @Override
   public List<MachineTag> getMachineTags() {
     return machineTags;
   }
@@ -265,6 +270,11 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   @Override
   public void setMachineTags(List<MachineTag> machineTags) {
     this.machineTags = machineTags;
+  }
+
+  @Override
+  public void addMachineTag(MachineTag machineTag) {
+    machineTags.add(machineTag);
   }
 
   @Override

@@ -18,7 +18,6 @@ import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Installation;
 
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
@@ -27,8 +26,10 @@ public interface InstallationService
 
   /**
    * Provides paging service to list datasets hosted by a specific installation.
+   *
+   * @param page paging parameters to use, if {@code page} is {@code null} sensible defaults will be used
    */
-  PagingResponse<Dataset> hostedDatasets(@NotNull UUID installationKey, @Nullable Pageable page);
+  PagingResponse<Dataset> getHostedDatasets(@NotNull UUID installationKey, @Nullable Pageable page);
 
   /**
    * Provides access to deleted installations.
