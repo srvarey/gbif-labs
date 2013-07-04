@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 
@@ -36,6 +37,12 @@ public class DateRange extends TemporalCoverage implements Serializable {
   private Date end;
 
   public DateRange() {
+  }
+
+  public DateRange(Date start, Date end) {
+    Preconditions.checkArgument(start.before(end), "start date must be before end");
+    this.start = start;
+    this.end = end;
   }
 
   public Date getEnd() {
