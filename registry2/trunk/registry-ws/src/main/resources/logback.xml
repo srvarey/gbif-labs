@@ -40,6 +40,20 @@
     </encoder>
   </appender>
 
+  <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/registry-ws_error.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/portal-web_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>14</maxHistory>
+    </rollingPolicy>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+    <encoder>
+      <pattern>${defaultPattern}</pattern>
+    </encoder>
+  </appender>
+
   <logger name="org.gbif" level="DEBUG"/>
   <logger name="org.gbif.registry2.metadata.parse" level="INFO"/>
   <logger name="org.apache.solr" level="WARN"/>
@@ -48,8 +62,9 @@
 
 
   <root level="INFO">
-    <appender-ref ref="CONSOLE"/>
-    <!--  appender-ref ref="FILE"/> -->
+    <!--appender-ref ref="CONSOLE"/-->
+    <appender-ref ref="FILE"/>
+    <appender-ref ref="ERROR_FILE"/>
   </root>
 
 </configuration>
