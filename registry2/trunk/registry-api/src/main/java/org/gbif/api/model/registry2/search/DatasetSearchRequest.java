@@ -74,6 +74,7 @@ public class DatasetSearchRequest extends FacetedSearchRequest<DatasetSearchPara
    *
    * @param keyword a plain keyword e.g. created by Tag.toString()
    */
+  //TODO: Fix Javadoc, what does this do? Keywords don't exist
   public void addKeywordFilter(String keyword) {
     addParameter(DatasetSearchParameter.KEYWORD, keyword);
   }
