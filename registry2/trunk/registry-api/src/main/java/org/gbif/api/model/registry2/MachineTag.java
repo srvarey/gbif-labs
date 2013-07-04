@@ -21,6 +21,11 @@ import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 
+/**
+ * A tag that has a namespace, name and a value. {@code created} and {@code createdBy} are automatically set upon
+ * persisting.
+ */
+// TODO: Document the rules regarding duplicate names and values
 public class MachineTag {
 
   private Integer key;
@@ -29,6 +34,23 @@ public class MachineTag {
   private String value;
   private String createdBy;
   private Date created;
+
+  public static MachineTag newInstance(String namespace, String name, String value) {
+    return new MachineTag(namespace, name, value);
+  }
+
+  public MachineTag() {
+    // Needed
+  }
+
+  /**
+   * This is the default constructor to create new Machine Tags which takes all user settable properties.
+   */
+  public MachineTag(String namespace, String name, String value) {
+    this.namespace = namespace;
+    this.name = name;
+    this.value = value;
+  }
 
   public Integer getKey() {
     return key;

@@ -92,7 +92,7 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
   @GET
   @Path("{key}/dataset")
   @Override
-  public PagingResponse<Dataset> hostedDatasets(@PathParam("key") UUID installationKey, @Context Pageable page) {
+  public PagingResponse<Dataset> getHostedDatasets(@PathParam("key") UUID installationKey, @Context Pageable page) {
     return new PagingResponse<Dataset>(page, datasetMapper.countDatasetsByInstallation(installationKey),
       datasetMapper.listDatasetsByInstallation(installationKey, page));
   }

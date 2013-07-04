@@ -186,7 +186,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     Installation i = installationService.get(dataset.getInstallationKey());
     assertNotNull("Dataset should have an installation", i);
     PagingResponse<Dataset> hosted =
-      installationService.hostedDatasets(dataset.getInstallationKey(), new PagingRequest());
+      installationService.getHostedDatasets(dataset.getInstallationKey(), new PagingRequest());
     assertEquals("This installation should have only 1 hosted dataset", 1, hosted.getResults().size());
     assertEquals("Paging response counts are not being set", Long.valueOf(1), hosted.getCount());
     assertEquals("The hosted installation should serve the dataset created", hosted.getResults().get(0).getKey(),

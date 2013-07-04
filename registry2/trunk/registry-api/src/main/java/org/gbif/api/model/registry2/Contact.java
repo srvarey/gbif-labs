@@ -249,21 +249,9 @@ public class Contact implements Address {
 
     if (object instanceof Contact) {
       Contact that = (Contact) object;
-      return Objects.equal(this.key, that.key)
-             && Objects.equal(this.type, that.type)
+      return lenientEquals(that)
+             && Objects.equal(this.key, that.key)
              && Objects.equal(this.primary, that.primary)
-             && Objects.equal(this.firstName, that.firstName)
-             && Objects.equal(this.lastName, that.lastName)
-             && Objects.equal(this.position, that.position)
-             && Objects.equal(this.description, that.description)
-             && Objects.equal(this.email, that.email)
-             && Objects.equal(this.phone, that.phone)
-             && Objects.equal(this.organization, that.organization)
-             && Objects.equal(this.address, that.address)
-             && Objects.equal(this.city, that.city)
-             && Objects.equal(this.province, that.province)
-             && Objects.equal(this.country, that.country)
-             && Objects.equal(this.postalCode, that.postalCode)
              && Objects.equal(this.createdBy, that.createdBy)
              && Objects.equal(this.modifiedBy, that.modifiedBy)
              && Objects.equal(this.created, that.created)
@@ -280,6 +268,31 @@ public class Contact implements Address {
       .add("address", address).add("city", city).add("province", province).add("country", country)
       .add("postalCode", postalCode).add("createdBy", createdBy).add("modifiedBy", modifiedBy).add("created", created)
       .add("modified", modified).toString();
+  }
+
+  /**
+   * This implementation of the {@link #equals(Object)} method does only check <em>business equality</em> and disregards
+   * automatically set and maintained fields like {@code createdBy, key} and others.
+   */
+  public boolean lenientEquals(Contact contact) {
+    if (this == contact) {
+      return true;
+    }
+
+    return Objects.equal(type, contact.type)
+           && Objects.equal(primary, contact.primary)
+           && Objects.equal(firstName, contact.firstName)
+           && Objects.equal(lastName, contact.lastName)
+           && Objects.equal(position, contact.position)
+           && Objects.equal(description, contact.description)
+           && Objects.equal(email, contact.email)
+           && Objects.equal(phone, contact.phone)
+           && Objects.equal(organization, contact.organization)
+           && Objects.equal(address, contact.address)
+           && Objects.equal(city, contact.city)
+           && Objects.equal(province, contact.province)
+           && Objects.equal(country, contact.country)
+           && Objects.equal(postalCode, contact.postalCode);
   }
 
 }

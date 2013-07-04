@@ -30,13 +30,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
-public abstract class EnumDictTypeHandler<T extends Enum<?>> implements TypeHandler<T> {
-  private final Map<String, T> DICT;
+public class EnumDictTypeHandler<T extends Enum<?>> implements TypeHandler<T> {
+  private final Map<String, T> dict;
   private final Class<T> clazz;
   private final T defaultValue;
 
-  public EnumDictTypeHandler(Class<T> clazz, T defaultValue, Map<String, T> lookupDict) {
-    DICT = lookupDict;
+  protected EnumDictTypeHandler(Class<T> clazz, T defaultValue, Map<String, T> lookupDict) {
+    dict = lookupDict;
     this.clazz = clazz;
     this.defaultValue = defaultValue;
   }
@@ -70,8 +70,8 @@ public abstract class EnumDictTypeHandler<T extends Enum<?>> implements TypeHand
     } catch (IllegalArgumentException e) {
       if (!Strings.isNullOrEmpty(val)) {
         final String normed = StringUtils.normalizeSpace(val.toLowerCase());
-        if (DICT.containsKey(normed)) {
-          return DICT.get(normed);
+        if (dict.containsKey(normed)) {
+          return dict.get(normed);
         }
       }
     }

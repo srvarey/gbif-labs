@@ -102,7 +102,7 @@ public class DatasetIndexUpdateListener {
   /**
    * Allows an external process to observe if there are pending actions in the queue. It is only anticipated that
    * integration tests will use this method.
-   * 
+   *
    * @return The number of events on the backlog to process.
    */
   @VisibleForTesting
@@ -183,7 +183,7 @@ public class DatasetIndexUpdateListener {
         PagingResponse<Dataset> results = null;
         PagingRequest page = new PagingRequest();
         do {
-          results = installationService.hostedDatasets(event.getOldObject().getKey(), page);
+          results = installationService.getHostedDatasets(event.getOldObject().getKey(), page);
           if (!results.getResults().isEmpty()) {
             LOG.debug("Found page of {} datasets hosted by installation[{}]", results.getResults().size(), event
               .getOldObject().getKey());

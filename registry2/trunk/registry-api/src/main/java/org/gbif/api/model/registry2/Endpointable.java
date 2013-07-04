@@ -30,4 +30,6 @@ public interface Endpointable {
 
   void setEndpoints(List<Endpoint> endpoints);
 
+  void addEndpoint(Endpoint endpoint);
+
 }

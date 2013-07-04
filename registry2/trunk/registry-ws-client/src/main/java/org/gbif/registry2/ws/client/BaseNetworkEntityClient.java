@@ -9,13 +9,7 @@ import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.NetworkEntity;
 import org.gbif.api.model.registry2.Tag;
-import org.gbif.api.service.registry2.CommentService;
-import org.gbif.api.service.registry2.ContactService;
-import org.gbif.api.service.registry2.EndpointService;
-import org.gbif.api.service.registry2.IdentifierService;
-import org.gbif.api.service.registry2.MachineTagService;
 import org.gbif.api.service.registry2.NetworkEntityService;
-import org.gbif.api.service.registry2.TagService;
 import org.gbif.ws.client.BaseWsGetClient;
 import org.gbif.ws.client.QueryParamBuilder;
 
@@ -24,6 +18,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 import com.google.common.base.Preconditions;
 import com.sun.jersey.api.client.GenericType;
@@ -31,15 +26,15 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
 
 public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetClient<T, UUID>
-  implements NetworkEntityService<T>,
-  CommentService, MachineTagService, TagService, ContactService, EndpointService, IdentifierService {
+  implements NetworkEntityService<T> {
 
-  private final GenericType<PagingResponse<T>> PAGING_TYPE;
+  private final GenericType<PagingResponse<T>> pagingType;
 
   public BaseNetworkEntityClient(Class<T> resourceClass, WebResource resource, @Nullable ClientFilter authFilter,
-    GenericType<PagingResponse<T>> PAGING_TYPE) {
+    GenericType<PagingResponse<T>> pagingType
+  ) {
     super(resourceClass, resource, authFilter);
-    this.PAGING_TYPE = PAGING_TYPE;
+    this.pagingType = pagingType;
   }
 
   @Override
@@ -54,7 +49,7 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
 
   @Override
   public PagingResponse<T> list(Pageable page) {
-    return get(PAGING_TYPE, null, null, page);
+    return get(pagingType, null, null, page);
   }
 
   @Override
@@ -69,7 +64,7 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
 
   @Override
   public PagingResponse<T> search(String query, Pageable page) {
-    return get(PAGING_TYPE, (Locale) null, QueryParamBuilder.create("q", query).build(), page);
+    return get(pagingType, (Locale) null, QueryParamBuilder.create("q", query).build(), page);
   }
 
   @Override
@@ -138,8 +133,27 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
   }
 
   @Override
+  public int addMachineTag(
+    @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name, @NotNull String value
+  ) {
+    return addMachineTag(targetEntityKey, MachineTag.newInstance(namespace, name, value));
+  }
+
+  @Override
   public void deleteMachineTag(UUID targetEntityKey, int machineTagKey) {
     delete(targetEntityKey.toString(), "machinetag", String.valueOf(machineTagKey));
+  }
+
+  @Override
+  public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace) {
+    // TODO: Write implementation
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
+
+  @Override
+  public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name) {
+    // TODO: Write implementation
+    throw new UnsupportedOperationException("Not implemented yet");
   }
 
   @Override
