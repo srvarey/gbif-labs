@@ -40,6 +40,7 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -77,7 +78,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * <li>MachineTag operations</li>
  * <li>Tag operations</li>
  * </ul>
- *
+ * 
  * @param <T> The type of resource that is under CRUD
  */
 @Produces({MediaType.APPLICATION_JSON, ExtraMediaTypes.APPLICATION_JAVASCRIPT})
@@ -229,7 +230,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Transactional
   @Override
   public int addMachineTag(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim MachineTag machineTag) {
-    // TODO: Fix this!
+    // TODO: http://dev.gbif.org/issues/browse/REG-401
     machineTag.setCreatedBy("TODO: FIXME");
     return WithMyBatis.addMachineTag(machineTagMapper, mapper, targetEntityKey, machineTag);
   }
@@ -237,7 +238,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Override
   public int addMachineTag(
     @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name, @NotNull String value
-  ) {
+    ) {
     MachineTag machineTag = new MachineTag();
     machineTag.setNamespace(namespace);
     machineTag.setName(name);
@@ -263,7 +264,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Override
   public void deleteMachineTags(
     @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name
-  ) {
+    ) {
     // TODO: Write implementation
     throw new UnsupportedOperationException("Not implemented yet");
   }
@@ -398,7 +399,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   /**
    * Null safe builder to construct a paging response.
-   *
+   * 
    * @param page page to create response for, can be null
    */
   protected static <T> PagingResponse<T> pagingResponse(@Nullable Pageable page, Long count, List<T> result) {

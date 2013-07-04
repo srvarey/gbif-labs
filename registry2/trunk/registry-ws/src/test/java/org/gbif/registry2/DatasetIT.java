@@ -315,8 +315,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
 
   private Dataset newEntity(UUID organizationKey, UUID installationKey) {
     // the dataset
-    Dataset d = Datasets.newInstance(organizationKey);
-    d.setInstallationKey(installationKey);
+    Dataset d = Datasets.newInstance(organizationKey, installationKey);
     return d;
   }
 
