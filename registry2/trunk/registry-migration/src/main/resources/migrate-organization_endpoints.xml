@@ -11,6 +11,9 @@
         	s.id AS endpoint_key 
         FROM service s, agent a
         WHERE a.id = s.agent_id AND a.type = 14010 AND a.deleted IS NULL AND s.deleted IS NULL
+        AND a.name NOT IN('Name', 'UPDATE', 'UPDATED NAME', 'Test Name', 'IPT Test Organisation','GBIF Prod Reg Test1',
+         'GBIF Production Registry Test','GBIF Production Registry Test','TestNewOrganization','Thematic Networks','US GBIF mirror')
+        
          			
 		<script connection-id="new-registry">
 		INSERT INTO organization_endpoint(organization_key, endpoint_key)
