@@ -113,8 +113,8 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @GET
   @Override
   public List<DatasetSearchResult> suggest(@Context DatasetSuggestRequest suggestRequest) {
-    //TODO: Commented out because DatasetSuggestRequest doesn't have a toString method yet
-    //LOG.debug("Suggest operation received {}", suggestRequest);
+    // TODO: Commented out because DatasetSuggestRequest doesn't have a toString method yet
+    // LOG.debug("Suggest operation received {}", suggestRequest);
     return searchService.suggest(suggestRequest);
   }
 
@@ -207,54 +207,66 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   }
 
   /**
-   * Merges an original dataset with another dataset, overwriting all persisted properties, i.e. excluding all
-   * extended EML properties. If the second dataset contains null values, these will replace any existing values
-   * in the original dataset.
+   * Augments the target dataset with all persistable properties from the supplementary dataset.
+   * Typically the target would be a dataset built from rich XML metadata, and the supplementary would be the persisted
+   * view of the same dataset. NULL values in the supplementary dataset overwrite existing values in the target.
+   * Developers please note:
+   * <ul>
+   * <li>If the target is null, then the supplementary dataset object itself is returned - not a copy</li>
+   * <li>These objects are all mutable, and care should be taken that the returned object may be one or the other of the
+   * supplied, thus you need to <code>Dataset result = merge(Dataset emlView, Dataset dbView);</code></li>
+   * </ul>
    * 
-   * @param d original dataset, if null a new instance will be created
-   * @param d2 the dataset that is used to update the original d
-   * @return the orignal dataset instance with merged information from d2
+   * @param target that will be modified with persitable values from the supplementary
+   * @param supplementary holding the preferred properties for the target
+   * @return the modified tagret dataset, or the supplementary dataset if the target is null
    */
-  private Dataset merge(@Nullable Dataset d, @Nullable Dataset d2) {
-    // if the original is missing dont do anything
-    if (d2 == null) {
-      return null;
+  @Nullable
+  private Dataset merge(@Nullable Dataset target, @Nullable Dataset supplementary) {
+    // nothing to merge, return the target (which may be null)
+    if (supplementary == null) {
+      return target;
     }
 
-    if (d == null) {
-      d = new Dataset();
+    // nothing to overlay into
+    if (target == null) {
+      return supplementary;
     }
-    d.setKey(d2.getKey());
-    d.setParentDatasetKey(d2.getParentDatasetKey());
-    d.setDuplicateOfDatasetKey(d2.getDuplicateOfDatasetKey());
-    d.setInstallationKey(d2.getInstallationKey());
-    d.setOwningOrganizationKey(d2.getOwningOrganizationKey());
-    d.setExternal(d2.isExternal());
-    d.setNumConstituents(d2.getNumConstituents());
-    d.setType(d2.getType());
-    d.setSubtype(d2.getSubtype());
-    d.setTitle(d2.getTitle());
-    d.setAlias(d2.getAlias());
-    d.setAbbreviation(d2.getAbbreviation());
-    d.setDescription(d2.getDescription());
-    d.setLanguage(d2.getLanguage());
-    d.setHomepage(d2.getHomepage());
-    d.setLogoUrl(d2.getLogoUrl());
-    d.setCitation(d2.getCitation());
-    d.setRights(d2.getRights());
-    d.setLockedForAutoUpdate(d2.isLockedForAutoUpdate());
-    d.setCreated(d2.getCreated());
-    d.setCreatedBy(d2.getCreatedBy());
-    d.setModified(d2.getModified());
-    d.setModifiedBy(d2.getModifiedBy());
-    d.setDeleted(d2.getDeleted());
-    // copy all related
-    d.setComments(d2.getComments());
-    d.setContacts(d2.getContacts());
-    d.setEndpoints(d2.getEndpoints());
-    d.setIdentifiers(d2.getIdentifiers());
 
-    return d;
+    // otherwise, copy all persisted values
+    target.setKey(supplementary.getKey());
+    target.setParentDatasetKey(supplementary.getParentDatasetKey());
+    target.setDuplicateOfDatasetKey(supplementary.getDuplicateOfDatasetKey());
+    target.setInstallationKey(supplementary.getInstallationKey());
+    target.setOwningOrganizationKey(supplementary.getOwningOrganizationKey());
+    target.setExternal(supplementary.isExternal());
+    target.setNumConstituents(supplementary.getNumConstituents());
+    target.setType(supplementary.getType());
+    target.setSubtype(supplementary.getSubtype());
+    target.setTitle(supplementary.getTitle());
+    target.setAlias(supplementary.getAlias());
+    target.setAbbreviation(supplementary.getAbbreviation());
+    target.setDescription(supplementary.getDescription());
+    target.setLanguage(supplementary.getLanguage());
+    target.setHomepage(supplementary.getHomepage());
+    target.setLogoUrl(supplementary.getLogoUrl());
+    target.setCitation(supplementary.getCitation());
+    target.setRights(supplementary.getRights());
+    target.setLockedForAutoUpdate(supplementary.isLockedForAutoUpdate());
+    target.setCreated(supplementary.getCreated());
+    target.setCreatedBy(supplementary.getCreatedBy());
+    target.setModified(supplementary.getModified());
+    target.setModifiedBy(supplementary.getModifiedBy());
+    target.setDeleted(supplementary.getDeleted());
+    // nested properties
+    target.setComments(supplementary.getComments());
+    target.setContacts(supplementary.getContacts());
+    target.setEndpoints(supplementary.getEndpoints());
+    target.setIdentifiers(supplementary.getIdentifiers());
+    target.setMachineTags(supplementary.getMachineTags());
+    target.setTags(supplementary.getTags());
+
+    return target;
   }
 
   @Path("{key}/document")
