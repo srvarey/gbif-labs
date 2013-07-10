@@ -6,7 +6,6 @@
     <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
     <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
 
-
 		<script connection-id="old-registry">    
     		DROP TABLE IF EXISTS mtags;
     		CREATE TABLE mtags (id int, agent_id int, namespace varchar(255), name varchar(255), value varchar(700), created_by varchar(255), created timestamp ) AS 
@@ -15,32 +14,42 @@
 
     <query id="machine_tags" connection-id="old-registry">
 
-		
-			SELECT id AS `key`, 
-		        	namespace AS namespace,
-		        	name AS name,
-		        	value AS value,
-		        	created_by,
-		        CASE            
-		        	WHEN created IS NULL THEN NOW()
-		            ELSE created END AS created 
-		        FROM mtags;
-		            		
-		<!--
-		SELECT t.id AS `key`, 
-		        	n.namespace AS namespace,
-		        	t.name AS name,
-		        	t.value AS value,
-		        	'ADMIN' AS created_by,
-		        CASE            
-		        	WHEN t.created IS NULL THEN NOW()
-		            ELSE t.created END AS created 
-		        FROM tag t, namespace n
-		        WHERE t.namespace_id = n.id; -->
-         			
+      <!-- 
+        There is a lot of noise in the machine tags, and we only want clean stuff.
+        This will do the following:
+        - Anything in the "public" or "gbif.org" namespace will become comments on datasets
+        - "isignored" in the "hit.gbif.org" namespace will become comments on datasets
+        - Everything else is ignored.  See the migrate-metasync tags which does migrate those things necessary for the metadatasync 
+      -->
+			
+	  SELECT 
+	    a.uuid AS dataset_key,
+	    CONCAT(value, ' [Populated during registry migration from "', m.namespace ,'":"', m.name, '"]') AS comment, 
+	    'migrationScript' AS createdBy,
+	    CASE WHEN m.created IS NULL THEN NOW() ELSE m.created END AS created
+	  FROM
+	    mtags m
+	    JOIN agent a ON a.id=m.agent_id AND a.type=14020 
+	  WHERE
+	    namespace IN('public', 'gbif.org') OR 
+	    (namespace='hit.gbif.org' AND m.name='isIgnored');
+	  
 		<script connection-id="new-registry">
-		INSERT INTO machine_tag(namespace,name,value,created_by,created)
-		VALUES (?namespace,?name,?value,?created_by,?created);
+		  <!-- Insert the comment if the dataset exists -->
+		  INSERT INTO comment(content, created, created_by, modified, modified_by)
+		  SELECT ?comment, ?created, ?createdBy, ?created, ?createdBy
+		  WHERE EXISTS(SELECT key FROM dataset WHERE key=?dataset_key::uuid);
         </script>
+
+		  <query id="comment_pk" connection-id="new-registry">
+		    SELECT max(key) AS comment_key FROM comment;
+		    
+		    <script connection-id="new-registry">
+    		  INSERT INTO dataset_comment(dataset_key, comment_key)
+	    	  SELECT ?dataset_key::uuid, ?comment_key
+	    	  WHERE EXISTS(SELECT key FROM dataset WHERE key=?dataset_key::uuid);		    
+		    </script>
+		  </query>
+         			
     </query>
 </etl>

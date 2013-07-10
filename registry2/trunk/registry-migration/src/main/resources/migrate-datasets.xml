@@ -11,11 +11,11 @@
           a.uuid AS parent_dataset_key,
           aHosting.uuid AS installation_key,
           aOwning.uuid AS owning_organization_key,
-          CASE a.category WHEN 18000 THEN 'CHECKLIST' WHEN 18010 THEN 'OCCURRENCE' WHEN 18020 THEN 'METADATA' END AS type,
+          CASE a.category WHEN 18000 THEN 'CHECKLIST' WHEN 18010 THEN 'OCCURRENCE' WHEN 18020 THEN 'METADATA' ELSE 'OCCURRENCE' END AS type,
           a.name AS title,
           a.alias AS alias,
           CASE WHEN char_length(trim(a.description))&lt;10 THEN null ELSE a.description END AS description,
-          CASE WHEN a.language IS NULL THEN 'en' WHEN char_length(trim(a.language))&lt;2 THEN 'en' ELSE a.language END AS language,
+          CASE WHEN a.language IS NULL THEN 'en' WHEN char_length(trim(a.language))!=2 THEN 'en' ELSE a.language END AS language,
           CASE WHEN trim(a.homepage) NOT REGEXP '^[a-z0-9]{2,}://|^[a-z0-9]{2,}\\.' THEN IF(a.homepage REGEXP '`', REPLACE(a.homepage, '`',''), NULL ) 
             WHEN trim(a.homepage) REGEXP '[[:space:]]' THEN REPLACE(a.homepage, ' ','')
 			ELSE trim(a.homepage) END AS homepage,
@@ -36,12 +36,19 @@
         JOIN agent aHosting ON aHosting.id=arHosting.from_agent_id
         LEFT JOIN extended_property ep ON a.id=ep.agent_id
         WHERE a.type=14020 
-        AND arOwning.relation_type_id=15010 AND arOwning.deleted IS NULL
-        AND arHosting.relation_type_id=15020 AND arHosting.deleted IS NULL
+        AND arOwning.relation_type_id=15010   
+        AND arHosting.relation_type_id=15020 
         AND aOwning.type=14010
         AND aHosting.type=14100
-        AND ep.deleted IS NULL
-        GROUP BY uuid_key
+        AND aHosting.name NOT IN('IPT_TEST', 'Test IPT','Test IPT','Test IPT','Test IPT','TEST IPT FROM K','TEST IPT FROM K #3', 'Test 2.0.2 Kyle', 'TEST IPT 204 Pre-release (edited 5)')
+        <!--  
+        
+          Prefer non deleted records, and newest installation first.
+          The joins bring back historical owners (e.g. a dataset once was owned by someone, but now it is moved) and also datasets served by multiple installations.
+          9d392768-27fc-11e2-85e3-00145eb45e9a for example is served by a DiGIR 5feb96ea-f762-11e1-a439-00145eb45e9a and an IPT 9afa1395-6e93-4848-a42d-bce896f5195e - we prefer the IPT.          
+          The first one wins in the insert below
+        -->
+        ORDER BY arOwning.deleted, arHosting.created DESC
 
 
         <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
@@ -49,10 +56,11 @@
             INSERT INTO dataset(key,installation_key,owning_organization_key,
               type,title,alias,description,language,homepage,logo_url,citation,citation_identifier,
               rights,locked_for_auto_update,created,modified,deleted,created_by,modified_by)
-            VALUES(?uuid_key::uuid,?installation_key::uuid,?owning_organization_key::uuid,
-              ?type::enum_dataset_type,?title,?alias,?description,?language,?homepage,?logo_url,?citation,?citation_identifier,
-              ?rights,?locked_for_auto_update::boolean,?created,?modified,?deleted,?created_by,?modified_by);
+            SELECT ?uuid_key::uuid,?installation_key::uuid,?owning_organization_key::uuid,
+              ?type::enum_dataset_type,?title,?alias,?description,UPPER(?language),?homepage,?logo_url,?citation,?citation_identifier,
+              ?rights,?locked_for_auto_update::boolean,?created,?modified,?deleted,?created_by,?modified_by
+            WHERE EXISTS(SELECT * FROM organization WHERE key=?owning_organization_key::uuid) AND
+            NOT EXISTS(SELECT * FROM dataset WHERE key=?uuid_key::uuid)
         </script>
-         
     </query>
 </etl>

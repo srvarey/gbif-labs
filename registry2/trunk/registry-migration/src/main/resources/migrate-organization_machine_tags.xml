@@ -11,6 +11,9 @@
         	t.id AS machine_tag_key 
         FROM agent a, mtags t
         WHERE a.id = t.agent_id AND a.type = 14010 AND a.deleted IS NULL <!--AND t.namespace_id IS NOT NULL-->
+        AND a.name NOT IN('Name', 'UPDATE', 'UPDATED NAME', 'Test Name', 'IPT Test Organisation','GBIF Prod Reg Test1',
+         'GBIF Production Registry Test','GBIF Production Registry Test','TestNewOrganization','Thematic Networks','US GBIF mirror')
+        
          			
 		<script connection-id="new-registry">
 		INSERT INTO organization_machine_tag(organization_key, machine_tag_key)
