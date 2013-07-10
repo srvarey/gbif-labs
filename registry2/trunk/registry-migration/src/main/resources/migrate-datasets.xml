@@ -48,7 +48,7 @@
           9d392768-27fc-11e2-85e3-00145eb45e9a for example is served by a DiGIR 5feb96ea-f762-11e1-a439-00145eb45e9a and an IPT 9afa1395-6e93-4848-a42d-bce896f5195e - we prefer the IPT.          
           The first one wins in the insert below
         -->
-        ORDER BY arOwning.deleted, arHosting.created DESC
+        ORDER BY arOwning.deleted, arHosting.deleted, arHosting.created DESC
 
 
         <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
