@@ -45,7 +45,6 @@ public class SolrInitializer extends ExternalResource {
     LOG.info("Truncating SOLR");
     solrServer.deleteByQuery("*:*");
     solrServer.commit();
-    System.out.println("SOLR truncated: " + solrServer);
     LOG.info("SOLR truncated");
   }
 }

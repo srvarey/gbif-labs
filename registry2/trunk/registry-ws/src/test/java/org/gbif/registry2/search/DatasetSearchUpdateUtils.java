@@ -29,7 +29,7 @@ public class DatasetSearchUpdateUtils {
           throw new IllegalStateException("Failing test due to unreasonable timeout on SOLR update");
         }
       }
-      LOG.debug("Waited {} msecs for SOLR update backlog to clear successfully",
+      LOG.info("Waited {} msecs for SOLR update backlog to clear successfully",
         stopWatch.elapsed(TimeUnit.MILLISECONDS));
 
     } catch (InterruptedException e) {
