@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -70,11 +71,12 @@ import com.google.common.collect.Sets;
  * <li>modified</li>
  * <li>deleted</li>
  * </ul>
- *
+ * 
  * @see <a href="http://rs.gbif.org/schema/eml-gbif-profile/dev/eml.xsd">GBIF EML Profile XML Schema</a>
  */
 public class Dataset
-  implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable, Commentable {
+  implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable, Commentable,
+  LenientEquals<Dataset> {
 
   private UUID key;
   private UUID parentDatasetKey;
@@ -150,15 +152,17 @@ public class Dataset
     this.title = title;
   }
 
+  @NotNull
+  @Size(min = 10)
   @Override
   public String getDescription() {
     return description;
   }
 
-  @Override
   /**
    * Persisted in the database table.
    */
+  @Override
   public void setDescription(String description) {
     this.description = description;
   }
@@ -194,10 +198,10 @@ public class Dataset
     return deleted;
   }
 
-  @Override
   /**
    * Persisted in the database table.
    */
+  @Override
   public void setDeleted(Date deleted) {
     this.deleted = deleted;
   }
@@ -215,8 +219,6 @@ public class Dataset
   }
 
   /**
-   * TODO: Someone verify that what I've written here makes sense
-   * <p/>
    * If a dataset is registered with GBIF through more than one place we'll mark all but one as a duplicate by pointing
    * it to the canonical dataset. That is done using this field. If it is {@code null} then this is not a known
    * duplicate.
@@ -415,6 +417,7 @@ public class Dataset
     this.lockedForAutoUpdate = lockedForAutoUpdate;
   }
 
+  @Override
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -423,10 +426,12 @@ public class Dataset
   /**
    * Persisted in the database table.
    */
+  @Override
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
 
+  @Override
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;
@@ -435,6 +440,7 @@ public class Dataset
   /**
    * Persisted in the database table.
    */
+  @Override
   public void setModifiedBy(String modifiedBy) {
     this.modifiedBy = modifiedBy;
   }
@@ -653,35 +659,36 @@ public class Dataset
   public boolean equals(Object object) {
     if (object instanceof Dataset) {
       Dataset that = (Dataset) object;
-      return Objects.equal(this.key, that.key) && Objects.equal(this.parentDatasetKey, that.parentDatasetKey) && Objects
-        .equal(this.duplicateOfDatasetKey, that.duplicateOfDatasetKey) && Objects
-               .equal(this.installationKey, that.installationKey) && Objects
-               .equal(this.owningOrganizationKey, that.owningOrganizationKey) && Objects
-               .equal(this.external, that.external) && Objects.equal(this.numConstituents, that.numConstituents)
-             && Objects.equal(this.type, that.type) && Objects.equal(this.subtype, that.subtype) && Objects
-        .equal(this.title, that.title) && Objects.equal(this.alias, that.alias) && Objects
-               .equal(this.abbreviation, that.abbreviation) && Objects.equal(this.description, that.description)
-             && Objects.equal(this.language, that.language) && Objects.equal(this.homepage, that.homepage) && Objects
-        .equal(this.logoUrl, that.logoUrl) && Objects.equal(this.citation, that.citation) && Objects
-               .equal(this.rights, that.rights) && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
-             && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created) && Objects.equal(this.modified, that.modified) && Objects
-        .equal(this.deleted, that.deleted) && Objects.equal(this.contacts, that.contacts) && Objects
-               .equal(this.endpoints, that.endpoints) && Objects.equal(this.machineTags, that.machineTags) && Objects
-               .equal(this.tags, that.tags) && Objects.equal(this.identifiers, that.identifiers) && Objects
-               .equal(this.comments, that.comments) && Objects
-               .equal(this.bibliographicCitations, that.bibliographicCitations) && Objects
-               .equal(this.curatorialUnits, that.curatorialUnits) && Objects
-               .equal(this.taxonomicCoverages, that.taxonomicCoverages) && Objects
-               .equal(this.geographicCoverageDescription, that.geographicCoverageDescription) && Objects
-               .equal(this.geographicCoverages, that.geographicCoverages) && Objects
-               .equal(this.temporalCoverages, that.temporalCoverages) && Objects
-               .equal(this.keywordCollections, that.keywordCollections) && Objects.equal(this.project, that.project)
-             && Objects.equal(this.samplingDescription, that.samplingDescription) && Objects
-        .equal(this.countryCoverage, that.countryCoverage) && Objects.equal(this.collections, that.collections)
-             && Objects.equal(this.dataDescriptions, that.dataDescriptions) && Objects
-        .equal(this.dataLanguage, that.dataLanguage) && Objects.equal(this.purpose, that.purpose) && Objects
-               .equal(this.additionalInfo, that.additionalInfo) && Objects.equal(this.pubDate, that.pubDate);
+      return Objects.equal(this.key, that.key) && Objects.equal(this.parentDatasetKey, that.parentDatasetKey)
+        && Objects
+          .equal(this.duplicateOfDatasetKey, that.duplicateOfDatasetKey) && Objects
+          .equal(this.installationKey, that.installationKey) && Objects
+          .equal(this.owningOrganizationKey, that.owningOrganizationKey) && Objects
+          .equal(this.external, that.external) && Objects.equal(this.numConstituents, that.numConstituents)
+        && Objects.equal(this.type, that.type) && Objects.equal(this.subtype, that.subtype) && Objects
+          .equal(this.title, that.title) && Objects.equal(this.alias, that.alias) && Objects
+          .equal(this.abbreviation, that.abbreviation) && Objects.equal(this.description, that.description)
+        && Objects.equal(this.language, that.language) && Objects.equal(this.homepage, that.homepage) && Objects
+          .equal(this.logoUrl, that.logoUrl) && Objects.equal(this.citation, that.citation) && Objects
+          .equal(this.rights, that.rights) && Objects.equal(this.lockedForAutoUpdate, that.lockedForAutoUpdate)
+        && Objects.equal(this.createdBy, that.createdBy) && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created) && Objects.equal(this.modified, that.modified) && Objects
+          .equal(this.deleted, that.deleted) && Objects.equal(this.contacts, that.contacts) && Objects
+          .equal(this.endpoints, that.endpoints) && Objects.equal(this.machineTags, that.machineTags) && Objects
+          .equal(this.tags, that.tags) && Objects.equal(this.identifiers, that.identifiers) && Objects
+          .equal(this.comments, that.comments) && Objects
+          .equal(this.bibliographicCitations, that.bibliographicCitations) && Objects
+          .equal(this.curatorialUnits, that.curatorialUnits) && Objects
+          .equal(this.taxonomicCoverages, that.taxonomicCoverages) && Objects
+          .equal(this.geographicCoverageDescription, that.geographicCoverageDescription) && Objects
+          .equal(this.geographicCoverages, that.geographicCoverages) && Objects
+          .equal(this.temporalCoverages, that.temporalCoverages) && Objects
+          .equal(this.keywordCollections, that.keywordCollections) && Objects.equal(this.project, that.project)
+        && Objects.equal(this.samplingDescription, that.samplingDescription) && Objects
+          .equal(this.countryCoverage, that.countryCoverage) && Objects.equal(this.collections, that.collections)
+        && Objects.equal(this.dataDescriptions, that.dataDescriptions) && Objects
+          .equal(this.dataLanguage, that.dataLanguage) && Objects.equal(this.purpose, that.purpose) && Objects
+          .equal(this.additionalInfo, that.additionalInfo) && Objects.equal(this.pubDate, that.pubDate);
     }
     return false;
   }
@@ -698,12 +705,42 @@ public class Dataset
       .add("deleted", deleted).add("contacts", contacts).add("endpoints", endpoints).add("machineTags", machineTags)
       .add("tags", tags).add("identifiers", identifiers).add("comments", comments)
       .add("bibliographicCitations", bibliographicCitations).add("curatorialUnits", curatorialUnits)
-      .add("taxonomicCoverages", taxonomicCoverages).add("geographicCoverageDescription", geographicCoverageDescription)
+      .add("taxonomicCoverages", taxonomicCoverages)
+      .add("geographicCoverageDescription", geographicCoverageDescription)
       .add("geographicCoverages", geographicCoverages).add("temporalCoverages", temporalCoverages)
       .add("keywordCollections", keywordCollections).add("project", project)
       .add("samplingDescription", samplingDescription).add("countryCoverage", countryCoverage)
       .add("collections", collections).add("dataDescriptions", dataDescriptions).add("dataLanguage", dataLanguage)
       .add("purpose", purpose).add("additionalInfo", additionalInfo).add("pubDate", pubDate).toString();
+  }
+
+  /**
+   * Only checks the persisted properties, excluding the server controlled fields (key, created etc).
+   * Does not include the nested properties.
+   */
+  @Override
+  public boolean lenientEquals(Dataset other) {
+    if (this == other) {
+      return true;
+    }
+    return Objects.equal(this.parentDatasetKey, other.parentDatasetKey)
+      && Objects.equal(this.duplicateOfDatasetKey, other.duplicateOfDatasetKey)
+      && Objects.equal(this.installationKey, other.installationKey)
+      && Objects.equal(this.owningOrganizationKey, other.owningOrganizationKey)
+      && Objects.equal(this.external, other.external)
+      && Objects.equal(this.type, other.type)
+      && Objects.equal(this.subtype, other.subtype)
+      && Objects.equal(this.title, other.title)
+      && Objects.equal(this.alias, other.alias)
+      && Objects.equal(this.abbreviation, other.abbreviation)
+      && Objects.equal(this.description, other.description)
+      && Objects.equal(this.language, other.language)
+      && Objects.equal(this.homepage, other.homepage)
+      && Objects.equal(this.logoUrl, other.logoUrl)
+      && Objects.equal(this.citation, other.citation)
+      && Objects.equal(this.rights, other.rights)
+      && Objects.equal(this.lockedForAutoUpdate, other.lockedForAutoUpdate)
+      && Objects.equal(this.deleted, other.deleted);
   }
 
 }

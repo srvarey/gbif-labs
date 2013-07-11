@@ -93,7 +93,7 @@
     now(), <!-- created -->    
     #{createdBy},
     now(), <!-- modified -->    
-    #{modifiedBy}
+    #{createdBy}
   </sql>
   
   <select id="countOwnedDatasets" resultType="int">

@@ -18,6 +18,7 @@ import org.gbif.registry2.ws.util.LegacyResourceUtils;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
@@ -62,10 +63,9 @@ public class IptResource {
    * Register IPT installation, handling incoming request with path /ipt/register. The primary contact and hosting
    * organization key are mandatory. Only after both the installation and primary contact have been persisted is a
    * Response with Status.CREATED returned.
-   *
+   * 
    * @param installation IptInstallation with HTTP form parameters having been injected from Jersey
-   * @param request      HttpContext to access HTTP Headers during authorization
-   *
+   * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.CREATED if successful
    */
   @POST
@@ -99,7 +99,9 @@ public class IptResource {
           }
           LOG.info("IPT installation registered successfully, key=%s", key.toString());
           // construct GenericEntity response object expected by IPT
-          GenericEntity<IptEntityResponse> entity = new GenericEntity<IptEntityResponse>(new IptEntityResponse(key.toString())){};
+          GenericEntity<IptEntityResponse> entity =
+            new GenericEntity<IptEntityResponse>(new IptEntityResponse(key.toString())) {
+            };
           // return Response
           return Response.status(Response.Status.CREATED).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
             .entity(entity).build();
@@ -120,11 +122,10 @@ public class IptResource {
    * Update IPT installation, handling incoming request with path /ipt/update/{key}. The primary contact and hosting
    * organization key are mandatory. Only after both the installation and primary contact have been updated is a
    * Response with Status.CREATED returned.
-   *
+   * 
    * @param installationKey installation key (UUID) coming in as path param
-   * @param installation    IptInstallation with HTTP form parameters having been injected from Jersey
-   * @param request         HttpContext to access HTTP Headers during authorization
-   *
+   * @param installation IptInstallation with HTTP form parameters having been injected from Jersey
+   * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.CREATED if successful
    */
   @POST
@@ -159,9 +160,6 @@ public class IptResource {
         existing.setDescription(installation.getDescription());
         existing.setType(installation.getType());
         existing.setOrganizationKey(installation.getOrganizationKey());
-        // TODO remove modified and modifiedBy, will be set by authenticated account
-        existing.setModified(installation.getModified());
-        existing.setModifiedBy(installation.getModifiedBy());
 
         // persist changes
         installationService.update(existing);
@@ -197,10 +195,9 @@ public class IptResource {
    * Register IPT dataset, handling incoming request with path /ipt/resource. The primary contact and owning
    * organization key are mandatory. Only after both the dataset and primary contact have been persisted is a
    * Response with Status.CREATED returned.
-   *
+   * 
    * @param dataset LegacyDataset with HTTP form parameters having been injected from Jersey
    * @param request HttpContext to access HTTP Headers during authorization
-   *
    * @return Response with Status.CREATED if successful
    */
   @POST
@@ -263,11 +260,10 @@ public class IptResource {
    * Update IPT Dataset, handling incoming request with path /ipt/resource/{key}. The primary contact and owning
    * organization key are mandatory. Only after both the dataset and primary contact have been updated is a
    * Response with Status.OK returned.
-   *
+   * 
    * @param datasetKey dataset key (UUID) coming in as path param
-   * @param dataset    LegacyDataset with HTTP form parameters having been injected from Jersey
-   * @param request    HttpContext to access HTTP Headers during authorization
-   *
+   * @param dataset LegacyDataset with HTTP form parameters having been injected from Jersey
+   * @param request HttpContext to access HTTP Headers during authorization
    * @return with Status.CREATED (201) if successful
    */
   @POST
@@ -312,9 +308,6 @@ public class IptResource {
         existing.setInstallationKey(dataset.getInstallationKey());
 
         existing.setOwningOrganizationKey(dataset.getOwningOrganizationKey());
-        // TODO remove modified and modifiedBy, will be set by authenticated account
-        existing.setModified(dataset.getModified());
-        existing.setModifiedBy(dataset.getModifiedBy());
 
         // persist changes
         datasetService.update(existing);
@@ -352,10 +345,9 @@ public class IptResource {
   /**
    * Delete IPT Dataset, handling incoming request with path /ipt/resource/{key}. Only credentials are mandatory.
    * If deletion is successful, returns Response with Status.OK.
-   *
+   * 
    * @param datasetKey dataset key (UUID) coming in as path param
-   * @param request    HttpContext to access HTTP Headers during authorization
-   *
+   * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.OK if successful
    */
   @DELETE
@@ -397,9 +389,8 @@ public class IptResource {
    * that if the dataset's owning organization only has 1 installation, this must be the installation that serves
    * the dataset. Conversely, if the organization has more or less than 1 installation, no inference can be made, and
    * null is returned instead.
-   *
+   * 
    * @param dataset LegacyDataset with HTTP form parameters having been injected from Jersey
-   *
    * @return inferred installation key, or null if none inferred
    */
   private UUID inferInstallationKey(LegacyDataset dataset) {

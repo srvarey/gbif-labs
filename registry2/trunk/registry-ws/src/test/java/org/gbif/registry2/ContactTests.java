@@ -33,6 +33,8 @@ import org.gbif.registry2.utils.Contacts;
 import java.util.List;
 import java.util.UUID;
 
+import static org.gbif.registry2.LenientAssert.assertLenientEquals;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -64,10 +66,7 @@ public class ContactTests {
     assertEquals("1 contact should remain after the deletion", 1, contacts.size());
     Contact expected = Contacts.newInstance();
     Contact created = contacts.get(0);
-    expected.setKey(created.getKey());
-    expected.setCreated(created.getCreated());
-    expected.setModified(created.getModified());
-    assertEquals("Created contact does not read as expected", expected, created);
+    assertLenientEquals("Created contact does not read as expected", expected, created);
 
     // try and update a contact
     contacts = service.listContacts(entity.getKey());

@@ -37,7 +37,7 @@
       now(), <!-- created -->
       #{meta.createdBy, jdbcType=VARCHAR},
       now(), <!-- modified -->
-      #{meta.modifiedBy, jdbcType=VARCHAR},
+      #{meta.createdBy, jdbcType=VARCHAR},
       #{data, typeHandler=org.apache.ibatis.type.ByteArrayTypeHandler}
     )
   </insert>

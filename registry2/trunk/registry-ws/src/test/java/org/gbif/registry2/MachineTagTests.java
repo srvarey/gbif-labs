@@ -19,6 +19,8 @@ import org.gbif.registry2.utils.MachineTags;
 
 import java.util.List;
 
+import static org.gbif.registry2.LenientAssert.assertLenientEquals;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -46,9 +48,6 @@ public class MachineTagTests {
     assertEquals("1 machine tag should remain after the deletion", 1, machineTags.size());
     MachineTag expected = MachineTags.newInstance();
     MachineTag created = machineTags.get(0);
-    expected.setKey(created.getKey());
-    expected.setCreated(created.getCreated());
-    assertTrue("Created machine tag does not read as expected", expected.lenientEquals(created));
+    assertLenientEquals("Created machine tag does not read as expected", expected, created);
   }
-
 }

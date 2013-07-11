@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +22,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -36,7 +34,7 @@ import com.google.common.collect.Lists;
  * A GBIF participant node.
  */
 public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggable, Commentable, Identifiable,
-  Endpointable {
+  Endpointable, LenientEquals<Node> {
 
   private UUID key;
   private NodeType type;
@@ -283,22 +281,22 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
     this.postalCode = postalCode;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getCreatedBy() {
     return createdBy;
   }
 
+  @Override
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getModifiedBy() {
     return modifiedBy;
   }
 
+  @Override
   public void setModifiedBy(String modifiedBy) {
     this.modifiedBy = modifiedBy;
   }
@@ -376,35 +374,35 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
   @Override
   public int hashCode() {
     return Objects.hashCode(key,
-                            type,
-                            participationStatus,
-                            participantSince,
-                            gbifRegion,
-                            continent,
-                            title,
-                            abbreviation,
-                            description,
-                            email,
-                            phone,
-                            homepage,
-                            logoUrl,
-                            institution,
-                            address,
-                            city,
-                            province,
-                            country,
-                            postalCode,
-                            createdBy,
-                            modifiedBy,
-                            created,
-                            modified,
-                            deleted,
-                            contacts,
-                            endpoints,
-                            machineTags,
-                            tags,
-                            identifiers,
-                            comments);
+      type,
+      participationStatus,
+      participantSince,
+      gbifRegion,
+      continent,
+      title,
+      abbreviation,
+      description,
+      email,
+      phone,
+      homepage,
+      logoUrl,
+      institution,
+      address,
+      city,
+      province,
+      country,
+      postalCode,
+      createdBy,
+      modifiedBy,
+      created,
+      modified,
+      deleted,
+      contacts,
+      endpoints,
+      machineTags,
+      tags,
+      identifiers,
+      comments);
   }
 
   @Override
@@ -412,35 +410,35 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
     if (object instanceof Node) {
       Node that = (Node) object;
       return Objects.equal(this.key, that.key)
-             && Objects.equal(this.type, that.type)
-             && Objects.equal(this.participationStatus, that.participationStatus)
-             && Objects.equal(this.participantSince, that.participantSince)
-             && Objects.equal(this.gbifRegion, that.gbifRegion)
-             && Objects.equal(this.continent, that.continent)
-             && Objects.equal(this.title, that.title)
-             && Objects.equal(this.abbreviation, that.abbreviation)
-             && Objects.equal(this.description, that.description)
-             && Objects.equal(this.email, that.email)
-             && Objects.equal(this.phone, that.phone)
-             && Objects.equal(this.homepage, that.homepage)
-             && Objects.equal(this.logoUrl, that.logoUrl)
-             && Objects.equal(this.institution, that.institution)
-             && Objects.equal(this.address, that.address)
-             && Objects.equal(this.city, that.city)
-             && Objects.equal(this.province, that.province)
-             && Objects.equal(this.country, that.country)
-             && Objects.equal(this.postalCode, that.postalCode)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified)
-             && Objects.equal(this.deleted, that.deleted)
-             && Objects.equal(this.contacts, that.contacts)
-             && Objects.equal(this.endpoints, that.endpoints)
-             && Objects.equal(this.machineTags, that.machineTags)
-             && Objects.equal(this.tags, that.tags)
-             && Objects.equal(this.identifiers, that.identifiers)
-             && Objects.equal(this.comments, that.comments);
+        && Objects.equal(this.type, that.type)
+        && Objects.equal(this.participationStatus, that.participationStatus)
+        && Objects.equal(this.participantSince, that.participantSince)
+        && Objects.equal(this.gbifRegion, that.gbifRegion)
+        && Objects.equal(this.continent, that.continent)
+        && Objects.equal(this.title, that.title)
+        && Objects.equal(this.abbreviation, that.abbreviation)
+        && Objects.equal(this.description, that.description)
+        && Objects.equal(this.email, that.email)
+        && Objects.equal(this.phone, that.phone)
+        && Objects.equal(this.homepage, that.homepage)
+        && Objects.equal(this.logoUrl, that.logoUrl)
+        && Objects.equal(this.institution, that.institution)
+        && Objects.equal(this.address, that.address)
+        && Objects.equal(this.city, that.city)
+        && Objects.equal(this.province, that.province)
+        && Objects.equal(this.country, that.country)
+        && Objects.equal(this.postalCode, that.postalCode)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified)
+        && Objects.equal(this.deleted, that.deleted)
+        && Objects.equal(this.contacts, that.contacts)
+        && Objects.equal(this.endpoints, that.endpoints)
+        && Objects.equal(this.machineTags, that.machineTags)
+        && Objects.equal(this.tags, that.tags)
+        && Objects.equal(this.identifiers, that.identifiers)
+        && Objects.equal(this.comments, that.comments);
     }
     return false;
   }
@@ -479,6 +477,25 @@ public class Node implements NetworkEntity, Contactable, Taggable, MachineTaggab
       .add("identifiers", identifiers)
       .add("comments", comments)
       .toString();
+  }
+
+  /**
+   * Compares the entities for business logic equality using a very lenient approach.
+   * Only fields persisted in the registry database are used in the comparison, excluding any nested properties and
+   * supplementary information which can be added from external databases such as the IMS. Server controlled values such
+   * as key and createdBy are omitted.
+   */
+  @Override
+  public boolean lenientEquals(Node other) {
+    if (this == other) {
+      return true;
+    }
+    return Objects.equal(this.type, other.type)
+      && Objects.equal(this.participationStatus, other.participationStatus)
+      && Objects.equal(this.gbifRegion, other.gbifRegion)
+      && Objects.equal(this.continent, other.continent)
+      && Objects.equal(this.title, other.title)
+      && Objects.equal(this.country, other.country);
   }
 
 }

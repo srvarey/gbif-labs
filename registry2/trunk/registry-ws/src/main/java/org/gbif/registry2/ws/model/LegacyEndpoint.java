@@ -8,6 +8,7 @@ import org.gbif.registry2.ws.util.LegacyResourceUtils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
@@ -43,14 +44,11 @@ public class LegacyEndpoint extends Endpoint {
    * Default constructor.
    */
   public LegacyEndpoint() {
-    // TODO: remove, will be set by authenticated account
-    setCreatedBy(LegacyResourceConstants.USER);
-    setModifiedBy(LegacyResourceConstants.USER);
   }
 
   /**
    * Set the endpoint's dataset key. Mandatory field, injected on both create and update requests.
-   *
+   * 
    * @param resourceKey dataset key as UUID
    */
   @FormParam(LegacyResourceConstants.RESOURCE_KEY_PARAM)
@@ -64,7 +62,7 @@ public class LegacyEndpoint extends Endpoint {
 
   /**
    * Get the endpoint's dataset key.
-   *
+   * 
    * @return dataset key
    */
   @XmlElement(name = LegacyResourceConstants.RESOURCE_KEY_PARAM)
@@ -75,7 +73,7 @@ public class LegacyEndpoint extends Endpoint {
 
   /**
    * Set the endpoint description.
-   *
+   * 
    * @param description of the endpoint
    */
   @FormParam(LegacyResourceConstants.DESCRIPTION_PARAM)
@@ -86,7 +84,7 @@ public class LegacyEndpoint extends Endpoint {
   /**
    * Get the endpoint description. This method is not used but it is needed otherwise this Object
    * can't be converted into an XML document via JAXB.
-   *
+   * 
    * @return description of the endpoint
    */
   @XmlElement(name = LegacyResourceConstants.DESCRIPTION_PARAM)
@@ -98,7 +96,7 @@ public class LegacyEndpoint extends Endpoint {
   /**
    * Set endpoint type. First, check if it is not null or empty. The incoming type always comes from the GBRDS Service
    * Type vocabulary. Note: this field is required, and the old web services would throw 400 response if not found.
-   *
+   * 
    * @param type endpoint type
    */
   @FormParam(LegacyResourceConstants.TYPE_PARAM)
@@ -109,8 +107,8 @@ public class LegacyEndpoint extends Endpoint {
       // try to match some endpoints with their variant name
       if (injected.equalsIgnoreCase(LegacyResourceConstants.CHECKLIST_SERVICE_TYPE_1) || injected
         .equalsIgnoreCase(LegacyResourceConstants.CHECKLIST_SERVICE_TYPE_2) || injected
-            .equalsIgnoreCase(LegacyResourceConstants.OCCURRENCE_SERVICE_TYPE_1) || injected
-            .equalsIgnoreCase(LegacyResourceConstants.OCCURRENCE_SERVICE_TYPE_2)) {
+        .equalsIgnoreCase(LegacyResourceConstants.OCCURRENCE_SERVICE_TYPE_1) || injected
+        .equalsIgnoreCase(LegacyResourceConstants.OCCURRENCE_SERVICE_TYPE_2)) {
         this.setType(EndpointType.DWC_ARCHIVE);
       } else {
         LOG.error("Endpoint type could not be interpreted: {}", injected);
@@ -121,9 +119,9 @@ public class LegacyEndpoint extends Endpoint {
   }
 
   /**
-   * Get endpoint type. This method is not used but it is needed otherwise this  Object can't be converted into
+   * Get endpoint type. This method is not used but it is needed otherwise this Object can't be converted into
    * an XML document via JAXB.
-   *
+   * 
    * @return primary contact type
    */
   @XmlElement(name = LegacyResourceConstants.TYPE_PARAM)
@@ -134,7 +132,7 @@ public class LegacyEndpoint extends Endpoint {
 
   /**
    * Set the endpoint URL.
-   *
+   * 
    * @param url of the endpoint
    */
   @FormParam(LegacyResourceConstants.ACCESS_POINT_URL_PARAM)
@@ -152,7 +150,7 @@ public class LegacyEndpoint extends Endpoint {
   /**
    * Get the endpoint URL. This method is not used but it is needed otherwise this Object
    * can't be converted into an XML document via JAXB.
-   *
+   * 
    * @return url of the endpoint
    */
   @XmlElement(name = LegacyResourceConstants.ACCESS_POINT_URL_PARAM)
@@ -163,7 +161,7 @@ public class LegacyEndpoint extends Endpoint {
 
   /**
    * Set the owning organization key of the dataset to which the endpoint is associated.
-   *
+   * 
    * @param organizationKey organization key as UUID
    */
   public void setOrganizationKey(UUID organizationKey) {

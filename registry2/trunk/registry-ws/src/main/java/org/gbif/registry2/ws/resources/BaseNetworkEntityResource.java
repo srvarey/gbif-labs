@@ -21,6 +21,8 @@ import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.model.registry2.NetworkEntity;
+import org.gbif.api.model.registry2.PostPersist;
+import org.gbif.api.model.registry2.PrePersist;
 import org.gbif.api.model.registry2.Tag;
 import org.gbif.api.service.registry2.NetworkEntityService;
 import org.gbif.registry2.events.CreateEvent;
@@ -45,6 +47,7 @@ import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -118,11 +121,13 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   }
 
   @POST
-  @Validate
+  @Validate(groups = {PrePersist.class, Default.class})
   @Trim
   @Transactional
   @Override
   public UUID create(@NotNull @Valid @Trim T entity) {
+    entity.setCreatedBy("TODO - security");
+    entity.setModifiedBy("TODO - security");
     WithMyBatis.create(mapper, entity);
     eventBus.post(CreateEvent.newInstance(entity, objectClass));
     return entity.getKey();
@@ -151,6 +156,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Path("{key}")
   @Nullable
   @NullToNotFound
+  @Validate(groups = {PostPersist.class, Default.class})
   @Override
   public T get(@PathParam("key") UUID key) {
     return WithMyBatis.get(mapper, key);
@@ -174,7 +180,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
     return WithMyBatis.list(mapper, page);
   }
 
-  @Validate
+  @Validate(groups = {PostPersist.class, Default.class})
   @Transactional
   @Trim
   @Override
@@ -189,7 +195,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
    */
   @PUT
   @Path("{key}")
-  @Validate
+  @Validate(groups = {PostPersist.class, Default.class})
   @Trim
   @Transactional
   public void update(@PathParam("key") UUID key, @NotNull @Valid @Trim T entity) {
@@ -199,11 +205,12 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @POST
   @Path("{key}/comment")
-  @Validate
+  @Validate(groups = {PrePersist.class, Default.class})
   @Trim
   @Transactional
   @Override
   public int addComment(@NotNull @PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Comment comment) {
+    comment.setCreatedBy("TODO: security");
     return WithMyBatis.addComment(commentMapper, mapper, targetEntityKey, comment);
   }
 
@@ -225,7 +232,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @POST
   @Path("{key}/machinetag")
-  @Validate
+  @Validate(groups = {PrePersist.class, Default.class})
   @Trim
   @Transactional
   @Override
@@ -278,7 +285,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @POST
   @Path("{key}/tag")
-  @Validate
+  @Validate(groups = {PrePersist.class, Default.class})
   @Override
   public int addTag(@PathParam("key") UUID targetEntityKey, @NotNull @Size(min = 1) String value) {
     return WithMyBatis.addTag(tagMapper, mapper, targetEntityKey, value);
@@ -303,17 +310,18 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @POST
   @Path("{key}/contact")
-  @Validate
+  @Validate(groups = {PrePersist.class, Default.class})
   @Trim
   @Transactional
   @Override
   public int addContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
+    contact.setCreatedBy("TODO: security");
     return WithMyBatis.addContact(contactMapper, mapper, targetEntityKey, contact);
   }
 
   @PUT
   @Path("{key}/contact/{contactKey}")
-  @Validate
+  @Validate(groups = {PostPersist.class, Default.class})
   @Trim
   @Transactional
   public void updateContact(@PathParam("key") UUID targetEntityKey, @PathParam("contactKey") int contactKey,
@@ -324,7 +332,7 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
     updateContact(targetEntityKey, contact);
   }
 
-  @Validate
+  @Validate(groups = {PostPersist.class, Default.class})
   @Trim
   @Transactional
   @Override
@@ -350,11 +358,12 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @POST
   @Path("{key}/endpoint")
-  @Validate
+  @Validate(groups = {PrePersist.class, Default.class})
   @Trim
   @Transactional
   @Override
   public int addEndpoint(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Endpoint endpoint) {
+    endpoint.setCreatedBy("TODO: security");
     return WithMyBatis.addEndpoint(endpointMapper, mapper, targetEntityKey, endpoint);
   }
 
@@ -375,11 +384,12 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   @POST
   @Path("{key}/identifier")
-  @Validate
+  @Validate(groups = {PrePersist.class, Default.class})
   @Trim
   @Transactional
   @Override
   public int addIdentifier(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Identifier identifier) {
+    identifier.setCreatedBy("TODO: security");
     return WithMyBatis.addIdentifier(identifierMapper, mapper, targetEntityKey, identifier);
   }
 

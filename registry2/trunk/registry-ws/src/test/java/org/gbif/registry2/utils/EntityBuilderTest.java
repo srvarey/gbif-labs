@@ -12,6 +12,8 @@
  */
 package org.gbif.registry2.utils;
 
+import org.gbif.api.model.registry2.PrePersist;
+
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.validation.groups.Default;
 
 import org.apache.bval.jsr303.ApacheValidationProvider;
 import org.junit.Test;
@@ -52,7 +55,7 @@ public class EntityBuilderTest {
       Validation.byProvider(ApacheValidationProvider.class).configure().buildValidatorFactory();
     Validator validator = validatorFactory.getValidator();
 
-    Set<ConstraintViolation<T>> violations = validator.validate(entity);
+    Set<ConstraintViolation<T>> violations = validator.validate(entity, PrePersist.class, Default.class);
     for (ConstraintViolation<T> cv : violations) {
       LOG.info("Class[{}] property[{}] failed validation with[{}]",
         entity.getClass().getSimpleName(),

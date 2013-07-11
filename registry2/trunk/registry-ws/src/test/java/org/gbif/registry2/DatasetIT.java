@@ -422,7 +422,7 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
   }
 
   private void createCountryDatasets(Country publishingCountry, int number) {
-    createCountryDatasets(DatasetType.OCCURRENCE, publishingCountry, number, null);
+    createCountryDatasets(DatasetType.OCCURRENCE, publishingCountry, number, (Country) null);
   }
 
   private void createCountryDatasets(DatasetType type, Country publishingCountry, int number, Country... countries) {

@@ -26,7 +26,7 @@
     now(), <!-- created -->
     #{createdBy},
     now(), <!-- modified -->
-    #{modifiedBy}
+    #{createdBy}
   </sql>
   
   <sql id="CONTACT_UPDATE">

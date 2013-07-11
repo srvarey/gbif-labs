@@ -129,27 +129,8 @@ public class NodeIT extends NetworkEntityTest<Node> {
       Identifier id = new Identifier();
       id.setType(IdentifierType.GBIF_PARTICIPANT);
       id.setIdentifier(TEST_COUNTRIES.get(c).toString());
-      id.setCreatedBy("NodeIT");
       nodeService.addIdentifier(n.getKey(), id);
     }
-  }
-
-  @Override
-  protected Node asWritable(Node source) {
-    Node node = super.asWritable(source);
-    // remove all IMS augmented properties
-    node.getContacts().clear();
-    node.setDescription(null);
-    node.setParticipantSince(null);
-    node.setAddress(null);
-    node.setPostalCode(null);
-    node.setCity(null);
-    node.setProvince(null);
-    node.setEmail(null);
-    node.setPhone(null);
-    node.setHomepage(null);
-
-    return node;
   }
 
   @Test
@@ -161,7 +142,6 @@ public class NodeIT extends NetworkEntityTest<Node> {
       assertTrue("Unexpected node country" + c, TEST_COUNTRIES.containsKey(c));
     }
   }
-
 
   @Test
   public void testDatasets() {

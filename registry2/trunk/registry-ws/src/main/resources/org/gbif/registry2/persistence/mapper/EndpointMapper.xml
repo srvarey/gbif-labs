@@ -29,7 +29,7 @@
     now(), <!-- created -->    
     #{createdBy},  
     now(), <!-- modified -->    
-    #{modifiedBy}
+    #{createdBy}
   </sql>
 
   <insert id="createEndpoint" parameterType="Endpoint" useGeneratedKeys="true" keyProperty="key">

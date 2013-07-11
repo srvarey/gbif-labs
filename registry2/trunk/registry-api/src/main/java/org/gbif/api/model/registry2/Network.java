@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +19,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -33,7 +31,7 @@ import com.google.common.collect.Lists;
  * A GBIF network.
  */
 public class Network implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable,
-  Identifiable {
+  Identifiable, LenientEquals<Network> {
 
   private UUID key;
   private String title;
@@ -217,22 +215,22 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
     this.postalCode = postalCode;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getCreatedBy() {
     return createdBy;
   }
 
+  @Override
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getModifiedBy() {
     return modifiedBy;
   }
 
+  @Override
   public void setModifiedBy(String modifiedBy) {
     this.modifiedBy = modifiedBy;
   }
@@ -318,30 +316,30 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
   @Override
   public int hashCode() {
     return Objects.hashCode(key,
-                            title,
-                            description,
-                            language,
-                            email,
-                            phone,
-                            homepage,
-                            logoUrl,
-                            address,
-                            city,
-                            province,
-                            country,
-                            postalCode,
-                            createdBy,
-                            modifiedBy,
-                            created,
-                            modified,
-                            deleted,
-                            contacts,
-                            endpoints,
-                            machineTags,
-                            tags,
-                            identifiers,
-                            comments,
-                            constituentDatasets);
+      title,
+      description,
+      language,
+      email,
+      phone,
+      homepage,
+      logoUrl,
+      address,
+      city,
+      province,
+      country,
+      postalCode,
+      createdBy,
+      modifiedBy,
+      created,
+      modified,
+      deleted,
+      contacts,
+      endpoints,
+      machineTags,
+      tags,
+      identifiers,
+      comments,
+      constituentDatasets);
   }
 
   @Override
@@ -349,30 +347,30 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
     if (object instanceof Network) {
       Network that = (Network) object;
       return Objects.equal(this.key, that.key)
-             && Objects.equal(this.title, that.title)
-             && Objects.equal(this.description, that.description)
-             && Objects.equal(this.language, that.language)
-             && Objects.equal(this.email, that.email)
-             && Objects.equal(this.phone, that.phone)
-             && Objects.equal(this.homepage, that.homepage)
-             && Objects.equal(this.logoUrl, that.logoUrl)
-             && Objects.equal(this.address, that.address)
-             && Objects.equal(this.city, that.city)
-             && Objects.equal(this.province, that.province)
-             && Objects.equal(this.country, that.country)
-             && Objects.equal(this.postalCode, that.postalCode)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified)
-             && Objects.equal(this.deleted, that.deleted)
-             && Objects.equal(this.contacts, that.contacts)
-             && Objects.equal(this.endpoints, that.endpoints)
-             && Objects.equal(this.machineTags, that.machineTags)
-             && Objects.equal(this.tags, that.tags)
-             && Objects.equal(this.identifiers, that.identifiers)
-             && Objects.equal(this.comments, that.comments)
-             && Objects.equal(this.constituentDatasets, that.constituentDatasets);
+        && Objects.equal(this.title, that.title)
+        && Objects.equal(this.description, that.description)
+        && Objects.equal(this.language, that.language)
+        && Objects.equal(this.email, that.email)
+        && Objects.equal(this.phone, that.phone)
+        && Objects.equal(this.homepage, that.homepage)
+        && Objects.equal(this.logoUrl, that.logoUrl)
+        && Objects.equal(this.address, that.address)
+        && Objects.equal(this.city, that.city)
+        && Objects.equal(this.province, that.province)
+        && Objects.equal(this.country, that.country)
+        && Objects.equal(this.postalCode, that.postalCode)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified)
+        && Objects.equal(this.deleted, that.deleted)
+        && Objects.equal(this.contacts, that.contacts)
+        && Objects.equal(this.endpoints, that.endpoints)
+        && Objects.equal(this.machineTags, that.machineTags)
+        && Objects.equal(this.tags, that.tags)
+        && Objects.equal(this.identifiers, that.identifiers)
+        && Objects.equal(this.comments, that.comments)
+        && Objects.equal(this.constituentDatasets, that.constituentDatasets);
     }
     return false;
   }
@@ -406,6 +404,29 @@ public class Network implements NetworkEntity, Contactable, Endpointable, Machin
       .add("comments", comments)
       .add("constituentDatasets", constituentDatasets)
       .toString();
+  }
+
+  /**
+   * Tests persisted fields, excluding the server controlled values such as key and createdBy. Does not included nested
+   * properties in the test.
+   */
+  @Override
+  public boolean lenientEquals(Network other) {
+    if (this == other) {
+      return true;
+    }
+    return Objects.equal(this.title, other.title)
+      && Objects.equal(this.description, other.description)
+      && Objects.equal(this.language, other.language)
+      && Objects.equal(this.email, other.email)
+      && Objects.equal(this.phone, other.phone)
+      && Objects.equal(this.homepage, other.homepage)
+      && Objects.equal(this.logoUrl, other.logoUrl)
+      && Objects.equal(this.address, other.address)
+      && Objects.equal(this.city, other.city)
+      && Objects.equal(this.province, other.province)
+      && Objects.equal(this.country, other.country)
+      && Objects.equal(this.postalCode, other.postalCode);
   }
 
 }

@@ -9,8 +9,8 @@ import org.gbif.api.vocabulary.registry2.InstallationType;
 import org.gbif.registry2.ws.util.LegacyResourceConstants;
 import org.gbif.registry2.ws.util.LegacyResourceUtils;
 
-import java.util.Date;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
@@ -59,14 +59,11 @@ public class LegacyInstallation extends Installation {
    */
   public LegacyInstallation() {
     setType(InstallationType.IPT_INSTALLATION);
-    // TODO: remove, will be set by authenticated account
-    setCreatedBy(LegacyResourceConstants.USER);
-    setModifiedBy(LegacyResourceConstants.USER);
   }
 
   /**
    * Set the hosting organization key. Mandatory field, injected on both register and update requests.
-   *
+   * 
    * @param organizationKey organization key as UUID
    */
   @FormParam(LegacyResourceConstants.ORGANIZATION_KEY_PARAM)
@@ -96,7 +93,7 @@ public class LegacyInstallation extends Installation {
    * The title must be at least 2 characters long, a limit set in the database schema. Since older versions
    * of the IPT may not have imposed the same limit, the field is padded if necessary so as to avoid problems
    * during persistence.
-   *
+   * 
    * @param name title of the installation
    */
   @FormParam(LegacyResourceConstants.NAME_PARAM)
@@ -107,7 +104,7 @@ public class LegacyInstallation extends Installation {
   /**
    * Get the title of the installation. This method is not used but it is needed otherwise this Object
    * can't be converted into an XML document via JAXB.
-   *
+   * 
    * @return title of the installation
    */
   @XmlTransient
@@ -122,7 +119,7 @@ public class LegacyInstallation extends Installation {
    * The description must be at least 10 characters long, a limit set in the database schema. Since older versions
    * of the IPT may not have imposed the same limit, the field is padded if necessary so as to avoid problems
    * during persistence.
-   *
+   * 
    * @param description of the installation
    */
   @FormParam(LegacyResourceConstants.DESCRIPTION_PARAM)
@@ -133,7 +130,7 @@ public class LegacyInstallation extends Installation {
   /**
    * Get the description of the installation. This method is not used but it is needed otherwise this Object
    * can't be converted into an XML document via JAXB.
-   *
+   * 
    * @return description of the installation
    */
   @XmlTransient
@@ -144,7 +141,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Get the endpoint type.
-   *
+   * 
    * @return the endpoint type
    */
   @XmlTransient
@@ -155,7 +152,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Set the endpoint type. IPT endpoint type RSS gets converted to type FEED.
-   *
+   * 
    * @param endpointType endpoint type
    */
   @FormParam(LegacyResourceConstants.SERVICE_TYPES_PARAM)
@@ -166,7 +163,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Get the endpoint URL.
-   *
+   * 
    * @return the endpoint URL
    */
   @XmlTransient
@@ -177,7 +174,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Set the endpoint URL.
-   *
+   * 
    * @param endpointUrl endpoint URL
    */
   @FormParam(LegacyResourceConstants.SERVICE_URLS_PARAM)
@@ -198,7 +195,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Get primary contact name.
-   *
+   * 
    * @return primary contact name
    */
   @XmlTransient
@@ -210,7 +207,7 @@ public class LegacyInstallation extends Installation {
   /**
    * Set primary contact name.
    * Note: this is not a required field.
-   *
+   * 
    * @param primaryContactName primary contact name
    */
   @FormParam(LegacyResourceConstants.PRIMARY_CONTACT_NAME_PARAM)
@@ -220,7 +217,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Get primary contact email.
-   *
+   * 
    * @return primary contact email
    */
   @XmlTransient
@@ -233,7 +230,7 @@ public class LegacyInstallation extends Installation {
    * Set primary contact email and check if it is a valid email address.
    * Note: this field is required, and the old web services would throw 400 response if not valid.
    * TODO: once field validation is working, the validation below can be removed
-   *
+   * 
    * @param primaryContactEmail primary contact email address
    */
   @FormParam(LegacyResourceConstants.PRIMARY_CONTACT_EMAIL_PARAM)
@@ -248,7 +245,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Get primary contact type.
-   *
+   * 
    * @return primary contact type
    */
   @XmlTransient
@@ -261,7 +258,7 @@ public class LegacyInstallation extends Installation {
    * Set primary contact type. First, check if it is not null or empty. The incoming type is always either
    * administrative or technical, always defaulting to type technical.
    * Note: this field is required, and the old web services would throw 400 response if not found.
-   *
+   * 
    * @param primaryContactType primary contact type
    */
   @FormParam(LegacyResourceConstants.PRIMARY_CONTACT_TYPE_PARAM)
@@ -278,7 +275,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Get the endpoint of type FEED.
-   *
+   * 
    * @return the endpoint of type FEED
    */
   @XmlTransient
@@ -289,7 +286,7 @@ public class LegacyInstallation extends Installation {
   /**
    * Set the endpoint of type FEED. This endpoint will have been created via addEndpoint() that creates the endpoint
    * from the injected HTTP Form parameters.
-   *
+   * 
    * @param feedEndpoint endpoint of type FEED
    */
   public void setFeedEndpoint(Endpoint feedEndpoint) {
@@ -298,7 +295,7 @@ public class LegacyInstallation extends Installation {
 
   /**
    * Get the primary contact.
-   *
+   * 
    * @return the primary contact
    */
   @XmlTransient
@@ -311,7 +308,7 @@ public class LegacyInstallation extends Installation {
   /**
    * Set the primary contact. This contact will have been created via addContact() that creates the contact from
    * the injected HTTP Form parameters.
-   *
+   * 
    * @param primaryContact primary contact
    */
   public void setPrimaryContact(Contact primaryContact) {
@@ -345,14 +342,10 @@ public class LegacyInstallation extends Installation {
       // if it doesn't exist already, create it
       if (contact == null) {
         contact = new Contact();
-        contact.setCreated(new Date());
-        contact.setCreatedBy(LegacyResourceConstants.USER);
         contact.setPrimary(true);
         contact.setType(getPrimaryContactType());
       }
       // set/update other properties
-      contact.setModified(new Date());
-      contact.setModifiedBy(LegacyResourceConstants.USER);
       contact.setFirstName(getPrimaryContactName());
       contact.setEmail(getPrimaryContactEmail());
 
@@ -377,15 +370,9 @@ public class LegacyInstallation extends Installation {
       // if it doesn't exist already, create it
       if (endpoint == null) {
         endpoint = new Endpoint();
-        endpoint.setCreated(new Date());
-        endpoint.setCreatedBy(LegacyResourceConstants.USER);
         endpoint.setType(getEndpointType());
       }
-      // set/update other properties
-      endpoint.setModified(new Date());
-      endpoint.setModifiedBy(LegacyResourceConstants.USER);
       endpoint.setUrl(getEndpointUrl());
-
       setFeedEndpoint(endpoint);
     }
   }

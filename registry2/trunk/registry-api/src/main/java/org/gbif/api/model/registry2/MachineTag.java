@@ -15,6 +15,7 @@ package org.gbif.api.model.registry2;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
@@ -50,6 +51,8 @@ public class MachineTag implements LenientEquals<MachineTag> {
     this.value = value;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Integer getKey() {
     return key;
   }
@@ -88,7 +91,8 @@ public class MachineTag implements LenientEquals<MachineTag> {
     this.value = value;
   }
 
-  @NotNull
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -98,6 +102,8 @@ public class MachineTag implements LenientEquals<MachineTag> {
     this.createdBy = createdBy;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Date getCreated() {
     return created;
   }

@@ -24,7 +24,7 @@
     now(), <!-- created -->       
     #{createdBy}, 
     now(), <!-- modified -->    
-    #{modifiedBy}
+    #{createdBy}
   </sql>
 
   <insert id="createComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="key">
