@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +20,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -37,7 +35,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * A GBIF data publisher.
  */
 public class Organization
-  implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable, Commentable {
+  implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Identifiable, Commentable,
+  LenientEquals<Organization> {
 
   private UUID key;
   private UUID endorsingNodeKey;
@@ -151,7 +150,7 @@ public class Organization
   /**
    * Get the organization password. This method is to be ignored on serialization, so that the password is not
    * revealed in the web service response.
-   *
+   * 
    * @return organization password
    */
   @JsonIgnore
@@ -301,22 +300,22 @@ public class Organization
     this.numOwnedDatasets = numOwnedDatasets;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getCreatedBy() {
     return createdBy;
   }
 
+  @Override
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getModifiedBy() {
     return modifiedBy;
   }
 
+  @Override
   public void setModifiedBy(String modifiedBy) {
     this.modifiedBy = modifiedBy;
   }
@@ -394,35 +393,35 @@ public class Organization
   @Override
   public int hashCode() {
     return Objects.hashCode(key,
-                            endorsingNodeKey,
-                            endorsementApproved,
-                            password,
-                            title,
-                            abbreviation,
-                            description,
-                            language,
-                            email,
-                            phone,
-                            homepage,
-                            logoUrl,
-                            address,
-                            city,
-                            province,
-                            country,
-                            postalCode,
-                            latitude,
-                            longitude, numOwnedDatasets,
-                            createdBy,
-                            modifiedBy,
-                            created,
-                            modified,
-                            deleted,
-                            contacts,
-                            endpoints,
-                            machineTags,
-                            tags,
-                            identifiers,
-                            comments);
+      endorsingNodeKey,
+      endorsementApproved,
+      password,
+      title,
+      abbreviation,
+      description,
+      language,
+      email,
+      phone,
+      homepage,
+      logoUrl,
+      address,
+      city,
+      province,
+      country,
+      postalCode,
+      latitude,
+      longitude, numOwnedDatasets,
+      createdBy,
+      modifiedBy,
+      created,
+      modified,
+      deleted,
+      contacts,
+      endpoints,
+      machineTags,
+      tags,
+      identifiers,
+      comments);
   }
 
   @Override
@@ -430,36 +429,36 @@ public class Organization
     if (object instanceof Organization) {
       Organization that = (Organization) object;
       return Objects.equal(this.key, that.key)
-             && Objects.equal(this.endorsingNodeKey, that.endorsingNodeKey)
-             && Objects.equal(this.endorsementApproved, that.endorsementApproved)
-             && Objects.equal(this.password, that.password)
-             && Objects.equal(this.title, that.title)
-             && Objects.equal(this.abbreviation, that.abbreviation)
-             && Objects.equal(this.description, that.description)
-             && Objects.equal(this.language, that.language)
-             && Objects.equal(this.email, that.email)
-             && Objects.equal(this.phone, that.phone)
-             && Objects.equal(this.homepage, that.homepage)
-             && Objects.equal(this.logoUrl, that.logoUrl)
-             && Objects.equal(this.address, that.address)
-             && Objects.equal(this.city, that.city)
-             && Objects.equal(this.province, that.province)
-             && Objects.equal(this.country, that.country)
-             && Objects.equal(this.postalCode, that.postalCode)
-             && Objects.equal(this.latitude, that.latitude)
-             && Objects.equal(this.longitude, that.longitude)
-             && Objects.equal(this.numOwnedDatasets, that.numOwnedDatasets)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified)
-             && Objects.equal(this.deleted, that.deleted)
-             && Objects.equal(this.contacts, that.contacts)
-             && Objects.equal(this.endpoints, that.endpoints)
-             && Objects.equal(this.machineTags, that.machineTags)
-             && Objects.equal(this.tags, that.tags)
-             && Objects.equal(this.identifiers, that.identifiers)
-             && Objects.equal(this.comments, that.comments);
+        && Objects.equal(this.endorsingNodeKey, that.endorsingNodeKey)
+        && Objects.equal(this.endorsementApproved, that.endorsementApproved)
+        && Objects.equal(this.password, that.password)
+        && Objects.equal(this.title, that.title)
+        && Objects.equal(this.abbreviation, that.abbreviation)
+        && Objects.equal(this.description, that.description)
+        && Objects.equal(this.language, that.language)
+        && Objects.equal(this.email, that.email)
+        && Objects.equal(this.phone, that.phone)
+        && Objects.equal(this.homepage, that.homepage)
+        && Objects.equal(this.logoUrl, that.logoUrl)
+        && Objects.equal(this.address, that.address)
+        && Objects.equal(this.city, that.city)
+        && Objects.equal(this.province, that.province)
+        && Objects.equal(this.country, that.country)
+        && Objects.equal(this.postalCode, that.postalCode)
+        && Objects.equal(this.latitude, that.latitude)
+        && Objects.equal(this.longitude, that.longitude)
+        && Objects.equal(this.numOwnedDatasets, that.numOwnedDatasets)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified)
+        && Objects.equal(this.deleted, that.deleted)
+        && Objects.equal(this.contacts, that.contacts)
+        && Objects.equal(this.endpoints, that.endpoints)
+        && Objects.equal(this.machineTags, that.machineTags)
+        && Objects.equal(this.tags, that.tags)
+        && Objects.equal(this.identifiers, that.identifiers)
+        && Objects.equal(this.comments, that.comments);
     }
     return false;
   }
@@ -501,4 +500,32 @@ public class Organization
       .toString();
   }
 
+  /**
+   * A lenient equality check for business logic uniqueness. Does not include server side controlled fields such as key
+   * and createdBy, nested objects and does not include password for security reasons.
+   */
+  @Override
+  public boolean lenientEquals(Organization other) {
+    if (this == other) {
+      return true;
+    }
+    return Objects.equal(this.endorsingNodeKey, other.endorsingNodeKey)
+      && Objects.equal(this.endorsementApproved, other.endorsementApproved)
+      && Objects.equal(this.title, other.title)
+      && Objects.equal(this.abbreviation, other.abbreviation)
+      && Objects.equal(this.description, other.description)
+      && Objects.equal(this.language, other.language)
+      && Objects.equal(this.email, other.email)
+      && Objects.equal(this.phone, other.phone)
+      && Objects.equal(this.homepage, other.homepage)
+      && Objects.equal(this.logoUrl, other.logoUrl)
+      && Objects.equal(this.address, other.address)
+      && Objects.equal(this.city, other.city)
+      && Objects.equal(this.province, other.province)
+      && Objects.equal(this.country, other.country)
+      && Objects.equal(this.postalCode, other.postalCode)
+      && Objects.equal(this.latitude, other.latitude)
+      && Objects.equal(this.longitude, other.longitude)
+      && Objects.equal(this.deleted, other.deleted);
+  }
 }

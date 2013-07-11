@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.google.common.base.Charsets;
@@ -113,15 +114,15 @@ public class LegacyDatasetResourceIT {
         installationKey);
 
     // some additional information to check
-    assertEquals(LegacyResourceConstants.USER, dataset.getCreatedBy());
-    assertEquals(LegacyResourceConstants.USER, dataset.getModifiedBy());
+    assertNotNull(dataset.getCreatedBy());
+    assertNotNull(dataset.getModifiedBy());
   }
 
   /**
    * The test begins by persisting a new Organization, Installation associated to the Organization, and Dataset
    * associated to the Organization. A primary contact and endpoint is then added to the Dataset.
    * </br>
-   * Then, it sends an update Dataset (POST) request to update the same Dataset.  The request does not have the primary
+   * Then, it sends an update Dataset (POST) request to update the same Dataset. The request does not have the primary
    * contact, endpoint, or installation key form parameters. Since the organization only has 1 installation anyways,
    * it will be inferred that the dataset belongs to this one.
    * </br>
@@ -162,7 +163,7 @@ public class LegacyDatasetResourceIT {
     Date created = dataset.getCreated();
     assertNotNull(created);
     String createdBy = dataset.getCreatedBy();
-    assertNotEquals(LegacyResourceConstants.USER, createdBy);
+    assertNotNull(createdBy);
 
     // populate params for ws
     List<NameValuePair> data = new ArrayList<NameValuePair>();
@@ -386,7 +387,8 @@ public class LegacyDatasetResourceIT {
     assertEquals(dataset.getDescription(), Parsers.legacyDatasetResponseHandler.description);
     assertEquals(dataset.getLanguage().getIso2LetterCode(), Parsers.legacyDatasetResponseHandler.descriptionLanguage);
     assertEquals(dataset.getHomepage().toString(), Parsers.legacyDatasetResponseHandler.homepageURL);
-    assertEquals(LegacyResourceConstants.TECHNICAL_CONTACT_TYPE, Parsers.legacyDatasetResponseHandler.primaryContactType);
+    assertEquals(LegacyResourceConstants.TECHNICAL_CONTACT_TYPE,
+      Parsers.legacyDatasetResponseHandler.primaryContactType);
     assertEquals("Tim Robertson", Parsers.legacyDatasetResponseHandler.primaryContactName);
     assertEquals("trobertson@gbif.org", Parsers.legacyDatasetResponseHandler.primaryContactEmail);
     assertEquals("Universitetsparken 15", Parsers.legacyDatasetResponseHandler.primaryContactAddress);
@@ -417,9 +419,8 @@ public class LegacyDatasetResourceIT {
 
   /**
    * Populate a list of name value pairs used in the common ws requests for GBRDS dataset registrations and updates.
-   *
+   * 
    * @param organizationKey organization key
-   *
    * @return list of name value pairs
    */
   private List<NameValuePair> buildLegacyDatasetParameters(UUID organizationKey) {
@@ -455,10 +456,9 @@ public class LegacyDatasetResourceIT {
   /**
    * Retrieve persisted Legacy (GBRDS) dataset, and make a series of assertions to ensure it has been properly
    * persisted.
-   *
-   * @param datasetKey      installation key (UUID)
+   * 
+   * @param datasetKey installation key (UUID)
    * @param organizationKey installation owning organization key
-   *
    * @return validated installation
    */
   private Dataset validatePersistedLegacyDataset(UUID datasetKey, UUID organizationKey, UUID installationKey) {
@@ -489,17 +489,17 @@ public class LegacyDatasetResourceIT {
     assertEquals(Requests.DATASET_PRIMARY_CONTACT_DESCRIPTION, contact.getDescription());
     assertEquals(ContactType.ADMINISTRATIVE_POINT_OF_CONTACT, contact.getType());
     assertNotNull(contact.getCreated());
-    assertEquals(LegacyResourceConstants.USER, contact.getCreatedBy());
+    assertNotNull(contact.getCreatedBy());
     assertNotNull(contact.getModified());
-    assertNotNull(LegacyResourceConstants.USER, contact.getModifiedBy());
+    assertNotNull(contact.getModifiedBy());
 
     return dataset;
   }
 
   /**
    * Retrieve dataset presumed already to exist, and make a series of assertions to ensure it is valid.
-   *
-   * @param dataset         dataset
+   * 
+   * @param dataset dataset
    * @param organizationKey owning organization key
    * @param installationKey installation key
    */
@@ -516,7 +516,7 @@ public class LegacyDatasetResourceIT {
     Date modified = dataset.getModified();
     assertNotNull(modified);
     String modifiedBy = dataset.getModifiedBy();
-    assertNotEquals(LegacyResourceConstants.USER, modifiedBy);
+    assertNotNull(modifiedBy);
     assertTrue(dataset.getContacts().isEmpty());
     assertTrue(dataset.getEndpoints().isEmpty());
     // not expected to change

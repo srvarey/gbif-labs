@@ -22,6 +22,7 @@ import org.gbif.api.model.registry2.Commentable;
 import org.gbif.api.model.registry2.Contactable;
 import org.gbif.api.model.registry2.Endpointable;
 import org.gbif.api.model.registry2.Identifiable;
+import org.gbif.api.model.registry2.LenientEquals;
 import org.gbif.api.model.registry2.MachineTaggable;
 import org.gbif.api.model.registry2.NetworkEntity;
 import org.gbif.api.model.registry2.Taggable;
@@ -50,6 +51,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.gbif.registry2.LenientAssert.assertLenientEquals;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -58,7 +61,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * A generic test for all network entities that implement all interfaces required by the BaseNetworkEntityResource.
  */
-public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & Taggable & MachineTaggable & Commentable & Endpointable & Identifiable> {
+public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & Taggable & MachineTaggable & Commentable & Endpointable & Identifiable & LenientEquals<T>> {
 
   // Flushes the database on each run
   @ClassRule
@@ -91,7 +94,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
     identifierService = service;
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = ValidationException.class)
   public void createWithKey() {
     T e = newEntity();
     e.setKey(UUID.randomUUID()); // illegal to provide a key
@@ -108,7 +111,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   public void testUpdate() {
     T n1 = create(newEntity(), 1);
     n1.setTitle("New title");
-    service.update(asWritable(n1));
+    service.update(n1);
     NetworkEntity n2 = service.get(n1.getKey());
     assertEquals("Persisted does not reflect update", "New title", n2.getTitle());
     assertTrue("Modification date not changing on update", n2.getModified().after(n1.getModified()));
@@ -122,7 +125,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   public void testUpdateFailingValidation() {
     T n1 = create(newEntity(), 1);
     n1.setTitle("A"); // should fail as it is too short
-    service.update(asWritable(n1));
+    service.update(n1);
   }
 
   @Test
@@ -222,7 +225,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   public void testSimpleSearch() {
     T n1 = create(newEntity(), 1);
     n1.setTitle("New title");
-    service.update(asWritable(n1));
+    service.update(n1);
 
     assertEquals("Search should return a hit", Long.valueOf(1), service.search("New", null).getCount());
     assertEquals("Search should return a hit", Long.valueOf(1), service.search("TITLE", null).getCount());
@@ -230,7 +233,7 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
 
     // Updates should be reflected in search
     n1.setTitle("BINGO");
-    service.update(asWritable(n1));
+    service.update(n1);
 
     assertEquals("Search should return a hit", Long.valueOf(1), service.search("BINGO", null).getCount());
     assertEquals("Search should return no hits", Long.valueOf(0), service.search("New", null).getCount());
@@ -269,13 +272,8 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
 
   @Test
   public void testEndpoints() {
-    T entity;
-    try {
-      entity = create(newEntity(), 1);
-      EndpointTests.testAddDelete(endpointService, entity);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    T entity = create(newEntity(), 1);
+    EndpointTests.testAddDelete(endpointService, entity);
   }
 
   @Test
@@ -327,31 +325,11 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
       assertNotNull(written.getCreated());
       assertNotNull(written.getModified());
       assertNull(written.getDeleted());
-      assertEquals("Persisted does not reflect original", entity, asWritable(written));
+      assertLenientEquals("Persisted does not reflect original", entity, written);
       assertEquals("List service does not reflect the number of created entities",
         expectedCount,
         service.list(new PagingRequest()).getResults().size());
       return written;
-    } catch (Exception e) {
-      throw Throwables.propagate(e);
-    }
-  }
-
-  /**
-   * Creates a new instance of the supplied entity clearing all fields that are out of scope for external clients.
-   * TODO: should we consider clearing contacts, tags etc? (would need to increase visibility of those interfaces to
-   * make so)
-   * TODO: think of a better name for this. Perhaps consider refactoring so one calls assertEquivalent() instead of
-   * this.
-   */
-  protected T asWritable(T source) {
-    try {
-      @SuppressWarnings("unchecked")
-      T copy = (T) BeanUtils.cloneBean(source);
-      copy.setCreated(null);
-      copy.setModified(null);
-      copy.setDeleted(null);
-      return copy;
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }

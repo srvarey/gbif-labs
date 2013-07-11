@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,13 +12,10 @@
  */
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +30,8 @@ import org.gbif.api.service.registry2.CommentService;
 import org.gbif.registry2.utils.Comments;
 
 import java.util.List;
+
+import static org.gbif.registry2.LenientAssert.assertLenientEquals;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -64,10 +60,7 @@ public class CommentTests {
     assertEquals("1 comment should remain after the deletion", 1, comments.size());
     Comment expected = Comments.newInstance();
     Comment created = comments.get(0);
-    expected.setKey(created.getKey());
-    expected.setCreated(created.getCreated());
-    expected.setModified(created.getModified());
-    assertEquals("Created comment does not read as expected", expected, created);
+    assertLenientEquals("Created entity does not read as expected", expected, created);
   }
 
 }

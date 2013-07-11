@@ -52,7 +52,4 @@ public class LegacyResourceConstants {
   public static final CacheControl CACHE_CONTROL_DISABLED = CacheControl.valueOf("no-cache");
   // web service paging request size
   public static final int WS_PAGE_SIZE = 100;
-
-  // TODO: remove once security implemented
-  public static final String USER = "GBIF Registry Web Services";
 }

@@ -61,7 +61,7 @@
     now(), <!-- created -->    
     #{createdBy},
     now(), <!-- modified -->    
-    #{modifiedBy}
+    #{createdBy}
   </sql>
   
   <!--  Note: you can get entities which are deleted -->

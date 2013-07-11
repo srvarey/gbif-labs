@@ -104,7 +104,7 @@
     now(), <!-- created -->    
     #{createdBy},
     now(), <!-- modified -->    
-    #{modifiedBy}
+    #{createdBy}
   </sql>
   
   <select id="countConstituents" resultType="int">

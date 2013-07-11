@@ -16,6 +16,7 @@ import org.gbif.registry2.ws.util.LegacyResourceUtils;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -65,14 +66,11 @@ public class LegacyDatasetResource {
    * Register GBRDS dataset, handling incoming request with path /resource. The primary contact, owning organization
    * key, and resource name are mandatory. Only after both the dataset and primary contact have been persisted is a
    * Response with Status.CREATED (201) returned.
-   *
+   * 
    * @param dataset IptDataset with HTTP form parameters having been injected from Jersey
    * @param request HttpContext to access HTTP Headers during authorization
-   *
    * @return Response
-   *
-   * @see IptResource#registerDataset(org.gbif.registry2.ws.model.LegacyDataset,
-   *      com.sun.jersey.api.core.HttpContext)
+   * @see IptResource#registerDataset(org.gbif.registry2.ws.model.LegacyDataset, com.sun.jersey.api.core.HttpContext)
    */
   @POST
   @Produces(MediaType.APPLICATION_XML)
@@ -87,13 +85,11 @@ public class LegacyDatasetResource {
    * mandatory. The primary contact is not required, but if any of the primary contact parameters were included in the
    * request, it is required required. This is the difference between this method and updateDataset. Only after both
    * the dataset and optional primary contact have been updated is a Response with Status.OK (201) returned.
-   *
+   * 
    * @param datasetKey dataset key (UUID) coming in as path param
-   * @param dataset    IptDataset with HTTP form parameters having been injected from Jersey
-   * @param request    HttpContext to access HTTP Headers during authorization
-   *
+   * @param dataset IptDataset with HTTP form parameters having been injected from Jersey
+   * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.CREATED (201) if successful
-   *
    * @see IptResource#updateDataset(java.util.UUID, org.gbif.registry2.ws.model.LegacyDataset,
    *      com.sun.jersey.api.core.HttpContext)
    */
@@ -121,8 +117,8 @@ public class LegacyDatasetResource {
       dataset.setContacts(existing.getContacts());
       // if primary contact wasn't supplied, set existing one here so that it doesn't respond BAD_REQUEST
       if (dataset.getPrimaryContactAddress() == null && dataset.getPrimaryContactEmail() == null
-          && dataset.getPrimaryContactType() == null && dataset.getPrimaryContactPhone() == null
-          && dataset.getPrimaryContactName() == null && dataset.getPrimaryContactDescription() == null) {
+        && dataset.getPrimaryContactType() == null && dataset.getPrimaryContactPhone() == null
+        && dataset.getPrimaryContactName() == null && dataset.getPrimaryContactDescription() == null) {
         dataset.setPrimaryContact(LegacyResourceUtils.getPrimaryContact(existing));
       }
       // otherwise, update primary contact and type
@@ -156,9 +152,6 @@ public class LegacyDatasetResource {
         }
 
         existing.setOwningOrganizationKey(dataset.getOwningOrganizationKey());
-        // TODO remove modified and modifiedBy, will be set by authenticated account
-        existing.setModified(dataset.getModified());
-        existing.setModifiedBy(dataset.getModifiedBy());
 
         // persist changes
         datasetService.update(existing);
@@ -190,9 +183,8 @@ public class LegacyDatasetResource {
    * The owning organization query parameter is mandatory. Only after both
    * the organizationKey is verified to correspond to an existing organization, is a Response including the list of
    * Datasets returned.
-   *
+   * 
    * @param organizationKey organization key (UUID) coming in as query param
-   *
    * @return Response with list of Datasets or empty list with error message if none found
    */
   @GET
@@ -233,9 +225,8 @@ public class LegacyDatasetResource {
 
   /**
    * Read GBRDS Dataset, handling incoming request with path /resource/{key}.
-   *
+   * 
    * @param datasetKey dataset key (UUID) coming in as path param
-   *
    * @return Response with Status.OK (200) if dataset exists
    */
   @GET
@@ -262,12 +253,10 @@ public class LegacyDatasetResource {
   /**
    * Delete GBRDS Dataset, handling incoming request with path /resource/{key}. Only credentials are mandatory.
    * If deletion is successful, returns Response with Status.OK.
-   *
+   * 
    * @param datasetKey dataset key (UUID) coming in as path param
-   * @param request    HttpContext to access HTTP Headers during authorization
-   *
+   * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.OK if successful
-   *
    * @see IptResource#deleteDataset(java.util.UUID, com.sun.jersey.api.core.HttpContext)
    */
   @DELETE

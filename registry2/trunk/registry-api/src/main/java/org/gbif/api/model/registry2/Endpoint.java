@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,15 +16,17 @@ import org.gbif.api.vocabulary.registry2.EndpointType;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
-public class Endpoint implements MachineTaggable {
+public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
 
   private Integer key;
   private EndpointType type;
@@ -39,6 +38,8 @@ public class Endpoint implements MachineTaggable {
   private Date modified;
   private List<MachineTag> machineTags = Lists.newArrayList();
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Min(1)
   public Integer getKey() {
     return key;
@@ -77,7 +78,8 @@ public class Endpoint implements MachineTaggable {
     this.description = description;
   }
 
-  @NotNull
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -87,7 +89,8 @@ public class Endpoint implements MachineTaggable {
     this.createdBy = createdBy;
   }
 
-  @NotNull
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;
@@ -97,6 +100,8 @@ public class Endpoint implements MachineTaggable {
     this.modifiedBy = modifiedBy;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Date getCreated() {
     return created;
   }
@@ -105,6 +110,8 @@ public class Endpoint implements MachineTaggable {
     this.created = created;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Date getModified() {
     return modified;
   }
@@ -113,10 +120,12 @@ public class Endpoint implements MachineTaggable {
     this.modified = modified;
   }
 
+  @Override
   public List<MachineTag> getMachineTags() {
     return machineTags;
   }
 
+  @Override
   public void setMachineTags(List<MachineTag> machineTags) {
     this.machineTags = machineTags;
   }
@@ -136,14 +145,14 @@ public class Endpoint implements MachineTaggable {
     if (object instanceof Endpoint) {
       Endpoint that = (Endpoint) object;
       return Objects.equal(this.key, that.key)
-             && Objects.equal(this.type, that.type)
-             && Objects.equal(this.url, that.url)
-             && Objects.equal(this.description, that.description)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified)
-             && Objects.equal(this.machineTags, that.machineTags);
+        && Objects.equal(this.type, that.type)
+        && Objects.equal(this.url, that.url)
+        && Objects.equal(this.description, that.description)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified)
+        && Objects.equal(this.machineTags, that.machineTags);
     }
     return false;
   }
@@ -161,6 +170,20 @@ public class Endpoint implements MachineTaggable {
       .add("modified", modified)
       .add("machineTags", machineTags)
       .toString();
+  }
+
+  /**
+   * Does not include server controlled values, or nested properties.
+   */
+  @Override
+  public boolean lenientEquals(Endpoint other) {
+    if (this == other) {
+      return true;
+    } else {
+      return Objects.equal(this.type, other.type)
+        && Objects.equal(this.url, other.url)
+        && Objects.equal(this.description, other.description);
+    }
   }
 
 }

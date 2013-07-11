@@ -1,7 +1,5 @@
 {
   "type":"TAPIR",
   "url":"http://www.example.org",
-  "description":"A Tapir installation",
-  "createdBy":"GBIF_ADMIN",
-  "modifiedBy":"GBIF_ADMIN"
+  "description":"A Tapir installation"
 }

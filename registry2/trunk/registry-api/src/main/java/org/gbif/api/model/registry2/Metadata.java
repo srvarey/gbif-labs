@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,13 +16,14 @@ import org.gbif.api.vocabulary.registry2.MetadataType;
 
 import java.util.Date;
 import java.util.UUID;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
 
-public class Metadata {
+public class Metadata implements LenientEquals<Metadata> {
 
   private Integer key;
   private UUID datasetKey;
@@ -122,13 +120,13 @@ public class Metadata {
     if (object instanceof Metadata) {
       Metadata that = (Metadata) object;
       return Objects.equal(this.key, that.key)
-             && Objects.equal(this.datasetKey, that.datasetKey)
-             && Objects.equal(this.type, that.type)
-             && Objects.equal(this.content, that.content)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified);
+        && Objects.equal(this.datasetKey, that.datasetKey)
+        && Objects.equal(this.type, that.type)
+        && Objects.equal(this.content, that.content)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified);
     }
     return false;
   }
@@ -147,4 +145,16 @@ public class Metadata {
       .toString();
   }
 
+  /**
+   * Does not include the key or server controlled values (created, createdBy etc).
+   */
+  @Override
+  public boolean lenientEquals(Metadata other) {
+    if (this == other) {
+      return true;
+    }
+    return Objects.equal(this.datasetKey, other.datasetKey)
+      && Objects.equal(this.type, other.type)
+      && Objects.equal(this.content, other.content);
+  }
 }

@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -129,14 +130,14 @@ public class IptResourceIT {
       validatePersistedIptInstallation(UUID.fromString(Parsers.legacyIptEntityHandler.key), organizationKey);
 
     // some additional information to check
-    assertEquals(LegacyResourceConstants.USER, installation.getCreatedBy());
-    assertEquals(LegacyResourceConstants.USER, installation.getModifiedBy());
+    assertNotNull(installation.getCreatedBy());
+    assertNotNull(installation.getModifiedBy());
   }
 
   /**
    * The test begins by persisting a new Organization, and Installation associated to the Organization.
    * </br>
-   * Then, it sends an update IPT (POST) request to update the same Installation.  The request is issued against the
+   * Then, it sends an update IPT (POST) request to update the same Installation. The request is issued against the
    * web services running on the local Grizzly test server. The request is sent in exactly the same way as the IPT
    * would send it, using the URL path (/ipt/update/{key}), URL encoded form parameters, and basic authentication. The
    * web service authorizes the request, and then persists the Installation, updating its information.
@@ -164,7 +165,7 @@ public class IptResourceIT {
     Date created = installation.getCreated();
     assertNotNull(created);
     String createdBy = installation.getCreatedBy();
-    assertNotEquals(LegacyResourceConstants.USER, createdBy);
+    assertNotNull(createdBy);
 
     // populate params for ws
     List<NameValuePair> data = buildIPTParameters(organizationKey);
@@ -397,8 +398,8 @@ public class IptResourceIT {
       installationKey);
 
     // some additional information to check
-    assertEquals(LegacyResourceConstants.USER, dataset.getCreatedBy());
-    assertEquals(LegacyResourceConstants.USER, dataset.getModifiedBy());
+    assertNotNull(dataset.getCreatedBy());
+    assertNotNull(dataset.getModifiedBy());
   }
 
   /**
@@ -482,7 +483,7 @@ public class IptResourceIT {
    * The test begins by persisting a new Organization, Installation associated to the Organization, and Dataset
    * associated to the Organization.
    * </br>
-   * Then, it sends an update Dataset (POST) request to update the same Dataset.  The request is issued against the
+   * Then, it sends an update Dataset (POST) request to update the same Dataset. The request is issued against the
    * web services running on the local Grizzly test server. The request is sent in exactly the same way as the IPT
    * would send it, using the URL path (/ipt/resource/{key}), URL encoded form parameters, and basic authentication.
    * The
@@ -515,7 +516,7 @@ public class IptResourceIT {
     Date created = dataset.getCreated();
     assertNotNull(created);
     String createdBy = dataset.getCreatedBy();
-    assertNotEquals(LegacyResourceConstants.USER, createdBy);
+    assertNotNull(createdBy);
 
     // populate params for ws
     List<NameValuePair> data = buildIptDatasetParameters(installationKey);
@@ -653,7 +654,7 @@ public class IptResourceIT {
    * The test begins by persisting a new Organization, Installation associated to the Organization, and Dataset
    * associated to the Organization.
    * </br>
-   * Then, it sends an update Dataset (POST) request to update the same Dataset.  This populates the primary contact
+   * Then, it sends an update Dataset (POST) request to update the same Dataset. This populates the primary contact
    * and endpoints.
    * </br>
    * Then, it sends a delete Dataset (POST) request to delete the Dataset.
@@ -690,8 +691,8 @@ public class IptResourceIT {
 
   /**
    * Retrieve installation presumed already to exist, and make a series of assertions to ensure it is valid.
-   *
-   * @param installation    installation
+   * 
+   * @param installation installation
    * @param organizationKey hosting organization key
    */
   private void validateExistingIptInstallation(Installation installation, UUID organizationKey) {
@@ -703,15 +704,15 @@ public class IptResourceIT {
     Date modified = installation.getModified();
     assertNotNull(modified);
     String modifiedBy = installation.getModifiedBy();
-    assertNotEquals(LegacyResourceConstants.USER, modifiedBy);
+    assertNotNull(modifiedBy);
     assertTrue(installation.getContacts().isEmpty());
     assertTrue(installation.getEndpoints().isEmpty());
   }
 
   /**
    * Retrieve dataset presumed already to exist, and make a series of assertions to ensure it is valid.
-   *
-   * @param dataset         dataset
+   * 
+   * @param dataset dataset
    * @param organizationKey owning organization key
    * @param installationKey installation key
    */
@@ -728,7 +729,7 @@ public class IptResourceIT {
     Date modified = dataset.getModified();
     assertNotNull(modified);
     String modifiedBy = dataset.getModifiedBy();
-    assertNotEquals(LegacyResourceConstants.USER, modifiedBy);
+    assertNotNull(modifiedBy);
     assertTrue(dataset.getContacts().isEmpty());
     assertTrue(dataset.getEndpoints().isEmpty());
     // not expected to change
@@ -741,10 +742,9 @@ public class IptResourceIT {
 
   /**
    * Retrieve persisted IPT installation, and make a series of assertions to ensure it has been properly persisted.
-   *
+   * 
    * @param installationKey installation key (UUID)
    * @param organizationKey installation hosting organization key
-   *
    * @return validated installation
    */
   private Installation validatePersistedIptInstallation(UUID installationKey, UUID organizationKey) {
@@ -768,9 +768,9 @@ public class IptResourceIT {
     assertEquals(IPT_PRIMARY_CONTACT_EMAIL, contact.getEmail());
     assertEquals(ContactType.TECHNICAL_POINT_OF_CONTACT, contact.getType());
     assertNotNull(contact.getCreated());
-    assertEquals(LegacyResourceConstants.USER, contact.getCreatedBy());
+    assertNotNull(contact.getCreatedBy());
     assertNotNull(contact.getModified());
-    assertNotNull(LegacyResourceConstants.USER, contact.getModifiedBy());
+    assertNotNull(contact.getModifiedBy());
 
     // check installation's RSS/FEED endpoint was properly persisted
     Endpoint endpoint = installation.getEndpoints().get(0);
@@ -779,19 +779,18 @@ public class IptResourceIT {
     assertEquals(IPT_SERVICE_URL, endpoint.getUrl());
     assertEquals(EndpointType.FEED, endpoint.getType());
     assertNotNull(endpoint.getCreated());
-    assertEquals(LegacyResourceConstants.USER, endpoint.getCreatedBy());
+    assertNotNull(endpoint.getCreatedBy());
     assertNotNull(endpoint.getModified());
-    assertNotNull(LegacyResourceConstants.USER, endpoint.getModifiedBy());
+    assertNotNull(endpoint.getModifiedBy());
 
     return installation;
   }
 
   /**
    * Retrieve persisted IPT dataset, and make a series of assertions to ensure it has been properly persisted.
-   *
-   * @param datasetKey      installation key (UUID)
+   * 
+   * @param datasetKey installation key (UUID)
    * @param organizationKey installation owning organization key
-   *
    * @return validated installation
    */
   private Dataset validatePersistedIptDataset(UUID datasetKey, UUID organizationKey, UUID installationKey) {
@@ -818,9 +817,9 @@ public class IptResourceIT {
     assertEquals(Requests.DATASET_PRIMARY_CONTACT_ADDRESS, contact.getAddress());
     assertEquals(ContactType.ADMINISTRATIVE_POINT_OF_CONTACT, contact.getType());
     assertNotNull(contact.getCreated());
-    assertEquals(LegacyResourceConstants.USER, contact.getCreatedBy());
+    assertNotNull(contact.getCreatedBy());
     assertNotNull(contact.getModified());
-    assertNotNull(LegacyResourceConstants.USER, contact.getModifiedBy());
+    assertNotNull(contact.getModifiedBy());
 
     // check dataset's EML & DWC_ARCHIVE endpoints were properly persisted
     Endpoint endpoint = dataset.getEndpoints().get(0);
@@ -829,9 +828,9 @@ public class IptResourceIT {
     assertEquals(DATASET_OCCURRENCE_SERVICE_URL, endpoint.getUrl());
     assertTrue(endpoint.getType().equals(EndpointType.DWC_ARCHIVE) || endpoint.getType().equals(EndpointType.EML));
     assertNotNull(endpoint.getCreated());
-    assertEquals(LegacyResourceConstants.USER, endpoint.getCreatedBy());
+    assertNotNull(endpoint.getCreatedBy());
     assertNotNull(endpoint.getModified());
-    assertNotNull(LegacyResourceConstants.USER, endpoint.getModifiedBy());
+    assertNotNull(endpoint.getModifiedBy());
 
     endpoint = dataset.getEndpoints().get(1);
     assertNotNull("Dataset EML endpoint should be present", endpoint);
@@ -839,9 +838,9 @@ public class IptResourceIT {
     assertEquals(DATASET_EML_SERVICE_URL, endpoint.getUrl());
     assertTrue(endpoint.getType().equals(EndpointType.DWC_ARCHIVE) || endpoint.getType().equals(EndpointType.EML));
     assertNotNull(endpoint.getCreated());
-    assertEquals(LegacyResourceConstants.USER, endpoint.getCreatedBy());
+    assertNotNull(endpoint.getCreatedBy());
     assertNotNull(endpoint.getModified());
-    assertNotNull(LegacyResourceConstants.USER, endpoint.getModifiedBy());
+    assertNotNull(endpoint.getModifiedBy());
 
     return dataset;
   }
@@ -850,9 +849,8 @@ public class IptResourceIT {
    * Populate a list of name value pairs used in the common ws requests for IPT registrations and updates.
    * </br>
    * Basically a copy of the method in the IPT, to ensure the parameter names are identical.
-   *
+   * 
    * @param organizationKey organization key (UUID)
-   *
    * @return list of name value pairs, or an empty list if the IPT or organisation key were null
    */
   private List<NameValuePair> buildIPTParameters(UUID organizationKey) {
@@ -881,9 +879,8 @@ public class IptResourceIT {
    * Populate a list of name value pairs used in the common ws requests for IPT dataset registrations and updates.
    * </br>
    * Basically a copy of the method in the IPT, to ensure the parameter names are identical.
-   *
+   * 
    * @param installationKey installation key
-   *
    * @return list of name value pairs, or an empty list if the dataset or organisation key were null
    */
   private List<NameValuePair> buildIptDatasetParameters(UUID installationKey) {

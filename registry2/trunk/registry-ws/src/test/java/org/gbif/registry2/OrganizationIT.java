@@ -77,7 +77,8 @@ public class OrganizationIT extends NetworkEntityTest<Organization> {
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 0);
 
     Organization o = Organizations.newInstance(node.getKey());
-    o.setKey(this.getService().create(o));
+    UUID key = this.getService().create(o);
+    o = getService().get(key);
     assertResultsOfSize(nodeService.endorsedOrganizations(node.getKey(), new PagingRequest()), 0);
     assertResultsOfSize(nodeService.pendingEndorsements(new PagingRequest()), 1);
     assertResultsOfSize(nodeService.pendingEndorsements(node.getKey(), new PagingRequest()), 1);

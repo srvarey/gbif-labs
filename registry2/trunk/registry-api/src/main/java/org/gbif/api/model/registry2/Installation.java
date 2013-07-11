@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,9 +17,10 @@ import org.gbif.api.vocabulary.registry2.InstallationType;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Null;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -33,7 +31,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 // TODO: Only allow adding of Endpoints of the correct type, I would argue for removing all the set(List) methods
 public class Installation implements NetworkEntity, Contactable, Endpointable, MachineTaggable, Taggable, Commentable,
-  Identifiable {
+  Identifiable, LenientEquals<Installation> {
 
   private UUID key;
   private UUID organizationKey;
@@ -53,6 +51,8 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   private List<Identifier> identifiers = Lists.newArrayList();
   private List<Comment> comments = Lists.newArrayList();
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Override
   public UUID getKey() {
     return key;
@@ -83,6 +83,8 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
     this.description = description;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Override
   public Date getCreated() {
     return created;
@@ -93,6 +95,8 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
     this.created = created;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Override
   public Date getModified() {
     return modified;
@@ -125,7 +129,7 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   /**
    * Get the installation password. This method is to be ignored on serialization, so that the password is not
    * revealed in the web service response.
-   *
+   * 
    * @return organization password
    */
   @JsonIgnore
@@ -147,22 +151,22 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
     this.type = type;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getCreatedBy() {
     return createdBy;
   }
 
+  @Override
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
 
-  @NotNull
-  @Size(min = 3)
+  @Override
   public String getModifiedBy() {
     return modifiedBy;
   }
 
+  @Override
   public void setModifiedBy(String modifiedBy) {
     this.modifiedBy = modifiedBy;
   }
@@ -240,22 +244,22 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
   @Override
   public int hashCode() {
     return Objects.hashCode(key,
-                            organizationKey,
-                            password,
-                            type,
-                            title,
-                            description,
-                            createdBy,
-                            modifiedBy,
-                            created,
-                            modified,
-                            deleted,
-                            contacts,
-                            endpoints,
-                            machineTags,
-                            tags,
-                            identifiers,
-                            comments);
+      organizationKey,
+      password,
+      type,
+      title,
+      description,
+      createdBy,
+      modifiedBy,
+      created,
+      modified,
+      deleted,
+      contacts,
+      endpoints,
+      machineTags,
+      tags,
+      identifiers,
+      comments);
   }
 
   @Override
@@ -263,22 +267,22 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
     if (object instanceof Installation) {
       Installation that = (Installation) object;
       return Objects.equal(this.key, that.key)
-             && Objects.equal(this.organizationKey, that.organizationKey)
-             && Objects.equal(this.password, that.password)
-             && Objects.equal(this.type, that.type)
-             && Objects.equal(this.title, that.title)
-             && Objects.equal(this.description, that.description)
-             && Objects.equal(this.createdBy, that.createdBy)
-             && Objects.equal(this.modifiedBy, that.modifiedBy)
-             && Objects.equal(this.created, that.created)
-             && Objects.equal(this.modified, that.modified)
-             && Objects.equal(this.deleted, that.deleted)
-             && Objects.equal(this.contacts, that.contacts)
-             && Objects.equal(this.endpoints, that.endpoints)
-             && Objects.equal(this.machineTags, that.machineTags)
-             && Objects.equal(this.tags, that.tags)
-             && Objects.equal(this.identifiers, that.identifiers)
-             && Objects.equal(this.comments, that.comments);
+        && Objects.equal(this.organizationKey, that.organizationKey)
+        && Objects.equal(this.password, that.password)
+        && Objects.equal(this.type, that.type)
+        && Objects.equal(this.title, that.title)
+        && Objects.equal(this.description, that.description)
+        && Objects.equal(this.createdBy, that.createdBy)
+        && Objects.equal(this.modifiedBy, that.modifiedBy)
+        && Objects.equal(this.created, that.created)
+        && Objects.equal(this.modified, that.modified)
+        && Objects.equal(this.deleted, that.deleted)
+        && Objects.equal(this.contacts, that.contacts)
+        && Objects.equal(this.endpoints, that.endpoints)
+        && Objects.equal(this.machineTags, that.machineTags)
+        && Objects.equal(this.tags, that.tags)
+        && Objects.equal(this.identifiers, that.identifiers)
+        && Objects.equal(this.comments, that.comments);
     }
     return false;
   }
@@ -306,4 +310,18 @@ public class Installation implements NetworkEntity, Contactable, Endpointable, M
       .toString();
   }
 
+  /**
+   * Does not include the nested properties, or server controlled values (key, createdBy etc) or the password,
+   * for security reasons.
+   */
+  @Override
+  public boolean lenientEquals(Installation other) {
+    if (this == other) {
+      return true;
+    }
+    return Objects.equal(this.organizationKey, other.organizationKey)
+      && Objects.equal(this.type, other.type)
+      && Objects.equal(this.title, other.title)
+      && Objects.equal(this.description, other.description);
+  }
 }

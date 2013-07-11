@@ -19,6 +19,7 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Objects;
@@ -46,6 +47,8 @@ public class Contact implements Address, LenientEquals<Contact> {
   private Date created;
   private Date modified;
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Integer getKey() {
     return key;
   }
@@ -197,7 +200,8 @@ public class Contact implements Address, LenientEquals<Contact> {
     this.organization = organization;
   }
 
-  @NotNull
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -207,7 +211,8 @@ public class Contact implements Address, LenientEquals<Contact> {
     this.createdBy = createdBy;
   }
 
-  @NotNull
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;
@@ -217,6 +222,8 @@ public class Contact implements Address, LenientEquals<Contact> {
     this.modifiedBy = modifiedBy;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Date getCreated() {
     return created;
   }
@@ -225,6 +232,8 @@ public class Contact implements Address, LenientEquals<Contact> {
     this.created = created;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Date getModified() {
     return modified;
   }
