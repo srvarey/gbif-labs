@@ -93,14 +93,10 @@ public class RegistryServer implements TestRule {
   }
 
   public synchronized void setSolrServer(SolrServer solrServer) {
-    Preconditions
-      .checkState(this.solrServer == null, "Misuse of class. SolrServer has already been set");
     this.solrServer = solrServer;
   }
 
   public synchronized void setDatasetUpdater(DatasetIndexUpdateListener datasetUpdater) {
-    Preconditions
-      .checkState(this.datasetUpdater == null, "Misuse of class. DatasetIndexUpdateListener has already been set");
     this.datasetUpdater = datasetUpdater;
   }
 
