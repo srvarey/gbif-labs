@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -379,6 +380,7 @@ public class Dataset
    * The exact form of how to cite this dataset.
    */
   @Nullable
+  @Valid
   public Citation getCitation() {
     return citation;
   }

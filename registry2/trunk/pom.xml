@@ -70,6 +70,7 @@
   <modules>
     <module>registry-api</module>
     <module>registry-metadata</module>
+    <module>registry-metasync</module>
     <module>registry-ws-client</module>
     <module>registry-ws</module>
   </modules>
@@ -463,7 +464,6 @@
         <artifactId>httpcore</artifactId>
         <version>${httpcore.version}</version>
       </dependency>
-      <!-- Related to registry-ws IptResource -->
       <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
@@ -474,12 +474,10 @@
         <artifactId>commons-codec</artifactId>
         <version>${commons-codec.version}</version>
       </dependency>
-      <!-- Related to registry-ws IptResourceIT with test scope -->
       <dependency>
         <groupId>org.gbif</groupId>
         <artifactId>gbif-httputils</artifactId>
         <version>${httputils.version}</version>
-        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

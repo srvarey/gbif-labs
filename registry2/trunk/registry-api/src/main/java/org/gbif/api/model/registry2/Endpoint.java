@@ -38,8 +38,8 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
   private Date modified;
   private List<MachineTag> machineTags = Lists.newArrayList();
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
+  @Null(groups = PrePersist.class)
+  @NotNull(groups = PostPersist.class)
   @Min(1)
   public Integer getKey() {
     return key;
@@ -78,8 +78,8 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
     this.description = description;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
+  @Null(groups = PrePersist.class)
+  @NotNull(groups = PostPersist.class)
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -89,8 +89,8 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
     this.createdBy = createdBy;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
+  @Null(groups = PrePersist.class)
+  @NotNull(groups = PostPersist.class)
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;
@@ -100,8 +100,8 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
     this.modifiedBy = modifiedBy;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
+  @Null(groups = PrePersist.class)
+  @NotNull(groups = PostPersist.class)
   public Date getCreated() {
     return created;
   }
@@ -110,8 +110,8 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
     this.created = created;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
+  @Null(groups = PrePersist.class)
+  @NotNull(groups = PostPersist.class)
   public Date getModified() {
     return modified;
   }
