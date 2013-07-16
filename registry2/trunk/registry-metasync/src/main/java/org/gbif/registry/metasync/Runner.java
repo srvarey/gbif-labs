@@ -16,9 +16,15 @@ import org.gbif.registry.metasync.api.MetadataSynchroniser;
 import org.gbif.registry.metasync.protocols.digir.DigirMetadataSynchroniser;
 import org.gbif.registry.metasync.util.HttpClientFactory;
 
+import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class Runner {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Runner.class);
 
   public static void main(String[] args) {
     SLF4JBridgeHandler.removeHandlersForRootLogger();
@@ -35,7 +41,12 @@ public class Runner {
     // UUID uuid = UUID.fromString("7ee758ae-2548-4d22-8bc8-b10950a4bce9");
 
     // synchroniser.synchroniseInstallation(uuid);
-    synchroniser.synchroniseAllInstallations();
+    Context context = new Context();
+    synchroniser.synchroniseAllInstallations(1000, context);
+    LOG.info("Finished synchronizing, counters follow:");
+    for (Entry<String, Integer> e : context.getCounters().entrySet()) {
+      LOG.info("{}: {}", e.getKey(), e.getValue());
+    }
   }
 
 }
