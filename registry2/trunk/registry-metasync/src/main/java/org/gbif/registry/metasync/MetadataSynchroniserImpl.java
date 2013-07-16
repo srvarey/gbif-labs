@@ -50,7 +50,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
   }
 
   @Override
-  public void synchroniseInstallation(UUID key) {
+  public void synchroniseInstallation(UUID key, Context context) {
     checkNotNull(key, "key can't be null");
 
     Installation installation = validateInstallation(key);
@@ -58,18 +58,18 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
 
     for (MetadataProtocolHandler protocolHandler : protocolHandlers) {
       if (protocolHandler.canHandle(installation)) {
-        doSynchroniseInstallation(installation, hostedDatasets, protocolHandler);
+        doSynchroniseInstallation(installation, hostedDatasets, protocolHandler, context);
       }
     }
   }
 
   @Override
-  public void synchroniseAllInstallations() {
-    synchroniseAllInstallations(1);
+  public void synchroniseAllInstallations(Context context) {
+    synchroniseAllInstallations(1, context);
   }
 
   @Override
-  public void synchroniseAllInstallations(int parallel) {
+  public void synchroniseAllInstallations(int parallel, final Context context) {
     checkArgument(parallel > 0, "parallel has to be greater than 0");
     ExecutorService executor = Executors.newFixedThreadPool(parallel);
 
@@ -83,9 +83,10 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
           @Override
           public void run() {
             try {
-              synchroniseInstallation(installation.getKey());
+              synchroniseInstallation(installation.getKey(), context);
             } catch (Exception e) {
               LOG.debug("Failed sync [{}]", installation.getKey());
+              context.incrementCounter(installation.getType() + ".exception." + e.getClass().getCanonicalName());
               // LOG.debug("Caught exception synchronising Installation [{}], ignoring", installation.getKey(), e);
             }
           }
@@ -115,7 +116,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
    * and processing its result.
    */
   private void doSynchroniseInstallation(
-    Installation installation, List<Dataset> hostedDatasets, MetadataProtocolHandler protocolHandler
+    Installation installation, List<Dataset> hostedDatasets, MetadataProtocolHandler protocolHandler, Context context
     ) {
     LOG.info("Syncing Installation [{}] of type [{}]", installation.getKey(), installation.getType());
     try {
@@ -127,9 +128,9 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
         result.addedDatasets.size(),
         result.deletedDatasets.size(),
         result.existingDatasets.size());
-      saveSyncResults(result, installation);
+      saveSyncResults(result, installation, context);
     } catch (MetadataException e) {
-      failedSynchronisation(installation, e);
+      failedSynchronisation(installation, e, context);
     }
   }
 
@@ -157,20 +158,23 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
    * <li>Updating existing Installations, Datasets and Endpoints</li>
    * </ul>
    */
-  private void saveSyncResults(SyncResult result, Installation installation) {
-    saveAddedDatasets(result, installation);
-    saveDeletedDatasets(result);
-    saveUpdatedDatasets(result);
+  private void saveSyncResults(SyncResult result, Installation installation, Context context) {
+    saveAddedDatasets(result, installation, context);
+    saveDeletedDatasets(result, installation, context);
+    saveUpdatedDatasets(result, installation, context);
   }
 
-  private void saveUpdatedDatasets(SyncResult result) {// Update existing datasets and their endpoints
+  private void saveUpdatedDatasets(SyncResult result, Installation installation, Context context) {// Update existing
+// datasets and their endpoints
     for (Map.Entry<Dataset, Dataset> entry : result.existingDatasets.entrySet()) {
       Dataset existingDataset = entry.getKey();
       if (existingDataset.isLockedForAutoUpdate()) {
         LOG.info("Dataset [{}] updated at source untouched in Registry because it's locked", existingDataset.getKey());
+        context.incrementCounter(installation.getType() + ".dataset.updateIgnoredDueToLock");
       } else {
         LOG.info("Updating dataset [{}]", existingDataset.getKey());
         datasetService.update(existingDataset);
+        context.incrementCounter(installation.getType() + ".dataset.updated");
       }
 
       // TODO: Update the rest
@@ -178,18 +182,21 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
     }
   }
 
-  private void saveDeletedDatasets(SyncResult result) {// Delete datasets that don't exist anymore
+  private void saveDeletedDatasets(SyncResult result, Installation installation, Context context) {// Delete datasets
+// that don't exist anymore
     for (Dataset dataset : result.deletedDatasets) {
       if (dataset.isLockedForAutoUpdate()) {
         LOG.info("Dataset [{}] deleted at source but left in Registry because it's locked", dataset.getKey());
+        context.incrementCounter(installation.getType() + ".dataset.deletedIgnoredDueToLock");
       } else {
         LOG.info("Deleting dataset [{}]", dataset.getKey());
         datasetService.delete(dataset.getKey());
+        context.incrementCounter(installation.getType() + ".dataset.deleted");
       }
     }
   }
 
-  private void saveAddedDatasets(SyncResult result, Installation installation) {
+  private void saveAddedDatasets(SyncResult result, Installation installation, Context context) {
     // Process all added datasets, currently there's a bug in Registry WS where the full object is validated
     // (including nested objects) even though only a subset is set. That's why we have to manually back up machine tags
     // and endpoints and set them to null.
@@ -212,12 +219,13 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
       for (Identifier identifier : dataset.getIdentifiers()) {
         datasetService.addIdentifier(uuid, identifier);
       }
+      context.incrementCounter(installation.getType() + ".dataset.newDatasetCreated");
     }
   }
 
-  private void failedSynchronisation(Installation installation, MetadataException e) {
+  private void failedSynchronisation(Installation installation, MetadataException e, Context context) {
     LOG.info("Failed synchronisation because of [{}]", e.getError());
-    // TODO: Do it properly
+    context.incrementCounter(installation.getType() + ".exception." + e.getClass().getCanonicalName());
   }
 
   /**
