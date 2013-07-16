@@ -12,7 +12,6 @@ public final class Constants {
   // BEGIN: "Names" used in Machine Tags
   public static final String DIGIR_CODE = "code";
   public static final String DIGIR_MAX_SEARCH_RESPONSE_RECORDS = "maxSearchResponseRecords";
-  public static final String TAPIR_LOCAL_ID = "localId";
   public static final String CONCEPTUAL_SCHEMA = "conceptualSchema";
   public static final String DATE_LAST_UPDATED = "dateLastUpdated";
   public static final String DECLARED_COUNT = "declaredCount";
