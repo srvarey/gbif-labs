@@ -10,6 +10,7 @@ import org.gbif.registry.metasync.protocols.HttpGetMatcher;
 import org.gbif.registry.metasync.util.Constants;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
@@ -77,7 +78,6 @@ public class TapirMetadataSynchroniserTest {
   @Test
   public void testDeletedDataset() throws Exception {
     Dataset dataset = new Dataset();
-    dataset.addMachineTag(MachineTag.newInstance(Constants.METADATA_NAMESPACE, Constants.TAPIR_LOCAL_ID, "foobar"));
     dataset.setTitle("Foobar");
 
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=capabilities")))).thenReturn(
@@ -96,8 +96,10 @@ public class TapirMetadataSynchroniserTest {
   @Test
   public void testUpdatedDataset() throws Exception {
     Dataset dataset = new Dataset();
-    dataset.addMachineTag(MachineTag.newInstance(Constants.METADATA_NAMESPACE, Constants.TAPIR_LOCAL_ID, "nmr"));
     dataset.setTitle("Foobar");
+    Endpoint endpoint = new Endpoint();
+    endpoint.setUrl("http://localhost/nmr");
+    dataset.addEndpoint(endpoint);
 
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=capabilities")))).thenReturn(
       prepareResponse(200, "tapir/capabilities1.xml"));
