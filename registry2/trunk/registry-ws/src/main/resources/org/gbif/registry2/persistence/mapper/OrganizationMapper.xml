@@ -206,7 +206,7 @@
     UPDATE organization_contact
     SET is_primary=#{primary,jdbcType=BOOLEAN},
     type=#{type,jdbcType=OTHER}
-    WHERE organization_key=#{targetEntityKey,jdbcType=OTHER}
+    WHERE organization_key=#{targetEntityKey,jdbcType=OTHER} AND contact_key=#{contactKey,jdbcType=INTEGER} 
   </update>
 
   <select id="listContacts" resultType="Contact">

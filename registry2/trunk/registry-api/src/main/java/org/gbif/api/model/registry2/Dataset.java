@@ -153,8 +153,6 @@ public class Dataset
     this.title = title;
   }
 
-  @NotNull
-  @Size(min = 10)
   @Override
   public String getDescription() {
     return description;
@@ -420,7 +418,6 @@ public class Dataset
   }
 
   @Override
-  @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
   }
@@ -434,7 +431,6 @@ public class Dataset
   }
 
   @Override
-  @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;
   }

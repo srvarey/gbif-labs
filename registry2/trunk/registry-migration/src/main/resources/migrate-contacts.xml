@@ -17,7 +17,7 @@
      		ELSE trim(last_name)
      	END AS last_name,
     	CASE
-    		WHEN char_length(trim(description))&lt;10 THEN NULL
+    		WHEN char_length(trim(description))&lt;1 THEN NULL
     		ELSE description
     	END AS description,
     	CASE

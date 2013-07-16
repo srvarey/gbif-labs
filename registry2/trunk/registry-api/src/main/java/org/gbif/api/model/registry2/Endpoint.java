@@ -69,7 +69,6 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
   }
 
   @Nullable
-  @Size(min = 10)
   public String getDescription() {
     return description;
   }

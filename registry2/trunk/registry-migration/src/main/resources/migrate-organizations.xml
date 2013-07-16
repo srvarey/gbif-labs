@@ -12,7 +12,7 @@
           ar.has_accepted AS endorsement_approved,
           a.ws_password AS password,
           a.name AS title,
-          CASE WHEN char_length(trim(a.description))&lt;10 THEN null ELSE a.description END AS description,
+          CASE WHEN char_length(trim(a.description))&lt;1 THEN null ELSE a.description END AS description,
           CASE WHEN a.language IS NULL THEN 'en' WHEN char_length(trim(a.language))&lt;2 THEN 'en' ELSE a.language END AS language,
           CASE WHEN char_length(trim(a.email))&lt;5 THEN null ELSE a.email END AS email,
           CASE WHEN char_length(trim(a.phone))&lt;5 THEN null ELSE a.phone END AS phone,
