@@ -1,0 +1,14 @@
+DiGIR:
+* DOI Identifier is created but not merged with existing one or persisted yet
+* convertToDataset: Make sure that we're capturing all the information we need/want
+* EndpointType needs to be set to DIGIR or DIGIR_MANIS correctly
+
+TAPIR:
+* getRecordCount: Needs to be implemented
+* Tapir & BioCASe: Think about what we want to do when there is an exception during processing one Endpoint. Currently the sync is aborted which might be bad behavior.
+
+BioCASe:
+* BiocaseMetadataSynchroniser#doNewStyleInventory: Needs to return information about Archives
+* BiocaseMetadataSynchroniser#convertToDataset: Needs to be implemented
+* BaseProtocolHandler: Not very testable because you can't inject a mock http client etc.
+* BaseProtocolHandler: The Contact comparison works but it sucks that it needs to be adjusted whenever Contact changes...
