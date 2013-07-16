@@ -10,7 +10,6 @@ import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.service.registry2.InstallationService;
-import org.gbif.api.vocabulary.Language;
 import org.gbif.api.vocabulary.registry2.DatasetType;
 import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.api.MetadataProtocolHandler;
@@ -25,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -81,13 +79,14 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
       results = installationService.list(page);
       for (final Installation installation : results.getResults()) {
         executor.submit(new Runnable() {
+
           @Override
           public void run() {
             try {
               synchroniseInstallation(installation.getKey());
             } catch (Exception e) {
               LOG.debug("Failed sync [{}]", installation.getKey());
-              //LOG.debug("Caught exception synchronising Installation [{}], ignoring", installation.getKey(), e);
+              // LOG.debug("Caught exception synchronising Installation [{}], ignoring", installation.getKey(), e);
             }
           }
         });
@@ -117,7 +116,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
    */
   private void doSynchroniseInstallation(
     Installation installation, List<Dataset> hostedDatasets, MetadataProtocolHandler protocolHandler
-  ) {
+    ) {
     LOG.info("Syncing Installation [{}] of type [{}]", installation.getKey(), installation.getType());
     try {
       SyncResult result = protocolHandler.syncInstallation(installation, hostedDatasets);
@@ -125,9 +124,9 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
         return;
       }
       LOG.debug("Added: [{}], Deleted: [{}], Updated [{}]",
-                result.addedDatasets.size(),
-                result.deletedDatasets.size(),
-                result.existingDatasets.size());
+        result.addedDatasets.size(),
+        result.deletedDatasets.size(),
+        result.existingDatasets.size());
       saveSyncResults(result, installation);
     } catch (MetadataException e) {
       failedSynchronisation(installation, e);
@@ -171,10 +170,6 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
         LOG.info("Dataset [{}] updated at source untouched in Registry because it's locked", existingDataset.getKey());
       } else {
         LOG.info("Updating dataset [{}]", existingDataset.getKey());
-        existingDataset.setModifiedBy("Metadata synchroniser");
-        if (existingDataset.getDescription() == null) {
-          existingDataset.setDescription("DUMMY DESCRIPTION");
-        }
         datasetService.update(existingDataset);
       }
 
@@ -203,52 +198,18 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
       dataset.setInstallationKey(installation.getKey());
       dataset.setType(DatasetType.OCCURRENCE);
 
-      // BEGIN: Workaround for required language
-      if (dataset.getLanguage() == null) {
-        dataset.setLanguage(Language.ENGLISH);
-      }
-      // END: Workaround for required language
-
-      // BEGIN: Workaround for validation of nested objects
-      List<Contact> contacts = dataset.getContacts();
-      dataset.setContacts(null);
-      List<MachineTag> machineTags = dataset.getMachineTags();
-      dataset.setMachineTags(null);
-      List<Endpoint> endpoints = dataset.getEndpoints();
-      dataset.setEndpoints(null);
-      List<Identifier> identifiers = dataset.getIdentifiers();
-      dataset.setIdentifiers(null);
-      // END: Workaround for validation of nested objects
-
-      // BEGIN: Workaround for minimum length of 10 for Dataset descriptions
-      String tmpString = dataset.getDescription() == null ? "" : dataset.getDescription();
-      dataset.setDescription(Strings.padEnd(tmpString, 10, 'X'));
-      // END: Workaround for minimum length of 10 for Dataset descriptions
-
-      // BEGIN: Workaround for minimum length of 10 for Dataset citation text
-      if (dataset.getCitation() != null) {
-        tmpString = dataset.getCitation().getText() == null ? "" : dataset.getCitation().getText();
-        dataset.getCitation().setText(Strings.padEnd(tmpString, 10, 'X'));
-      }
-      // END: Workaround for minimum length of 10 for Dataset citation text
-
       UUID uuid = datasetService.create(dataset);
       LOG.info("Created new Dataset with id [{}]", uuid);
-      for (Contact contact : contacts) {
+      for (Contact contact : dataset.getContacts()) {
         datasetService.addContact(uuid, contact);
       }
-      for (MachineTag machineTag : machineTags) {
+      for (MachineTag machineTag : dataset.getMachineTags()) {
         datasetService.addMachineTag(uuid, machineTag);
       }
-      for (Endpoint endpoint : endpoints) {
-        // BEGIN: Workaround for minimum length of 10 for Endpoint descriptions
-        tmpString = endpoint.getDescription() == null ? "" : endpoint.getDescription();
-        endpoint.setDescription(Strings.padEnd(tmpString, 10, 'X'));
-        // END: Workaround for minimum length of 10 for Endpoint descriptions
-
+      for (Endpoint endpoint : dataset.getEndpoints()) {
         datasetService.addEndpoint(uuid, endpoint);
       }
-      for (Identifier identifier : identifiers) {
+      for (Identifier identifier : dataset.getIdentifiers()) {
         datasetService.addIdentifier(uuid, identifier);
       }
     }
@@ -261,9 +222,8 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
 
   /**
    * Gets all hosted datasets for an Installation.
-   *
+   * 
    * @param key of the Installation
-   *
    * @return list of Datasets for this Installation, might be empty but never null
    */
   private List<Dataset> getHostedDatasets(UUID key) {
