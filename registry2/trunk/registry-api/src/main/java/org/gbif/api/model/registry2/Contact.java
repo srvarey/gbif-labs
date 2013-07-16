@@ -105,7 +105,6 @@ public class Contact implements Address, LenientEquals<Contact> {
   }
 
   @Nullable
-  @Size(min = 10)
   public String getDescription() {
     return description;
   }

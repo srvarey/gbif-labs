@@ -41,7 +41,6 @@ public interface NetworkEntity {
   void setTitle(String title);
 
   @Nullable
-  @Size(min = 10)
   String getDescription();
 
   void setDescription(String description);

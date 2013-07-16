@@ -76,6 +76,12 @@
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common-service</artifactId>
     </dependency>
+    <!-- Used only by the report running -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!--dependency>
       <groupId>com.google.code.findbugs</groupId>

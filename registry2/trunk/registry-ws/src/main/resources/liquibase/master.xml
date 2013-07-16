@@ -15,5 +15,6 @@
   <include file="liquibase/009-org_country_idx.xml" />
   <include file="liquibase/010-installation_password.xml" />
   <include file="liquibase/011-node_types.xml" />
+  <include file="liquibase/012-validation-relax.xml" />
 
 </databaseChangeLog>

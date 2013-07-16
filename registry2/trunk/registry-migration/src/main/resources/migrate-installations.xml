@@ -11,7 +11,7 @@
           aHostingOrg.uuid AS organization_key,
           CASE a.category WHEN 20000 THEN 'DIGIR_INSTALLATION' WHEN 20010 THEN 'TAPIR_INSTALLATION' WHEN 20020 THEN 'BIOCASE_INSTALLATION' WHEN 20030 THEN 'IPT_INSTALLATION' WHEN 20040 THEN 'HTTP_INSTALLATION' END AS type,
           CASE WHEN a.name IS NULL THEN 'Unknown' WHEN char_length(trim(a.name))&lt;2 THEN 'Unknown' ELSE trim(a.name) END AS title,
-          CASE WHEN char_length(trim(a.description))&lt;10 THEN null ELSE a.description END AS description,
+          CASE WHEN char_length(trim(a.description))&lt;1 THEN null ELSE a.description END AS description,
           COALESCE(a.created, a.modified, now()) AS created,
           COALESCE(a.modified, a.created, now()) AS modified,
           a.deleted,
