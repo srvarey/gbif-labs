@@ -92,7 +92,7 @@ public class Dataset
   private String alias;
   private String abbreviation;
   private String description;
-  private Language language;
+  private Language language = Language.ENGLISH; // sensible default as it is not null
   private URI homepage;
   private URI logoUrl;
   private Citation citation = new Citation();
