@@ -53,7 +53,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
   public void synchroniseInstallation(UUID key, Context context) {
     checkNotNull(key, "key can't be null");
 
-    Installation installation = validateInstallation(key);
+    Installation installation = validateInstallation(key, context);
     List<Dataset> hostedDatasets = getHostedDatasets(key);
 
     for (MetadataProtocolHandler protocolHandler : protocolHandlers) {
@@ -86,7 +86,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
               synchroniseInstallation(installation.getKey(), context);
             } catch (Exception e) {
               LOG.debug("Failed sync [{}]", installation.getKey());
-              context.incrementCounter(installation.getType() + ".exception." + e.getClass().getCanonicalName());
+              context.incrementCounter(installation.getType() + ".exception." + e.getClass().getSimpleName());
               // LOG.debug("Caught exception synchronising Installation [{}], ignoring", installation.getKey(), e);
             }
           }
@@ -138,13 +138,15 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
    * Does some checks whether we can synchronise this Installation or not. They are not exhaustive as some things can
    * only be determined by the protocol handlers.
    */
-  private Installation validateInstallation(UUID key) {
+  private Installation validateInstallation(UUID key, Context context) {
     Installation installation = installationService.get(key);
     if (installation == null) {
+      context.incrementCounter("installation.notFoundInRegistry");
       throw new IllegalArgumentException("Installation with key [" + key + "] does not exist");
     }
 
     if (installation.getEndpoints() == null || installation.getEndpoints().isEmpty()) {
+      context.incrementCounter("installation.noEndpointsInRegistry");
       throw new IllegalArgumentException("Installation with key [" + key + "]" + " has no endpoints");
     }
     return installation;
@@ -225,7 +227,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
 
   private void failedSynchronisation(Installation installation, MetadataException e, Context context) {
     LOG.info("Failed synchronisation because of [{}]", e.getError());
-    context.incrementCounter(installation.getType() + ".exception." + e.getClass().getCanonicalName());
+    context.incrementCounter(installation.getType() + ".exception." + e.getClass().getSimpleName());
   }
 
   /**
