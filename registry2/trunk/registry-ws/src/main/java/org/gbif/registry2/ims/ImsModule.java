@@ -31,6 +31,9 @@ import org.gbif.registry2.persistence.mapper.handler.UuidTypeHandler;
 import org.gbif.service.guice.PrivateServiceModule;
 
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -55,9 +58,8 @@ public class ImsModule extends PrivateServiceModule {
   @Override
   protected void configureService() {
     // is any real IMS database configured?
-    if (getVerbatimProperties().getProperty("ims.db.JDBC.url").startsWith("$")) {
+    if (!imsConnectionWorking()) {
       // no, use an empty module that injects mocks
-      LOG.info("IMS not configured");
       install( new ImsEmptyModule() );
 
     } else {
@@ -70,6 +72,37 @@ public class ImsModule extends PrivateServiceModule {
     expose(Augmenter.class);
   }
 
+  /**
+   * @return true if we can connect to the IMS
+   */
+  private boolean imsConnectionWorking() {
+    if (getVerbatimProperties().getProperty("ims.db.JDBC.url").startsWith("$")) {
+      LOG.info("IMS not configured");
+      return false;
+    }
+    // test connection manually, the datasource pools cannot handle timeout settings
+    // see http://dev.gbif.org/issues/browse/REG-407
+    try {
+      Class.forName("com.filemaker.jdbc.Driver");
+      DriverManager.setLoginTimeout(20); // fail after 20 seconds
+      Connection c = DriverManager.getConnection(imsProp("JDBC.url"), imsProp("JDBC.username"), imsProp("JDBC.password"));
+      c.close();
+
+    } catch (ClassNotFoundException e) {
+      LOG.warn("IMS configured, but Filemaker JDBC driver missing");
+      return false;
+
+    } catch (SQLException e) {
+      LOG.warn("IMS configured, but failed to connect");
+      return false;
+    }
+
+    return true;
+  }
+
+  private String imsProp(String key){
+    return getVerbatimProperties().getProperty(PREFIX + key);
+  }
   /**
    * Sets up the MyBatis structure. Note that MyBatis Guice uses named injection parameters (e.g. JDBC.url), and they
    * are filtered and bound in the enclosing class.
