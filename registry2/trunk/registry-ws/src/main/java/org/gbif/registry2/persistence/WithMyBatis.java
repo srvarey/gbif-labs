@@ -171,12 +171,11 @@ public class WithMyBatis {
   }
 
   @Transactional
-  public static int addTag(TagMapper tagMapper, TaggableMapper taggableMapper, UUID targetEntityKey, String value) {
+  public static int addTag(TagMapper tagMapper, TaggableMapper taggableMapper, UUID targetEntityKey, Tag tag) {
     // Mybatis needs an object to set the key on
-    Tag t = new Tag(value, "TODO: Implement with Apache shiro?");
-    tagMapper.createTag(t);
-    taggableMapper.addTag(targetEntityKey, t.getKey());
-    return t.getKey();
+    tagMapper.createTag(tag);
+    taggableMapper.addTag(targetEntityKey, tag.getKey());
+    return tag.getKey();
   }
 
   public static void deleteTag(TaggableMapper taggableMapper, UUID targetEntityKey, int tagKey) {

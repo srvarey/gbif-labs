@@ -65,16 +65,12 @@ public interface NetworkEntity {
   void setDeleted(Date deleted);
 
   @Nullable
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   String getCreatedBy();
 
   public void setCreatedBy(String createdBy);
 
   @Nullable
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getModifiedBy();
 

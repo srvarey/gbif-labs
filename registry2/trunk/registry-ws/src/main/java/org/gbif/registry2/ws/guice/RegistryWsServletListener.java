@@ -16,13 +16,20 @@ import org.gbif.registry2.events.EventModule;
 import org.gbif.registry2.ims.ImsModule;
 import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry2.search.guice.RegistrySearchModule;
+import org.gbif.registry2.ws.servlet.LegacyWsFilter;
+import org.gbif.user.guice.DrupalMyBatisModule;
 import org.gbif.ws.server.guice.GbifServletListener;
+import org.gbif.ws.server.guice.WsAuthModule;
+import org.gbif.ws.util.PropertiesUtil;
 
 import java.util.List;
 import java.util.Properties;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.sun.jersey.spi.container.ContainerRequestFilter;
 import org.apache.bval.guice.ValidationModule;
 
 /**
@@ -31,9 +38,20 @@ import org.apache.bval.guice.ValidationModule;
 public class RegistryWsServletListener extends GbifServletListener {
 
   public static final String APPLICATION_PROPERTIES = "registry.properties";
+  private final static String PACKAGES = "org.gbif.registry2.ws.resources, org.gbif.registry2.ws.provider";
+  public static final List<Class<? extends ContainerRequestFilter>> requestFilters = Lists.newArrayList();
+
+  static {
+    requestFilters.add(LegacyWsFilter.class);
+  }
 
   public RegistryWsServletListener() {
-    super(APPLICATION_PROPERTIES, "org.gbif.registry2.ws.resources, org.gbif.registry2.ws.provider", false);
+    super(PropertiesUtil.readFromClasspath(APPLICATION_PROPERTIES), PACKAGES, true, null, requestFilters);
+  }
+
+  @VisibleForTesting
+  public RegistryWsServletListener(Properties properties) {
+    super(properties, PACKAGES, true, null, requestFilters);
   }
 
   @Override
@@ -43,8 +61,15 @@ public class RegistryWsServletListener extends GbifServletListener {
       StringTrimInterceptor.newMethodInterceptingModule(),
       new ValidationModule(),
       new EventModule(),
-      new RegistrySearchModule(props)
+      new RegistrySearchModule(props),
+      new DrupalMyBatisModule(props),
+      new WsAuthModule(props)
       );
   }
 
+  @VisibleForTesting
+  @Override
+  protected Injector getInjector() {
+    return super.getInjector();
+  }
 }

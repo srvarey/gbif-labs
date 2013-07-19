@@ -85,6 +85,10 @@
       <artifactId>jsr305</artifactId>
     </dependency>
     <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.gbif</groupId>
       <artifactId>gbif-api</artifactId>
     </dependency>
@@ -138,6 +142,10 @@
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis-ehcache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>drupal-mybatis</artifactId>
     </dependency>
     <dependency>
       <!-- dependency:analyze reports a false positive here -->

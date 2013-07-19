@@ -68,9 +68,14 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
   }
 
   @Override
-  public int addTag(UUID targetEntityKey, String value) {
+  public int addTag(UUID targetEntityKey, Tag tag) {
     // post the value to .../uuid/tag and expect an int back
-    return post(Integer.class, (Object) value, targetEntityKey.toString(), "tag");
+    return post(Integer.class, tag, targetEntityKey.toString(), "tag");
+  }
+
+  @Override
+  public int addTag(UUID targetEntityKey, String value) {
+    return addTag(targetEntityKey, new Tag(value));
   }
 
   @Override
@@ -134,9 +139,8 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
 
   @Override
   public int addMachineTag(
-    @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name, @NotNull String value
-  ) {
-    return addMachineTag(targetEntityKey, MachineTag.newInstance(namespace, name, value));
+    @NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name, @NotNull String value) {
+    return addMachineTag(targetEntityKey, new MachineTag(namespace, name, value));
   }
 
   @Override

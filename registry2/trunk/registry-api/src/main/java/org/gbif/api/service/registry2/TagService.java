@@ -26,6 +26,16 @@ public interface TagService {
 
   int addTag(@NotNull UUID targetEntityKey, @NotNull String value);
 
+  /**
+   * Add a new Tag to a target entity.
+   *
+   * @param targetEntityKey key of target entity
+   * @param tag             Tag to add
+   *
+   * @return key of Tag added
+   */
+  int addTag(@NotNull UUID targetEntityKey, @NotNull Tag tag);
+
   void deleteTag(@NotNull UUID taggedEntityKey, int tagKey);
 
   List<Tag> listTags(@NotNull UUID taggedEntityKey, @Nullable String owner);

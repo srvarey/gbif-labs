@@ -77,8 +77,6 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
     this.description = description;
   }
 
-  @Null(groups = PrePersist.class)
-  @NotNull(groups = PostPersist.class)
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -88,8 +86,6 @@ public class Endpoint implements MachineTaggable, LenientEquals<Endpoint> {
     this.createdBy = createdBy;
   }
 
-  @Null(groups = PrePersist.class)
-  @NotNull(groups = PostPersist.class)
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;

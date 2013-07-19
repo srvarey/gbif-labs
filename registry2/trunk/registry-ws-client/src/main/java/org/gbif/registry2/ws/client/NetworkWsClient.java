@@ -16,8 +16,11 @@ import org.gbif.api.model.registry2.Network;
 import org.gbif.api.service.registry2.NetworkService;
 import org.gbif.registry2.ws.client.guice.RegistryWs;
 
+import javax.annotation.Nullable;
+
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
  * Client-side implementation to the NetworkService.
@@ -25,8 +28,8 @@ import com.sun.jersey.api.client.WebResource;
 public class NetworkWsClient extends BaseNetworkEntityClient<Network> implements NetworkService {
 
   @Inject
-  public NetworkWsClient(@RegistryWs WebResource resource) {
-    super(Network.class, resource.path("network"), null, GenericTypes.PAGING_NETWORK);
+  public NetworkWsClient(@RegistryWs WebResource resource, @Nullable ClientFilter authFilter) {
+    super(Network.class, resource.path("network"), authFilter, GenericTypes.PAGING_NETWORK);
   }
 
 }

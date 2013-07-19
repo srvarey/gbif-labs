@@ -18,12 +18,15 @@ import org.gbif.registry2.ims.ImsModule;
 import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry2.search.guice.RegistrySearchModule;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
+import org.gbif.registry2.ws.guice.TestValidateInterceptor;
 import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.NetworkResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
 import org.gbif.registry2.ws.resources.legacy.IptResource;
+import org.gbif.user.guice.DrupalMyBatisModule;
+import org.gbif.ws.client.guice.GbifApplicationAuthModule;
 
 import java.io.IOException;
 import java.sql.Driver;
@@ -81,12 +84,13 @@ public class RegistryTestModules {
               bind(NetworkResource.class);
               bind(IptResource.class);
             }
-          }, new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(),
-            new ValidationModule());
+          }, TestValidateInterceptor.newMethodInterceptingModule(),
+            new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(),
+            new ValidationModule(),
+            new DrupalMyBatisModule(p));
       } catch (IOException e) {
         throw Throwables.propagate(e);
       }
-
     }
     return webservice;
   }
@@ -98,7 +102,12 @@ public class RegistryTestModules {
     if (webserviceClient == null) {
       Properties props = new Properties();
       props.setProperty("registry.ws.url", "http://localhost:" + RegistryServer.getPort());
-      webserviceClient = Guice.createInjector(new RegistryWsClientModule(props));
+      props.setProperty("application.key", "gbif.registry-ws-client-it");
+      props.setProperty("application.secret", "6a55ca16c053e269a9602c02922b30ce49c49be3a68bb2d8908b24d7c1");
+      // Create authentication module, and set principal name, equal to a GBIF User unique account name
+      GbifApplicationAuthModule auth = new GbifApplicationAuthModule(props);
+      auth.setPrincipal("admin");
+      webserviceClient = Guice.createInjector(new RegistryWsClientModule(props), auth);
     }
     return webserviceClient;
   }

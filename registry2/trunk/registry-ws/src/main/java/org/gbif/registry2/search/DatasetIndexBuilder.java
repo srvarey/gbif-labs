@@ -257,6 +257,11 @@ public class DatasetIndexBuilder {
     }
 
     @Override
+    public int addTag(@NotNull UUID targetEntityKey, @NotNull Tag tag) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
     public void deleteTag(@NotNull UUID taggedEntityKey, int tagKey) {
       throw new IllegalStateException("Method not supported in caching service");
     }

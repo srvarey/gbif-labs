@@ -18,7 +18,6 @@ import org.gbif.registry2.ws.util.LegacyResourceUtils;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
@@ -29,6 +28,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -65,37 +65,40 @@ public class IptResource {
    * Response with Status.CREATED returned.
    * 
    * @param installation IptInstallation with HTTP form parameters having been injected from Jersey
-   * @param request HttpContext to access HTTP Headers during authorization
+   * @param security SecurityContext (security related information)
    * @return Response with Status.CREATED if successful
    */
   @POST
   @Path("register")
   @Produces(MediaType.APPLICATION_XML)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response registerIpt(@InjectParam LegacyInstallation installation, @Context HttpContext request) {
-
-    // TODO remove once authorization interceptor implemented
-    LegacyRequestAuthorization authorization = new LegacyRequestAuthorization(organizationService, request);
-    if (!authorization.isAuthorizedToModifyOrganization()) {
-      LOG.error("Request to register IPT not authorized!");
-      return Response.status(Response.Status.UNAUTHORIZED).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
-        .build();
-    }
-
+  public Response registerIpt(@InjectParam LegacyInstallation installation, @Context SecurityContext security) {
     if (installation != null) {
+      // set required fields
+      String user = security.getUserPrincipal().getName();
+      installation.setCreatedBy(user);
+      installation.setModifiedBy(user);
       // add contact and endpoint to installation
       installation.prepare();
       // primary contact and hosting organization key are mandatory
-      if (installation.getPrimaryContact() != null && LegacyResourceUtils.isValid(installation, organizationService)) {
+      Contact primary = installation.getPrimaryContact();
+      if (primary != null && LegacyResourceUtils.isValid(installation, organizationService)) {
         // persist installation
         UUID key = installationService.create(installation);
         // persist contact
         if (key != null) {
+          // set primary contact's required fields
+          primary.setCreatedBy(user);
+          primary.setModifiedBy(user);
           // persist primary contact
-          installationService.addContact(key, installation.getPrimaryContact());
+          installationService.addContact(key, primary);
           // try to persist FEED endpoint (non-mandatory)
-          if (installation.getFeedEndpoint() != null) {
-            installationService.addEndpoint(key, installation.getFeedEndpoint());
+          Endpoint endpoint = installation.getFeedEndpoint();
+          if (endpoint != null) {
+            // set endpoint's required fields
+            endpoint.setCreatedBy(user);
+            endpoint.setModifiedBy(user);
+            installationService.addEndpoint(key, endpoint);
           }
           LOG.info("IPT installation registered successfully, key=%s", key.toString());
           // construct GenericEntity response object expected by IPT
@@ -125,24 +128,19 @@ public class IptResource {
    * 
    * @param installationKey installation key (UUID) coming in as path param
    * @param installation IptInstallation with HTTP form parameters having been injected from Jersey
-   * @param request HttpContext to access HTTP Headers during authorization
+   * @param security SecurityContext (security related information)
    * @return Response with Status.CREATED if successful
    */
   @POST
   @Path("update/{key}")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateIpt(@PathParam("key") UUID installationKey, @InjectParam LegacyInstallation installation,
-    @Context HttpContext request) {
-
-    // TODO remove once authorization interceptor implemented
-    LegacyRequestAuthorization authorization = new LegacyRequestAuthorization(installationService, request);
-    if (!authorization.isAuthorizedToModifyInstallation(installationKey)) {
-      LOG.error("Request to update IPT not authorized!");
-      return Response.status(Response.Status.UNAUTHORIZED).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
-        .build();
-    }
-
+    @Context SecurityContext security) {
     if (installation != null && installationKey != null) {
+      // set required fields
+      String user = security.getUserPrincipal().getName();
+      installation.setCreatedBy(user);
+      installation.setModifiedBy(user);
       // set key from path parameter
       installation.setKey(installationKey);
       // retrieve existing installation
@@ -156,6 +154,7 @@ public class IptResource {
       if (contact != null && LegacyResourceUtils
         .isValidOnUpdate(installation, installationService, organizationService)) {
         // update only fields that could have changed
+        existing.setModifiedBy(user);
         existing.setTitle(installation.getTitle());
         existing.setDescription(installation.getDescription());
         existing.setType(installation.getType());
@@ -164,8 +163,11 @@ public class IptResource {
         // persist changes
         installationService.update(existing);
 
+        // set primary contact's required field(s)
+        contact.setModifiedBy(user);
         // add/update primary contact: Contacts are mutable, so try to update if the Contact already exists
         if (contact.getKey() == null) {
+          contact.setCreatedBy(user);
           installationService.addContact(installationKey, contact);
         } else {
           installationService.updateContact(installationKey, contact);
@@ -176,8 +178,12 @@ public class IptResource {
         for (Endpoint endpoint : endpoints) {
           installationService.deleteEndpoint(installationKey, endpoint.getKey());
         }
-        if (installation.getFeedEndpoint() != null) {
-          installationService.addEndpoint(installationKey, installation.getFeedEndpoint());
+        Endpoint endpoint = installation.getFeedEndpoint();
+        if (endpoint != null) {
+          // set endpoint's required fields
+          endpoint.setCreatedBy(user);
+          endpoint.setModifiedBy(user);
+          installationService.addEndpoint(installationKey, endpoint);
         }
 
         LOG.info("IPT installation updated successfully, key={}", installationKey.toString());
@@ -197,30 +203,25 @@ public class IptResource {
    * Response with Status.CREATED returned.
    * 
    * @param dataset LegacyDataset with HTTP form parameters having been injected from Jersey
-   * @param request HttpContext to access HTTP Headers during authorization
+   * @param security SecurityContext (security related information)
    * @return Response with Status.CREATED if successful
    */
   @POST
   @Path("resource")
   @Produces(MediaType.APPLICATION_XML)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response registerDataset(@InjectParam LegacyDataset dataset, @Context HttpContext request) {
-
-    // TODO remove once authorization interceptor implemented
-    LegacyRequestAuthorization authorization = new LegacyRequestAuthorization(organizationService, request);
-    if (!authorization.isAuthorizedToModifyOrganization()) {
-      LOG.error("Request to register Dataset not authorized!");
-      return Response.status(Response.Status.UNAUTHORIZED).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
-        .build();
-    }
-
+  public Response registerDataset(@InjectParam LegacyDataset dataset, @Context SecurityContext security) {
     if (dataset != null) {
-      // add contact and endpoint(s) to dataset
-      dataset.prepare();
+      // set required fields
+      String user = security.getUserPrincipal().getName();
+      dataset.setCreatedBy(user);
+      dataset.setModifiedBy(user);
       // if the installation key was missing, try to infer it from owning organization's installations
       if (dataset.getInstallationKey() == null) {
         dataset.setInstallationKey(inferInstallationKey(dataset));
       }
+      // add contact and endpoint(s) to dataset
+      dataset.prepare();
       // primary contact, owning organization key, and installationKey are mandatory
       Contact contact = dataset.getPrimaryContact();
       if (contact != null && LegacyResourceUtils.isValid(dataset, organizationService, installationService)) {
@@ -228,14 +229,25 @@ public class IptResource {
         UUID key = datasetService.create(dataset);
         // persist contact
         if (key != null) {
+          // set primary contact's required fields
+          contact.setCreatedBy(user);
+          contact.setModifiedBy(user);
           // add primary contact
           datasetService.addContact(key, contact);
           // try to persist endpoint(s) (non-mandatory)
-          if (dataset.getEmlEndpoint() != null) {
-            datasetService.addEndpoint(key, dataset.getEmlEndpoint());
+          Endpoint emlEndpoint = dataset.getEmlEndpoint();
+          if (emlEndpoint != null) {
+            // set endpoint's required fields
+            emlEndpoint.setCreatedBy(user);
+            emlEndpoint.setModifiedBy(user);
+            datasetService.addEndpoint(key, emlEndpoint);
           }
-          if (dataset.getArchiveEndpoint() != null) {
-            datasetService.addEndpoint(key, dataset.getArchiveEndpoint());
+          Endpoint archiveEndpoint = dataset.getArchiveEndpoint();
+          if (archiveEndpoint != null) {
+            // set endpoint's required fields
+            archiveEndpoint.setCreatedBy(user);
+            archiveEndpoint.setModifiedBy(user);
+            datasetService.addEndpoint(key, archiveEndpoint);
           }
           LOG.info("Dataset registered successfully, key=%s", key.toString());
           // construct response object expected by IPT
@@ -263,6 +275,7 @@ public class IptResource {
    * 
    * @param datasetKey dataset key (UUID) coming in as path param
    * @param dataset LegacyDataset with HTTP form parameters having been injected from Jersey
+   * @param security SecurityContext (security related information)
    * @param request HttpContext to access HTTP Headers during authorization
    * @return with Status.CREATED (201) if successful
    */
@@ -270,18 +283,12 @@ public class IptResource {
   @Path("resource/{key}")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateDataset(@PathParam("key") UUID datasetKey, @InjectParam LegacyDataset dataset,
-    @Context HttpContext request) {
-
-    // TODO remove once authorization interceptor implemented
-    LegacyRequestAuthorization authorization =
-      new LegacyRequestAuthorization(organizationService, request, datasetService);
-    if (!authorization.isAuthorizedToModifyOrganizationsDataset(datasetKey)) {
-      LOG.error("Request to update Dataset not authorized!");
-      return Response.status(Response.Status.UNAUTHORIZED).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
-        .build();
-    }
-
+    @Context SecurityContext security, @Context HttpContext request) {
     if (dataset != null) {
+      // set required fields
+      String user = security.getUserPrincipal().getName();
+      dataset.setCreatedBy(user);
+      dataset.setModifiedBy(user);
       dataset.setKey(datasetKey);
       // retrieve existing dataset
       Dataset existing = datasetService.get(datasetKey);
@@ -294,12 +301,15 @@ public class IptResource {
         dataset.setInstallationKey(existing.getInstallationKey());
       }
       // populate owning organization from credentials
+      LegacyRequestAuthorization authorization =
+        new LegacyRequestAuthorization(organizationService, request, datasetService);
       dataset.setOwningOrganizationKey(authorization.getOrganizationKeyFromCredentials());
       // ensure the owning organization exists, the installation exists, primary contact exists, etc
       Contact contact = dataset.getPrimaryContact();
       if (contact != null && LegacyResourceUtils
         .isValidOnUpdate(dataset, datasetService, organizationService, installationService)) {
         // update only fields that could have changed
+        existing.setModifiedBy(user);
         existing.setTitle(dataset.getTitle());
         existing.setDescription(dataset.getDescription());
         existing.setHomepage(dataset.getHomepage());
@@ -312,8 +322,11 @@ public class IptResource {
         // persist changes
         datasetService.update(existing);
 
+        // set primary contact's required field(s)
+        contact.setModifiedBy(user);
         // add/update primary contact: Contacts are mutable, so try to update if the Contact already exists
         if (contact.getKey() == null) {
+          contact.setCreatedBy(user);
           datasetService.addContact(datasetKey, contact);
         } else {
           datasetService.updateContact(datasetKey, contact);
@@ -324,11 +337,19 @@ public class IptResource {
         for (Endpoint endpoint : endpoints) {
           datasetService.deleteEndpoint(datasetKey, endpoint.getKey());
         }
-        if (dataset.getEmlEndpoint() != null) {
-          datasetService.addEndpoint(datasetKey, dataset.getEmlEndpoint());
+        Endpoint emlEndpoint = dataset.getEmlEndpoint();
+        if (emlEndpoint != null) {
+          // set endpoint's required fields
+          emlEndpoint.setCreatedBy(user);
+          emlEndpoint.setModifiedBy(user);
+          datasetService.addEndpoint(datasetKey, emlEndpoint);
         }
-        if (dataset.getArchiveEndpoint() != null) {
-          datasetService.addEndpoint(datasetKey, dataset.getArchiveEndpoint());
+        Endpoint archiveEndpoint = dataset.getArchiveEndpoint();
+        if (archiveEndpoint != null) {
+          // set endpoint's required fields
+          archiveEndpoint.setCreatedBy(user);
+          archiveEndpoint.setModifiedBy(user);
+          datasetService.addEndpoint(datasetKey, archiveEndpoint);
         }
 
         LOG.info("Dataset updated successfully, key=%s", datasetKey.toString());
@@ -347,22 +368,12 @@ public class IptResource {
    * If deletion is successful, returns Response with Status.OK.
    * 
    * @param datasetKey dataset key (UUID) coming in as path param
-   * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.OK if successful
    */
   @DELETE
   @Path("resource/{key}")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8")
-  public Response deleteDataset(@PathParam("key") UUID datasetKey, @Context HttpContext request) {
-
-    // TODO remove once authorization interceptor implemented
-    LegacyRequestAuthorization authorization =
-      new LegacyRequestAuthorization(organizationService, request, datasetService);
-    if (!authorization.isAuthorizedToModifyOrganizationsDataset(datasetKey)) {
-      LOG.error("Request to update Dataset not authorized!");
-      return Response.status(Response.Status.UNAUTHORIZED).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
-        .build();
-    }
+  public Response deleteDataset(@PathParam("key") UUID datasetKey) {
 
     if (datasetKey != null) {
       // retrieve existing dataset

@@ -26,8 +26,11 @@ import org.gbif.registry2.utils.Organizations;
 import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
+import org.gbif.ws.client.filter.SimplePrincipalProvider;
 
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
@@ -61,15 +64,18 @@ public class InstallationIT extends NetworkEntityTest<Installation> {
     final Injector webservice = webservice();
     final Injector client = webserviceClient();
     return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(InstallationResource.class),
-      webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class)},
+      webservice.getInstance(OrganizationResource.class),
+      webservice.getInstance(NodeResource.class),
+      null},
       new Object[] {client.getInstance(InstallationService.class),
         client.getInstance(OrganizationService.class),
-        client.getInstance(NodeService.class)});
+        client.getInstance(NodeService.class),
+        client.getInstance(SimplePrincipalProvider.class)});
   }
 
-  public InstallationIT(
-    InstallationService service, OrganizationService organizationService, NodeService nodeService) {
-    super(service);
+  public InstallationIT(InstallationService service, OrganizationService organizationService, NodeService nodeService,
+    @Nullable SimplePrincipalProvider pp) {
+    super(service, pp);
     this.service = service;
     this.organizationService = organizationService;
     this.nodeService = nodeService;

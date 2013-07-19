@@ -43,6 +43,7 @@ import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
 import org.gbif.utils.file.FileUtils;
+import org.gbif.ws.client.filter.SimplePrincipalProvider;
 
 import java.io.IOException;
 import java.util.List;
@@ -105,7 +106,10 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
         webservice.getInstance(NodeResource.class),
         webservice.getInstance(InstallationResource.class),
         webservice.getInstance(Key.get(SolrServer.class, Names.named("Dataset"))),
-        webservice.getInstance(DatasetIndexUpdateListener.class)},
+        webservice.getInstance(DatasetIndexUpdateListener.class),
+        null // SimplePrincipalProvider only set in web service client
+        }
+      ,
       new Object[] {
         client.getInstance(DatasetService.class),
         client.getInstance(DatasetSearchService.class),
@@ -113,7 +117,8 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
         client.getInstance(NodeService.class),
         client.getInstance(InstallationService.class),
         null, // use the SOLR in Grizzly
-        null // use the SOLR in Grizzly
+        null, // use the SOLR in Grizzly
+        client.getInstance(SimplePrincipalProvider.class)
       }
       );
   }
@@ -125,8 +130,9 @@ public class DatasetIT extends NetworkEntityTest<Dataset> {
     NodeService nodeService,
     InstallationService installationService,
     @Nullable SolrServer solrServer,
-    @Nullable DatasetIndexUpdateListener datasetIndexUpdater) {
-    super(service);
+    @Nullable DatasetIndexUpdateListener datasetIndexUpdater,
+    @Nullable SimplePrincipalProvider pp) {
+    super(service, pp);
     this.service = service;
     this.searchService = searchService;
     this.organizationService = organizationService;

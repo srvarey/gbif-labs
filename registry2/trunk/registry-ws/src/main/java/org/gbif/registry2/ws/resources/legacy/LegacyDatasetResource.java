@@ -28,6 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -68,16 +69,16 @@ public class LegacyDatasetResource {
    * Response with Status.CREATED (201) returned.
    * 
    * @param dataset IptDataset with HTTP form parameters having been injected from Jersey
-   * @param request HttpContext to access HTTP Headers during authorization
+   * @param security SecurityContext (security related information)
    * @return Response
-   * @see IptResource#registerDataset(org.gbif.registry2.ws.model.LegacyDataset, com.sun.jersey.api.core.HttpContext)
+   * @see IptResource#registerDataset(org.gbif.registry2.ws.model.LegacyDataset, javax.ws.rs.core.SecurityContext)
    */
   @POST
   @Produces(MediaType.APPLICATION_XML)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response registerDataset(@InjectParam LegacyDataset dataset, @Context HttpContext request) {
+  public Response registerDataset(@InjectParam LegacyDataset dataset, @Context SecurityContext security) {
     // reuse existing subresource
-    return iptResource.registerDataset(dataset, request);
+    return iptResource.registerDataset(dataset, security);
   }
 
   /**
@@ -88,28 +89,21 @@ public class LegacyDatasetResource {
    * 
    * @param datasetKey dataset key (UUID) coming in as path param
    * @param dataset IptDataset with HTTP form parameters having been injected from Jersey
+   * @param security SecurityContext (security related information)
    * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.CREATED (201) if successful
-   * @see IptResource#updateDataset(java.util.UUID, org.gbif.registry2.ws.model.LegacyDataset,
-   *      com.sun.jersey.api.core.HttpContext)
    */
   @POST
   @Path("{key}")
   @Produces(MediaType.APPLICATION_XML)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateDataset(@PathParam("key") UUID datasetKey, @InjectParam LegacyDataset dataset,
-    @Context HttpContext request) {
-
-    // TODO remove once authorization interceptor implemented
-    LegacyRequestAuthorization authorization =
-      new LegacyRequestAuthorization(organizationService, request, datasetService);
-    if (!authorization.isAuthorizedToModifyOrganizationsDataset(datasetKey)) {
-      LOG.error("Request to update Dataset not authorized!");
-      return Response.status(Response.Status.UNAUTHORIZED).cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED)
-        .build();
-    }
-
+    @Context SecurityContext security, @Context HttpContext request) {
     if (dataset != null) {
+      // set required fields
+      String user = security.getUserPrincipal().getName();
+      dataset.setCreatedBy(user);
+      dataset.setModifiedBy(user);
       dataset.setKey(datasetKey);
       // retrieve existing dataset
       Dataset existing = datasetService.get(datasetKey);
@@ -132,12 +126,15 @@ public class LegacyDatasetResource {
       // type can't be derived from endpoints, since there are no endpoints supplied on this update, so re-set existing
       dataset.setType(existing.getType());
       // populate owning organization from credentials
+      LegacyRequestAuthorization authorization =
+        new LegacyRequestAuthorization(organizationService, request, datasetService);
       dataset.setOwningOrganizationKey(authorization.getOrganizationKeyFromCredentials());
       // ensure the owning organization exists, the installation exists, primary contact exists, etc
       Contact contact = dataset.getPrimaryContact();
       if (contact != null && LegacyResourceUtils
         .isValidOnUpdate(dataset, datasetService, organizationService, installationService)) {
         // update only fields that could have changed
+        existing.setModifiedBy(user);
         existing.setTitle(dataset.getTitle());
         existing.setDescription(dataset.getDescription());
         existing.setHomepage(dataset.getHomepage());
@@ -156,8 +153,11 @@ public class LegacyDatasetResource {
         // persist changes
         datasetService.update(existing);
 
+        // set primary contact's required field(s)
+        contact.setModifiedBy(user);
         // add/update primary contact: Contacts are mutable, so try to update if the Contact already exists
         if (contact.getKey() == null) {
+          contact.setCreatedBy(user);
           datasetService.addContact(datasetKey, contact);
         } else {
           datasetService.updateContact(datasetKey, contact);
@@ -255,15 +255,14 @@ public class LegacyDatasetResource {
    * If deletion is successful, returns Response with Status.OK.
    * 
    * @param datasetKey dataset key (UUID) coming in as path param
-   * @param request HttpContext to access HTTP Headers during authorization
    * @return Response with Status.OK if successful
-   * @see IptResource#deleteDataset(java.util.UUID, com.sun.jersey.api.core.HttpContext)
+   * @see IptResource#deleteDataset(java.util.UUID)
    */
   @DELETE
   @Path("{key}")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response deleteDataset(@PathParam("key") UUID datasetKey, @Context HttpContext request) {
+  public Response deleteDataset(@PathParam("key") UUID datasetKey) {
     // reuse existing method
-    return iptResource.deleteDataset(datasetKey, request);
+    return iptResource.deleteDataset(datasetKey);
   }
 }

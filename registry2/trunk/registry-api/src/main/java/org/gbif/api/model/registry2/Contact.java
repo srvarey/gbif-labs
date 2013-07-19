@@ -199,8 +199,6 @@ public class Contact implements Address, LenientEquals<Contact> {
     this.organization = organization;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -210,8 +208,6 @@ public class Contact implements Address, LenientEquals<Contact> {
     this.createdBy = createdBy;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;

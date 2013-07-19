@@ -37,13 +37,12 @@ import org.gbif.ws.server.interceptor.NullToNotFound;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -182,13 +181,12 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
 
   @DELETE
   @Path("{key}/contact/{contactKey}")
+  @RolesAllowed("ADMIN")
   @Override
   public void deleteContact(@PathParam("key") UUID targetEntityKey, @PathParam("contactKey") int contactKey) {
     throw new UnsupportedOperationException("Contacts are manually managed in IMS");
   }
 
-  @POST
-  @Path("{key}/contact")
   @Override
   public int addContact(@PathParam("key") UUID targetEntityKey, @NotNull @Valid @Trim Contact contact) {
     throw new UnsupportedOperationException("Contacts are manually managed in IMS");

@@ -3,11 +3,9 @@ package org.gbif.registry2.ws.resources.legacy;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.service.registry2.DatasetService;
-import org.gbif.api.service.registry2.OrganizationService;
 import org.gbif.registry2.ws.model.ErrorResponse;
 import org.gbif.registry2.ws.model.LegacyEndpoint;
 import org.gbif.registry2.ws.model.LegacyEndpointResponse;
-import org.gbif.registry2.ws.util.LegacyRequestAuthorization;
 import org.gbif.registry2.ws.util.LegacyResourceConstants;
 import org.gbif.registry2.ws.util.LegacyResourceUtils;
 
@@ -24,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
@@ -31,7 +30,6 @@ import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.core.InjectParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +43,10 @@ public class LegacyEndpointResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(LegacyEndpointResource.class);
 
-  private final OrganizationService organizationService;
   private final DatasetService datasetService;
 
   @Inject
-  public LegacyEndpointResource(OrganizationService organizationService, DatasetService datasetService) {
-    this.organizationService = organizationService;
+  public LegacyEndpointResource(DatasetService datasetService) {
     this.datasetService = datasetService;
   }
 
@@ -60,25 +56,21 @@ public class LegacyEndpointResource {
    * returned.
    *
    * @param endpoint LegacyEndpoint with HTTP form parameters having been injected from Jersey
-   * @param request  HttpContext to access HTTP Headers during authorization
+   * @param security SecurityContext (security related information)
    *
    * @return Response with Status.CREATED if successful
    */
   @POST
   @Produces(MediaType.APPLICATION_XML)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response registerEndpoint(@InjectParam LegacyEndpoint endpoint, @Context HttpContext request) {
+  public Response registerEndpoint(@InjectParam LegacyEndpoint endpoint, @Context SecurityContext security) {
     if (endpoint != null) {
-      // TODO remove once authorization interceptor implemented
-      LegacyRequestAuthorization authorization =
-        new LegacyRequestAuthorization(organizationService, request, datasetService);
-      if (!authorization.isAuthorizedToModifyOrganizationsDataset(endpoint.getDatasetKey())) {
-        LOG.error("Request to register Endpoint not authorized!");
-        return Response.status(Response.Status.UNAUTHORIZED)
-          .cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED).build();
-      }
+      // set required fields
+      String user = security.getUserPrincipal().getName();
+      endpoint.setCreatedBy(user);
+      endpoint.setModifiedBy(user);
 
-      // mandatory fields present, and corresponding dataset exists?
+      // required fields present, and corresponding dataset exists?
       if (LegacyResourceUtils.isValid(endpoint, datasetService)) {
 
         // persist endpoint
@@ -102,24 +94,13 @@ public class LegacyEndpointResource {
    * resourceKey. Only credentials are mandatory. If deletion is successful, returns Response with Status.OK.
    *
    * @param datasetKey dataset key (UUID) coming in as query param
-   * @param request    HttpContext to access HTTP Headers during authorization
    *
    * @return Response with Status.OK if successful
    */
   @DELETE
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response deleteAllDatasetEndpoints(@QueryParam("resourceKey") UUID datasetKey, @Context HttpContext request) {
+  public Response deleteAllDatasetEndpoints(@QueryParam("resourceKey") UUID datasetKey) {
     if (datasetKey != null) {
-
-      // TODO remove once authorization interceptor implemented
-      LegacyRequestAuthorization authorization =
-        new LegacyRequestAuthorization(organizationService, request, datasetService);
-      if (!authorization.isAuthorizedToModifyOrganizationsDataset(datasetKey)) {
-        LOG.error("Request to delete all Endpoints not authorized!");
-        return Response.status(Response.Status.UNAUTHORIZED)
-          .cacheControl(LegacyResourceConstants.CACHE_CONTROL_DISABLED).build();
-      }
-
       // retrieve existing dataset
       Dataset existing = datasetService.get(datasetKey);
       if (existing != null) {

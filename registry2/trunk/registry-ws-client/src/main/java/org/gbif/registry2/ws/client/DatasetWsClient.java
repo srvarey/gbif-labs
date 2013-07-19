@@ -33,6 +33,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
  * Client-side implementation to the DatasetService.
@@ -40,8 +41,8 @@ import com.sun.jersey.api.client.WebResource;
 public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements DatasetService {
 
   @Inject
-  public DatasetWsClient(@RegistryWs WebResource resource) {
-    super(Dataset.class, resource.path("dataset"), null, GenericTypes.PAGING_DATASET);
+  public DatasetWsClient(@RegistryWs WebResource resource, @Nullable ClientFilter authFilter) {
+    super(Dataset.class, resource.path("dataset"), authFilter, GenericTypes.PAGING_DATASET);
   }
 
   @Override
