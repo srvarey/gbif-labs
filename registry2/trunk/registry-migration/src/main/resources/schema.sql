@@ -463,6 +463,20 @@ CREATE TABLE node_identifier
   PRIMARY KEY (node_key, identifier_key)
 );
 
+CREATE TABLE network_identifier
+(
+  network_key uuid NOT NULL REFERENCES network(key),
+  identifier_key integer NOT NULL UNIQUE REFERENCES identifier(key) ON DELETE CASCADE,
+  PRIMARY KEY (network_key, identifier_key)
+);
+
+CREATE TABLE installation_identifier
+(
+  installation_key uuid NOT NULL REFERENCES installation(key),
+  identifier_key integer NOT NULL UNIQUE REFERENCES identifier(key) ON DELETE CASCADE,
+  PRIMARY KEY (installation_key, identifier_key)
+);
+
 --
 --  comment
 -- 
