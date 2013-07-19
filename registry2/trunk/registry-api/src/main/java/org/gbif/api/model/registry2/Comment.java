@@ -49,8 +49,6 @@ public class Comment implements LenientEquals<Comment> {
     this.content = content;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -60,8 +58,6 @@ public class Comment implements LenientEquals<Comment> {
     this.createdBy = createdBy;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getModifiedBy() {
     return modifiedBy;
@@ -71,6 +67,8 @@ public class Comment implements LenientEquals<Comment> {
     this.modifiedBy = modifiedBy;
   }
 
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Date getCreated() {
     return created;
   }

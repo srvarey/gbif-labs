@@ -61,8 +61,6 @@ public class Identifier implements LenientEquals<Identifier> {
     this.identifier = identifier;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;

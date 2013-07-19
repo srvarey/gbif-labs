@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
  * Client-side implementation to the OrganizationService.
@@ -36,8 +37,8 @@ public class OrganizationWsClient extends BaseNetworkEntityClient<Organization>
   implements OrganizationService {
 
   @Inject
-  public OrganizationWsClient(@RegistryWs WebResource resource) {
-    super(Organization.class, resource.path("organization"), null, GenericTypes.PAGING_ORGANIZATION);
+  public OrganizationWsClient(@RegistryWs WebResource resource, @Nullable ClientFilter authFilter) {
+    super(Organization.class, resource.path("organization"), authFilter, GenericTypes.PAGING_ORGANIZATION);
   }
 
   @Override

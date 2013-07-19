@@ -31,6 +31,7 @@ import javax.validation.constraints.NotNull;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
  * Client-side implementation to the NodeService.
@@ -38,8 +39,8 @@ import com.sun.jersey.api.client.WebResource;
 public class NodeWsClient extends BaseNetworkEntityClient<Node> implements NodeService {
 
   @Inject
-  public NodeWsClient(@RegistryWs WebResource resource) {
-    super(Node.class, resource.path("node"), null, GenericTypes.PAGING_NODE);
+  public NodeWsClient(@RegistryWs WebResource resource, @Nullable ClientFilter authFilter) {
+    super(Node.class, resource.path("node"), authFilter, GenericTypes.PAGING_NODE);
   }
 
   @Override

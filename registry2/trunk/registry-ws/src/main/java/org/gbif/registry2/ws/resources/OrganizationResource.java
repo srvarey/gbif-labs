@@ -30,7 +30,6 @@ import org.gbif.registry2.persistence.mapper.OrganizationMapper;
 import org.gbif.registry2.persistence.mapper.TagMapper;
 
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

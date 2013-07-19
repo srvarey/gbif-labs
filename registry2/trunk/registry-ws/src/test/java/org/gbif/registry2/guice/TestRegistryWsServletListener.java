@@ -19,7 +19,11 @@ import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry2.search.DatasetIndexUpdateListener;
 import org.gbif.registry2.search.guice.RegistrySearchModule;
 import org.gbif.registry2.ws.guice.StringTrimInterceptor;
+import org.gbif.registry2.ws.servlet.LegacyWsFilter;
+import org.gbif.user.guice.DrupalMyBatisModule;
 import org.gbif.ws.server.guice.GbifServletListener;
+import org.gbif.ws.server.guice.WsAuthModule;
+import org.gbif.ws.util.PropertiesUtil;
 
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +33,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
+import com.sun.jersey.spi.container.ContainerRequestFilter;
 import org.apache.bval.guice.ValidationModule;
 import org.apache.solr.client.solrj.SolrServer;
 
@@ -43,9 +48,17 @@ import org.apache.solr.client.solrj.SolrServer;
 public class TestRegistryWsServletListener extends GbifServletListener {
 
   public static final String APPLICATION_PROPERTIES = "registry-test.properties";
+  @SuppressWarnings("unchecked")
+  public final static List<Class<? extends ContainerRequestFilter>> requestFilters = Lists
+    .<Class<? extends ContainerRequestFilter>>newArrayList(LegacyWsFilter.class);
+
+//  static {
+//    requestFilters.add(LegacyWsFilter.class);
+//  }
 
   public TestRegistryWsServletListener() {
-    super(APPLICATION_PROPERTIES, "org.gbif.registry2.ws,org.gbif.registry2.ws.provider", false);
+    super(PropertiesUtil.readFromClasspath(APPLICATION_PROPERTIES),
+      "org.gbif.registry2.ws,org.gbif.registry2.ws.provider", true, null, requestFilters);
   }
 
   @Override
@@ -55,7 +68,9 @@ public class TestRegistryWsServletListener extends GbifServletListener {
       StringTrimInterceptor.newMethodInterceptingModule(),
       new ValidationModule(),
       new EventModule(),
-      new RegistrySearchModule(props));
+      new RegistrySearchModule(props),
+      new DrupalMyBatisModule(props),
+      new WsAuthModule(props));
   }
 
   /**

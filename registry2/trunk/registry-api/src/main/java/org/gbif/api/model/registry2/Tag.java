@@ -31,6 +31,10 @@ public class Tag implements LenientEquals<Tag> {
   public Tag() {
   }
 
+  public Tag(String value) {
+    this.value = value;
+  }
+
   public Tag(String value, String createdBy) {
     this.value = value;
     this.createdBy = createdBy;
@@ -57,7 +61,6 @@ public class Tag implements LenientEquals<Tag> {
     this.value = value;
   }
 
-  @NotNull
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
@@ -67,7 +70,8 @@ public class Tag implements LenientEquals<Tag> {
     this.createdBy = createdBy;
   }
 
-  @NotNull
+  @Null(groups = {PrePersist.class})
+  @NotNull(groups = {PostPersist.class})
   public Date getCreated() {
     return created;
   }

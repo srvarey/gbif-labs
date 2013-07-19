@@ -54,8 +54,7 @@ public class NetworkResource extends BaseNetworkEntityResource<Network> implemen
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     CommentMapper commentMapper,
-    EventBus eventBus
-  ) {
+    EventBus eventBus) {
     super(networkMapper,
           commentMapper,
           contactMapper,

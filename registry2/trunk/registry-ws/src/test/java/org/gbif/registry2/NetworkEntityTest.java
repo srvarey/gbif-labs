@@ -37,16 +37,19 @@ import org.gbif.registry2.database.DatabaseInitializer;
 import org.gbif.registry2.database.LiquibaseInitializer;
 import org.gbif.registry2.grizzly.RegistryServer;
 import org.gbif.registry2.guice.RegistryTestModules;
+import org.gbif.ws.client.filter.SimplePrincipalProvider;
 
+import java.security.AccessControlException;
 import java.util.List;
 import java.util.UUID;
-
+import javax.annotation.Nullable;
 import javax.validation.ValidationException;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import org.apache.commons.beanutils.BeanUtils;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,9 +83,9 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   private final TagService tagService;
   private final CommentService commentService;
   private final IdentifierService identifierService;
+  private final SimplePrincipalProvider pp;
 
-
-  public NetworkEntityTest(NetworkEntityService<T> service) {
+  public NetworkEntityTest(NetworkEntityService<T> service, @Nullable SimplePrincipalProvider pp) {
     this.service = service;
     // not so nice, but we know what we deal with in the tests
     // and this bundles most basic tests into one base test class without copy paste redundancy
@@ -92,6 +95,15 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
     tagService = service;
     commentService = service;
     identifierService = service;
+    this.pp = pp;
+  }
+
+  @Before
+  public void setup() {
+    // reset SimplePrincipleProvider, configured for web service client tests only
+    if (pp != null) {
+      pp.setPrincipal("admin");
+    }
   }
 
   @Test(expected = ValidationException.class)
@@ -105,6 +117,23 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   public void testCreate() {
     create(newEntity(), 1);
     create(newEntity(), 2);
+  }
+
+  /**
+   * Create an entity using a principal provider that will fail authorization. The principal provider with name "heinz"
+   * won't authorize, because there is no user "heinz" in the test Drupal database with role administrator.
+   */
+  @Test
+  public void testCreateBadRole() {
+    // SimplePrincipalProvider configured for web service client tests only
+    if (pp != null) {
+      pp.setPrincipal("heinz");
+      try {
+        create(newEntity(), 1);
+      } catch (Exception e) {
+        assertTrue(e instanceof AccessControlException);
+      }
+    }
   }
 
   @Test

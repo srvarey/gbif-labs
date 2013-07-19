@@ -36,13 +36,17 @@ import org.gbif.registry2.ws.resources.DatasetResource;
 import org.gbif.registry2.ws.resources.InstallationResource;
 import org.gbif.registry2.ws.resources.NodeResource;
 import org.gbif.registry2.ws.resources.OrganizationResource;
+import org.gbif.ws.client.filter.SimplePrincipalProvider;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -83,25 +87,28 @@ public class NodeIT extends NetworkEntityTest<Node> {
         RegistryTestModules.webservice().getInstance(NodeResource.class),
         RegistryTestModules.webservice().getInstance(OrganizationResource.class),
         RegistryTestModules.webservice().getInstance(InstallationResource.class),
-        RegistryTestModules.webservice().getInstance(DatasetResource.class)
+        RegistryTestModules.webservice().getInstance(DatasetResource.class),
+        null
       },
       new Object[] {
         RegistryTestModules.webserviceClient().getInstance(NodeService.class),
         RegistryTestModules.webserviceClient().getInstance(OrganizationService.class),
         RegistryTestModules.webserviceClient().getInstance(InstallationService.class),
-        RegistryTestModules.webserviceClient().getInstance(DatasetService.class)
+        RegistryTestModules.webserviceClient().getInstance(DatasetService.class),
+        RegistryTestModules.webserviceClient().getInstance(SimplePrincipalProvider.class)
       });
   }
 
   public NodeIT(NodeService nodeService, OrganizationService organizationService,
-    InstallationService installationService, DatasetService datasetService) {
-    super(nodeService);
+    InstallationService installationService, DatasetService datasetService, @Nullable SimplePrincipalProvider pp) {
+    super(nodeService, pp);
     this.nodeService = nodeService;
     this.organizationService = organizationService;
     this.installationService = installationService;
     this.datasetService = datasetService;
   }
 
+  @Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   public void testGetByCountry() {
     initCountryNodes();
@@ -133,6 +140,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     }
   }
 
+  @Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   public void testCountries() {
     initCountryNodes();
@@ -170,7 +178,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     assertEquals(d2Key, resp.getResults().get(0).getKey());
   }
 
-
+  @Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   /**
    * A test that requires a configured IMS with real spanish data.

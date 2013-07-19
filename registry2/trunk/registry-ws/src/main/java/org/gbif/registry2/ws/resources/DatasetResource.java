@@ -48,8 +48,8 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -82,7 +82,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   implements DatasetService, DatasetSearchService {
 
   private static final Logger LOG = LoggerFactory.getLogger(DatasetResource.class);
-
+  private static final String ADMIN_ROLE = "ADMIN";
   private final DatasetSearchService searchService;
   private final MetadataMapper metadataMapper;
   private final DatasetMapper datasetMapper;
@@ -293,13 +293,11 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Path("{key}/document")
   @POST
   @Consumes(MediaType.APPLICATION_XML)
+  @RolesAllowed(ADMIN_ROLE)
   public Metadata insertMetadata(@PathParam("key") UUID datasetKey, @Context HttpServletRequest request,
     @Context SecurityContext security) {
-    // TODO: temporary until we implement the security bit
-    String user = (security != null && security.getUserPrincipal() != null) ? security.getUserPrincipal().getName()
-      : "GBIF Document Upload";
     try {
-      return insertMetadata(datasetKey, request.getInputStream(), user);
+      return insertMetadata(datasetKey, request.getInputStream(), security.getUserPrincipal().getName());
     } catch (IOException e) {
       return null;
     }

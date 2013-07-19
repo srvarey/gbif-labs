@@ -29,6 +29,9 @@ import org.gbif.api.service.registry2.NetworkService;
 import org.gbif.registry2.guice.RegistryTestModules;
 import org.gbif.registry2.utils.Networks;
 import org.gbif.registry2.ws.resources.NetworkResource;
+import org.gbif.ws.client.filter.SimplePrincipalProvider;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.runner.RunWith;
@@ -51,13 +54,15 @@ public class NetworkIT extends NetworkEntityTest<Network> {
   @Parameters
   public static Iterable<Object[]> data() {
     return ImmutableList.<Object[]>of(new Object[] {
-      RegistryTestModules.webservice().getInstance(NetworkResource.class)},
+      RegistryTestModules.webservice().getInstance(NetworkResource.class),
+      null},
       new Object[] {
-      RegistryTestModules.webserviceClient().getInstance(NetworkService.class)});
+      RegistryTestModules.webserviceClient().getInstance(NetworkService.class),
+      RegistryTestModules.webserviceClient().getInstance(SimplePrincipalProvider.class)});
   }
 
-  public NetworkIT(NetworkService service) {
-    super(service);
+  public NetworkIT(NetworkService service, @Nullable SimplePrincipalProvider pp) {
+    super(service, pp);
     this.service = service;
   }
 

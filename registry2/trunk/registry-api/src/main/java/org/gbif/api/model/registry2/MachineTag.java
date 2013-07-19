@@ -91,8 +91,6 @@ public class MachineTag implements LenientEquals<MachineTag> {
     this.value = value;
   }
 
-  @Null(groups = {PrePersist.class})
-  @NotNull(groups = {PostPersist.class})
   @Size(min = 3)
   public String getCreatedBy() {
     return createdBy;
