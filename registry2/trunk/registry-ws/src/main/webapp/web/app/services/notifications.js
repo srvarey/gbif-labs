@@ -13,6 +13,9 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
     if (!angular.isObject(notificationObj)) {
       throw new Error("Only object can be added to the notification service");
     }
+    
+    // change in functionality - clear the list, and replace, rather than append
+    notificationsArray.length=0;
     notificationsArray.push(notificationObj);
     return notificationObj;
   };

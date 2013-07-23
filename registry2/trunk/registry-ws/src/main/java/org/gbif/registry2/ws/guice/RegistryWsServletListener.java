@@ -17,6 +17,7 @@ import org.gbif.registry2.ims.ImsModule;
 import org.gbif.registry2.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry2.search.guice.RegistrySearchModule;
 import org.gbif.registry2.ws.servlet.LegacyWsFilter;
+import org.gbif.registry2.ws.util.AuthResponseCodeOverwriteFilter;
 import org.gbif.user.guice.DrupalMyBatisModule;
 import org.gbif.ws.server.guice.GbifServletListener;
 import org.gbif.ws.server.guice.WsAuthModule;
@@ -30,6 +31,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
+import com.sun.jersey.spi.container.ContainerResponseFilter;
 import org.apache.bval.guice.ValidationModule;
 
 /**
@@ -40,13 +42,16 @@ public class RegistryWsServletListener extends GbifServletListener {
   public static final String APPLICATION_PROPERTIES = "registry.properties";
   private final static String PACKAGES = "org.gbif.registry2.ws.resources, org.gbif.registry2.ws.provider";
   public static final List<Class<? extends ContainerRequestFilter>> requestFilters = Lists.newArrayList();
+  public static final List<Class<? extends ContainerResponseFilter>> responseFilters = Lists.newArrayList();
 
   static {
     requestFilters.add(LegacyWsFilter.class);
+    responseFilters.add(AuthResponseCodeOverwriteFilter.class);
+
   }
 
   public RegistryWsServletListener() {
-    super(PropertiesUtil.readFromClasspath(APPLICATION_PROPERTIES), PACKAGES, true, null, requestFilters);
+    super(PropertiesUtil.readFromClasspath(APPLICATION_PROPERTIES), PACKAGES, true, responseFilters, requestFilters);
   }
 
   @VisibleForTesting

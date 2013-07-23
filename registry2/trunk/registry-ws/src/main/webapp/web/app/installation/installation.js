@@ -1,4 +1,5 @@
 angular.module('installation', [
+  'restangular',
   'ngResource', 
   'services.notifications', 
   'contact',
@@ -14,21 +15,15 @@ angular.module('installation', [
  * governs the actions on the page. 
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams, Installation) {
-
+ 
   $stateProvider.state('installation', {
     url: '/installation/{key}',  
     abstract: true, 
     templateUrl: 'app/installation/installation-main.tpl.html',
     controller: 'InstallationCtrl',
-    // resolve to lookup synchronously first, thus handling errors if not found
-    resolve: {
-      item: function(Installation, $state, $stateParams) {
-        return Installation.getSync($stateParams.key);          
-      }          
-    },
   })
   .state('installation.detail', {  
-    url: '',   
+    url: '/',   
     templateUrl: 'app/installation/installation-overview.tpl.html',
   })
   .state('installation.edit', {
@@ -85,31 +80,6 @@ angular.module('installation', [
   })
 }])
 
-/**
- * RESTfully backed Installation resource
- */
-.factory('Installation', function ($resource, $q) {
-  var Installation = $resource('../installation/:key', {key : '@key'}, {
-    save : {method:'PUT'}
-  });  
- 
-   // A synchronous get, with a failure callback on error
-  Installation.getSync = function (key, failureCb) {
-    var deferred = $q.defer();
-    Installation.get({key: key}, function(successData) {
-      deferred.resolve(successData); 
-    }, function(errorData) {
-      deferred.reject(); // you could optionally pass error data here
-      if (failureCb) {
-        failureCb();
-      }
-    });
-    return deferred.promise;
-  };
-  
-  return Installation;
-})
-
 .filter('prettifyType', function () {
   return function(name) {
     switch (name) {
@@ -123,16 +93,32 @@ angular.module('installation', [
   };
 })
 
-
 /**
  * All operations relating to CRUD go through this controller. 
  */
-.controller('InstallationCtrl', function ($scope, $state, $http, $resource, item, Installation, notifications) {
-  $scope.installation = item;
+.controller('InstallationCtrl', function ($scope, $state, $stateParams, $http, notifications, Restangular) {
+  var key =  $stateParams.key;
   
-  // get the organization
-  $http( { method:'GET', url: "../organization/" + item.organizationKey})
-    .success(function (result) { $scope.organization = result});
+  // shared across sub views
+  $scope.counts = {}; 
+  
+  var load = function() {
+    Restangular.one('installation', key).get()
+    .then(function(installation) {
+      $scope.installation = installation;
+      $scope.counts.contact = _.size(installation.contacts); 
+      
+      // served datasets
+      installation.getList('dataset', {limit: 1000})
+        .then(function(response) {
+          installation.datasets = response.results;
+        });
+        
+      // the hosting organization
+      installation.organization = Restangular.one('organization', installation.organizationKey).get();
+    });
+  }
+  load();
   
   // populate the dropdowns
   var lookup = function(url, parameter) {
@@ -141,35 +127,13 @@ angular.module('installation', [
   }
 	lookup('../enumeration/org.gbif.api.vocabulary.registry2.InstallationType','installationTypes');  
   
-  // To enable the nested views update the counts, for the side bar
-  $scope.counts = {
-    // collesce with || and use _ for sizing
-    contact : _.size($scope.installation.contacts || {}),
-    endpoint : _.size($scope.installation.endpoints || {}), 
-    identifier : _.size($scope.installation.identifiers || {}), 
-    tag : _.size($scope.installation.tags || {}),
-    machinetag : _.size($scope.installation.machineTags || {}),
-    comment : _.size($scope.installation.comments || {})
-  };
-    
-  var count = function(url, parameter) {
-    $http( { method:'GET', url: url})
-      .success(function (result) {
-        $scope.counts[parameter] = result.count;
-        $scope[parameter] = result.results;
-      });
-  }
-  count('../installation/' + $scope.installation.key + '/dataset?limit=1000','datasets');
-  $http( { method:'GET', url: '../installation/' + $scope.installation.key + '/tag'})
-    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
-	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
-    $state.transitionTo('installation.' + target, { key: item.key, type: "installation" }); 
+    $state.transitionTo('installation.' + target, { key: key, type: "installation" }); 
   }
 	
 	$scope.save = function (installation) {
-    Installation.save(installation, 
+    installation.put().then( 
       function() {
         notifications.pushForNextRoute("Installation successfully updated", 'info');
         $scope.transitionTo("detail");
@@ -185,29 +149,33 @@ angular.module('installation', [
   }  
   
   $scope.cancelEdit = function () {
-    // todo - check this
-    $scope.installation = Installation.get({ key: item.key });
+    load();
     $scope.transitionTo("detail");
   }
   
   $scope.delete = function (installation) {
-    Installation.delete(installation,
+    installation.remove().then(
       function() {
         notifications.pushForNextRoute("Installation successfully deleted", 'info');
-        Installation.get({ key: item.key }, function(data) { 
-          $scope.installation = data 
-        });
+        load();
+        $scope.transitionTo("detail");
       }
     );
-    $scope.transitionTo("detail");
   }
   
   $scope.restore = function (installation) {
     installation.deleted = undefined;
-    $scope.save(installation);
+    installation.put().then( 
+      function() {
+        notifications.pushForCurrentRoute("Installation successfully restored", 'info');
+      },
+      function(response) {
+        notifications.pushForCurrentRoute(response.data, 'error');
+      }
+    );
   }
   
   $scope.getDatasets = function () {
-    return $scope.datasets;
+    if ($scope.installation) return $scope.installation.datasets;
   }
 });
