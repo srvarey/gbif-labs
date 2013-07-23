@@ -1,6 +1,7 @@
 angular.module('node', [
   'ngResource', 
   'services.notifications', 
+  'resources',
   'endpoint',
   'identifier', 
   'tag', 
@@ -12,18 +13,12 @@ angular.module('node', [
  * nested view is rendered into the parent template ui.view div.  A single controller
  * governs the actions on the page. 
  */
-.config(['$stateProvider', function ($stateProvider, $stateParams, Node) {
+.config(['$stateProvider', function ($stateProvider, $stateParams) {
   $stateProvider.state('node', {
     url: '/node/{key}',  
     abstract: true, 
     templateUrl: 'app/node/node-main.tpl.html',
     controller: 'NodeCtrl',
-    // resolve to lookup synchronously first, thus handling errors if not found
-    resolve: {
-      item: function(Node, $state, $stateParams) {
-        return Node.getSync($stateParams.key);          
-      }          
-    }
   })
   .state('node.detail', {  
     url: '',   
@@ -99,35 +94,11 @@ angular.module('node', [
 }])
 
 /**
- * RESTfully backed Node resource
- */
-.factory('Node', function ($resource, $q) {
-  var Node = $resource('../node/:key', {key : '@key'}, {
-    save : {method:'PUT'}
-  });  
-  
-  // A synchronous get, with a failure callback on error
-  Node.getSync = function (key, failureCb) {
-    var deferred = $q.defer();
-    Node.get({key: key}, function(successData) {
-      deferred.resolve(successData); 
-    }, function(errorData) {
-      deferred.reject(); // you could optionally pass error data here
-      if (failureCb) {
-        failureCb();
-      }
-    });
-    return deferred.promise;
-  };
-  
-  return Node;
-})
-
-/**
  * All operations relating to CRUD go through this controller. 
  */
-.controller('NodeCtrl', function ($scope, $state, $resource, $http, item, Node, notifications) {
-  $scope.node = item;
+.controller('NodeCtrl', function ($scope, $state, $stateParams, $resource, $http, notifications, NodeManager) {
+  var key = $stateParams.key;
+  $scope.node = NodeManager.get(key);
     
   // To enable the nested views update the counts, for the side bar
   $scope.counts = {
@@ -158,33 +129,30 @@ angular.module('node', [
         $scope[parameter] = result.results;
       });
   }
-  count('../node/' + $scope.node.key + '/pendingEndorsement','pendingEndorsements');
-  count('../node/' + $scope.node.key + '/organization','organizations');
-  count('../node/' + $scope.node.key + '/dataset','datasets');
-  count('../node/' + $scope.node.key + '/installation','installations');
-  $http( { method:'GET', url: '../node/' + $scope.node.key + '/tag'})
+  //count('../node/' + key + '/pendingEndorsement','pendingEndorsements');
+  count('../node/' + key + '/organization','organizations');
+  count('../node/' + key + '/dataset','datasets');
+  count('../node/' + key + '/installation','installations');
+  $http( { method:'GET', url: '../node/' + key + '/tag'})
     .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
+  
+  NodeManager.pending(key, function(response) {
+    $scope.pending = response.results;
+    $scope.pendingCount = response.count;
+  });
   
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
-    $state.transitionTo('node.' + target, { key: item.key, type: "node" }); 
+    $state.transitionTo('node.' + target, { key: key, type: "node" }); 
   }
 	
 	$scope.save = function (node) {
-    Node.save(node, 
-      function() {
-        notifications.pushForNextRoute("Node successfully updated", 'info');
-        $scope.transitionTo("detail");
-      },
-      function(response) {
-        notifications.pushForCurrentRoute(response.data, 'error');
-      }
-    );
+	  NodeManager.update(node);
   }
   
   $scope.cancelEdit = function () {
-    $scope.node = Node.get({ key: item.key });
+    $scope.node = NodeManager.get(key);
     $scope.transitionTo("detail");
   }
   
