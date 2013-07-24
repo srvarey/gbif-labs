@@ -22,7 +22,7 @@ import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
-import org.gbif.registry.metasync.SyncResult;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.protocols.BaseProtocolHandler;
@@ -70,8 +70,6 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class TapirMetadataSynchroniser extends BaseProtocolHandler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(TapirMetadataSynchroniser.class);
-
   public TapirMetadataSynchroniser(HttpClient httpClient) {
     super(httpClient);
   }
@@ -102,11 +100,10 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
       }
 
       TapirMetadata metadata = getTapirMetadata(endpoint);
-      int count = getRecordCount(capabilities, endpoint);
 
       updateInstallationEndpoint(metadata, endpoint);
 
-      Dataset newDataset = convertToDataset(capabilities, metadata, localId, count);
+      Dataset newDataset = convertToDataset(capabilities, metadata);
       Dataset existingDataset = findDataset(localId, datasets);
       if (existingDataset == null) {
         added.add(newDataset);
@@ -164,11 +161,6 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
     return doHttpRequest(URI.create(endpoint.getUrl()), newDigester(TapirMetadata.class));
   }
 
-  private int getRecordCount(Capabilities capabilities, Endpoint endpoint) {
-    // TODO: Needs to to a separate request to get the declared count
-    return 0;
-  }
-
   /**
    * Updates the Endpoint of the Installation that we're currently working on.
    */
@@ -179,9 +171,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
   /**
    * Converts the Capabilities and Metadata response from TAPIR into a GBIF Dataset.
    */
-  private Dataset convertToDataset(
-    Capabilities capabilities, TapirMetadata metadata, String localId, int count
-  ) {
+  private Dataset convertToDataset(Capabilities capabilities, TapirMetadata metadata) {
     Dataset dataset = new Dataset();
     dataset.setTitle(metadata.getTitles().toString());
     dataset.setDescription(metadata.getDescriptions().toString());
@@ -201,12 +191,6 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
       }
     }
     dataset.setContacts(contacts);
-
-    if (count != 0) {
-      dataset.addMachineTag(MachineTag.newInstance(METADATA_NAMESPACE,
-                                                   Constants.DECLARED_COUNT,
-                                                   String.valueOf(count)));
-    }
 
     Endpoint endpoint = new Endpoint();
     endpoint.setType(EndpointType.TAPIR);

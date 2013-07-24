@@ -7,7 +7,7 @@ import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.service.registry2.DatasetService;
 import org.gbif.api.vocabulary.registry2.DatasetType;
-import org.gbif.registry.metasync.SyncResult;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
 import org.gbif.ws.client.guice.GbifApplicationAuthModule;
 
@@ -20,6 +20,9 @@ import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Takes synchronisation results and saves those back to the registry.
+ */
 public class RegistryUpdater {
 
   private static final Logger LOG = LoggerFactory.getLogger(RegistryUpdater.class);
@@ -65,7 +68,7 @@ public class RegistryUpdater {
     }
   }
 
-  private void saveUpdatedDatasets(SyncResult result) {// Update existing datasets and their endpoints
+  private void saveUpdatedDatasets(SyncResult result) {
     for (Map.Entry<Dataset, Dataset> entry : result.existingDatasets.entrySet()) {
       Dataset existingDataset = entry.getKey();
       if (existingDataset.isLockedForAutoUpdate()) {
@@ -80,7 +83,7 @@ public class RegistryUpdater {
     }
   }
 
-  private void saveDeletedDatasets(SyncResult result) {// Delete datasets that don't exist anymore
+  private void saveDeletedDatasets(SyncResult result) {
     for (Dataset dataset : result.deletedDatasets) {
       if (dataset.isLockedForAutoUpdate()) {
         LOG.info("Dataset [{}] deleted at source but left in Registry because it's locked", dataset.getKey());

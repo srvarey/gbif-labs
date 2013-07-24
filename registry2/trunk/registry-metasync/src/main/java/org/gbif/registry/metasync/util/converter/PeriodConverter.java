@@ -8,6 +8,9 @@ import org.joda.time.format.PeriodFormatter;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Used by commons-digester (via commons-beanutils) to convert Strings into {@link Period}s from Joda Time.
+ */
 public class PeriodConverter implements Converter {
 
   private final PeriodFormatter formatter = ISOPeriodFormat.standard();

@@ -12,6 +12,9 @@ import org.apache.commons.digester3.annotations.rules.CallMethod;
 import org.apache.commons.digester3.annotations.rules.CallParam;
 import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 
+/**
+ * This object extracts the same information from ABCD 1.2 as the "old" registry did.
+ */
 @ObjectCreate(pattern = "response/content/DataSets/DataSet")
 public class SimpleAbcd12Metadata {
 

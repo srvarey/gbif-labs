@@ -1,10 +1,12 @@
 package org.gbif.registry.metasync.api;
 
-import org.gbif.registry.metasync.SyncResult;
-
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * This interface specifies all operations necessary to do a synchronisation of an Installation from our registry
+ * against the actual Endpoint.
+ */
 public interface MetadataSynchroniser {
 
   /**
@@ -35,11 +37,5 @@ public interface MetadataSynchroniser {
    * @param parallel how many threads to run in parallel
    */
   List<SyncResult> synchroniseAllInstallations(int parallel);
-
-  /**
-   * The logic to synchronise the protocols is separated out in their own classes per protocol. Each Protocol has a
-   * handler that needs to be registered with this method.
-   */
-  void registerProtocolHandler(MetadataProtocolHandler handler);
 
 }

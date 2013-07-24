@@ -21,7 +21,7 @@ import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.vocabulary.registry2.IdentifierType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
-import org.gbif.registry.metasync.SyncResult;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.util.Constants;
 
 import java.io.IOException;

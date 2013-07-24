@@ -26,7 +26,7 @@ import org.gbif.api.vocabulary.registry2.ContactType;
 import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.IdentifierType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
-import org.gbif.registry.metasync.SyncResult;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.protocols.BaseProtocolHandler;
@@ -59,7 +59,6 @@ import static org.apache.commons.lang3.StringUtils.trimToNull;
  */
 public class DigirMetadataSynchroniser extends BaseProtocolHandler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DigirMetadataSynchroniser.class);
   // Source: http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page#comment24134610_10324802
   private static final Pattern DOI_PATTERN =
     Pattern.compile("\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\\'])\\S)+)\\b");

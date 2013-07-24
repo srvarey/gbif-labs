@@ -22,6 +22,10 @@ import org.apache.commons.beanutils.Converter;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Used by commons-digester (via commons-beanutils) to convert Strings into our own {@link Language} objects using its
+ * {@link Language#fromIsoCode(String)} method. That method returns {@link Language#UNKNOWN} if it can't find a match.
+ */
 public class LanguageConverter implements Converter {
 
   @Override

@@ -17,7 +17,6 @@ package org.gbif.registry.metasync.api;
 
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Installation;
-import org.gbif.registry.metasync.SyncResult;
 
 import java.util.List;
 

@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
 import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 
 /**
- * This class is used as a base for all protocols and provides common
+ * This class is used as a base for all protocols and provides common methods to be used by all protocols.
  */
 public abstract class BaseProtocolHandler implements MetadataProtocolHandler {
 

@@ -22,7 +22,7 @@ import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
-import org.gbif.registry.metasync.SyncResult;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.protocols.BaseProtocolHandler;
@@ -33,7 +33,6 @@ import org.gbif.registry.metasync.protocols.biocase.model.abcd12.SimpleAbcd12Met
 import org.gbif.registry.metasync.protocols.biocase.model.abcd206.SimpleAbcd206Metadata;
 import org.gbif.registry.metasync.protocols.biocase.model.capabilities.Capabilities;
 import org.gbif.registry.metasync.util.Constants;
-import org.gbif.registry.metasync.util.TemplateUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;

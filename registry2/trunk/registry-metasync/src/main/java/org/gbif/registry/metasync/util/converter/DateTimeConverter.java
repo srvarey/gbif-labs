@@ -25,10 +25,13 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Used by commons-digester (via commons-beanutils) to convert Strings into {@link DateTime}s from Joda Time assuming
+ * that all those Strings are in ISO 8601 form but where the time is optional.
+ */
 public class DateTimeConverter implements Converter {
 
   private static final Logger LOG = LoggerFactory.getLogger(DateTimeConverter.class);
-
   private final DateTimeFormatter formatter = ISODateTimeFormat.dateOptionalTimeParser();
 
   @Override
@@ -45,7 +48,7 @@ public class DateTimeConverter implements Converter {
     try {
       dateTime = formatter.parseDateTime((String) value);
     } catch (IllegalArgumentException e) {
-      //LOG.info("Could not parse date: [{}]", value, e);
+      LOG.debug("Could not parse date: [{}]", value, e);
     }
     return dateTime;
   }
