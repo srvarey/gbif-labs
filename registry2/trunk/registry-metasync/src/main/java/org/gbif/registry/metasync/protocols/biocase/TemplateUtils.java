@@ -1,4 +1,6 @@
-package org.gbif.registry.metasync.util;
+package org.gbif.registry.metasync.protocols.biocase;
+
+import org.gbif.registry.metasync.util.Constants;
 
 import java.io.StringWriter;
 import java.util.Properties;
@@ -7,7 +9,11 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 
-public final class TemplateUtils {
+/**
+ * Utility class used by the BioCASe synchroniser to load the various templates from the classpath and fill them with
+ * the proper variables.
+ */
+final class TemplateUtils {
 
   private static final VelocityEngine VELOCITY_ENGINE = new VelocityEngine();
 
@@ -18,7 +24,11 @@ public final class TemplateUtils {
     VELOCITY_ENGINE.init(properties);
   }
 
-  public static String getBiocaseInventoryRequest(String contentNamespace) {
+  /**
+   * Returns a string that can be used to retrieve an "old style" inventory from a BioCASe Endpoint using a {@code scan}
+   * request.
+   */
+  static String getBiocaseInventoryRequest(String contentNamespace) {
     Context context = new VelocityContext();
     context.put("contentNamespace", contentNamespace);
     context.put("concept", getTitlePath(contentNamespace));
@@ -28,6 +38,10 @@ public final class TemplateUtils {
     return writer.toString();
   }
 
+  /**
+   * Returns a string that can be used to retrieve metadata about a specific dataset identified by a title. You get that
+   * title by first doing an inventory request. Under tho hood this does a {@code search} request.
+   */
   public static String getBiocaseMetadataRequest(String contentNamespace, String datasetTitle) {
     Context context = new VelocityContext();
     context.put("contentNamespace", contentNamespace);

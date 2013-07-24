@@ -25,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Used by commons-digester (via commons-beanutils) to convert Strings into {@link URI}s.
+ */
 public class UriConverter implements Converter {
 
   private static final Logger LOG = LoggerFactory.getLogger(UriConverter.class);

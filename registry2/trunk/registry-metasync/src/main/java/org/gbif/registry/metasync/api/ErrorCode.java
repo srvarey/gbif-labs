@@ -22,23 +22,23 @@ public enum ErrorCode {
 
   /**
    * Is any kind of error establishing a connection or during a connection that's usually on the network level
-   * (connection refused, timeouts etc.)
+   * (connection refused, timeouts etc.).
    */
   IO_EXCEPTION,
 
   /**
-   * Any kind of HTTP error (e.g. a non 200 response code)
+   * Any kind of HTTP error (e.g. a non 200 response code).
    */
   HTTP_ERROR,
 
   /**
    * This means that we got a reply from the endpoint but it does not conform to what we expected (e.g. HTML instead of
-   * XML)
+   * XML).
    */
   PROTOCOL_ERROR,
 
   /**
-   * Anything that doesn't fit in the former categories (e.g. invalid URI stored in our Registry)
+   * Anything that doesn't fit in the former categories (e.g. invalid URI stored in our Registry).
    */
   OTHER_ERROR
 

@@ -1,4 +1,4 @@
-package org.gbif.registry.metasync;
+package org.gbif.registry.metasync.api;
 
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Installation;

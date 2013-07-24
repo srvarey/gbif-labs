@@ -16,6 +16,7 @@
 package org.gbif.registry.metasync;
 
 import org.gbif.registry.metasync.api.MetadataSynchroniser;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.protocols.biocase.BiocaseMetadataSynchroniser;
 import org.gbif.registry.metasync.protocols.digir.DigirMetadataSynchroniser;
 import org.gbif.registry.metasync.protocols.tapir.TapirMetadataSynchroniser;

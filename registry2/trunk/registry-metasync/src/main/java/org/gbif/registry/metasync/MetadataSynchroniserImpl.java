@@ -9,6 +9,7 @@ import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.api.MetadataProtocolHandler;
 import org.gbif.registry.metasync.api.MetadataSynchroniser;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
 import org.gbif.ws.client.guice.AnonymousAuthModule;
 
@@ -34,6 +35,11 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A concrete implementation of the {@link MetadataSynchroniser} interface. It delegates the actual interaction with
+ * Installations and Endpoints to {@link MetadataProtocolHandler}s which have to be registered on this class using
+ * {@link #registerProtocolHandler(MetadataProtocolHandler)}.
+ */
 public class MetadataSynchroniserImpl implements MetadataSynchroniser {
 
   private static final Logger LOG = LoggerFactory.getLogger(MetadataSynchroniserImpl.class);

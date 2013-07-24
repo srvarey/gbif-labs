@@ -1,10 +1,14 @@
 package org.gbif.registry.metasync.resulthandler;
 
-import org.gbif.registry.metasync.SyncResult;
+import org.gbif.registry.metasync.api.SyncResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A simple utility class that prints some information about each synchronisation result. Does not generate aggregate
+ * statistics at the moment.
+ */
 public final class DebugHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(DebugHandler.class);

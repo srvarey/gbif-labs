@@ -21,7 +21,7 @@ public class LocalizedString {
   @Override
   public String toString() {
     if (values.isEmpty()) {
-      return null;
+      return "";
     }
 
     StringBuilder sb = new StringBuilder();

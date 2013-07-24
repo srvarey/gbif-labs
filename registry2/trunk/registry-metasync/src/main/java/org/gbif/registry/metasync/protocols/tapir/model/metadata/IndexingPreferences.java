@@ -37,7 +37,7 @@ public class IndexingPreferences {
     try {
       parsedStartTime = ISODateTimeFormat.timeParser().parseDateTime(startTime);
     } catch (IllegalFieldValueException ignored) {
-      //LOG.info("Could not parse time: [{}]", startTime);
+      LOG.debug("Could not parse time: [{}]", startTime);
     }
   }
 

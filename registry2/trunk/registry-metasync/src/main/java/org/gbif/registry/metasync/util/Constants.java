@@ -1,5 +1,8 @@
 package org.gbif.registry.metasync.util;
 
+/**
+ * Constants used by the Metadata synchroniser.
+ */
 public final class Constants {
 
   public static final String ABCD_12_SCHEMA = "http://www.tdwg.org/schemas/abcd/1.2";
