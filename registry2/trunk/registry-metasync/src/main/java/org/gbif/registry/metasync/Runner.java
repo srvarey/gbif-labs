@@ -15,7 +15,6 @@
  */
 package org.gbif.registry.metasync;
 
-import org.gbif.registry.metasync.api.MetadataSynchroniser;
 import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.protocols.biocase.BiocaseMetadataSynchroniser;
 import org.gbif.registry.metasync.protocols.digir.DigirMetadataSynchroniser;
@@ -31,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-public class Runner {
+public final class Runner {
 
   private static final Logger LOG = LoggerFactory.getLogger(Runner.class);
 
@@ -41,7 +40,7 @@ public class Runner {
 
     HttpClientFactory clientFactory = new HttpClientFactory(10, TimeUnit.SECONDS);
 
-    MetadataSynchroniser synchroniser = new MetadataSynchroniserImpl();
+    MetadataSynchroniserImpl synchroniser = new MetadataSynchroniserImpl();
 
     synchroniser.registerProtocolHandler(new DigirMetadataSynchroniser(clientFactory.provideHttpClient()));
     synchroniser.registerProtocolHandler(new TapirMetadataSynchroniser(clientFactory.provideHttpClient()));
@@ -53,6 +52,10 @@ public class Runner {
 
     RegistryUpdater updater = new RegistryUpdater();
     updater.saveSyncResultsToRegistry(syncResults);
+  }
+
+  private Runner() {
+    throw new UnsupportedOperationException("Can't initialize class");
   }
 
 }

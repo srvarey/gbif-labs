@@ -128,7 +128,6 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
     return syncResults;
   }
 
-  @Override
   public void registerProtocolHandler(MetadataProtocolHandler handler) {
     protocolHandlers.add(handler);
   }
