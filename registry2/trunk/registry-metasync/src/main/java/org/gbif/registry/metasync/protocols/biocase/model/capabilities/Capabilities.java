@@ -17,6 +17,7 @@ package org.gbif.registry.metasync.protocols.biocase.model.capabilities;
 
 import org.gbif.registry.metasync.util.Constants;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +37,11 @@ public class Capabilities {
   private final List<SupportedSchema> supportedSchemas = Lists.newArrayList();
 
   public Map<String, String> getVersions() {
-    return versions;
+    return Collections.unmodifiableMap(versions);
   }
 
   public List<SupportedSchema> getSupportedSchemas() {
-    return supportedSchemas;
+    return Collections.unmodifiableList(supportedSchemas);
   }
 
   @CallMethod(pattern = "response/header/version")

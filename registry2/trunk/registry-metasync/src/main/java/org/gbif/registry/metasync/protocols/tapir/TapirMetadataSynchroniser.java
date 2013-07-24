@@ -97,8 +97,8 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
 
       Capabilities capabilities = getCapabilities(endpoint);
       if (capabilities == null) {
-        LOG.warn("Did not receive a valid Capabilities response for [{}]", endpoint.getKey());
-        throw new MetadataException(ErrorCode.PROTOCOL_ERROR);
+        throw new MetadataException("Did not receive a valid Capabilities response for [" + endpoint.getKey() + "]",
+                                    ErrorCode.PROTOCOL_ERROR);
       }
 
       TapirMetadata metadata = getTapirMetadata(endpoint);
@@ -126,7 +126,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
 
     updateInstallation(installation, updaterMetadata);
 
-    return new SyncResult(updated, added, deleted);
+    return new SyncResult(updated, added, deleted, installation);
   }
 
   /**
@@ -137,7 +137,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
     String[] split = endpoint.getUrl().split("/");
 
     if (split.length < 2) {
-      throw new MetadataException(ErrorCode.OTHER_ERROR);
+      throw new MetadataException("Could not find local Id for [" + endpoint.getUrl() + "]", ErrorCode.OTHER_ERROR);
     }
 
     return split[split.length - 1];
@@ -151,8 +151,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
     try {
       uri = new URIBuilder(endpoint.getUrl()).addParameter("op", "capabilities").build();
     } catch (URISyntaxException e) {
-      LOG.warn("Caught exception building URL", e);
-      throw new MetadataException(ErrorCode.OTHER_ERROR);
+      throw new MetadataException(e, ErrorCode.OTHER_ERROR);
     }
 
     return doHttpRequest(uri, newDigester(Capabilities.class));

@@ -78,16 +78,16 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
     checkArgument(installation.getType() == InstallationType.DIGIR_INSTALLATION, "Only supports DiGIR Installations");
 
     if (installation.getEndpoints().size() != 1) {
-      LOG.warn("A DiGIR Installation should only ever have one Endpoint, this one has [{}]",
-               installation.getEndpoints().size());
-      throw new MetadataException(ErrorCode.OTHER_ERROR);
+      throw new MetadataException("A DiGIR Installation should only ever have one Endpoint, this one has ["
+                                  + installation.getEndpoints().size()
+                                  + "]", ErrorCode.OTHER_ERROR);
     }
     Endpoint endpoint = installation.getEndpoints().get(0);
 
     DigirMetadata metadata = getDigirMetadata(endpoint);
     updateInstallation(metadata, installation);
     updateInstallationEndpoint(metadata, endpoint);
-    return mapToDatasets(metadata, datasets, endpoint.getUrl());
+    return mapToDatasets(metadata, datasets, endpoint.getUrl(), installation);
   }
 
   private DigirMetadata getDigirMetadata(Endpoint endpoint) throws MetadataException {
@@ -123,7 +123,9 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
    * We identify Datasets by the {@code code} attribute that we're getting from the metadata response. We're saving
    * this code on the Dataset itself as a machine tag.
    */
-  private SyncResult mapToDatasets(DigirMetadata metadata, Iterable<Dataset> datasets, String url) {
+  private SyncResult mapToDatasets(
+    DigirMetadata metadata, Iterable<Dataset> datasets, String url, Installation installation
+  ) {
     List<Dataset> added = Lists.newArrayList();
     List<Dataset> deleted = Lists.newArrayList();
     Map<Dataset, Dataset> updated = Maps.newHashMap();
@@ -157,7 +159,7 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
       }
     }
 
-    return new SyncResult(updated, added, deleted);
+    return new SyncResult(updated, added, deleted, installation);
   }
 
   /**
