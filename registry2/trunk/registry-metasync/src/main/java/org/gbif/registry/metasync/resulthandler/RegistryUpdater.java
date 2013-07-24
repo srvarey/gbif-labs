@@ -6,17 +6,15 @@ import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Identifier;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.service.registry2.DatasetService;
-import org.gbif.api.vocabulary.Language;
 import org.gbif.api.vocabulary.registry2.DatasetType;
 import org.gbif.registry.metasync.SyncResult;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
+import org.gbif.ws.client.guice.GbifApplicationAuthModule;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.google.common.base.Strings;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
@@ -30,6 +28,13 @@ public class RegistryUpdater {
   public RegistryUpdater() {
     Properties props = new Properties();
     props.setProperty("registry.ws.url", "http://localhost:8080");
+    props.setProperty("application.key", "gbif.registry-ws-client-it");
+    props.setProperty("application.secret", "foobar");
+
+    // Create authentication module, and set principal name, equal to a GBIF User unique account name
+    GbifApplicationAuthModule auth = new GbifApplicationAuthModule(props);
+    auth.setPrincipal("admin");
+
     Injector injector = Guice.createInjector(new RegistryWsClientModule(props));
     datasetService = injector.getInstance(DatasetService.class);
   }
@@ -67,10 +72,6 @@ public class RegistryUpdater {
         LOG.info("Dataset [{}] updated at source untouched in Registry because it's locked", existingDataset.getKey());
       } else {
         LOG.info("Updating dataset [{}]", existingDataset.getKey());
-        existingDataset.setModifiedBy("Metadata synchroniser");
-        if (existingDataset.getDescription() == null) {
-          existingDataset.setDescription("DUMMY DESCRIPTION");
-        }
         datasetService.update(existingDataset);
       }
 
@@ -91,60 +92,23 @@ public class RegistryUpdater {
   }
 
   private void saveAddedDatasets(SyncResult result) {
-    // Process all added datasets, currently there's a bug in Registry WS where the full object is validated
-    // (including nested objects) even though only a subset is set. That's why we have to manually back up machine tags
-    // and endpoints and set them to null.
     for (Dataset dataset : result.addedDatasets) {
       dataset.setOwningOrganizationKey(result.installation.getOrganizationKey());
       dataset.setInstallationKey(result.installation.getKey());
       dataset.setType(DatasetType.OCCURRENCE);
 
-      // BEGIN: Workaround for required language
-      if (dataset.getLanguage() == null) {
-        dataset.setLanguage(Language.ENGLISH);
-      }
-      // END: Workaround for required language
-
-      // BEGIN: Workaround for validation of nested objects
-      List<Contact> contacts = dataset.getContacts();
-      dataset.setContacts(null);
-      List<MachineTag> machineTags = dataset.getMachineTags();
-      dataset.setMachineTags(null);
-      List<Endpoint> endpoints = dataset.getEndpoints();
-      dataset.setEndpoints(null);
-      List<Identifier> identifiers = dataset.getIdentifiers();
-      dataset.setIdentifiers(null);
-      // END: Workaround for validation of nested objects
-
-      // BEGIN: Workaround for minimum length of 10 for Dataset descriptions
-      String tmpString = dataset.getDescription() == null ? "" : dataset.getDescription();
-      dataset.setDescription(Strings.padEnd(tmpString, 10, 'X'));
-      // END: Workaround for minimum length of 10 for Dataset descriptions
-
-      // BEGIN: Workaround for minimum length of 10 for Dataset citation text
-      if (dataset.getCitation() != null) {
-        tmpString = dataset.getCitation().getText() == null ? "" : dataset.getCitation().getText();
-        dataset.getCitation().setText(Strings.padEnd(tmpString, 10, 'X'));
-      }
-      // END: Workaround for minimum length of 10 for Dataset citation text
-
       UUID uuid = datasetService.create(dataset);
       LOG.info("Created new Dataset with id [{}]", uuid);
-      for (Contact contact : contacts) {
+      for (Contact contact : dataset.getContacts()) {
         datasetService.addContact(uuid, contact);
       }
-      for (MachineTag machineTag : machineTags) {
+      for (MachineTag machineTag : dataset.getMachineTags()) {
         datasetService.addMachineTag(uuid, machineTag);
       }
-      for (Endpoint endpoint : endpoints) {
-        // BEGIN: Workaround for minimum length of 10 for Endpoint descriptions
-        tmpString = endpoint.getDescription() == null ? "" : endpoint.getDescription();
-        endpoint.setDescription(Strings.padEnd(tmpString, 10, 'X'));
-        // END: Workaround for minimum length of 10 for Endpoint descriptions
-
+      for (Endpoint endpoint : dataset.getEndpoints()) {
         datasetService.addEndpoint(uuid, endpoint);
       }
-      for (Identifier identifier : identifiers) {
+      for (Identifier identifier : dataset.getIdentifiers()) {
         datasetService.addIdentifier(uuid, identifier);
       }
     }
