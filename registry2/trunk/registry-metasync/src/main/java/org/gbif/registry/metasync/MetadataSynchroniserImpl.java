@@ -10,7 +10,7 @@ import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.api.MetadataProtocolHandler;
 import org.gbif.registry.metasync.api.MetadataSynchroniser;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
-import org.gbif.ws.client.guice.GbifApplicationAuthModule;
+import org.gbif.ws.client.guice.AnonymousAuthModule;
 
 import java.util.List;
 import java.util.Properties;
@@ -44,14 +44,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
   public MetadataSynchroniserImpl() {
     Properties props = new Properties();
     props.setProperty("registry.ws.url", "http://localhost:8080");
-    props.setProperty("application.key", "gbif.registry-ws-client-it");
-    props.setProperty("application.secret", "foobar");
-
-    // Create authentication module, and set principal name, equal to a GBIF User unique account name
-    GbifApplicationAuthModule auth = new GbifApplicationAuthModule(props);
-    auth.setPrincipal("admin");
-
-    Injector injector = Guice.createInjector(new RegistryWsClientModule(props), auth);
+    Injector injector = Guice.createInjector(new RegistryWsClientModule(props), new AnonymousAuthModule());
     installationService = injector.getInstance(InstallationService.class);
   }
 

@@ -15,9 +15,12 @@
  */
 package org.gbif.registry.metasync.protocols.biocase;
 
+import org.gbif.api.model.registry2.Citation;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Installation;
+import org.gbif.api.model.registry2.MachineTag;
+import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
 import org.gbif.registry.metasync.SyncResult;
 import org.gbif.registry.metasync.api.ErrorCode;
@@ -94,10 +97,10 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
 
         if (capabilities.getPreferredSchema().equals(Constants.ABCD_12_SCHEMA)) {
           SimpleAbcd12Metadata metadata = get12Metadata(endpoint, datasetTitle, capabilities);
-          newDataset = convertToDataset(metadata);
+          newDataset = convertToDataset(metadata, endpoint, capabilities);
         } else {
           SimpleAbcd206Metadata metadata = get206Metadata(endpoint, datasetTitle, capabilities);
-          newDataset = convertToDataset(metadata);
+          newDataset = convertToDataset(metadata, endpoint, capabilities);
         }
 
         Dataset existingDataset = findDataset(datasetTitle, datasets);
@@ -117,6 +120,14 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
     }
 
     return new SyncResult(updated, added, deleted, installation);
+  }
+
+  public URI buildUri(String url, String parameter, String value) throws MetadataException {
+    try {
+      return new URIBuilder(url).addParameter(parameter, value).build();
+    } catch (URISyntaxException e) {
+      throw new MetadataException(e, ErrorCode.OTHER_ERROR);
+    }
   }
 
   /**
@@ -218,23 +229,56 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
     return doHttpRequest(uri, newDigester(SimpleAbcd12Metadata.class));
   }
 
-  public URI buildUri(String url, String parameter, String value) throws MetadataException {
-    try {
-      return new URIBuilder(url).addParameter(parameter, value).build();
-    } catch (URISyntaxException e) {
-      throw new MetadataException(e, ErrorCode.OTHER_ERROR);
-    }
+  private Dataset convertToDataset(
+    SimpleAbcd206Metadata metadata, Endpoint installationEndpoint, Capabilities capabilities
+  ) {
+    Dataset dataset = new Dataset();
+    dataset.setTitle(metadata.getName());
+    dataset.setDescription(metadata.getDetails());
+    dataset.setHomepage(metadata.getHomepage());
+    dataset.setLogoUrl(metadata.getLogoUrl());
+    dataset.setRights(metadata.getRights());
+
+    Citation citation = new Citation();
+    citation.setText(metadata.getCitationText());
+    dataset.setCitation(citation);
+
+    dataset.setContacts(metadata.getContacts());
+
+    Endpoint endpoint = new Endpoint();
+    endpoint.setType(EndpointType.BIOCASE);
+    endpoint.setUrl(installationEndpoint.getUrl());
+    endpoint.addMachineTag(MachineTag.newInstance(Constants.METADATA_NAMESPACE,
+                                                  Constants.CONCEPTUAL_SCHEMA,
+                                                  capabilities.getPreferredSchema()));
+
+    dataset.addEndpoint(endpoint);
+    return dataset;
   }
 
-  private Dataset convertToDataset(SimpleAbcd206Metadata metadata) {
-    // TODO: Implement and take care to properly create the Endpoints
-    // Open question is how to map those endpoints...
-    return null;
-  }
+  private Dataset convertToDataset(SimpleAbcd12Metadata metadata, Endpoint installationEndpoint, Capabilities capabilities) {
+    Dataset dataset = new Dataset();
+    dataset.setTitle(metadata.getCode());
+    dataset.setDescription(metadata.getDescription());
+    dataset.setHomepage(metadata.getHomepage());
+    dataset.setLogoUrl(metadata.getLogoUrl());
+    dataset.setRights(metadata.getRights());
 
-  private Dataset convertToDataset(SimpleAbcd12Metadata metadata) {
-    // TODO: Implement and take care to properly create the Endpoints
-    return null;
+    Citation citation = new Citation();
+    citation.setText(metadata.getCitationText());
+    dataset.setCitation(citation);
+
+    dataset.setContacts(metadata.getContacts());
+
+    Endpoint endpoint = new Endpoint();
+    endpoint.setType(EndpointType.BIOCASE);
+    endpoint.setUrl(installationEndpoint.getUrl());
+    endpoint.addMachineTag(MachineTag.newInstance(Constants.METADATA_NAMESPACE,
+                                                  Constants.CONCEPTUAL_SCHEMA,
+                                                  capabilities.getPreferredSchema()));
+
+    dataset.addEndpoint(endpoint);
+    return dataset;
   }
 
   /**

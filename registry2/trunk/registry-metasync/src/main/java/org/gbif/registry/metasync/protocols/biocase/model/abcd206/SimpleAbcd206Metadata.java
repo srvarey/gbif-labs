@@ -1,6 +1,7 @@
 package org.gbif.registry.metasync.protocols.biocase.model.abcd206;
 
 import org.gbif.api.model.registry2.Contact;
+import org.gbif.api.vocabulary.registry2.ContactType;
 
 import java.net.URI;
 import java.util.List;
@@ -20,8 +21,7 @@ public class SimpleAbcd206Metadata {
   private final List<String> disclaimers = Lists.newArrayList();
   private final List<String> organisations = Lists.newArrayList();
   private final List<String> ownerUrls = Lists.newArrayList();
-  private final List<Contact> technicalContacts = Lists.newArrayList();
-  private final List<Contact> administrativeContacts = Lists.newArrayList();
+  private final List<Contact> contacts = Lists.newArrayList();
   @BeanPropertySetter(pattern = BASE_PATH + "Metadata/Description/Representation/Title")
   private String name;
   // description
@@ -144,13 +144,10 @@ public class SimpleAbcd206Metadata {
     return ownerUrls;
   }
 
-  public List<Contact> getTechnicalContacts() {
-    return technicalContacts;
+  public List<Contact> getContacts() {
+    return contacts;
   }
 
-  public List<Contact> getAdministrativeContacts() {
-    return administrativeContacts;
-  }
 
   @CallMethod(pattern = BASE_PATH + "Metadata/IPRStatements/TermsOfUseStatements/TermsOfUse")
   public void addTermsOfUse(
@@ -199,7 +196,8 @@ public class SimpleAbcd206Metadata {
     contact.setEmail(email);
     contact.setPhone(phone);
     contact.setAddress(address);
-    technicalContacts.add(contact);
+    contact.setType(ContactType.TECHNICAL_POINT_OF_CONTACT);
+    contacts.add(contact);
   }
 
   @CallMethod(pattern = BASE_PATH + "ContentContacts/ContentContact")
@@ -214,7 +212,8 @@ public class SimpleAbcd206Metadata {
     contact.setEmail(email);
     contact.setPhone(phone);
     contact.setAddress(address);
-    technicalContacts.add(contact);
+    contact.setType(ContactType.ADMINISTRATIVE_POINT_OF_CONTACT);
+    contacts.add(contact);
   }
 
 }

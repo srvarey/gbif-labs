@@ -1,6 +1,7 @@
 package org.gbif.registry.metasync.protocols.biocase.model.abcd12;
 
 import org.gbif.api.model.registry2.Contact;
+import org.gbif.api.vocabulary.registry2.ContactType;
 
 import java.net.URI;
 import java.util.List;
@@ -20,8 +21,7 @@ public class SimpleAbcd12Metadata {
   private final List<String> rightsUrls = Lists.newArrayList();
   private final List<String> organisationNames = Lists.newArrayList();
   private final List<String> supplierUrls = Lists.newArrayList();
-  private final List<Contact> technicalContacts = Lists.newArrayList();
-  private final List<Contact> administrativeContacts = Lists.newArrayList();
+  private final List<Contact> contacts = Lists.newArrayList();
   @BeanPropertySetter(pattern = BASE_PATH + "OriginalSource/SourceName")
   private String code;
   @BeanPropertySetter(pattern = BASE_PATH + "DatasetDerivations/DatasetDerivation/Description")
@@ -29,7 +29,7 @@ public class SimpleAbcd12Metadata {
   @BeanPropertySetter(pattern = BASE_PATH + "OriginalSource/SourceWebAddress")
   private URI homepage;
   @BeanPropertySetter(pattern = BASE_PATH + "DatasetDerivations/DatasetDerivation/Statements/LogoURL")
-  private URI logoURL;
+  private URI logoUrl;
   @BeanPropertySetter(pattern = BASE_PATH + "DatasetDerivations/DatasetDerivation/Supplier/Addresses/Address")
   private String address;
   @BeanPropertySetter(pattern = BASE_PATH + "DatasetDerivations/DatasetDerivation/Supplier/EmailAddresses/EmailAddress")
@@ -68,12 +68,12 @@ public class SimpleAbcd12Metadata {
     this.homepage = homepage;
   }
 
-  public URI getLogoURL() {
-    return logoURL;
+  public URI getLogoUrl() {
+    return logoUrl;
   }
 
-  public void setLogoURL(URI logoURL) {
-    this.logoURL = logoURL;
+  public void setLogoUrl(URI logoUrl) {
+    this.logoUrl = logoUrl;
   }
 
   public String getAddress() {
@@ -144,12 +144,8 @@ public class SimpleAbcd12Metadata {
     return supplierUrls;
   }
 
-  public List<Contact> getTechnicalContacts() {
-    return technicalContacts;
-  }
-
-  public List<Contact> getAdministrativeContacts() {
-    return administrativeContacts;
+  public List<Contact> getContacts() {
+    return contacts;
   }
 
   @CallMethod(pattern = BASE_PATH + "DatasetDerivations/DatasetDerivation/Rights/TermsOfUse")
@@ -202,7 +198,8 @@ public class SimpleAbcd12Metadata {
     contact.setEmail(email);
     contact.setPhone(phone);
     contact.setAddress(address);
-    technicalContacts.add(contact);
+    contact.setType(ContactType.TECHNICAL_POINT_OF_CONTACT);
+    contacts.add(contact);
   }
 
   @CallMethod(pattern = BASE_PATH + "DatasetDerivations/DatasetDerivation/Rights/LegalOwner")
@@ -223,7 +220,8 @@ public class SimpleAbcd12Metadata {
     contact.setEmail(email);
     contact.setPhone(phone);
     contact.setAddress(address);
-    technicalContacts.add(contact);
+    contact.setType(ContactType.ADMINISTRATIVE_POINT_OF_CONTACT);
+    contacts.add(contact);
   }
 
 }
