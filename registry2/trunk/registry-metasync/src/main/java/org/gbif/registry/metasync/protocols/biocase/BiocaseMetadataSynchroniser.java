@@ -26,7 +26,10 @@ import org.gbif.registry.metasync.protocols.BaseProtocolHandler;
 import org.gbif.registry.metasync.protocols.biocase.model.InventoryDataset;
 import org.gbif.registry.metasync.protocols.biocase.model.NewDatasetInventory;
 import org.gbif.registry.metasync.protocols.biocase.model.OldDatasetInventory;
+import org.gbif.registry.metasync.protocols.biocase.model.abcd12.SimpleAbcd12Metadata;
+import org.gbif.registry.metasync.protocols.biocase.model.abcd206.SimpleAbcd206Metadata;
 import org.gbif.registry.metasync.protocols.biocase.model.capabilities.Capabilities;
+import org.gbif.registry.metasync.util.Constants;
 import org.gbif.registry.metasync.util.TemplateUtils;
 
 import java.net.URI;
@@ -56,12 +59,11 @@ import static com.google.common.base.Preconditions.checkArgument;
  * separate inventory request.</li>
  * </ul>
  * <p/>
- * Unfortunately BioCASe does not have good (stable) identifiers for Datasets so we need to rely on the Dataset title
- * (TODO what's it really called?).
+ * Unfortunately BioCASe does not have good (stable) identifiers for Datasets so we need to rely on the Dataset title.
  */
 public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
 
-  protected BiocaseMetadataSynchroniser(HttpClient httpClient) {
+  public BiocaseMetadataSynchroniser(HttpClient httpClient) {
     super(httpClient);
   }
 
@@ -83,10 +85,20 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
 
     for (Endpoint endpoint : installation.getEndpoints()) {
       Capabilities capabilities = getCapabilities(endpoint);
+      if (capabilities.getPreferredSchema() == null) {
+        throw new MetadataException("No preferred schema", ErrorCode.PROTOCOL_ERROR);
+      }
       List<String> datasetInventory = getDatasetInventory(capabilities, endpoint);
       for (String datasetTitle : datasetInventory) {
-        SimpleAbcd206Metadata biocaseDataSet = getMetadata(endpoint, datasetTitle, capabilities);
-        Dataset newDataset = convertToDataset(biocaseDataSet);
+        Dataset newDataset;
+
+        if (capabilities.getPreferredSchema().equals(Constants.ABCD_12_SCHEMA)) {
+          SimpleAbcd12Metadata metadata = get12Metadata(endpoint, datasetTitle, capabilities);
+          newDataset = convertToDataset(metadata);
+        } else {
+          SimpleAbcd206Metadata metadata = get206Metadata(endpoint, datasetTitle, capabilities);
+          newDataset = convertToDataset(metadata);
+        }
 
         Dataset existingDataset = findDataset(datasetTitle, datasets);
         if (existingDataset == null) {
@@ -104,7 +116,7 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
       }
     }
 
-    return new SyncResult(updated, added, deleted);
+    return new SyncResult(updated, added, deleted, installation);
   }
 
   /**
@@ -189,23 +201,39 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
   /**
    * Does a search request against this Endpoint to get all the Metadata for a single Dataset.
    */
-  private SimpleAbcd206Metadata getMetadata(Endpoint endpoint, String dataset, Capabilities capabilities) throws MetadataException {
+  private SimpleAbcd206Metadata get206Metadata(Endpoint endpoint, String dataset, Capabilities capabilities)
+    throws MetadataException {
     String requestParameter = TemplateUtils.getBiocaseMetadataRequest(capabilities.getPreferredSchema(), dataset);
     URI uri = buildUri(endpoint.getUrl(), "request", requestParameter);
     return doHttpRequest(uri, newDigester(SimpleAbcd206Metadata.class));
+  }
+
+  /**
+   * Does a search request against this Endpoint to get all the Metadata for a single Dataset.
+   */
+  private SimpleAbcd12Metadata get12Metadata(Endpoint endpoint, String dataset, Capabilities capabilities)
+    throws MetadataException {
+    String requestParameter = TemplateUtils.getBiocaseMetadataRequest(capabilities.getPreferredSchema(), dataset);
+    URI uri = buildUri(endpoint.getUrl(), "request", requestParameter);
+    return doHttpRequest(uri, newDigester(SimpleAbcd12Metadata.class));
   }
 
   public URI buildUri(String url, String parameter, String value) throws MetadataException {
     try {
       return new URIBuilder(url).addParameter(parameter, value).build();
     } catch (URISyntaxException e) {
-      throw new MetadataException(ErrorCode.OTHER_ERROR);
+      throw new MetadataException(e, ErrorCode.OTHER_ERROR);
     }
   }
 
-  private Dataset convertToDataset(SimpleAbcd206Metadata biocaseDataSet) {
+  private Dataset convertToDataset(SimpleAbcd206Metadata metadata) {
     // TODO: Implement and take care to properly create the Endpoints
     // Open question is how to map those endpoints...
+    return null;
+  }
+
+  private Dataset convertToDataset(SimpleAbcd12Metadata metadata) {
+    // TODO: Implement and take care to properly create the Endpoints
     return null;
   }
 

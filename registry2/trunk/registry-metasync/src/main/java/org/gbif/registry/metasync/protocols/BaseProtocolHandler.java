@@ -104,11 +104,9 @@ public abstract class BaseProtocolHandler implements MetadataProtocolHandler {
       // Not using a Response Handler here because that can't throw arbitrary Exceptions
       response = httpClient.execute(get);
     } catch (ClientProtocolException e) {
-      LOG.warn("Caught Exception doing HTTP request to [{}]", uri, e);
-      throw new MetadataException(ErrorCode.HTTP_ERROR);
+      throw new MetadataException(e, ErrorCode.HTTP_ERROR);
     } catch (IOException e) {
-      LOG.warn("Caught Exception doing HTTP request to [{}]", uri, e);
-      throw new MetadataException(ErrorCode.IO_EXCEPTION);
+      throw new MetadataException(e, ErrorCode.IO_EXCEPTION);
     }
 
     // Everything but HTTP status 200 is an error
@@ -119,11 +117,9 @@ public abstract class BaseProtocolHandler implements MetadataProtocolHandler {
     try {
       return digester.parse(response.getEntity().getContent());
     } catch (SAXException e) {
-      LOG.warn("Caught Exception doing HTTP request to [{}]", uri, e);
-      throw new MetadataException(ErrorCode.PROTOCOL_ERROR);
+      throw new MetadataException(e, ErrorCode.PROTOCOL_ERROR);
     } catch (IOException e) {
-      LOG.warn("Caught Exception doing HTTP request to [{}]", uri, e);
-      throw new MetadataException(ErrorCode.IO_EXCEPTION);
+      throw new MetadataException(e, ErrorCode.IO_EXCEPTION);
     } finally {
       try {
         EntityUtils.consume(response.getEntity());

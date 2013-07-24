@@ -12,3 +12,6 @@ BioCASe:
 * BiocaseMetadataSynchroniser#convertToDataset: Needs to be implemented
 * BaseProtocolHandler: Not very testable because you can't inject a mock http client etc.
 * BaseProtocolHandler: The Contact comparison works but it sucks that it needs to be adjusted whenever Contact changes...
+
+MetadataSynchroniserImpl:
+* Remove hardcoded reference to registry

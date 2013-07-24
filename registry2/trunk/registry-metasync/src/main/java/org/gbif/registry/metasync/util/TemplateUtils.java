@@ -7,7 +7,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 
-public class TemplateUtils {
+public final class TemplateUtils {
 
   private static final VelocityEngine VELOCITY_ENGINE = new VelocityEngine();
 
@@ -55,6 +55,10 @@ public class TemplateUtils {
       return "/DataSets/DataSet/Metadata/Description/Representation/Title";
     }
     return null;
+  }
+
+  private TemplateUtils() {
+    throw new UnsupportedOperationException("Can't initialize class");
   }
 
 }

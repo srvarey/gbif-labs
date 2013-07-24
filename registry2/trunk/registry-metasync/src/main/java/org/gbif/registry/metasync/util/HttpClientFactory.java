@@ -1,5 +1,7 @@
 package org.gbif.registry.metasync.util;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.ClientConnectionManager;
@@ -13,6 +15,11 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+/**
+ * A factory that builds new Apache Http Clients to be used with the Metadata synchroniser.
+ *
+ * This allows for easy swapping of implementations to make testing easier.
+ */
 public class HttpClientFactory {
 
   private static final int HTTP_PORT = 80;
@@ -25,12 +32,17 @@ public class HttpClientFactory {
 
   private final int timeout;
 
-  public HttpClientFactory(int timeout) {
-    System.setProperty("sun.net.client.defaultConnectTimeout", String.valueOf(timeout));
-    System.setProperty("sun.net.client.defaultReadTimeout", String.valueOf(timeout));
+  /**
+   * Builds a new Factory with a default timeout covering various things (connection timeout, read timeout, ...).
+   */
+  public HttpClientFactory(long timeout, TimeUnit timeUnit) {
+    long millis = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
+
+    System.setProperty("sun.net.client.defaultConnectTimeout", String.valueOf(millis));
+    System.setProperty("sun.net.client.defaultReadTimeout", String.valueOf(millis));
 
     connectionManager = setupConnectionManager();
-    this.timeout = timeout;
+    this.timeout = (int) millis;
   }
 
   public HttpClient provideHttpClient() {
@@ -46,10 +58,10 @@ public class HttpClientFactory {
     schemeRegistry.register(new Scheme("http", HTTP_PORT, PlainSocketFactory.getSocketFactory()));
     schemeRegistry.register(new Scheme("https", HTTPS_PORT, PlainSocketFactory.getSocketFactory()));
 
-    PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager(schemeRegistry);
-    connectionManager.setMaxTotal(MAX_TOTAL_CONNECTIONS);
-    connectionManager.setDefaultMaxPerRoute(MAX_CONNECTIONS_PER_HOST);
-    return connectionManager;
+    PoolingClientConnectionManager newConnectionManager = new PoolingClientConnectionManager(schemeRegistry);
+    newConnectionManager.setMaxTotal(MAX_TOTAL_CONNECTIONS);
+    newConnectionManager.setDefaultMaxPerRoute(MAX_CONNECTIONS_PER_HOST);
+    return newConnectionManager;
   }
 
 }

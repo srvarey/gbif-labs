@@ -3,14 +3,11 @@ package org.gbif.registry.metasync.protocols.tapir;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Installation;
-import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.vocabulary.registry2.InstallationType;
 import org.gbif.registry.metasync.SyncResult;
 import org.gbif.registry.metasync.protocols.HttpGetMatcher;
-import org.gbif.registry.metasync.util.Constants;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
