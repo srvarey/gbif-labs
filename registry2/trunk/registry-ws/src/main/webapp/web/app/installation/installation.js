@@ -15,8 +15,33 @@ angular.module('installation', [
  * governs the actions on the page. 
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams, Installation) {
- 
-  $stateProvider.state('installation', {
+   $stateProvider.state('installation-search', {
+    abstract: true,
+    url: '/installation-search',  
+    templateUrl: 'app/installation/installation-search.tpl.html',
+    controller: 'InstallationSearchCtrl',
+  })
+  .state('installation-search.search', {  
+    url: '',
+    templateUrl: 'app/installation/installation-results.tpl.html'
+  })
+  .state('installation-search.deleted', {  
+    url: '/deleted',   
+    templateUrl: 'app/installation/installation-deleted.tpl.html'
+  })
+  .state('installation-search.nonPublishing', {  
+    url: 'nonPublishing',   
+    templateUrl: 'app/installation/installation-nonPublishing.tpl.html'
+  })  
+  .state('installation-search.create', {  
+    url: '/create',   
+    templateUrl: 'app/installation/installation-edit.tpl.html',
+    controller: 'InstallationCreateCtrl',
+    resolve: {
+      item: function() { return {} } // load it with an empty one
+    }
+  })
+  .state('installation', {
     url: '/installation/{key}',  
     abstract: true, 
     templateUrl: 'app/installation/installation-main.tpl.html',
@@ -94,9 +119,9 @@ angular.module('installation', [
 })
 
 /**
- * All operations relating to CRUD go through this controller. 
+ * The single detail controller
  */
-.controller('InstallationCtrl', function ($scope, $state, $stateParams, $http, notifications, Restangular) {
+.controller('InstallationCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
   var key =  $stateParams.key;
   
   // shared across sub views
@@ -121,11 +146,7 @@ angular.module('installation', [
   load();
   
   // populate the dropdowns
-  var lookup = function(url, parameter) {
-    $http( { method:'GET', url: url})
-      .success(function (result) {$scope[parameter] = result});
-  }
-	lookup('../enumeration/org.gbif.api.vocabulary.registry2.InstallationType','installationTypes');  
+  $scope.installationTypes = Restangular.all("enumeration/org.gbif.api.vocabulary.registry2.InstallationType").getList();
   
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
@@ -178,4 +199,57 @@ angular.module('installation', [
   $scope.getDatasets = function () {
     if ($scope.installation) return $scope.installation.datasets;
   }
+})
+
+/**
+ * The search controller
+ */
+.controller('InstallationSearchCtrl', function ($scope, $state, Restangular, DEFAULT_PAGE_SIZE) {
+  var installation = Restangular.all("installation")
+  
+  $scope.search = function(q) {
+    installation.getList({q:q, limit:DEFAULT_PAGE_SIZE}).then(function(data) {
+      $scope.resultsCount = data.count;
+      $scope.results = data.results;
+      $scope.searchString = q;
+    });
+  }
+  $scope.search(""); // start with empty search
+  
+  installation.all("deleted").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.deletedCount = data.count;
+    $scope.deleted = data.results;
+  });
+  installation.all("nonPublishing").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.nonPublishingCount = data.count;
+    $scope.nonPublishing = data.results;
+  });
+  
+  $scope.openInstallation = function(installation) {
+    $state.transitionTo('installation.detail', {key: installation.key})
+  }
+})
+
+/**
+ * The create controller
+ */
+.controller('InstallationCreateCtrl', function ($scope, $state, $resource, item, notifications, Restangular) {
+  $scope.installationTypes = Restangular.all("enumeration/org.gbif.api.vocabulary.registry2.InstallationType").getList();
+
+  $scope.save = function (installation) {
+    // ignore empty forms
+    if (installation != undefined) {
+      Restangular.all("installation").post(installation).then(function(data) {
+        notifications.pushForNextRoute("Installation successfully updated", 'info');
+        // strip the quotes
+        $state.transitionTo('installation.detail', { key: data.replace(/["]/g,''), type: "installation" }); 
+      }, function(error) { 
+        notifications.pushForCurrentRoute(error.data, 'error');
+      });
+    }
+  }
+  
+  $scope.cancelEdit = function() {
+    $state.transitionTo('installation-search.search'); 
+  }  
 });
