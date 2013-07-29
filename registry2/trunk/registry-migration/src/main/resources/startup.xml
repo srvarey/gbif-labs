@@ -4,6 +4,7 @@
     <include href="conf.properties"/>
   </properties>
   <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>
+  <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
 
   <connection id="new-registry-functions" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}">
     statement.separator=|
@@ -20,6 +21,11 @@
   <script connection-id="new-registry">
     <dialect name="postgresql">
       <include href="schema.sql"/>
+    </dialect>
+  </script>
+  <script connection-id="old-registry">
+    <dialect name="mysql">
+      <include href="sub_view.sql"/>
     </dialect>
   </script>
 
