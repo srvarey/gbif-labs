@@ -21,7 +21,6 @@ import org.gbif.ws.util.ExtraMediaTypes;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,7 +28,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.inject.Singleton;
@@ -51,6 +53,23 @@ public class EnumerationResource {
   // Uses reflection to find the enumerations in the API
   private static Map<String, Enum<?>[]> PATH_MAPPING = enumerations();
 
+
+  private static List<Map<String, String>> COUNTRIES;
+  static {
+    List<Map<String, String>> countries = Lists.newArrayList();
+    for (Country c : Country.values()) {
+      if (c.isOfficial()) {
+        Map<String, String> info = Maps.newHashMap();
+        info.put("iso2", c.getIso2LetterCode());
+        info.put("iso3", c.getIso3LetterCode());
+        info.put("isoNumerical", String.valueOf(c.getIsoNumericalCode()));
+        info.put("title", c.getTitle());
+        info.put("enumName", c.name());
+        countries.add(info);
+      }
+    }
+    COUNTRIES = ImmutableList.copyOf(countries);
+  }
 
   /**
    * An inventory of the enumerations supported.
@@ -95,6 +114,15 @@ public class EnumerationResource {
       LOG.error("Unable to read the classpath for enumerations", e);
       return ImmutableMap.<String, Enum<?>[]>of(); // empty
     }
+  }
+
+  /**
+   * @return list of country informations based on our enum.
+   */
+  @Path("countries")
+  @GET
+  public List<Map<String, String>> listCountries() {
+    return COUNTRIES;
   }
 
   /**
