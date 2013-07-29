@@ -42,6 +42,7 @@ import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -126,10 +127,9 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled fields for createdBy and modifiedBy. It then creates the entity.
-   *
-   * @param entity   entity that extends NetworkEntity
+   * 
+   * @param entity entity that extends NetworkEntity
    * @param security SecurityContext (security related information)
-   *
    * @return key of entity created
    */
   @POST
@@ -154,8 +154,8 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
    * This method ensures that the caller is authorized to perform the action, and then deletes the entity.
    * </br>
    * Relax content-type to wildcard to allow angularjs.
-   *
-   * @param key      key of entity to delete
+   * 
+   * @param key key of entity to delete
    */
   @DELETE
   @Path("{key}")
@@ -200,9 +200,9 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the path variable for the key matches the entity's key, ensures that the caller is
    * authorized to perform the action and then adds the server controlled field modifiedBy.
-   *
-   * @param key      key of entity to update
-   * @param entity   entity that extends NetworkEntity
+   * 
+   * @param key key of entity to update
+   * @param entity entity that extends NetworkEntity
    * @param security SecurityContext (security related information)
    */
   @PUT
@@ -227,11 +227,10 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled fields for createdBy and modifiedBy.
-   *
+   * 
    * @param targetEntityKey key of target entity to add comment to
-   * @param comment         Comment to add
-   * @param security        SecurityContext (security related information)
-   *
+   * @param comment Comment to add
+   * @param security SecurityContext (security related information)
    * @return key of Comment created
    */
   @POST
@@ -254,12 +253,13 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   /**
    * This method ensures that the caller is authorized to perform the action, and then deletes the Comment.
-   *
+   * 
    * @param targetEntityKey key of target entity to delete comment from
-   * @param commentKey      key of Comment to delete
+   * @param commentKey key of Comment to delete
    */
   @DELETE
   @Path("{key}/comment/{commentKey}")
+  @Consumes(MediaType.WILDCARD)
   @RolesAllowed(ADMIN_ROLE)
   @Override
   public void deleteComment(@NotNull @PathParam("key") UUID targetEntityKey, @PathParam("commentKey") int commentKey) {
@@ -276,11 +276,10 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled field for createdBy.
-   *
+   * 
    * @param targetEntityKey key of target entity to add MachieTag to
-   * @param machineTag      MachineTag to add
-   * @param security        SecurityContext (security related information)
-   *
+   * @param machineTag MachineTag to add
+   * @param security SecurityContext (security related information)
    * @return key of MachineTag created
    */
   @POST
@@ -307,18 +306,19 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
     machineTag.setNamespace(namespace);
     machineTag.setName(name);
     machineTag.setValue(value);
-  return addMachineTag(targetEntityKey, machineTag);
-}
+    return addMachineTag(targetEntityKey, machineTag);
+  }
 
   /**
    * This method ensures that the caller is authorized to perform the action, and then deletes the MachineTag.
-   *
+   * 
    * @param targetEntityKey key of target entity to delete MachineTag from
-   * @param machineTagKey   key of MachineTag to delete
+   * @param machineTagKey key of MachineTag to delete
    */
   @DELETE
   @Path("{key}/machinetag/{machinetagKey}")
   @RolesAllowed(ADMIN_ROLE)
+  @Consumes(MediaType.WILDCARD)
   @Override
   public void deleteMachineTag(@PathParam("key") UUID targetEntityKey, @PathParam("machinetagKey") int machineTagKey) {
     WithMyBatis.deleteMachineTag(mapper, targetEntityKey, machineTagKey);
@@ -348,11 +348,10 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled fields for createdBy.
-   *
+   * 
    * @param targetEntityKey key of target entity to add Tag to
-   * @param value           Tag to add
-   * @param security        SecurityContext (security related information)
-   *
+   * @param value Tag to add
+   * @param security SecurityContext (security related information)
    * @return key of Tag created
    */
   @POST
@@ -379,13 +378,14 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   /**
    * This method ensures that the caller is authorized to perform the action, and then deletes the Tag.
-   *
+   * 
    * @param taggedEntityKey key of target entity to delete Tag from
-   * @param tagKey          key of Tag to delete
+   * @param tagKey key of Tag to delete
    */
   @DELETE
   @Path("{key}/tag/{tagKey}")
   @RolesAllowed(ADMIN_ROLE)
+  @Consumes(MediaType.WILDCARD)
   @Override
   public void deleteTag(@PathParam("key") UUID taggedEntityKey, @PathParam("tagKey") int tagKey) {
     WithMyBatis.deleteTag(mapper, taggedEntityKey, tagKey);
@@ -401,11 +401,10 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled fields for createdBy and modifiedBy.
-   *
+   * 
    * @param targetEntityKey key of target entity to add Contact to
-   * @param contact         Contact to add
-   * @param security        SecurityContext (security related information)
-   *
+   * @param contact Contact to add
+   * @param security SecurityContext (security related information)
    * @return key of Contact created
    */
   @POST
@@ -429,11 +428,11 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled field for modifiedBy.
-   *
+   * 
    * @param targetEntityKey key of target entity to update contact
-   * @param contactKey      key of Contact to update
-   * @param contact         updated Contact
-   * @param security        SecurityContext (security related information)
+   * @param contactKey key of Contact to update
+   * @param contact updated Contact
+   * @param security SecurityContext (security related information)
    */
   @PUT
   @Path("{key}/contact/{contactKey}")
@@ -457,13 +456,14 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   /**
    * This method ensures that the caller is authorized to perform the action.
-   *
+   * 
    * @param targetEntityKey key of target entity to delete Contact from
-   * @param contactKey      key of Contact to delete
+   * @param contactKey key of Contact to delete
    */
   @DELETE
   @Path("{key}/contact/{contactKey}")
   @RolesAllowed(ADMIN_ROLE)
+  @Consumes(MediaType.WILDCARD)
   @Override
   public void deleteContact(@PathParam("key") UUID targetEntityKey, @PathParam("contactKey") int contactKey) {
     WithMyBatis.deleteContact(mapper, targetEntityKey, contactKey);
@@ -479,11 +479,10 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled fields for createdBy and modifiedBy.
-   *
+   * 
    * @param targetEntityKey key of target entity to add Endpoint to
-   * @param endpoint        Endpoint to add
-   * @param security        SecurityContext (security related information)
-   *
+   * @param endpoint Endpoint to add
+   * @param security SecurityContext (security related information)
    * @return key of Endpoint created
    */
   @POST
@@ -506,13 +505,14 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   /**
    * This method ensures that the caller is authorized to perform the action, and then deletes the Endpoint.
-   *
+   * 
    * @param targetEntityKey key of target entity to delete Endpoint from
-   * @param endpointKey     key of Endpoint to delete
+   * @param endpointKey key of Endpoint to delete
    */
   @DELETE
   @Path("{key}/endpoint/{endpointKey}")
   @RolesAllowed(ADMIN_ROLE)
+  @Consumes(MediaType.WILDCARD)
   @Override
   public void deleteEndpoint(@PathParam("key") UUID targetEntityKey, @PathParam("endpointKey") int endpointKey) {
     WithMyBatis.deleteEndpoint(mapper, targetEntityKey, endpointKey);
@@ -528,11 +528,10 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   /**
    * This method ensures that the caller is authorized to perform the action and then adds the server
    * controlled field for createdBy.
-   *
+   * 
    * @param targetEntityKey key of target entity to add Identifier to
-   * @param identifier      Identifier to add
-   * @param security        SecurityContext (security related information)
-   *
+   * @param identifier Identifier to add
+   * @param security SecurityContext (security related information)
    * @return key of Identifier created
    */
   @POST
@@ -554,19 +553,18 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
 
   /**
    * This method ensures that the caller is authorized to perform the action, and then deletes the Identifier.
-   *
+   * 
    * @param targetEntityKey key of target entity to delete Identifier from
-   * @param identifierKey   key of Identifier to delete
+   * @param identifierKey key of Identifier to delete
    */
   @DELETE
   @Path("{key}/identifier/{identifierKey}")
   @RolesAllowed(ADMIN_ROLE)
+  @Consumes(MediaType.WILDCARD)
   @Override
   public void deleteIdentifier(@PathParam("key") UUID targetEntityKey, @PathParam("identifierKey") int identifierKey) {
     WithMyBatis.deleteIdentifier(mapper, targetEntityKey, identifierKey);
   }
-
-
 
 
   @GET

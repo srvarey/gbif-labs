@@ -25,7 +25,8 @@
             <input type="text" class="search-query" placeholder="Search" ng-model="q"></input>
             <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
           </form></li>
-          <li class="divider-vertical"></li>          
+          
+          <!--li class="divider-vertical"></li>          
           <li class="dropdown">
             <a class="dropdown-toggle js-dropdown-toggle" href="#" id="user-dropdown-toggle" data-toggle="dropdown">
               <i class="nav-session"><span class="visuallyhidden">settings</span></i></span> <span class="caret"></span>
@@ -52,7 +53,10 @@
                 <a href="#" data-nav="logout">Sign out</a>
               </li>
             </ul>
-          </li>
+          </li-->
+          
+          <li class="divider-vertical" ng-show="isLoggedIn"></li>
+          <li><a href="" ng-show="isLoggedIn" ng-click="logout()">Logout</a></li>
         </ul>          
       </div>
     </div>
