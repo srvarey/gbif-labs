@@ -1,6 +1,6 @@
 angular.module('app', [
   'ui.compat', // the stateful angular router
-  'ngSanitize', // for the likes of bind-html
+  'ngSanitize', // for the like	 of bind-html
   'ngCookies', // for security
   'http-auth-interceptor', // intercepts 401 responses, and triggers login
   'restangular', // for REST calls
@@ -15,7 +15,6 @@ angular.module('app', [
   'organization-search',
   'dataset-search',
   'node-search',
-  'installation-search',
   'resources',  
   ])
 
@@ -25,8 +24,8 @@ angular.module('app', [
   
   // relative to /web brings us up to the root
   // should this be run outside of the registry-ws project, this will need changed
-  RestangularProvider.setBaseUrl("../"); // 
-  
+  RestangularProvider.setBaseUrl("../"); 
+    
   // all GBIF entities use "key" and not "id" as the id, and this is used inn routing
   RestangularProvider.setRestangularFields({
     id: "key"
