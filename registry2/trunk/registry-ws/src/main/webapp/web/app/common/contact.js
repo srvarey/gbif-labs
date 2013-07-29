@@ -3,6 +3,10 @@ angular.module('contact', ['services.notifications'])
 .controller('ContactCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
 	var type = $state.current.context; // this context should be set in the parent statemachine (e.g. dataset)
 	var key = $stateParams.key; // the entity key (e.g. uuid of a dataset)
+	
+	var resetState = function() {
+	  $state.transitionTo(type + '.contact', { key: key}); 
+	}
 
   // help provide context with a label to the user
   var typeLabel = $state.current.context;
@@ -32,6 +36,7 @@ angular.module('contact', ['services.notifications'])
       if (!item.key) {
         contacts.getList().then(function(response) {$scope.contacts = response});
         $scope.counts.contact++;
+        resetState(); // in case we have logged in
       }
     };
     
@@ -60,6 +65,7 @@ angular.module('contact', ['services.notifications'])
         $scope.contacts = _.without($scope.contacts, ngItem);
         $scope.counts.contact--;
         $scope.close();
+        resetState(); // in case we have logged in
       },
       function(response) {
         notifications.pushForCurrentRoute(response.data, 'error');

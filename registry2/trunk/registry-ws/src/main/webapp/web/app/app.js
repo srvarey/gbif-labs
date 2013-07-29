@@ -1,7 +1,7 @@
 angular.module('app', [
   'ui.compat', // the stateful angular router
   'ngSanitize', // for the likes of bind-html
-  'ngCookies',
+  'ngCookies', // for security
   'http-auth-interceptor', // intercepts 401 responses, and triggers login
   'restangular', // for REST calls
   'services.notifications',
@@ -16,32 +16,30 @@ angular.module('app', [
   'dataset-search',
   'node-search',
   'installation-search',
-  'resources',
-  
+  'resources',  
   ])
 
 .config(['$routeProvider', 'RestangularProvider', '$httpProvider', function ($routeProvider, RestangularProvider, $httpProvider) {
-  $routeProvider.when('', {redirectTo: '/home'});
-  RestangularProvider.setBaseUrl("/");
+  // TODO: no idea, why angular starts up redirecting to #/index.html, but this adds a second redirect
+  $routeProvider.when('/index.html', {redirectTo: '/home'});
+  
+  // relative to /web brings us up to the root
+  // should this be run outside of the registry-ws project, this will need changed
+  RestangularProvider.setBaseUrl("../"); // 
+  
   // all GBIF entities use "key" and not "id" as the id, and this is used inn routing
   RestangularProvider.setRestangularFields({
     id: "key"
   });  
   
-  // we really do not want 401 responses, or the dreaded browser login window appears
+  // we really do not want 401 responses (or the dreaded browser login window appears)
   $httpProvider.defaults.headers.common['gbif-prefer-403-over-401']='true';
-  
 }])
 
 // app constants are global in scope 
-// TODO: get these from props? We'd want them to be different for live
-.constant('NODE_URL', "../node")
-.constant('DATASET_URL', "../dataset")
-.constant('INSTALLATION_URL', "../installation")
-.constant('ORGANIZATION_URL', "../organization")
 .constant('DEFAULT_PAGE_SIZE', 1000)
 
-.controller('AppCtrl', function ($scope, notifications, $state, $rootScope, notifications) {
+.controller('AppCtrl', function ($scope, notifications, $state, $rootScope, notifications, $cookieStore, authService, Auth) {
   // register global notifications once
   $scope.notifications = notifications;
 
@@ -50,9 +48,16 @@ angular.module('app', [
   };
   
   $rootScope.$on('event:auth-loginRequired', function() {
-    notifications.pushForNextRoute("Requires account with Administrative rights", 'error');
+    notifications.pushForNextRoute("Requires account with administrative rights", 'error');
+    $rootScope.isLoggedIn = false;        
     $state.transitionTo("login");
   });
+    
+  $rootScope.logout = function() {
+    Auth.clearCredentials();
+  }
+  
+  $rootScope.isLoggedIn = authService.isLoggedIn(); // initialize with a default
 })
 
 // a safe array sizing filter  

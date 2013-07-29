@@ -1,12 +1,16 @@
 
 angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
 
-  .factory('authService', ['$rootScope','httpBuffer', function($rootScope, httpBuffer) {
+  .factory('authService', ['$rootScope','httpBuffer', '$cookieStore', function($rootScope, httpBuffer, $cookieStore) {
     return {
       loginConfirmed: function() {
         $rootScope.$broadcast('event:auth-loginConfirmed');
         httpBuffer.retryAll();
-      }
+      },
+      isLoggedIn: function() {
+        var loggedIn =  $cookieStore.get('authdata')!==undefined
+        return $cookieStore.get('authdata')!==undefined;
+      }      
     };
   }])
 
@@ -45,7 +49,7 @@ angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
    */
   angular.module('http-auth-interceptor-buffer', [])
 
-  .factory('httpBuffer', ['$injector', function($injector) {
+  .factory('httpBuffer', ['$injector', '$cookieStore', function($injector, $cookieStore) {
     /** Holds all the requests, so they can be re-requested in future. */
     var buffer = [];
     
@@ -53,6 +57,8 @@ angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
     var $http; 
     
     function retryHttpRequest(config, deferred) {
+      // on retry, pick up latest credentials
+      config.headers.Authorization = 'Basic ' + $cookieStore.get('authdata');      
       $http = $http || $injector.get('$http');
       $http(config).then(function(response) {
         deferred.resolve(response);
