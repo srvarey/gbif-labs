@@ -19,6 +19,7 @@ import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
+import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.IdentifierType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
 import org.gbif.registry.metasync.api.SyncResult;
@@ -27,8 +28,10 @@ import org.gbif.registry.metasync.util.Constants;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
@@ -106,6 +109,9 @@ public class DigirMetadataSynchroniserTest {
     assertThat(dataset.getIdentifiers().size()).isEqualTo(1);
     assertThat(dataset.getIdentifiers().get(0).getIdentifier()).isEqualTo("10.1594/PANGAEA.51131");
     assertThat(dataset.getIdentifiers().get(0).getType()).isEqualTo(IdentifierType.DOI);
+    // endpoints
+    assertThat(dataset.getEndpoints().size()).isEqualTo(1);
+    assertThat(dataset.getEndpoints().get(0).getType()).isEqualTo(EndpointType.DIGIR);
   }
 
   @Test
@@ -139,6 +145,23 @@ public class DigirMetadataSynchroniserTest {
 
     assertThat(syncResult.existingDatasets.get(dataset).getTitle()).isEqualTo(
       "Distribution of benthic foraminifera of sediment core PS1388-3");
+  }
+
+  /**
+   * Make sure the determination of DiGIR endpoint type is catching DIGIR_MANIS.
+   */
+  @Test
+  public void testDetermineEndpointType() {
+    // populate map with namespace (conceptualSchema) / schemaLocation key value pair
+    Map<String, URI> schemas = Maps.newHashMap();
+    schemas.put("http://digir.net/schema/conceptual/darwin/2003/1.0",
+      URI.create("http://bnhm.berkeley.museum/manis/DwC/darwin2jrw030315.xsd"));
+    assertThat(synchroniser.determineEndpointType(schemas)).isEqualTo(EndpointType.DIGIR_MANIS);
+    // reset, try another
+    schemas.clear();
+    schemas.put("http://digir.net/schema/conceptual/darwin/2003/1.0",
+      URI.create("http://bnhm.berkeley.edu/DwC/bnhm_dc2_schema.xsd"));
+    assertThat(synchroniser.determineEndpointType(schemas)).isEqualTo(EndpointType.DIGIR_MANIS);
   }
 
   public HttpResponse prepareResponse(int responseStatus, String fileName) throws IOException {
