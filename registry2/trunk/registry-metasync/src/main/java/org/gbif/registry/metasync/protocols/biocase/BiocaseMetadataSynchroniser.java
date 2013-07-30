@@ -22,9 +22,9 @@ import org.gbif.api.model.registry2.Installation;
 import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
-import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.protocols.BaseProtocolHandler;
 import org.gbif.registry.metasync.protocols.biocase.model.InventoryDataset;
 import org.gbif.registry.metasync.protocols.biocase.model.NewDatasetInventory;
@@ -255,7 +255,11 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
     return dataset;
   }
 
-  private Dataset convertToDataset(SimpleAbcd12Metadata metadata, Endpoint installationEndpoint, Capabilities capabilities) {
+  private Dataset convertToDataset(
+    SimpleAbcd12Metadata metadata,
+    Endpoint installationEndpoint,
+    Capabilities capabilities
+  ) {
     Dataset dataset = new Dataset();
     dataset.setTitle(metadata.getCode());
     dataset.setDescription(metadata.getDescription());
