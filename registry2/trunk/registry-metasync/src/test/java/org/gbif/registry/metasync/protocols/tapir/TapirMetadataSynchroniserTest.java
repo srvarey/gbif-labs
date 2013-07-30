@@ -3,9 +3,11 @@ package org.gbif.registry.metasync.protocols.tapir;
 import org.gbif.api.model.registry2.Dataset;
 import org.gbif.api.model.registry2.Endpoint;
 import org.gbif.api.model.registry2.Installation;
+import org.gbif.api.model.registry2.MachineTag;
 import org.gbif.api.vocabulary.registry2.InstallationType;
 import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.protocols.HttpGetMatcher;
+import org.gbif.registry.metasync.util.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,13 +65,26 @@ public class TapirMetadataSynchroniserTest {
   public void testAddedDatasets() throws Exception {
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=capabilities")))).thenReturn(
       prepareResponse(200, "tapir/capabilities1.xml"));
-    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(prepareResponse(200,
-                                                                                                              "tapir/metadata1.xml"));
+    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(
+      prepareResponse(200, "tapir/metadata1.xml"));
+    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz")))).thenReturn(
+      prepareResponse(200,  "tapir/search1.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, new ArrayList<Dataset>());
     assertThat(syncResult.deletedDatasets).isEmpty();
     assertThat(syncResult.existingDatasets).isEmpty();
     assertThat(syncResult.addedDatasets).hasSize(1);
     assertThat(syncResult.addedDatasets.get(0).getContacts()).hasSize(2);
+    assertThat(syncResult.addedDatasets.get(0).getMachineTags()).hasSize(4);
+
+    // Assert the declared record count machine tag was found, and that its value was 167348
+    MachineTag count = null;
+    for (MachineTag tag: syncResult.addedDatasets.get(0).getMachineTags()) {
+      if (tag.getName().equalsIgnoreCase(Constants.DECLARED_COUNT)) {
+        count = tag;
+      }
+    }
+    assertThat(count).isNotNull();
+    assertThat(Integer.valueOf(count.getValue())).isEqualTo(167348);
   }
 
   @Test
@@ -79,9 +94,10 @@ public class TapirMetadataSynchroniserTest {
 
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=capabilities")))).thenReturn(
       prepareResponse(200, "tapir/capabilities1.xml"));
-    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(prepareResponse(200,
-                                                                                                              "tapir/metadata1.xml"));
-
+    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(
+      prepareResponse(200, "tapir/metadata1.xml"));
+    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz")))).thenReturn(
+      prepareResponse(200,  "tapir/search1.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, Lists.newArrayList(dataset));
     assertThat(syncResult.deletedDatasets).hasSize(1);
     assertThat(syncResult.existingDatasets).isEmpty();
@@ -100,8 +116,10 @@ public class TapirMetadataSynchroniserTest {
 
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=capabilities")))).thenReturn(
       prepareResponse(200, "tapir/capabilities1.xml"));
-    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(prepareResponse(200,
-                                                                                                              "tapir/metadata1.xml"));
+    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(
+      prepareResponse(200, "tapir/metadata1.xml"));
+    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz")))).thenReturn(
+      prepareResponse(200,  "tapir/search1.xml"));
 
     SyncResult syncResult = synchroniser.syncInstallation(installation, Lists.newArrayList(dataset));
     assertThat(syncResult.deletedDatasets).describedAs("Deleted datasets").isEmpty();
