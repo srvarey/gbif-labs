@@ -87,6 +87,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
     int count = 0;
     do {
       results = installationService.list(page);
+      // TODO:Check for null result
       for (final Installation installation : results.getResults()) {
         completionService.submit(new Callable<SyncResult>() {
           @Override

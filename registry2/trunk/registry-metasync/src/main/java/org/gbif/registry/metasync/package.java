@@ -17,7 +17,14 @@
  * <ul>
  *   <li>Installation: {@code softwareName} is the reported name of the host software</li>
  *   <li>Installation: {@code version} is the version of the host software</li>
- *   <li>Dataset: {@code conceptualSchema} (may occur multiple times) are the namespaces of the conceptual schemas this dataset supports</li>
+ *   <li>Dataset: {@code conceptualSchema} (may occur multiple times) are the namespaces of the conceptual schemas this
+ *   dataset supports</li>
+ * </ul>
+ *
+ * BioCASe writes the following Machine tags:
+ * <ul>
+ *   <li>Endpoint: {@code conceptualSchema} will only occur once and will be either the namespace for
+ *   ABCD 1.2 or 2.06</li>
  * </ul>
  */
 package org.gbif.registry.metasync;
