@@ -122,6 +122,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
       try {
         executor.awaitTermination(1, TimeUnit.MINUTES);
       } catch (InterruptedException ignored) {
+        Thread.currentThread().interrupt();
       }
     }
 

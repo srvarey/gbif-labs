@@ -151,7 +151,6 @@ public class SimpleAbcd206Metadata {
     return contacts;
   }
 
-
   @CallMethod(pattern = BASE_PATH + "Metadata/IPRStatements/TermsOfUseStatements/TermsOfUse")
   public void addTermsOfUse(
     @CallParam(pattern = BASE_PATH + "Metadata/IPRStatements/TermsOfUseStatements/TermsOfUse") String termsOfUse

@@ -26,9 +26,9 @@ import org.gbif.api.vocabulary.registry2.ContactType;
 import org.gbif.api.vocabulary.registry2.EndpointType;
 import org.gbif.api.vocabulary.registry2.IdentifierType;
 import org.gbif.api.vocabulary.registry2.InstallationType;
-import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
+import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.protocols.BaseProtocolHandler;
 import org.gbif.registry.metasync.protocols.digir.model.DigirContact;
 import org.gbif.registry.metasync.protocols.digir.model.DigirMetadata;
@@ -44,8 +44,6 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.http.client.HttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.gbif.registry.metasync.util.Constants.METADATA_NAMESPACE;
 
