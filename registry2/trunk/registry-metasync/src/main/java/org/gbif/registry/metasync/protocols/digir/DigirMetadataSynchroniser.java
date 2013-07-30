@@ -60,6 +60,10 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
   // Source: http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page#comment24134610_10324802
   private static final Pattern DOI_PATTERN =
     Pattern.compile("\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\\'])\\S)+)\\b");
+  // keyword used to identify if an endpoint is of type DIGIR_MANIS
+  private static final String MANIS_KEYWORD = "manis";
+  // only schemaLocation of type DIGIR_MANIS not containing the word "manis"
+  private static final String MANIS_SCHEMA_LOCATION = "http://bnhm.berkeley.edu/DwC/bnhm_dc2_schema.xsd";
 
   public DigirMetadataSynchroniser(HttpClient httpClient) {
     super(httpClient);
@@ -214,11 +218,31 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
     Endpoint endpoint = new Endpoint();
     endpoint.setDescription(resource.getName());
     endpoint.setUrl(url);
-    // TODO: Set to MANIS if appropriate
-    endpoint.setType(EndpointType.DIGIR);
+    // normal DiGIR vs MaNIS DiGIR?
+    endpoint.setType(determineEndpointType(resource.getConceptualSchemas()));
     dataset.addEndpoint(endpoint);
 
     return dataset;
+  }
+
+  /**
+   * Iterates through the resource's map of namespace (conceptualSchemas) / schemaLocation key value pairs.
+   * If a DIGIR_MANIS endpoint is found in the list, the EndpointType is equal to DiGIR_MANIS. A DiGIR_MANIS
+   * endpoint is identified, by checking if the schemaLocation 1)contains the word "manis" or 2) is equal to
+   * "http://bnhm.berkeley.edu/DwC/bnhm_dc2_schema.xsd".
+   *
+   * @param conceptualSchemas map with namespace (conceptualSchemas), schemaLocation key value pairs
+   *
+   * @return endpoint type, defaulting to (normal) DiGIR
+   */
+  EndpointType determineEndpointType(Map<String, URI> conceptualSchemas) {
+    for (URI schemaLocation : conceptualSchemas.values()) {
+      if (schemaLocation.toString().equalsIgnoreCase(MANIS_SCHEMA_LOCATION) || schemaLocation.toString().toLowerCase()
+        .contains(MANIS_KEYWORD)) {
+        return EndpointType.DIGIR_MANIS;
+      }
+    }
+    return EndpointType.DIGIR;
   }
 
   /**
