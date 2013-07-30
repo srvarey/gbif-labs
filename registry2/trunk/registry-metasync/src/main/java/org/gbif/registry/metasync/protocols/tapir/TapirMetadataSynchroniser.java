@@ -31,18 +31,23 @@ import org.gbif.registry.metasync.protocols.tapir.model.capabilities.Schema;
 import org.gbif.registry.metasync.protocols.tapir.model.metadata.TapirContact;
 import org.gbif.registry.metasync.protocols.tapir.model.metadata.TapirMetadata;
 import org.gbif.registry.metasync.protocols.tapir.model.metadata.TapirRelatedEntity;
+import org.gbif.registry.metasync.protocols.tapir.model.search.TapirSearch;
 import org.gbif.registry.metasync.util.Constants;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.gbif.registry.metasync.util.Constants.METADATA_NAMESPACE;
 
@@ -67,6 +72,32 @@ import static com.google.common.base.Preconditions.checkArgument;
  * aborted. I'm doing this to prevent inconsistencies.
  */
 public class TapirMetadataSynchroniser extends BaseProtocolHandler {
+  private static final Logger LOG = LoggerFactory.getLogger(TapirMetadataSynchroniser.class);
+
+  // TAPIR supports multiple output formats, so we map a namespace to a search template with appropriate output model
+  // The maps are ordered by output model, with the preferred (highest priority) output for DwC/ABCD coming first
+  private static final LinkedListMultimap<String, String> ORDERED_TEMPLATE_MAPPING = LinkedListMultimap.create();
+
+  static {
+    // DwC
+    ORDERED_TEMPLATE_MAPPING.put("http://rs.tdwg.org/dwc/dwcore/",
+      "http://rs.gbif.org/templates/tapir/dwc/1.4/sci_name_range.xml");
+    ORDERED_TEMPLATE_MAPPING.put("http://rs.tdwg.org/dwc/geospatial/",
+      "http://rs.gbif.org/templates/tapir/dwc/1.4/sci_name_range.xml");
+    ORDERED_TEMPLATE_MAPPING.put("http://rs.tdwg.org/dwc/curatorial/",
+      "http://rs.gbif.org/templates/tapir/dwc/1.4/sci_name_range.xml");
+    ORDERED_TEMPLATE_MAPPING.put("http://rs.tdwg.org/dwc/terms/",
+      "http://rs.tdwg.org/tapir/cs/dwc/terms/2009-09-23/template/dwc_sci_name_range.xml");
+    ORDERED_TEMPLATE_MAPPING.put("http://digir.net/schema/conceptual/darwin/2003/1.0",
+      "http://rs.gbif.org/templates/tapir/dwc/1.0/sci_name_range.xml");
+    ORDERED_TEMPLATE_MAPPING.put("http://www.tdwg.org/schemas/abcd/2.06",
+      "http://rs.gbif.org/templates/tapir/abcd/206/sci_name_range.xml");
+    // ABCD (Default to 2.0.6 whenever 2.0.5 is encountered)
+    ORDERED_TEMPLATE_MAPPING.put("http://www.tdwg.org/schemas/abcd/2.05",
+      "http://rs.gbif.org/templates/tapir/abcd/206/sci_name_range.xml");
+    ORDERED_TEMPLATE_MAPPING.put("http://www.tdwg.org/schemas/abcd/1.2",
+      "http://rs.gbif.org/templates/tapir/abcd/1.2/sci_name_range.xml");
+  }
 
   public TapirMetadataSynchroniser(HttpClient httpClient) {
     super(httpClient);
@@ -101,7 +132,11 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
 
       updateInstallationEndpoint(metadata, endpoint);
 
-      Dataset newDataset = convertToDataset(capabilities, metadata);
+      String outputModelTemplate = getPreferredOutputModelTemplate(capabilities.getSchemas());
+      URI searchRequestUrl = buildSearchRequestUrl(endpoint, outputModelTemplate);
+      TapirSearch search = getTapirSearch(searchRequestUrl);
+
+      Dataset newDataset = convertToDataset(capabilities, metadata, search);
       Dataset existingDataset = findDataset(localId, datasets);
       if (existingDataset == null) {
         added.add(newDataset);
@@ -160,6 +195,19 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
   }
 
   /**
+   * Does a Search request against the TAPIR Endpoint.
+   *
+   * @param request request URI to search request used to retrieve number of records
+   *
+   * @return TapirSearch, or null if the response could not be parsed into a TapirSearch
+   *
+   * @throws MetadataException in case anything goes wrong during the request
+   */
+  private TapirSearch getTapirSearch(URI request) throws MetadataException {
+    return doHttpRequest(request, newDigester(TapirSearch.class));
+  }
+
+  /**
    * Updates the Endpoint of the Installation that we're currently working on.
    */
   private void updateInstallationEndpoint(TapirMetadata metadata, Endpoint endpoint) {
@@ -169,7 +217,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
   /**
    * Converts the Capabilities and Metadata response from TAPIR into a GBIF Dataset.
    */
-  private Dataset convertToDataset(Capabilities capabilities, TapirMetadata metadata) {
+  private Dataset convertToDataset(Capabilities capabilities, TapirMetadata metadata, @Nullable TapirSearch search) {
     Dataset dataset = new Dataset();
     dataset.setTitle(metadata.getTitles().toString());
     dataset.setDescription(metadata.getDescriptions().toString());
@@ -200,6 +248,13 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
       dataset.addMachineTag(MachineTag.newInstance(METADATA_NAMESPACE,
                                                    Constants.CONCEPTUAL_SCHEMA,
                                                    schema.getNamespace().toASCIIString()));
+    }
+
+    // if search response brought back the number of records, add corresponding tag
+    if (search != null && search.getNumberOfRecords() != 0) {
+      dataset.addMachineTag(MachineTag.newInstance(METADATA_NAMESPACE,
+        Constants.DECLARED_COUNT,
+        String.valueOf(search.getNumberOfRecords())));
     }
 
     return dataset;
@@ -235,4 +290,77 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
                                                       updaterMetadata.getSoftwareName()));
   }
 
+  /**
+   * Construct a map of the atoms for the TAPIR search request.
+   *
+   * @param outputModelTemplate output model template URI
+   *
+   * @return The atoms for the TAPIR search request (always in the same order which is important for testing) used only
+   *         to return the count.
+   */
+  private Map<String, String> buildTapirSearchRequestParameters(String outputModelTemplate) {
+    Map<String, String> params = Maps.newLinkedHashMap();
+    params.put("op", "s");
+    params.put("t", outputModelTemplate);
+    params.put("count", "true");
+
+    params.put("start", "0");
+    params.put("limit", "1");
+
+    params.put("lower", "AAA");
+    params.put("upper", "zzz");
+
+    return params;
+  }
+
+  /**
+   * Build the TAPIR search request URL that will return the number of records count. It has scientific name range
+   * AAA-zzz, offset 0, limit 1, and count equal to true.
+   *
+   * @param endpoint            Endpoint
+   * @param outputModelTemplate output model template to use in request
+   *
+   * @return TAPIR search request URL
+   */
+  public URI buildSearchRequestUrl(Endpoint endpoint, String outputModelTemplate) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(endpoint.getUrl());
+      for (Map.Entry<String, String> paramEntry : buildTapirSearchRequestParameters(outputModelTemplate).entrySet()) {
+        uriBuilder.addParameter(paramEntry.getKey(), paramEntry.getValue());
+      }
+      return uriBuilder.build();
+    } catch (URISyntaxException e) {
+      // It's coming from a valid URL so it shouldn't ever throw this, so we swallow this
+      return null;
+    }
+  }
+
+  /**
+   * Gets the preferred output model template to use for requests to the TAPIR endpoint using the list of supported
+   * namespaces coming from the capabilities response's list of Schemas.
+   * </br>
+   * E.g. schema with namespace ABCD 2.06 is preferred over ABCD 1.2, so the output model corresponding to ABCD 2.06 is
+   * returned.
+   *
+   * @param schemas TAPIR capabilities list of Schemas
+   *
+   * @return the preferred output model template
+   *
+   * @throws MetadataException if no preferred output model template was found
+   */
+  private String getPreferredOutputModelTemplate(List<Schema> schemas) throws MetadataException {
+    // iterate through ordered namespace -> output model mappings
+    Iterator<Map.Entry<String, String>> iterator = ORDERED_TEMPLATE_MAPPING.entries().iterator();
+    while (iterator.hasNext()) {
+      Map.Entry<String, String> entry = iterator.next();
+      // was this namespace listed in the capabilities?
+      for (Schema schema : schemas) {
+        if (entry.getKey().equalsIgnoreCase(schema.getNamespace().toString())) {
+          // return the output model template, corresponding to the highest priority namespace encountered
+          return entry.getValue();
+        }
+      }
+    }
+    throw new MetadataException("No namespace found matching a DwC or ABCD output model", ErrorCode.PROTOCOL_ERROR);
+  }
 }
