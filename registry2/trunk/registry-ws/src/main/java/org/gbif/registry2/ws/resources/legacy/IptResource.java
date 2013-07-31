@@ -300,6 +300,11 @@ public class IptResource {
       if (dataset.getInstallationKey() == null) {
         dataset.setInstallationKey(existing.getInstallationKey());
       }
+      // Dataset can only have 1 installation key, log if the hosting installation is being changed
+      // Reason: IPT versions before 2.0.5 didn't supply the parameter iptKey on dataset updates
+      else if (dataset.getInstallationKey() != existing.getInstallationKey()) {
+        LOG.debug("The dataset's technical installation is being changed from {} to {}", new String[]{dataset.getInstallationKey().toString(), existing.getInstallationKey().toString()});
+      }
       // populate owning organization from credentials
       LegacyRequestAuthorization authorization =
         new LegacyRequestAuthorization(organizationService, request, datasetService);
