@@ -119,9 +119,14 @@ public class LegacyDatasetResource {
       else {
         dataset.prepare();
       }
-      // retrieve existing dataset's installation key if it wasn't provided
+      // If installation key wasn't provided, reuse existing dataset's installation key
+      // Reason: non-IPT consumers weren't aware they could supply the parameter iptKey on dataset updates before
       if (dataset.getInstallationKey() == null) {
         dataset.setInstallationKey(existing.getInstallationKey());
+      }
+      // Dataset can only have 1 installation key, log if the hosting installation is being changed
+      else if (dataset.getInstallationKey() != existing.getInstallationKey()) {
+        LOG.debug("The dataset's technical installation is being changed from {} to {}", new String[]{dataset.getInstallationKey().toString(), existing.getInstallationKey().toString()});
       }
       // type can't be derived from endpoints, since there are no endpoints supplied on this update, so re-set existing
       dataset.setType(existing.getType());
@@ -141,12 +146,6 @@ public class LegacyDatasetResource {
         existing.setLogoUrl(dataset.getLogoUrl());
         existing.setLanguage(dataset.getLanguage());
         existing.setInstallationKey(dataset.getInstallationKey());
-
-        // only update mandatory installation key if it isn't null
-        // IPT versions before 2.0.5 didn't supply the parameter iptKey on dataset updates
-        if (dataset.getInstallationKey() != null) {
-          existing.setInstallationKey(dataset.getInstallationKey());
-        }
 
         existing.setOwningOrganizationKey(dataset.getOwningOrganizationKey());
 
