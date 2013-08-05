@@ -68,7 +68,6 @@
   </repositories>
 
   <modules>
-    <module>registry-api</module>
     <module>registry-metadata</module>
     <module>registry-metasync</module>
     <module>registry-ws-client</module>
@@ -86,7 +85,7 @@
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
     <commons-beanutils.version>1.8.3</commons-beanutils.version>
     <commons-digester.version>3.2</commons-digester.version>
-    <gbif-api.version>0.4</gbif-api.version>
+    <gbif-api.version>0.5-SNAPSHOT</gbif-api.version>
     <gbif-common.version>0.11</gbif-common.version>
     <gbif-common-mybatis.version>0.6</gbif-common-mybatis.version>
     <gbif-common-ws.version>0.9-SNAPSHOT</gbif-common-ws.version>
@@ -149,11 +148,6 @@
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils-core</artifactId>
         <version>${commons-beanutils.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gbif.registry</groupId>
-        <artifactId>registry-api</artifactId>
-        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.gbif.registry</groupId>

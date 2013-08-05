@@ -94,10 +94,6 @@
     </dependency>
     <dependency>
       <groupId>org.gbif.registry</groupId>
-      <artifactId>registry-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif.registry</groupId>
       <artifactId>registry-metadata</artifactId>
     </dependency>
     <dependency>
