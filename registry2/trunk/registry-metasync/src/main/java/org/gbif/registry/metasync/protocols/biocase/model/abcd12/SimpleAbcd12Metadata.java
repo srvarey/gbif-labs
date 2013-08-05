@@ -1,7 +1,7 @@
 package org.gbif.registry.metasync.protocols.biocase.model.abcd12;
 
-import org.gbif.api.model.registry2.Contact;
-import org.gbif.api.vocabulary.registry2.ContactType;
+import org.gbif.api.model.registry.Contact;
+import org.gbif.api.vocabulary.ContactType;
 
 import java.net.URI;
 import java.util.List;

@@ -120,6 +120,16 @@
       <artifactId>registry-ws-client</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common-ws</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
       <version>${hamcrest.version}</version>

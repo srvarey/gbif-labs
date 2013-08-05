@@ -15,13 +15,13 @@
  */
 package org.gbif.registry.metasync.protocols.biocase;
 
-import org.gbif.api.model.registry2.Citation;
-import org.gbif.api.model.registry2.Dataset;
-import org.gbif.api.model.registry2.Endpoint;
-import org.gbif.api.model.registry2.Installation;
-import org.gbif.api.model.registry2.MachineTag;
-import org.gbif.api.vocabulary.registry2.EndpointType;
-import org.gbif.api.vocabulary.registry2.InstallationType;
+import org.gbif.api.model.registry.Citation;
+import org.gbif.api.model.registry.Dataset;
+import org.gbif.api.model.registry.Endpoint;
+import org.gbif.api.model.registry.Installation;
+import org.gbif.api.model.registry.MachineTag;
+import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.api.vocabulary.InstallationType;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.api.SyncResult;

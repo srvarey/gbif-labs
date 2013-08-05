@@ -76,8 +76,8 @@ angular.module('dataset-search', [])
     $http( { method:'GET', url: url})
       .success(function (result) {$scope[parameter] = result});
   }
-	lookup('../enumeration/org.gbif.api.vocabulary.registry2.DatasetType','datasetTypes');  
-	lookup('../enumeration/org.gbif.api.vocabulary.registry2.DatasetSubtype','datasetSubTypes');  
+	lookup('../enumeration/org.gbif.api.vocabulary.DatasetType','datasetTypes');
+	lookup('../enumeration/org.gbif.api.vocabulary.DatasetSubtype','datasetSubTypes');
 	lookup('../enumeration/org.gbif.api.vocabulary.Language','languages');  
 	
 	// sensible defaults for creation

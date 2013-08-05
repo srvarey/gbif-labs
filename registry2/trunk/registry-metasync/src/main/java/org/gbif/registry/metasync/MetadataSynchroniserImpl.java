@@ -2,15 +2,15 @@ package org.gbif.registry.metasync;
 
 import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.api.model.common.paging.PagingResponse;
-import org.gbif.api.model.registry2.Dataset;
-import org.gbif.api.model.registry2.Installation;
-import org.gbif.api.service.registry2.InstallationService;
+import org.gbif.api.model.registry.Dataset;
+import org.gbif.api.model.registry.Installation;
+import org.gbif.api.service.registry.InstallationService;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.api.MetadataProtocolHandler;
 import org.gbif.registry.metasync.api.MetadataSynchroniser;
 import org.gbif.registry.metasync.api.SyncResult;
-import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
+import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
 import org.gbif.ws.client.guice.AnonymousAuthModule;
 
 import java.util.List;

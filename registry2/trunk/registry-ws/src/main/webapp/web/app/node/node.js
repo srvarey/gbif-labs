@@ -116,9 +116,9 @@ angular.module('node', [
     $http( { method:'GET', url: url})
       .success(function (result) {$scope[parameter] = result});
   }
-	lookup('../enumeration/org.gbif.api.vocabulary.registry2.ParticipationStatus','participationStatuses');  
-	lookup('../enumeration/org.gbif.api.vocabulary.registry2.GbifRegion','gbifRegions');  
-	lookup('../enumeration/org.gbif.api.vocabulary.registry2.Continent','continents');  
+	lookup('../enumeration/org.gbif.api.vocabulary.ParticipationStatus','participationStatuses');
+	lookup('../enumeration/org.gbif.api.vocabulary.GbifRegion','gbifRegions');
+	lookup('../enumeration/org.gbif.api.vocabulary.Continent','continents');
 	lookup('../enumeration/org.gbif.api.vocabulary.Country','countries');  
 	
 	// populate counts for sub resources

@@ -29,9 +29,9 @@
     </encoder>
   </appender>
   <logger name="org.gbif" level="INFO"/>
-  <logger name="org.gbif.registry2.metadata.parse" level="INFO"/>
-  <logger name="org.gbif.registry2.ims.ImsNodeMapper" level="INFO"/>
-  <logger name="org.gbif.registry2.persistence.mapper" level="INFO"/>
+  <logger name="org.gbif.registry.metadata.parse" level="INFO"/>
+  <logger name="org.gbif.registry.ims.ImsNodeMapper" level="INFO"/>
+  <logger name="org.gbif.registry.persistence.mapper" level="INFO"/>
   <logger name="org.apache.solr" level="WARN"/>
   <logger name="org.apache.tomcat.util.digester.Digester" level="WARN"/>
 
