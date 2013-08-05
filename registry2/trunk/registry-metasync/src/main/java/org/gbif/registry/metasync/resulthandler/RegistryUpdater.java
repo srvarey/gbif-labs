@@ -1,16 +1,16 @@
 package org.gbif.registry.metasync.resulthandler;
 
-import org.gbif.api.model.registry2.Contact;
-import org.gbif.api.model.registry2.Dataset;
-import org.gbif.api.model.registry2.Endpoint;
-import org.gbif.api.model.registry2.Identifier;
-import org.gbif.api.model.registry2.MachineTag;
-import org.gbif.api.service.registry2.DatasetService;
-import org.gbif.api.vocabulary.registry2.DatasetType;
-import org.gbif.api.vocabulary.registry2.EndpointType;
+import org.gbif.api.model.registry.Contact;
+import org.gbif.api.model.registry.Dataset;
+import org.gbif.api.model.registry.Endpoint;
+import org.gbif.api.model.registry.Identifier;
+import org.gbif.api.model.registry.MachineTag;
+import org.gbif.api.service.registry.DatasetService;
+import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.util.Constants;
-import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
+import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
 import org.gbif.ws.client.guice.GbifApplicationAuthModule;
 
 import java.util.Map;

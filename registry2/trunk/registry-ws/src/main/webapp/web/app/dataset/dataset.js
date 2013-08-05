@@ -147,7 +147,7 @@ angular.module('dataset', [
     $http( { method:'GET', url: url})
       .success(function (result) {$scope[parameter] = result});
   }
-	lookup('../enumeration/org.gbif.api.vocabulary.registry2.DatasetType','datasetTypes');  
+	lookup('../enumeration/org.gbif.api.vocabulary.DatasetType','datasetTypes');
 	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {

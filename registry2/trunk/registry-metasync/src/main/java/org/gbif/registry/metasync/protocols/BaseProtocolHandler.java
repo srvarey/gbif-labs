@@ -15,7 +15,7 @@
  */
 package org.gbif.registry.metasync.protocols;
 
-import org.gbif.api.model.registry2.Contact;
+import org.gbif.api.model.registry.Contact;
 import org.gbif.api.vocabulary.Language;
 import org.gbif.registry.metasync.api.ErrorCode;
 import org.gbif.registry.metasync.api.MetadataException;
