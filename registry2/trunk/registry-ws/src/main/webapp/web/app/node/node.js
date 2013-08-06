@@ -1,7 +1,6 @@
 angular.module('node', [
-  'ngResource', 
+  'restangular', 
   'services.notifications', 
-  'resources',
   'endpoint',
   'identifier', 
   'tag', 
@@ -14,7 +13,25 @@ angular.module('node', [
  * governs the actions on the page. 
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams) {
-  $stateProvider.state('node', {
+  $stateProvider.state('node-search', {
+    abstract: true,
+    url: '/node-search',  
+    templateUrl: 'app/node/node-search.tpl.html',
+    controller: 'NodeSearchCtrl',
+  })
+  .state('node-search.search', {  
+    url: '',
+    templateUrl: 'app/node/node-results.tpl.html'
+  })
+  .state('node-search.create', {  
+    url: '/create',   
+    templateUrl: 'app/node/node-edit.tpl.html',
+    controller: 'NodeCreateCtrl',
+    resolve: {
+      item: function() { return {} } // load it with an empty one
+    }
+  })
+  .state('node', {
     url: '/node/{key}',  
     abstract: true, 
     templateUrl: 'app/node/node-main.tpl.html',
@@ -94,52 +111,50 @@ angular.module('node', [
 }])
 
 /**
- * All operations relating to CRUD go through this controller. 
+ * The single detail controller
  */
-.controller('NodeCtrl', function ($scope, $state, $stateParams, $resource, $http, notifications, NodeManager) {
+.controller('NodeCtrl', function ($scope, $state, $stateParams, notifications, Restangular, DEFAULT_PAGE_SIZE) {
   var key = $stateParams.key;
-  $scope.node = NodeManager.get(key);
-    
-  // To enable the nested views update the counts, for the side bar
-  $scope.counts = {
-    // collesce with || and use _ for sizing
-    contact : _.size($scope.node.contacts || {}), 
-    identifier : _.size($scope.node.identifiers || {}), 
-    endpoint : _.size($scope.node.endpoints || {}), 
-    tag : _.size($scope.node.tags || {}),
-    machinetag : _.size($scope.node.machineTags || {}),
-    comment : _.size($scope.node.comments || {})
-  };
+  
+  // shared across sub views
+  $scope.counts = {}; 
+  
+  var load = function() {
+    Restangular.one('node', key).get().then(function(node) {
+      $scope.node = node;
+      $scope.counts.contacts = _.size(node.contacts);
+      $scope.counts.identifiers = _.size(node.identifiers); 
+      $scope.counts.endpoints = _.size(node.endpoints); 
+      $scope.counts.tags = _.size(node.tags); 
+      $scope.counts.machinetags = _.size(node.machinetags); 
+      $scope.counts.comments = _.size(node.comments); 
+      
+      node.getList('organization', {limit: DEFAULT_PAGE_SIZE}).then(function(response) {
+          $scope.organizations = response.results;
+          $scope.counts.organizations = response.count;
+        });
+      node.getList('dataset', {limit: DEFAULT_PAGE_SIZE}).then(function(response) {
+          $scope.datasets = response.results;
+          $scope.counts.datasets = response.count;
+        });
+      node.getList('installation', {limit: DEFAULT_PAGE_SIZE}).then(function(response) {
+          $scope.installations = response.results;
+          $scope.counts.installations = response.count;
+        });
+      node.getList('pendingEndorsement', {limit: DEFAULT_PAGE_SIZE}).then(function(response) {
+          $scope.pendingEndorsements = response.results;
+          $scope.counts.pendingEndorsements = response.count;
+        });
+    });
+  }
+  load();  
   
   // populate the dropdowns
-  var lookup = function(url, parameter) {
-    $http( { method:'GET', url: url})
-      .success(function (result) {$scope[parameter] = result});
-  }
-	lookup('../enumeration/org.gbif.api.vocabulary.ParticipationStatus','participationStatuses');
-	lookup('../enumeration/org.gbif.api.vocabulary.GbifRegion','gbifRegions');
-	lookup('../enumeration/org.gbif.api.vocabulary.Continent','continents');
-	lookup('../enumeration/org.gbif.api.vocabulary.Country','countries');  
-	
-	// populate counts for sub resources
-  var count = function(url, parameter) {
-    $http( { method:'GET', url: url})
-      .success(function (result) {
-        $scope.counts[parameter] = result.count;
-        $scope[parameter] = result.results;
-      });
-  }
-  //count('../node/' + key + '/pendingEndorsement','pendingEndorsements');
-  count('../node/' + key + '/organization','organizations');
-  count('../node/' + key + '/dataset','datasets');
-  count('../node/' + key + '/installation','installations');
-  $http( { method:'GET', url: '../node/' + key + '/tag'})
-    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
-  
-  NodeManager.pending(key, function(response) {
-    $scope.pending = response.results;
-    $scope.pendingCount = response.count;
-  });
+  $scope.types = Restangular.all("enumeration/basic/NodeType").getList();
+  $scope.participationStatuses = Restangular.all("enumeration/basic/ParticipationStatus").getList();
+  $scope.gbifRegions = Restangular.all("enumeration/basic/GbifRegion").getList();
+  $scope.continents = Restangular.all("enumeration/basic/Continent").getList();
+  $scope.countries = Restangular.all("enumeration/basic/Country").getList();
   
 	
 	// transitions to a new view, correctly setting up the path
@@ -147,12 +162,20 @@ angular.module('node', [
     $state.transitionTo('node.' + target, { key: key, type: "node" }); 
   }
 	
-	$scope.save = function (node) {
-	  NodeManager.update(node);
-  }
+	$scope.save = function (installation) {
+    node.put().then( 
+      function() {
+        notifications.pushForNextRoute("Node successfully updated", 'info');
+        $scope.transitionTo("detail");
+      },
+      function(response) {
+        notifications.pushForCurrentRoute(response.data, 'error');
+      }
+    );
+  }  
   
   $scope.cancelEdit = function () {
-    $scope.node = NodeManager.get(key);
+    load();
     $scope.transitionTo("detail");
   }
   
@@ -168,4 +191,45 @@ angular.module('node', [
   $scope.getDatasets = function() {
     return $scope['datasets'];
   }
+})
+
+.controller('NodeSearchCtrl', function ($scope, $state, $http, Restangular, DEFAULT_PAGE_SIZE) {
+  var node = Restangular.all("node");
+  $scope.search = function(q) {
+    node.getList({q:q, limit:DEFAULT_PAGE_SIZE}).then(function(data) {
+      $scope.resultsCount = data.count;
+      $scope.results = data.results;
+      $scope.searchString = q;
+    });
+  }
+  $scope.search(""); // start with empty search  
+
+  $scope.openNode = function(node) {
+    $state.transitionTo('node.detail', {key: node.key})
+  }
+})
+
+
+.controller('NodeCreateCtrl', function ($scope, $state, $http, notifications, Restangular) {
+  $scope.types = Restangular.all("enumeration/basic/NodeType").getList();
+  $scope.participationStatuses = Restangular.all("enumeration/basic/ParticipationStatus").getList();
+  $scope.gbifRegions = Restangular.all("enumeration/basic/GbifRegion").getList();
+  $scope.continents = Restangular.all("enumeration/basic/Continent").getList();
+  $scope.countries = Restangular.all("enumeration/basic/Country").getList();
+
+  $scope.save = function (node) {
+    if (node != undefined) {
+      Restangular.all("node").post(node).then(function(data) {
+        notifications.pushForNextRoute("Node successfully updated", 'info');
+        // strip the quotes
+        $state.transitionTo('node.detail', { key: data.replace(/["]/g,''), type: "node" }); 
+      }, function(error) { 
+        notifications.pushForCurrentRoute(error.data, 'error');
+      });
+    }
+  }
+  
+  $scope.cancelEdit = function() {
+    $state.transitionTo('node-search.search'); 
+  }  
 });
