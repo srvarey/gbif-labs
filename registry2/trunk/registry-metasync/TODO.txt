@@ -1,17 +1,14 @@
 DiGIR:
 * DOI Identifier is created but not merged with existing one or persisted yet
-* convertToDataset: Make sure that we're capturing all the information we need/want
-* EndpointType needs to be set to DIGIR or DIGIR_MANIS correctly
 
 TAPIR:
-* getRecordCount: Needs to be implemented
 * Tapir & BioCASe: Think about what we want to do when there is an exception during processing one Endpoint. Currently the sync is aborted which might be bad behavior.
 
 BioCASe:
 * BiocaseMetadataSynchroniser#doNewStyleInventory: Needs to return information about Archives
 
 MetadataSynchroniserImpl:
-* Remove hardcoded reference to registry
+* Mavenize: E.g. remove hardcoded reference to registry
 
 RegistryUpdater:
-* This is only partially implemented especially the updating of existing datasets
+* Mavenize: E.g. remove hardcoded reference to registry
