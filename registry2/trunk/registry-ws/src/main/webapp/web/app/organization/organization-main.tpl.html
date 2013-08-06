@@ -7,12 +7,12 @@
   
   <ul class="nav side-nav nav-tabs nav-stacked">
     <li ng-class="{active: $state.includes('organization.detail') || $state.includes('organization.edit')}"><a href="" ng-click="transitionTo('detail')">Overview <i class="icon-chevron-right"></i></a></li>
-    <li ng-class="{active: $state.includes('organization.contact')}"><a href="" ng-click="transitionTo('contact')">Contacts ({{counts.contact}}) <i class="icon-chevron-right"></i></a></li>
-    <li ng-class="{active: $state.includes('organization.endpoint')}"><a href="" ng-click="transitionTo('endpoint')">Endpoints ({{counts.endpoint}}) <i class="icon-chevron-right"></i></a></li>
-    <li ng-class="{active: $state.includes('organization.identifier')}"><a href="" ng-click="transitionTo('identifier')">Identifiers ({{counts.identifier}}) <i class="icon-chevron-right"></i></a></li>
-    <li ng-class="{active: $state.includes('organization.tag')}"><a href="" ng-click="transitionTo('tag')">Tags ({{counts.tag}}) <i class="icon-chevron-right"></i></a></li>
-    <li ng-class="{active: $state.includes('organization.machinetag')}"><a href="" ng-click="transitionTo('machinetag')">Machine tags ({{counts.machinetag}}) <i class="icon-chevron-right"></i></a></li>
-    <li ng-class="{active: $state.includes('organization.comment')}"><a href="" ng-click="transitionTo('comment')">Comments ({{counts.comment}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.contact')}"><a href="" ng-click="transitionTo('contact')">Contacts ({{counts.contacts}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.endpoint')}"><a href="" ng-click="transitionTo('endpoint')">Endpoints ({{counts.endpoints}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.identifier')}"><a href="" ng-click="transitionTo('identifier')">Identifiers ({{counts.identifiers}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.tag')}"><a href="" ng-click="transitionTo('tag')">Tags ({{counts.tags}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.machinetag')}"><a href="" ng-click="transitionTo('machinetag')">Machine tags ({{counts.machinetags}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('organization.comment')}"><a href="" ng-click="transitionTo('comment')">Comments ({{counts.comments}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.owned')}"><a href="" ng-click="transitionTo('owned')">Published datasets ({{counts.ownedDatasets}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.hosted')}"><a href="" ng-click="transitionTo('hosted')">Hosted datasets ({{counts.hostedDatasets}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('organization.installation')}"><a href="" ng-click="transitionTo('installation')">Installations ({{counts.installations}}) <i class="icon-chevron-right"></i></a></li>

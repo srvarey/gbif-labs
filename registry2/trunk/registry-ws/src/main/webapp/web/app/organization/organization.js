@@ -1,5 +1,5 @@
 angular.module('organization', [
-  'ngResource', 
+  'restangular',
   'services.notifications', 
   'contact',
   'organization',
@@ -14,17 +14,37 @@ angular.module('organization', [
  * governs the actions on the page. 
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams, Organization) {
-  $stateProvider.state('organization', {
+  $stateProvider.state('organization-search', {
+    abstract: true,
+    url: '/organization-search',  
+    templateUrl: 'app/organization/organization-search.tpl.html',
+    controller: 'OrganizationSearchCtrl',
+  })
+  .state('organization-search.search', {  
+    url: '',
+    templateUrl: 'app/organization/organization-results.tpl.html'
+  })
+  .state('organization-search.deleted', {  
+    url: '/deleted',   
+    templateUrl: 'app/organization/organization-deleted.tpl.html'
+  })
+  .state('organization-search.pending', {  
+    url: '/pending',   
+    templateUrl: 'app/organization/organization-pending.tpl.html'
+  })
+  .state('organization-search.nonPublishing', {  
+    url: 'nonPublishing',   
+    templateUrl: 'app/organization/organization-nonPublishing.tpl.html'
+  })
+  .state('organization-search.create', {  
+    url: '/create',   
+    templateUrl: 'app/organization/organization-edit.tpl.html',
+    controller: 'OrganizationCreateCtrl'
+  }).state('organization', {
     url: '/organization/{key}',  
     abstract: true, 
     templateUrl: 'app/organization/organization-main.tpl.html',
-    controller: 'OrganizationCtrl',
-    // resolve to lookup synchronously first, thus handling errors if not found
-    resolve: {
-      item: function(Organization, $state, $stateParams) {
-        return Organization.getSync($stateParams.key);          
-      }          
-    }
+    controller: 'OrganizationCtrl'
   })
   .state('organization.detail', {  
     url: '',   
@@ -98,83 +118,58 @@ angular.module('organization', [
 }])
 
 /**
- * RESTfully backed Organization resource
+ * The single detail controller 
  */
-.factory('Organization', function ($resource, $q) {
-  var Organization = $resource('../organization/:key', {key : '@key'}, {
-    save : {method:'PUT'},
-    create : {method:'POST'},
-  });  
+.controller('OrganizationCtrl', function ($scope, $state, $stateParams, notifications, Restangular, DEFAULT_PAGE_SIZE) {
+  var key =  $stateParams.key;
   
-  // A synchronous get, with a failure callback on error
-  Organization.getSync = function (key, failureCb) {
-    var deferred = $q.defer();
-    Organization.get({key: key}, function(successData) {
-      deferred.resolve(successData); 
-    }, function(errorData) {
-      deferred.reject(); // you could optionally pass error data here
-      if (failureCb) {
-        failureCb();
-      }
-    });
-    return deferred.promise;
-  };
+  // shared across sub views
+  $scope.counts = {}; 
   
-  return Organization;
-})
-
-/**
- * All operations relating to CRUD go through this controller. 
- */
-.controller('OrganizationCtrl', function ($scope, $state, $http, $resource, item, Organization, notifications) {
-  $scope.organization = item;
-    
-  // To enable the nested views update the counts, for the side bar
-  $scope.counts = {
-    // collesce with || and use _ for sizing
-    contact : _.size($scope.organization.contacts || {}),
-    endpoint : _.size($scope.organization.endpoints || {}),
-    identifier : _.size($scope.organization.identifiers || {}), 
-    tag : _.size($scope.organization.tags || {}),
-    machinetag : _.size($scope.organization.machineTags || {}),
-    comment : _.size($scope.organization.comments || {})
-  };
-  
-  // get the endorsing node if there is one
-  $http( { method:'GET', url: "../node/" + item.endorsingNodeKey})
-    .success(function (result) { $scope.endorsingNode = result});
-  
-  var count = function(url, parameter) {
-    $http( { method:'GET', url: url}).success(function (result) {
-      $scope.counts[parameter] = result.count;
-      $scope[parameter] = result.results;
+  var load = function() {
+    Restangular.one('organization', key).get()
+    .then(function(organization) {
+      $scope.organization = organization;
+      $scope.counts.contacts = _.size(organization.contacts); 
+      $scope.counts.endpoints = _.size(organization.endpoints); 
+      $scope.counts.identifiers = _.size(organization.identifiers); 
+      $scope.counts.tags = _.size(organization.tags); 
+      $scope.counts.machinetags = _.size(organization.machinetags); 
+      $scope.counts.comment = _.size(organization.comments); 
+      
+      organization.getList('ownedDataset', {limit: DEFAULT_PAGE_SIZE})
+        .then(function(response) {
+          $scope.ownedDatasets = response.results;
+          $scope.counts.ownedDatasets = response.count;
+        });
+      organization.getList('installation', {limit: DEFAULT_PAGE_SIZE})
+        .then(function(response) {
+          $scope.installations = response.results;
+          $scope.counts.installations = response.count;
+        });
+      organization.getList('hostedDataset', {limit: DEFAULT_PAGE_SIZE})
+        .then(function(response) {
+          $scope.hostedDatasets = response.results;
+          $scope.counts.hostedDatasets = response.count;
+          $.each(response.results, function(index, dataset) {
+            Restangular.one('organization', dataset.owningOrganizationKey).get().then(function(organization) {
+              dataset.owningOrganizationTitle = organization.title;
+            });
+          });
+        });
+        
+      organization.node = Restangular.one('node', organization.endorsingNodeKey).get();
     });
   }
-  count('../organization/' + $scope.organization.key + '/ownedDataset','ownedDatasets');
-  count('../organization/' + $scope.organization.key + '/installation','installations');
-  $http( { method:'GET', url: '../organization/' + $scope.organization.key + '/tag'})
-    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
+  load();    
   
-
-  // populate the titles of the organization the hosted datasets are hosted for 
-  $http( { method:'GET', url: '../organization/' + $scope.organization.key + '/hostedDataset?limit=1000'}).success(function (result) {
-    $scope['hostedDatasets'] = result.results;
-    $scope.counts['hostedDatasets'] = result.count;
-      
-    $.each(result.results, function(index, dataset) {
-      $http( { method:'GET', url: '../organization/' + dataset.owningOrganizationKey}).success(function (organization) {
-        dataset.owningOrganizationTitle = organization.title;
-      });
-    });
-  });
-	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
-    $state.transitionTo('organization.' + target, { key: item.key, type: "organization" }); 
+    $state.transitionTo('organization.' + target, { key: key, type: "organization" }); 
   }
 	
 	$scope.save = function (organization) {
-    Organization.save(organization, 
+    organization.put().then( 
       function() {
         notifications.pushForNextRoute("Organization successfully updated", 'info');
         $scope.transitionTo("detail");
@@ -190,7 +185,7 @@ angular.module('organization', [
   }  
   
   $scope.cancelEdit = function () {
-    $scope.organization = Organization.get({ key: item.key });
+    $scope.organization = Organization.get({ key: key });
     $scope.transitionTo("detail");
   }
   
@@ -201,4 +196,77 @@ angular.module('organization', [
       return $scope['ownedDatasets'];
     }
   }
+  
+  $scope.delete = function (organization) {
+    organization.remove().then(
+      function() {
+        notifications.pushForNextRoute("Organization successfully deleted", 'info');
+        load();
+        $scope.transitionTo("detail");
+      }
+    );
+  }
+  
+  $scope.restore = function (organization) {
+    organization.deleted = undefined;
+    organization.put().then( 
+      function() {
+        notifications.pushForCurrentRoute("Organization successfully restored", 'info');
+      },
+      function(response) {
+        notifications.pushForCurrentRoute(response.data, 'error');
+      }
+    );
+  }
+})
+
+.controller('OrganizationSearchCtrl', function ($scope, $state, Restangular, DEFAULT_PAGE_SIZE) {
+  var organization = Restangular.all("organization");
+  
+  $scope.search = function(q) {
+    organization.getList({q:q, limit:DEFAULT_PAGE_SIZE}).then(function(data) {
+      $scope.resultsCount = data.count;
+      $scope.results = data.results;
+      $scope.searchString = q;
+    });
+  }
+  $scope.search(""); // start with empty search
+
+  // load quick lists
+  organization.all("deleted").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.deletedCount = data.count;
+    $scope.deleted = data.results;
+  });
+  organization.all("pending").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.pendingCount = data.count;
+    $scope.pending = data.results;
+  });
+  organization.all("nonPublishing").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.nonPublishingCount = data.count;
+    $scope.nonPublishing = data.results;
+  });
+
+  $scope.openOrganization = function(organization) {
+    $state.transitionTo('organization.detail', {key: organization.key})
+  }
+})
+
+
+.controller('OrganizationCreateCtrl', function ($scope, $state, notifications, Restangular) {
+
+  $scope.save = function (organization) {
+    if (organization != undefined) {
+      Restangular.all("organization").post(organization).then(function(data) {
+        notifications.pushForNextRoute("Organization successfully updated", 'info');
+        // strip the quotes
+        $state.transitionTo('organization.detail', { key: data.replace(/["]/g,''), type: "organization" }); 
+      }, function(error) { 
+        notifications.pushForCurrentRoute(error.data, 'error');
+      });
+    }
+  }
+  
+  $scope.cancelEdit = function() {
+    $state.transitionTo('organization-search.search'); 
+  }  
 });

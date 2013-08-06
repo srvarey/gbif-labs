@@ -11,8 +11,7 @@ angular.module('app', [
   'organization',
   'dataset',
   'node',
-  'installation',
-  'organization-search'
+  'installation'
   ])
 
 .config(['$routeProvider', 'RestangularProvider', '$httpProvider', function ($routeProvider, RestangularProvider, $httpProvider) {
@@ -33,7 +32,7 @@ angular.module('app', [
 }])
 
 // app constants are global in scope 
-.constant('DEFAULT_PAGE_SIZE', 1000)
+.constant('DEFAULT_PAGE_SIZE', 50)
 
 .controller('AppCtrl', function ($scope, notifications, $state, $rootScope, notifications, $cookieStore, authService, Auth) {
   // register global notifications once
