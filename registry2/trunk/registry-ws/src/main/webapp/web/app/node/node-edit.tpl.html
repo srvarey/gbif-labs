@@ -19,6 +19,13 @@
     </div>      
       
     <span ng-show="advancedMode">  
+    <label class="control-label" for="type">Type</label>
+    <div class="controls">
+      <select ng-model="node.type" ng-options="o for o in types"></select>
+      <p class="muted"><small>Please verify IMS is the same</small></p>
+    </div>
+      
+    <span ng-show="advancedMode">  
     <label class="control-label" for="participationStatus">Participation Status</label>
     <div class="controls">
       <select ng-model="node.participationStatus" ng-options="o for o in participationStatuses"></select>
@@ -43,7 +50,7 @@
       
     <label class="control-label" for="country">Country</label>
     <div class="controls">
-      <select ng-model="node.continent" ng-options="o for o in countries">
+      <select ng-model="node.country" ng-options="o for o in countries">
         <option style="display:none" value="">select a country</option>
       </select>
       <p class="muted"><small>This is used for reporting purposes</small></p>
