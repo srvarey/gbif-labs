@@ -1,6 +1,5 @@
 angular.module('installation', [
   'restangular',
-  'ngResource', 
   'services.notifications', 
   'contact',
   'endpoint',
@@ -14,7 +13,7 @@ angular.module('installation', [
  * nested view is rendered into the parent template ui.view div.  A single controller
  * governs the actions on the page. 
  */
-.config(['$stateProvider', function ($stateProvider, $stateParams, Installation) {
+.config(['$stateProvider', function ($stateProvider, $stateParams) {
    $stateProvider.state('installation-search', {
     abstract: true,
     url: '/installation-search',  
@@ -37,9 +36,6 @@ angular.module('installation', [
     url: '/create',   
     templateUrl: 'app/installation/installation-edit.tpl.html',
     controller: 'InstallationCreateCtrl',
-    resolve: {
-      item: function() { return {} } // load it with an empty one
-    }
   })
   .state('installation', {
     url: '/installation/{key}',  
@@ -121,7 +117,7 @@ angular.module('installation', [
 /**
  * The single detail controller
  */
-.controller('InstallationCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
+.controller('InstallationCtrl', function ($scope, $state, $stateParams, notifications, Restangular, DEFAULT_PAGE_SIZE) {
   var key =  $stateParams.key;
   
   // shared across sub views
@@ -134,7 +130,7 @@ angular.module('installation', [
       $scope.counts.contact = _.size(installation.contacts); 
       
       // served datasets
-      installation.getList('dataset', {limit: 1000})
+      installation.getList('dataset', {limit: DEFAULT_PAGE_SIZE})
         .then(function(response) {
           installation.datasets = response.results;
         });
@@ -205,7 +201,7 @@ angular.module('installation', [
  * The search controller
  */
 .controller('InstallationSearchCtrl', function ($scope, $state, Restangular, DEFAULT_PAGE_SIZE) {
-  var installation = Restangular.all("installation")
+  var installation = Restangular.all("installation");
   
   $scope.search = function(q) {
     installation.getList({q:q, limit:DEFAULT_PAGE_SIZE}).then(function(data) {
@@ -233,7 +229,7 @@ angular.module('installation', [
 /**
  * The create controller
  */
-.controller('InstallationCreateCtrl', function ($scope, $state, $resource, item, notifications, Restangular) {
+.controller('InstallationCreateCtrl', function ($scope, $state, $resource, notifications, Restangular) {
   $scope.installationTypes = Restangular.all("enumeration/org.gbif.api.vocabulary.InstallationType").getList();
 
   $scope.save = function (installation) {

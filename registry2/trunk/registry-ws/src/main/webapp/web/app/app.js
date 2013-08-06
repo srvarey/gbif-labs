@@ -1,21 +1,19 @@
 angular.module('app', [
   'ui.compat', // the stateful angular router
+  'restangular', // for REST calls
   'ngSanitize', // for the like	 of bind-html
   'ngCookies', // for security
-  'http-auth-interceptor', // intercepts 401 responses, and triggers login
-  'restangular', // for REST calls
+  'http-auth-interceptor', // intercepts 403 responses, and triggers login
   'services.notifications',
   'home',
   'login',
   'search',
   'organization',
   'dataset',
-  'installation',
   'node',
-  'organization-search',
+//  'installation',
   'dataset-search',
-  'node-search',
-  'resources',  
+  'organization-search'
   ])
 
 .config(['$routeProvider', 'RestangularProvider', '$httpProvider', function ($routeProvider, RestangularProvider, $httpProvider) {
