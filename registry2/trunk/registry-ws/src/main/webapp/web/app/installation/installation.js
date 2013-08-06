@@ -127,7 +127,7 @@ angular.module('installation', [
     Restangular.one('installation', key).get()
     .then(function(installation) {
       $scope.installation = installation;
-      $scope.counts.contact = _.size(installation.contacts); 
+      $scope.counts.contacts = _.size(installation.contacts); 
       
       // served datasets
       installation.getList('dataset', {limit: DEFAULT_PAGE_SIZE})
@@ -229,7 +229,7 @@ angular.module('installation', [
 /**
  * The create controller
  */
-.controller('InstallationCreateCtrl', function ($scope, $state, $resource, notifications, Restangular) {
+.controller('InstallationCreateCtrl', function ($scope, $state, notifications, Restangular) {
   $scope.installationTypes = Restangular.all("enumeration/org.gbif.api.vocabulary.InstallationType").getList();
 
   $scope.save = function (installation) {
