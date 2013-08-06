@@ -65,7 +65,7 @@ public class DigirMetadataSynchroniserTest {
     installation = new Installation();
     installation.setType(InstallationType.DIGIR_INSTALLATION);
     Endpoint endpoint = new Endpoint();
-    endpoint.setUrl("http://localhost");
+    endpoint.setUrl(URI.create("http://localhost"));
     installation.addEndpoint(endpoint);
   }
 

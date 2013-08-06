@@ -164,7 +164,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
    * piece for a TAPIR Dataset.
    */
   private String getLocalId(Endpoint endpoint) throws MetadataException {
-    String[] split = endpoint.getUrl().split("/");
+    String[] split = endpoint.getUrl().toASCIIString().split("/");
 
     if (split.length < 2) {
       throw new MetadataException("Could not find local Id for [" + endpoint.getUrl() + "]", ErrorCode.OTHER_ERROR);
@@ -191,7 +191,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
    * Does a Metadata request against the TAPIR Endpoint.
    */
   private TapirMetadata getTapirMetadata(Endpoint endpoint) throws MetadataException {
-    return doHttpRequest(URI.create(endpoint.getUrl()), newDigester(TapirMetadata.class));
+    return doHttpRequest(endpoint.getUrl(), newDigester(TapirMetadata.class));
   }
 
   /**
@@ -221,7 +221,7 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
     Dataset dataset = new Dataset();
     dataset.setTitle(metadata.getTitles().toString());
     dataset.setDescription(metadata.getDescriptions().toString());
-    dataset.setHomepage(URI.create(metadata.getAccessPoint()));
+    dataset.setHomepage(metadata.getAccessPoint());
     dataset.setLanguage(metadata.getDefaultLanguage());
 
     List<Contact> contacts = Lists.newArrayList();

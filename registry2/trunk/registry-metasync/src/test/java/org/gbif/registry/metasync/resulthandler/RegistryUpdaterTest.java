@@ -17,6 +17,7 @@ import org.gbif.registry.metasync.protocols.tapir.TapirMetadataSynchroniser;
 import org.gbif.registry.metasync.util.Constants;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,7 +73,7 @@ public class RegistryUpdaterTest {
     // same Endpoint for Installation and Dataset
     endpoint = new Endpoint();
     endpoint.setKey(1);
-    endpoint.setUrl("http://localhost/nmr");
+    endpoint.setUrl(URI.create("http://localhost/nmr"));
 
     // Installation, synchronized against
     installation = new Installation();
@@ -138,7 +139,7 @@ public class RegistryUpdaterTest {
     Endpoint dwca = new Endpoint();
     dwca.setKey(100);
     dwca.setType(EndpointType.DWC_ARCHIVE);
-    dwca.setUrl("http://ipt.gbif.org/archive.do?r=test");
+    dwca.setUrl(URI.create("http://ipt.gbif.org/archive.do?r=test"));
     dataset.getEndpoints().add(dwca);
 
     // generate SyncResult, including a single updated Dataset

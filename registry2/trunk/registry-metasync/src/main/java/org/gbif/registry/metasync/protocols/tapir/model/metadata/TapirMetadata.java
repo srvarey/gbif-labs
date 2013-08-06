@@ -17,6 +17,7 @@ package org.gbif.registry.metasync.protocols.tapir.model.metadata;
 
 import org.gbif.api.vocabulary.Language;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
@@ -53,7 +54,7 @@ public class TapirMetadata {
   private String type;
   @BeanPropertySetter(pattern = "response/metadata/accesspoint")
   @NotNull
-  private String accessPoint;
+  private URI accessPoint;
   private LocalizedString subjects = new LocalizedString();
   @BeanPropertySetter(pattern = "response/metadata/created")
   private DateTime created;
@@ -171,11 +172,11 @@ public class TapirMetadata {
     this.type = type;
   }
 
-  public String getAccessPoint() {
+  public URI getAccessPoint() {
     return accessPoint;
   }
 
-  public void setAccessPoint(String accessPoint) {
+  public void setAccessPoint(URI accessPoint) {
     this.accessPoint = accessPoint;
   }
 

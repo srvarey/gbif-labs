@@ -121,7 +121,7 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
     return new SyncResult(updated, added, deleted, installation);
   }
 
-  public URI buildUri(String url, String parameter, String value) throws MetadataException {
+  public URI buildUri(URI url, String parameter, String value) throws MetadataException {
     try {
       return new URIBuilder(url).addParameter(parameter, value).build();
     } catch (URISyntaxException e) {
@@ -133,7 +133,7 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
    * Does a Capabilities request against the Endpoint.
    */
   private Capabilities getCapabilities(Endpoint endpoint) throws MetadataException {
-    return doHttpRequest(URI.create(endpoint.getUrl()), newDigester(Capabilities.class));
+    return doHttpRequest(endpoint.getUrl(), newDigester(Capabilities.class));
   }
 
   /**
