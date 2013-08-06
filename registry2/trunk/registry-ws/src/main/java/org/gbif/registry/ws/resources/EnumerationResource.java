@@ -14,13 +14,13 @@ package org.gbif.registry.ws.resources;
 
 import org.gbif.api.util.VocabularyUtils;
 import org.gbif.api.vocabulary.Country;
-import org.gbif.api.vocabulary.ParticipationStatus;
 import org.gbif.ws.server.interceptor.NullToNotFound;
 import org.gbif.ws.util.ExtraMediaTypes;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -87,27 +87,14 @@ public class EnumerationResource {
       ClassPath cp = ClassPath.from(EnumerationResource.class.getClassLoader());
       ImmutableMap.Builder<String, Enum<?>[]> builder = ImmutableMap.builder();
 
-      // TODO: When registry2 moves to proper package, this will throw compile time error, and this should be removed
-      List<ClassInfo> infos = cp.getTopLevelClasses(ParticipationStatus.class.getPackage().getName()).asList();
+      List<ClassInfo> infos = cp.getTopLevelClasses(Country.class.getPackage().getName()).asList();
       for (ClassInfo info : infos) {
         Class<? extends Enum<?>> vocab = VocabularyUtils.lookupVocabulary(info.getName());
         // verify that it is an Enumeration
         if (vocab != null && vocab.getEnumConstants() != null) {
-          builder.put(info.getName(), vocab.getEnumConstants());
+          builder.put(info.getSimpleName(), vocab.getEnumConstants());
         }
       }
-      // END TODO (delete this whole block, and verify result with http://localhost:8080/enumeration )
-
-      infos = cp.getTopLevelClasses(Country.class.getPackage().getName()).asList();
-      for (ClassInfo info : infos) {
-        Class<? extends Enum<?>> vocab = VocabularyUtils.lookupVocabulary(info.getName());
-        // verify that it is an Enumeration
-        if (vocab != null && vocab.getEnumConstants() != null) {
-          builder.put(info.getName(), vocab.getEnumConstants());
-        }
-      }
-
-
       return builder.build();
 
     } catch (Exception e) {
@@ -131,7 +118,7 @@ public class EnumerationResource {
    * @param name Which should be the enumeration name in the GBIF vocabulary package (e.g. Country)
    * @return The enumeration values or null if the enumeration does not exist.
    */
-  @Path("{name}")
+  @Path("basic/{name}")
   @GET()
   @NullToNotFound
   public Enum<?>[] getEnumeration(@PathParam("name") @NotNull String name) {
