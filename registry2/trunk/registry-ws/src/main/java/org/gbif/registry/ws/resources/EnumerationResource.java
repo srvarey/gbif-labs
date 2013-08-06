@@ -77,6 +77,7 @@ public class EnumerationResource {
    * @return The enumerations in the GBIF API.
    */
   @GET
+  @Path("basic")
   public Set<String> inventory() {
     return PATH_MAPPING.keySet();
   }
@@ -114,6 +115,7 @@ public class EnumerationResource {
 
   /**
    * Gets the values of the named enumeration should the enumeration exist.
+   * Note this is used by the AngularJS console.
    * 
    * @param name Which should be the enumeration name in the GBIF vocabulary package (e.g. Country)
    * @return The enumeration values or null if the enumeration does not exist.
