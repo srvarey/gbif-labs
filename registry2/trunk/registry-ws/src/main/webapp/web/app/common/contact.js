@@ -35,7 +35,7 @@ angular.module('contact', ['services.notifications'])
       $scope.close();
       if (!item.key) {
         contacts.getList().then(function(response) {$scope.contacts = response});
-        $scope.counts.contact++;
+        $scope.counts.contacts++;
         resetState(); // in case we have logged in
       }
     };
@@ -63,7 +63,7 @@ angular.module('contact', ['services.notifications'])
       function() {
         notifications.pushForCurrentRoute("Contact successfully deleted", 'info');
         $scope.contacts = _.without($scope.contacts, ngItem);
-        $scope.counts.contact--;
+        $scope.counts.contacts--;
         $scope.close();
         resetState(); // in case we have logged in
       },

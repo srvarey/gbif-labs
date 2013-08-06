@@ -27,13 +27,13 @@
   <dd>{{dataset.description}}</dd>
 	
   <dt>Owning organization</dt>
-  <dd><a href="" ng-click="redirectTo('organization', dataset.owningOrganizationKey)">{{owningOrganization.title}}</a></dd>
+  <dd><a href="" ng-click="redirectTo('organization', dataset.owningOrganizationKey)">{{dataset.owningOrganization.title}}</a></dd>
   <dt>Serving installation</dt>
-  <dd><a href="" ng-click="redirectTo('installation', dataset.installationKey)">{{installation.title}} <span class="muted"><small>{{installation.type}}</small></span></a></dd>
+  <dd><a href="" ng-click="redirectTo('installation', dataset.installationKey)">{{dataset.installation.title}} <span class="muted"><small>{{installation.type}}</small></span></a></dd>
   <dt>Parent dataset</dt>
-  <dd><a href="" ng-click="redirectTo('dataset', dataset.parentDatasetKey)">{{parentDataset.title}}</a></dd>
+  <dd><a href="" ng-click="redirectTo('dataset', dataset.parentDatasetKey)">{{dataset.parentDataset.title}}</a></dd>
   <dt>Duplicate of dataset</dt>
-  <dd><a href="" ng-click="redirectTo('dataset', dataset.duplicateOfDatasetKey)">{{duplicateOfDataset.title}}</a></dd>
+  <dd><a href="" ng-click="redirectTo('dataset', dataset.duplicateOfDatasetKey)">{{dataset.duplicateOfDataset.title}}</a></dd>
 
   <dt>Citation</dt>
   <dd>{{dataset.citation.text}}</dd>
