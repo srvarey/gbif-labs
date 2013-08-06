@@ -10,6 +10,7 @@ import org.gbif.registry.metasync.protocols.HttpGetMatcher;
 import org.gbif.registry.metasync.util.Constants;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
@@ -45,7 +46,7 @@ public class TapirMetadataSynchroniserTest {
     installation = new Installation();
     installation.setType(InstallationType.TAPIR_INSTALLATION);
     Endpoint endpoint = new Endpoint();
-    endpoint.setUrl("http://localhost/nmr");
+    endpoint.setUrl(URI.create("http://localhost/nmr"));
     installation.addEndpoint(endpoint);
   }
 
@@ -111,7 +112,7 @@ public class TapirMetadataSynchroniserTest {
     Dataset dataset = new Dataset();
     dataset.setTitle("Foobar");
     Endpoint endpoint = new Endpoint();
-    endpoint.setUrl("http://localhost/nmr");
+    endpoint.setUrl(URI.create("http://localhost/nmr"));
     dataset.addEndpoint(endpoint);
 
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=capabilities")))).thenReturn(

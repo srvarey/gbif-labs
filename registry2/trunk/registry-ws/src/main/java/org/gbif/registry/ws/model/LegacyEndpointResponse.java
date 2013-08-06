@@ -30,7 +30,7 @@ public class LegacyEndpointResponse {
     setType((endpoint.getType() == null) ? "" : endpoint.getType().name());
     setResourceKey((datasetKey == null) ? "" : datasetKey.toString());
     setDescription((endpoint.getDescription() == null) ? "" : endpoint.getDescription());
-    setAccessPointURL((endpoint.getUrl() == null) ? "" : endpoint.getUrl());
+    setAccessPointURL((endpoint.getUrl() == null) ? "" : endpoint.getUrl().toASCIIString());
     // always empty - not null because they have to be included in response
     setOrganisationKey("");
     setDescriptionLanguage("");

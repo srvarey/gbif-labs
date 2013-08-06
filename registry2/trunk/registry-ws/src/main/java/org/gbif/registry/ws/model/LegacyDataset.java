@@ -674,7 +674,7 @@ public class LegacyDataset extends Dataset {
         endpoint = new Endpoint();
         endpoint.setType(type);
       }
-      endpoint.setUrl(url);
+      endpoint.setUrl(URI.create(url));
       return endpoint;
     }
     return null;

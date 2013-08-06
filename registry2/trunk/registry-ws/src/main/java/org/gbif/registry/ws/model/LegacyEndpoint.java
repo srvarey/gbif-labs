@@ -140,7 +140,7 @@ public class LegacyEndpoint extends Endpoint {
     if (!Strings.isNullOrEmpty(url)) {
       try {
         new URI(url);
-        this.setUrl(url);
+        this.setUrl(URI.create(url));
       } catch (URISyntaxException e) {
         LOG.warn("Endpoint URL was invalid: " + Strings.nullToEmpty(url));
       }
@@ -156,7 +156,7 @@ public class LegacyEndpoint extends Endpoint {
   @XmlElement(name = LegacyResourceConstants.ACCESS_POINT_URL_PARAM)
   @NotNull
   public String getEndpointUrl() {
-    return getUrl();
+    return getUrl().toASCIIString();
   }
 
   /**

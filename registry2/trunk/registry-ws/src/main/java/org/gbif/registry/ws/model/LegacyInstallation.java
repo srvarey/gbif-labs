@@ -9,6 +9,7 @@ import org.gbif.api.vocabulary.InstallationType;
 import org.gbif.registry.ws.util.LegacyResourceConstants;
 import org.gbif.registry.ws.util.LegacyResourceUtils;
 
+import java.net.URI;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -372,7 +373,7 @@ public class LegacyInstallation extends Installation {
         endpoint = new Endpoint();
         endpoint.setType(getEndpointType());
       }
-      endpoint.setUrl(getEndpointUrl());
+      endpoint.setUrl(URI.create(endpointUrl));
       setFeedEndpoint(endpoint);
     }
   }

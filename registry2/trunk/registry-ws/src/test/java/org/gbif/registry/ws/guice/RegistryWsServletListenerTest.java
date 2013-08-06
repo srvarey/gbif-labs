@@ -13,7 +13,7 @@ import java.util.Properties;
 import com.google.inject.Injector;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 public class RegistryWsServletListenerTest {
 

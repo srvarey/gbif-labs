@@ -92,7 +92,7 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
   }
 
   private DigirMetadata getDigirMetadata(Endpoint endpoint) throws MetadataException {
-    return doHttpRequest(URI.create(endpoint.getUrl()), newDigester(DigirMetadata.class));
+    return doHttpRequest(endpoint.getUrl(), newDigester(DigirMetadata.class));
   }
 
   /**
@@ -125,7 +125,7 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
    * this code on the Dataset itself as a machine tag.
    */
   private SyncResult mapToDatasets(
-    DigirMetadata metadata, Iterable<Dataset> datasets, String url, Installation installation
+    DigirMetadata metadata, Iterable<Dataset> datasets, URI url, Installation installation
   ) {
     List<Dataset> added = Lists.newArrayList();
     List<Dataset> deleted = Lists.newArrayList();
@@ -166,7 +166,7 @@ public class DigirMetadataSynchroniser extends BaseProtocolHandler {
   /**
    * Converts a DiGIR resource to a GBIF Dataset.
    */
-  private Dataset convertToDataset(DigirResource resource, String url) {
+  private Dataset convertToDataset(DigirResource resource, URI url) {
     Dataset dataset = new Dataset();
     dataset.setTitle(resource.getName());
     dataset.setDescription(resource.getDescription());
