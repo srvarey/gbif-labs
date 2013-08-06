@@ -1,5 +1,5 @@
 angular.module('dataset', [
-  'ngResource', 
+  'restangular', 
   'services.notifications', 
   'contact', 
   'endpoint',
@@ -14,17 +14,42 @@ angular.module('dataset', [
  * governs the actions on the page. 
  */
 .config(['$stateProvider', function ($stateProvider, $stateParams, Dataset) {
-  $stateProvider.state('dataset', {
+  $stateProvider.state('dataset-search', {
+    abstract: true,
+    url: '/dataset-search',  
+    templateUrl: 'app/dataset/dataset-search.tpl.html',
+    controller: 'DatasetSearchCtrl',
+  })
+  .state('dataset-search.search', {  
+    url: '',
+    templateUrl: 'app/dataset/dataset-results.tpl.html'
+  })
+  .state('dataset-search.deleted', {  
+    url: '/deleted',   
+    templateUrl: 'app/dataset/dataset-deleted.tpl.html'
+  })
+  .state('dataset-search.duplicate', {  
+    url: '/duplicate',   
+    templateUrl: 'app/dataset/dataset-duplicate.tpl.html'
+  })
+  .state('dataset-search.subDataset', {  
+    url: '/subDataset',   
+    templateUrl: 'app/dataset/dataset-subDataset.tpl.html'
+  })
+  .state('dataset-search.withNoEndpoint', {  
+    url: '/withNoEndpoint',   
+    templateUrl: 'app/dataset/dataset-withNoEndpoint.tpl.html'
+  })
+  .state('dataset-search.create', {  
+    url: '/create',   
+    templateUrl: 'app/dataset/dataset-edit.tpl.html',
+    controller: 'DatasetCreateCtrl'
+  })
+  .state('dataset', {
     url: '/dataset/{key}',  // {type} to provide context to things like identifier 
     abstract: true, 
     templateUrl: 'app/dataset/dataset-main.tpl.html',
-    controller: 'DatasetCtrl',
-    // resolve to lookup synchronously first, thus handling errors if not found
-    resolve: {
-      item: function(Dataset, $state, $stateParams) {
-        return Dataset.getSync($stateParams.key);          
-      }          
-    }
+    controller: 'DatasetCtrl'
   })
   .state('dataset.detail', {  
     url: '',   
@@ -79,86 +104,52 @@ angular.module('dataset', [
 }])
 
 /**
- * RESTfully backed Dataset resource
+ * The single detail controller
  */
-.factory('Dataset', function ($resource, $q) {
-  var Dataset = $resource('../dataset/:key', {key : '@key'}, {
-    save : {method:'PUT'}
-  });  
+.controller('DatasetCtrl', function ($scope, $state, $stateParams, notifications, Restangular, DEFAULT_PAGE_SIZE) {
+  var key = $stateParams.key;
   
-  // A synchronous get, with a failure callback on error
-  Dataset.getSync = function (key, failureCb) {
-    var deferred = $q.defer();
-    Dataset.get({key: key}, function(successData) {
-      deferred.resolve(successData); 
-    }, function(errorData) {
-      deferred.reject(); // you could optionally pass error data here
-      if (failureCb) {
-        failureCb();
-      }
+  // shared across sub views
+  $scope.counts = {}; 
+  
+  var load = function() {
+    Restangular.one('dataset', key).get().then(function(dataset) {
+      $scope.dataset = dataset;
+      $scope.counts.contacts = _.size(dataset.contacts);
+      $scope.counts.identifiers = _.size(dataset.identifiers); 
+      $scope.counts.endpoints = _.size(dataset.endpoints); 
+      $scope.counts.tags = _.size(dataset.tags); 
+      $scope.counts.machinetags = _.size(dataset.machinetags); 
+      $scope.counts.comments = _.size(dataset.comments); 
+      
+      dataset.owningOrganization = Restangular.one('organization', dataset.owningOrganizationKey).get();
+      dataset.installation = Restangular.one('installation', dataset.installationKey).get();
+      dataset.parentDataset = Restangular.one('dataset', dataset.parentDatasetKey).get();
+      dataset.duplicateOfDataset = Restangular.one('dataset', dataset.duplicateOfDatasetKey).get();
+      
+      dataset.getList('constituents', {limit: DEFAULT_PAGE_SIZE}).then(function(response) {
+          $scope.subDatasets = response.results;
+          $scope.counts.subDatasets = response.count;
+        });
     });
-    return deferred.promise;
-  };
-  
-  return Dataset;
-})
-
-/**
- * All operations relating to CRUD go through this controller. 
- */
-.controller('DatasetCtrl', function ($scope, $state, $resource, $http, item, Dataset, notifications) {
-  $scope.dataset = item;
-  
-  // To enable the nested views update the counts, for the side bar
-  $scope.counts = {
-    // collesce with || and use _ for sizing
-    contact : _.size($scope.dataset.contacts || {}),
-    endpoint : _.size($scope.dataset.endpoints || {}),
-    identifier : _.size($scope.dataset.identifiers || {}), 
-    machinetag : _.size($scope.dataset.machineTags || {}),
-    comment : _.size($scope.dataset.comments || {})    
-  };
-  
-  // get the organization, installation, parent dataset and the this duplicates (if any)
-  var lookup = function(urlPrefix, urlSuffix, property) {
-    if (urlSuffix != undefined) {
-      $http( { method:'GET', url: urlPrefix + urlSuffix})
-        .success(function (result) { $scope[property] = result});  
-    
-    }
   }
-  lookup("../organization/", item.owningOrganizationKey, 'owningOrganization');
-  lookup("../installation/",  item.installationKey, 'installation');
-  lookup("../dataset/",  item.parentDatasetKey, 'parentDataset');
-  lookup("../dataset/", item.duplicateOfDatasetKey, 'duplicateOfDataset');
+  load();  
+
+  // populate the dropdowns
+  $scope.datasetTypes = Restangular.all("enumeration/basic/DatasetType").getList();
+  $scope.datasetSubTypes = Restangular.all("enumeration/basic/DatasetSubtype").getList();
+  $scope.languages = Restangular.all("enumeration/basic/Language").getList();
   
-  var count = function(url, parameter) {
-    $http( { method:'GET', url: url})
-      .success(function (result) {$scope.counts[parameter] = result.count});
-  }
-  count('../dataset/' + $scope.dataset.key + '/constituents','subDatasets');
-  $http( { method:'GET', url: '../dataset/' + $scope.dataset.key + '/tag'})
-    .success(function (result) {$scope.counts['tag'] =  _.size(result || {})});
-
-
-  // TODO: should we start reusing functions? 
-  // populate the dropdowns 
-  var lookup = function(url, parameter) {
-    $http( { method:'GET', url: url})
-      .success(function (result) {$scope[parameter] = result});
-  }
-	lookup('../enumeration/org.gbif.api.vocabulary.DatasetType','datasetTypes');
-	
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
-    $state.transitionTo('dataset.' + target, { key: item.key, type: "dataset" }); 
+    $state.transitionTo('dataset.' + target, { key: key, type: "dataset" }); 
   }
   $scope.redirectTo = function (type, key) {
     $state.transitionTo(type + '.detail', { key: key, type: type }); 
   }
 	
 	$scope.save = function (dataset) {
-    Dataset.save(dataset, 
+    dataset.put().then( 
       function() {
         notifications.pushForNextRoute("Dataset successfully updated", 'info');
         $scope.transitionTo("detail");
@@ -170,8 +161,69 @@ angular.module('dataset', [
   }
   
   $scope.cancelEdit = function () {
-    $scope.dataset = Dataset.get({ key: item.key });
+    $scope.dataset = Dataset.get({ key: key });
     $scope.transitionTo("detail");
+  }  
+})
+
+.controller('DatasetSearchCtrl', function ($scope, $state, Restangular, DEFAULT_PAGE_SIZE) {
+  var dataset = Restangular.all("dataset");
+  $scope.search = function(q) {
+    dataset.getList({q:q, limit:DEFAULT_PAGE_SIZE}).then(function(data) {
+      $scope.resultsCount = data.count;
+      $scope.results = data.results;
+      $scope.searchString = q;
+    });
+  }
+  $scope.search(""); // start with empty search  
+
+  // load quick lists
+  dataset.all("deleted").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.deletedCount = data.count;
+    $scope.deleted = data.results;
+  });
+  dataset.all("duplicate").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.duplicateCount = data.count;
+    $scope.duplicate = data.results;
+  });
+  dataset.all("subDataset").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.subDatasetCount = data.count;
+    $scope.subDataset = data.results;
+  });
+  dataset.all("withNoEndpoint").getList({limit:DEFAULT_PAGE_SIZE}).then(function(data) {  
+    $scope.withNoEndpointCount = data.count;
+    $scope.withNoEndpoint = data.results;
+  });
+  
+  $scope.openDataset = function(dataset) {
+    $state.transitionTo('dataset.detail', {key: dataset.key})
+  }
+})
+
+
+.controller('DatasetCreateCtrl', function ($scope, $state, notifications, Restangular) {
+  $scope.datasetTypes = Restangular.all("enumeration/basic/DatasetType").getList();
+  $scope.datasetSubTypes = Restangular.all("enumeration/basic/DatasetSubtype").getList();
+  $scope.languages = Restangular.all("enumeration/basic/Language").getList();
+	
+	// sensible defaults for creation
+	$scope.dataset = {};
+	$scope.dataset.type="OCCURRENCE"; 
+	$scope.dataset.language="ENGLISH"; 
+
+  $scope.save = function (dataset) {
+    if (dataset != undefined) {
+      Restangular.all("dataset").post(dataset).then(function(data) {
+        notifications.pushForNextRoute("Dataset successfully updated", 'info');
+        // strip the quotes
+        $state.transitionTo('dataset.detail', { key: data.replace(/["]/g,''), type: "installation" }); 
+      }, function(error) { 
+        notifications.pushForCurrentRoute(error.data, 'error');
+      });
+    }        
   }
   
+  $scope.cancelEdit = function() {
+    $state.transitionTo('dataset-search.search'); 
+  }  
 });

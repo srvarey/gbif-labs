@@ -11,8 +11,7 @@ angular.module('app', [
   'organization',
   'dataset',
   'node',
-//  'installation',
-  'dataset-search',
+  'installation',
   'organization-search'
   ])
 
