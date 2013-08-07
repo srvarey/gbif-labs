@@ -1,49 +1,45 @@
 angular.module('tag', ['services.notifications'])
 
-.controller('TagCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
-  // help provide context with a label to the user
-  var typeLabel = $state.current.context;
-  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
-
-  var Tag = $resource('../:type/:key/tag/:tagKey', {
-    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
-    key : $stateParams.key,  
-    tagKey : '@id'}
-  );
+.controller('TagCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
+  var type = $state.current.context; // this context should be set in the parent statemachine (e.g. dataset)
+  var key = $stateParams.key; // the entity key (e.g. uuid of a dataset)
   
-  // loads the tags, and updates the scope
-  var refreshScope = function() {
-    Tag.query(function(data) {
-      $scope.tags = data;
-      $scope.counts.tag = data.length; // update parent counts
-    });
-  }
-  
-  refreshScope();
+  var tags = Restangular.one(type, key).all('tag');
+  tags.getList().then(function(response) {$scope.tags = response});
 
+	var resetState = function() {
+	  $state.transitionTo(type + '.tag', { key: key}); 
+	}
+  
   $scope.save = function(item) {
-    item.createdBy = "TODO: security for tag.js";
-    Tag.save(item.value, // it is just a string push
-      function() {
-        notifications.pushForCurrentRoute("Tag successfully updated", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
-      },
-      function(response) {
-        notifications.pushForCurrentRoute(response.data, 'error');
-      });  
+    var success = function(data) {
+      notifications.pushForCurrentRoute("Tag successfully added", 'info');
+      $scope.editing = false; // close the form
+      tags.getList().then(function(response) {$scope.tags = response});
+      $scope.counts.tags++;
+      resetState(); // in case we have logged in
+    };
+    
+    var failure = function(response) {
+      notifications.pushForCurrentRoute(response.data, 'error');
+    };    
+    tags.post(item.value).then(success,failure);
   }
   
-  $scope.delete = function(tag) {
-    Tag.delete({tagKey : tag.key},
+  $scope.delete = function(item) {
+    var ngItem = _.find($scope.tags, function(i) {
+      return item.key == i.key;
+    });
+    ngItem.remove().then(
       function() {
         notifications.pushForCurrentRoute("Tag successfully deleted", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
+        $scope.tags = _.without($scope.tags, ngItem);
+        $scope.counts.tags--;
+         $scope.editing = false; // close the form
+        resetState(); // in case we have logged in
       },
       function(response) {
         notifications.pushForCurrentRoute(response.data, 'error');
-      });  
-  
-  }
+      });
+  }  
 });

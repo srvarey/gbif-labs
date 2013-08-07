@@ -1,26 +1,11 @@
 angular.module('identifier', ['services.notifications'])
 
-.controller('IdentifierCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
-  // help provide context with a label to the user
-  var typeLabel = $state.current.context;
-  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
+.controller('IdentifierCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
+  var type = $state.current.context; // this context should be set in the parent statemachine (e.g. dataset)
+  var key = $stateParams.key; // the entity key (e.g. uuid of a dataset)
   
-  
-  var Identifier = $resource('../:type/:key/identifier/:identifierKey', {    
-    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
-    key : $stateParams.key,  
-    identifierKey : '@id'}
-  );
-  
-  // loads the identifiers, and updates the scope
-  var refreshScope = function() {
-    Identifier.query(function(data) {
-      $scope.identifiers = data;
-      $scope.counts.identifier = data.length; // update parent counts
-    });
-  }
-  
-  refreshScope();
+  var identifiers = Restangular.one(type, key).all('identifier');
+  identifiers.getList().then(function(response) {$scope.identifiers = response});
 
   $scope.types = [
     'SOURCE_ID',
@@ -37,29 +22,39 @@ angular.module('identifier', ['services.notifications'])
     'GBIF_PARTICIPANT'
   ];	
   
+	var resetState = function() {
+	  $state.transitionTo(type + '.identifier', { key: key}); 
+	}
+  
   $scope.save = function(item) {
-    item.createdBy = "TODO: security for identifier.js";
-    Identifier.save(item,
-      function() {
-        notifications.pushForCurrentRoute("Identifier successfully updated", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
-      },
-      function(response) {
-        notifications.pushForCurrentRoute(response.data, 'error');
-      });  
+    var success = function(data) {
+      notifications.pushForCurrentRoute("Identifier successfully added", 'info');
+      $scope.editing = false; // close the form
+      identifiers.getList().then(function(response) {$scope.identifiers = response});
+      $scope.counts.identifiers++;
+      resetState(); // in case we have logged in
+    };
+    
+    var failure = function(response) {
+      notifications.pushForCurrentRoute(response.data, 'error');
+    };    
+    identifiers.post(item).then(success,failure);
   }
   
-  $scope.delete = function(identifier) {
-    Identifier.delete({identifierKey : identifier.key},
+  $scope.delete = function(item) {
+    var ngItem = _.find($scope.identifiers, function(i) {
+      return item.key == i.key;
+    });
+    ngItem.remove().then(
       function() {
         notifications.pushForCurrentRoute("Identifier successfully deleted", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
+        $scope.identifiers = _.without($scope.identifiers, ngItem);
+        $scope.counts.identifiers--;
+         $scope.editing = false; // close the form
+        resetState(); // in case we have logged in
       },
       function(response) {
         notifications.pushForCurrentRoute(response.data, 'error');
-      });  
-  
-  }
+      });
+  }  
 });
