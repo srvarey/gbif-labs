@@ -24,8 +24,6 @@
         <script connection-id="new-registry">
             INSERT INTO endpoint(key,type,url,description,created,modified,created_by,modified_by)
             VALUES(?key,?type::enum_endpoint_type,?url,?description,?created,?modified,?created_by,?modified_by);
-            
-            UPDATE endpoint SET url = replace(url, ' ', '');
         </script>
     </query>
     <script connection-id="new-registry">
