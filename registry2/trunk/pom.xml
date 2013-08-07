@@ -109,7 +109,7 @@
     <mybatis.version>3.2.2</mybatis.version>
     <mybatis-guice.version>3.3</mybatis-guice.version>
     <mybatis-ehcache.version>1.0.0</mybatis-ehcache.version>
-    <drupal-mybatis.version>0.5</drupal-mybatis.version>
+    <drupal-mybatis.version>0.6-SNAPSHOT</drupal-mybatis.version>
     <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
     <powermock-mockito.version>1.5.1</powermock-mockito.version>
     <slf4j.version>1.7.5</slf4j.version>
