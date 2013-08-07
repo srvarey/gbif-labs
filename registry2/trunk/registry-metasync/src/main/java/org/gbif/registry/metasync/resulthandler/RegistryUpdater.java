@@ -10,16 +10,11 @@ import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.util.Constants;
-import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
-import org.gbif.ws.client.guice.GbifApplicationAuthModule;
 
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,21 +26,6 @@ public class RegistryUpdater {
   private static final Logger LOG = LoggerFactory.getLogger(RegistryUpdater.class);
   private final DatasetService datasetService;
 
-  public RegistryUpdater() {
-    Properties props = new Properties();
-    props.setProperty("registry.ws.url", "http://localhost:8080");
-    props.setProperty("application.key", "gbif.registry-ws-client-it");
-    props.setProperty("application.secret", "foobar");
-
-    // Create authentication module, and set principal name, equal to a GBIF User unique account name
-    GbifApplicationAuthModule auth = new GbifApplicationAuthModule(props);
-    auth.setPrincipal("admin");
-
-    Injector injector = Guice.createInjector(new RegistryWsClientModule(props), auth);
-    datasetService = injector.getInstance(DatasetService.class);
-  }
-
-  @VisibleForTesting
   public RegistryUpdater(DatasetService datasetService) {
     this.datasetService = datasetService;
   }
@@ -58,26 +38,6 @@ public class RegistryUpdater {
   public void saveSyncResultsToRegistry(Iterable<SyncResult> syncResults) {
     for (SyncResult syncResult : syncResults) {
       saveSyncResults(syncResult);
-    }
-  }
-
-  /**
-   * Processes the result of a synchronisation by:
-   * <ul>
-   * <li>Creating new Datasets and Endpoints</li>
-   * <li>Deleting existing Datasets</li>
-   * <li>Updating existing Installations, Datasets and Endpoints</li>
-   * </ul>
-   */
-  private void saveSyncResults(SyncResult result) {
-    if (result.exception == null) {
-      saveAddedDatasets(result);
-      saveDeletedDatasets(result);
-      saveUpdatedDatasets(result);
-    } else {
-      LOG.warn("Installation [{}] failed sync because of [{}]",
-               result.installation.getKey(),
-               result.exception.getMessage());
     }
   }
 
@@ -122,7 +82,7 @@ public class RegistryUpdater {
 
         // Contacts are derived 100% from the metadata
         // delete existing contacts, and replace with new/updated contacts
-        for (Contact contact: existingDataset.getContacts()) {
+        for (Contact contact : existingDataset.getContacts()) {
           datasetService.deleteContact(datasetKey, contact.getKey());
         }
         for (Contact contact : updated.getContacts()) {
@@ -131,7 +91,7 @@ public class RegistryUpdater {
 
         // Machine tags with namepace "metasync.gbif.org" are derived 100% from the metadata sync
         // delete existing machine tags in this namespace, and replace with new/updated machine tags
-        for (MachineTag machineTag: existingDataset.getMachineTags()) {
+        for (MachineTag machineTag : existingDataset.getMachineTags()) {
           // TODO: replace below with datasetService.deleteMachineTags(uuid, namespace); once implemented
           if (machineTag.getNamespace().equalsIgnoreCase(Constants.METADATA_NAMESPACE)) {
             datasetService.deleteMachineTag(datasetKey, machineTag.getKey());
@@ -143,7 +103,7 @@ public class RegistryUpdater {
 
         // Only 1 endpoint exists per Dataset
         // delete existing endpoint, and replace with new/updated endpoint
-        for (Endpoint endpoint: existingDataset.getEndpoints()) {
+        for (Endpoint endpoint : existingDataset.getEndpoints()) {
           datasetService.deleteEndpoint(datasetKey, endpoint.getKey());
         }
         for (Endpoint endpoint : updated.getEndpoints()) {
@@ -156,7 +116,7 @@ public class RegistryUpdater {
           for (Identifier identifier : updated.getIdentifiers()) {
             // does this identifier exist already?
             boolean found = false;
-            for (Identifier existingIdentifier: existingDataset.getIdentifiers()) {
+            for (Identifier existingIdentifier : existingDataset.getIdentifiers()) {
               if (identifier.lenientEquals(existingIdentifier)) {
                 found = true;
                 break;
@@ -168,6 +128,26 @@ public class RegistryUpdater {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Processes the result of a synchronisation by:
+   * <ul>
+   * <li>Creating new Datasets and Endpoints</li>
+   * <li>Deleting existing Datasets</li>
+   * <li>Updating existing Installations, Datasets and Endpoints</li>
+   * </ul>
+   */
+  private void saveSyncResults(SyncResult result) {
+    if (result.exception == null) {
+      saveAddedDatasets(result);
+      saveDeletedDatasets(result);
+      saveUpdatedDatasets(result);
+    } else {
+      LOG.warn("Installation [{}] failed sync because of [{}]",
+               result.installation.getKey(),
+               result.exception.getMessage());
     }
   }
 

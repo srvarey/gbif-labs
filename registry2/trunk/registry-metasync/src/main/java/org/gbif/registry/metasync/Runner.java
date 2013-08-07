@@ -15,6 +15,7 @@
  */
 package org.gbif.registry.metasync;
 
+import org.gbif.api.service.registry.DatasetService;
 import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.protocols.biocase.BiocaseMetadataSynchroniser;
 import org.gbif.registry.metasync.protocols.digir.DigirMetadataSynchroniser;
@@ -22,10 +23,15 @@ import org.gbif.registry.metasync.protocols.tapir.TapirMetadataSynchroniser;
 import org.gbif.registry.metasync.resulthandler.DebugHandler;
 import org.gbif.registry.metasync.resulthandler.RegistryUpdater;
 import org.gbif.registry.metasync.util.HttpClientFactory;
+import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
+import org.gbif.ws.client.guice.SingleUserAuthModule;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -50,7 +56,14 @@ public final class Runner {
     LOG.info("Done syncing. Processing results");
     DebugHandler.processResults(syncResults);
 
-    RegistryUpdater updater = new RegistryUpdater();
+    Properties props = new Properties();
+    props.setProperty("registry.ws.url", "http://localhost:8080");
+
+    Injector injector =
+      Guice.createInjector(new RegistryWsClientModule(props), new SingleUserAuthModule("username", "password"));
+    DatasetService datasetService = injector.getInstance(DatasetService.class);
+
+    RegistryUpdater updater = new RegistryUpdater(datasetService);
     updater.saveSyncResultsToRegistry(syncResults);
   }
 
