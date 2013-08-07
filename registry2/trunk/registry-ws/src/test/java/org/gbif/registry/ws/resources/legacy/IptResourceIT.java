@@ -76,7 +76,7 @@ public class IptResourceIT {
   private static final String DATASET_SERVICE_TYPES = "EML|DWC-ARCHIVE-OCCURRENCE";
   private static final String DATASET_SERVICE_URLS =
     "http://ipt.gbif.org/eml.do?r=ds123|http://ipt.gbif.org/archive.do?r=ds123";
-  private static final String DATASET_EML_SERVICE_URL = "http://ipt.gbif.org/eml.do?r=ds123";
+  private static final URI DATASET_EML_SERVICE_URL = URI.create("http://ipt.gbif.org/eml.do?r=ds123");
   private static final URI DATASET_OCCURRENCE_SERVICE_URL = URI.create("http://ipt.gbif.org/archive.do?r=ds123");
 
   public IptResourceIT() throws ParserConfigurationException, SAXException {
