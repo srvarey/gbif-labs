@@ -126,7 +126,7 @@ angular.module('node', [
       $scope.counts.identifiers = _.size(node.identifiers); 
       $scope.counts.endpoints = _.size(node.endpoints); 
       $scope.counts.tags = _.size(node.tags); 
-      $scope.counts.machinetags = _.size(node.machinetags); 
+      $scope.counts.machinetags = _.size(node.machineTags); 
       $scope.counts.comments = _.size(node.comments); 
       
       node.getList('organization', {limit: DEFAULT_PAGE_SIZE}).then(function(response) {
@@ -193,7 +193,7 @@ angular.module('node', [
   }
 })
 
-.controller('NodeSearchCtrl', function ($scope, $state, $http, Restangular, DEFAULT_PAGE_SIZE) {
+.controller('NodeSearchCtrl', function ($scope, $state, Restangular, DEFAULT_PAGE_SIZE) {
   var node = Restangular.all("node");
   $scope.search = function(q) {
     node.getList({q:q, limit:DEFAULT_PAGE_SIZE}).then(function(data) {

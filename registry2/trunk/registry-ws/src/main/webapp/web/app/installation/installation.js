@@ -131,9 +131,8 @@ angular.module('installation', [
       $scope.counts.endpoints = _.size(installation.endpoints); 
       $scope.counts.identifiers = _.size(installation.identifiers); 
       $scope.counts.tags = _.size(installation.tags); 
-      $scope.counts.machinetags = _.size(installation.machinetags); 
+      $scope.counts.machinetags = _.size(installation.machineTags); 
       $scope.counts.comments = _.size(installation.comments); 
-      
       
       // served datasets
       installation.getList('dataset', {limit: DEFAULT_PAGE_SIZE})

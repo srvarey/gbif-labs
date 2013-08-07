@@ -119,7 +119,7 @@ angular.module('dataset', [
       $scope.counts.identifiers = _.size(dataset.identifiers); 
       $scope.counts.endpoints = _.size(dataset.endpoints); 
       $scope.counts.tags = _.size(dataset.tags); 
-      $scope.counts.machinetags = _.size(dataset.machinetags); 
+      $scope.counts.machinetags = _.size(dataset.machineTags); 
       $scope.counts.comments = _.size(dataset.comments); 
       
       dataset.owningOrganization = Restangular.one('organization', dataset.owningOrganizationKey).get();
