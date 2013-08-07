@@ -201,6 +201,10 @@ angular.module('installation', [
   $scope.getDatasets = function () {
     if ($scope.installation) return $scope.installation.datasets;
   }
+  
+  $scope.synchronize = function (installation)  {
+    alert(installation.key);
+  }
 })
 
 /**
