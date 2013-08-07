@@ -67,7 +67,7 @@ public class TestRegistryWsServletListener extends GbifServletListener {
       new ImsModule(props),
       StringTrimInterceptor.newMethodInterceptingModule(),
       new ValidationModule(),
-      new EventModule(),
+      new EventModule(props),
       new RegistrySearchModule(props),
       new DrupalMyBatisModule(props),
       new WsAuthModule(props));

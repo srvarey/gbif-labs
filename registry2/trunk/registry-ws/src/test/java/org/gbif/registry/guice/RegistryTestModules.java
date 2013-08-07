@@ -85,7 +85,7 @@ public class RegistryTestModules {
               bind(IptResource.class);
             }
           }, TestValidateInterceptor.newMethodInterceptingModule(),
-            new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(),
+            new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(p),
             new ValidationModule(),
             new DrupalMyBatisModule(p));
       } catch (IOException e) {

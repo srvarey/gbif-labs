@@ -93,6 +93,10 @@
       <artifactId>gbif-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.gbif.common</groupId>
+      <artifactId>gbif-postal-service</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.gbif.registry</groupId>
       <artifactId>registry-metadata</artifactId>
     </dependency>
@@ -117,8 +121,6 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
     </dependency>
-
-    <!-- To ship JUL (e.g. Guice, Guava) logging to SLF4J -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
