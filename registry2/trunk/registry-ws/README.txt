@@ -1,10 +1,10 @@
-Registry v2 
+Registry v2
 -----------
 
 This project provides the WS, and JS based admin console for the registry (v2) which operates against PostgreSQL.
 
 ********
-Warnings: 
+Warnings:
 ********
   a) This project makes use of liquibase to manage schemas, AND WILL TRUNCATE TABLES in tests.
   b) Tests are run against the database in JUnit during the maven verify
@@ -15,7 +15,7 @@ To use this project you would typically do one of the following:
   i) mvn clean verify package -Pregistry2-local
   ii) mvn jetty:run -Pregistry2-local
 
- 
+
 With a maven profile similar to:
 
     <!-- A local profile for the registry2 postgres development -->
@@ -25,11 +25,17 @@ With a maven profile similar to:
         <registry2.db.url>jdbc:postgresql://localhost/registry</registry2.db.url>
         <registry2.db.username>postgres</registry2.db.username>
         <registry2.db.password>postgres</registry2.db.password>
+
         <registry2-it.db.url>jdbc:postgresql://localhost/registry</registry2-it.db.url>
         <registry2-it.db.username>postgres</registry2-it.db.username>
         <registry2-it.db.password>postgres</registry2-it.db.password>
+
+        <registry.messaging.hostname></registry.messaging.hostname>
+        <registry.messaging.username></registry.messaging.username>
+        <registry.messaging.password></registry.messaging.password>
+        <registry.messaging.virtualhost></registry.messaging.virtualhost>
       </properties>
-    </profile>    
+    </profile>
 
 
 If an optional IMS Filemaker connection is configured with a profile as follows, extra information will be taken from that:

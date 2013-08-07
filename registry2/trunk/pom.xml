@@ -95,6 +95,7 @@
     <gbif-common-service.version>0.5</gbif-common-service.version>
     <gbif-common-search.version>0.8</gbif-common-search.version>
     <gbif-parsers.version>0.4</gbif-parsers.version>
+    <gbif-postal-service.version>0.5-SNAPSHOT</gbif-postal-service.version>
     <filemaker.version>12.2.94</filemaker.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
     <freemarker.version>2.3.20</freemarker.version>
@@ -148,6 +149,11 @@
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils-core</artifactId>
         <version>${commons-beanutils.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif.common</groupId>
+        <artifactId>gbif-postal-service</artifactId>
+        <version>${gbif-postal-service.version}</version>
       </dependency>
       <dependency>
         <groupId>org.gbif.registry</groupId>
@@ -206,7 +212,7 @@
         <artifactId>gbif-common-search</artifactId>
         <version>${gbif-common-search.version}</version>
         <exclusions>
-          <!-- We want the latest, but common is slower to update (for good reason as it has 
+          <!-- We want the latest, but common is slower to update (for good reason as it has
                other downstream dependencies) -->
           <exclusion>
             <artifactId>solr-solrj</artifactId>

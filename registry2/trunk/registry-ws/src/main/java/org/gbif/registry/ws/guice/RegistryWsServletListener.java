@@ -40,7 +40,6 @@ import org.apache.bval.guice.ValidationModule;
 public class RegistryWsServletListener extends GbifServletListener {
 
   public static final String APPLICATION_PROPERTIES = "registry.properties";
-  private final static String PACKAGES = "org.gbif.registry.ws.resources, org.gbif.registry.ws.provider";
   public static final List<Class<? extends ContainerRequestFilter>> requestFilters = Lists.newArrayList();
   public static final List<Class<? extends ContainerResponseFilter>> responseFilters = Lists.newArrayList();
 
@@ -49,6 +48,8 @@ public class RegistryWsServletListener extends GbifServletListener {
     responseFilters.add(AuthResponseCodeOverwriteFilter.class);
 
   }
+
+  private static final String PACKAGES = "org.gbif.registry.ws.resources, org.gbif.registry.ws.provider";
 
   public RegistryWsServletListener() {
     super(PropertiesUtil.readFromClasspath(APPLICATION_PROPERTIES), PACKAGES, true, responseFilters, requestFilters);
@@ -60,16 +61,15 @@ public class RegistryWsServletListener extends GbifServletListener {
   }
 
   @Override
-  protected List<Module> getModules(Properties props) {
-    return Lists.newArrayList(new RegistryMyBatisModule(props),
-      new ImsModule(props),
-      StringTrimInterceptor.newMethodInterceptingModule(),
-      new ValidationModule(),
-      new EventModule(),
-      new RegistrySearchModule(props),
-      new DrupalMyBatisModule(props),
-      new WsAuthModule(props)
-      );
+  protected List<Module> getModules(Properties properties) {
+    return Lists.newArrayList(new RegistryMyBatisModule(properties),
+                              new ImsModule(properties),
+                              StringTrimInterceptor.newMethodInterceptingModule(),
+                              new ValidationModule(),
+                              new EventModule(properties),
+                              new RegistrySearchModule(properties),
+                              new DrupalMyBatisModule(properties),
+                              new WsAuthModule(properties));
   }
 
   @VisibleForTesting
