@@ -8,10 +8,6 @@ angular.module('contact', ['services.notifications'])
 	  $state.transitionTo(type + '.contact', { key: key}); 
 	}
 
-  // help provide context with a label to the user
-  var typeLabel = $state.current.context;
-  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
-  
   var contacts = Restangular.one(type, key).all('contact');
   contacts.getList().then(function(response) {$scope.contacts = response});
   
@@ -19,15 +15,6 @@ angular.module('contact', ['services.notifications'])
     'ADMINISTRATIVE',
     'TECHNICAL'
   ];	
-
-  // the parent entity has a nested set, which shows as the count in the menu
-  // this updates it
-	var updateParent = function() {
-    $scope[type].contacts.length=0;
-    $.each($scope.contacts, function(index, item) {
-      $scope[type].contacts[index] = item;
-    });
-	}
 
   $scope.save = function(item) {
     var success = function(data) {

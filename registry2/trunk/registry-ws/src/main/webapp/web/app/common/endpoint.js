@@ -1,25 +1,11 @@
 angular.module('endpoint', ['services.notifications'])
 
-.controller('EndpointCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
-  // help provide context with a label to the user
-  var typeLabel = $state.current.context;
-  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
-
-  var Endpoint = $resource('../:type/:key/endpoint/:endpointKey', {
-    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
-    key : $stateParams.key,  
-    endpointKey : '@id'}
-  );
+.controller('EndpointCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
+  var type = $state.current.context; // this context should be set in the parent statemachine (e.g. dataset)
+  var key = $stateParams.key; // the entity key (e.g. uuid of a dataset)
   
-  // loads the endpoints, and updates the scope
-  var refreshScope = function() {
-    Endpoint.query(function(data) {
-      $scope.endpoints = data;
-      $scope.counts.endpoint = data.length; // update parent counts
-    });
-  }
-  
-  refreshScope();
+  var endpoints = Restangular.one(type, key).all('endpoint');
+  endpoints.getList().then(function(response) {$scope.endpoints = response});
 
   $scope.types = [
     'EML',
@@ -37,30 +23,39 @@ angular.module('endpoint', ['services.notifications'])
     'OTHER'  
   ];	
   
+	var resetState = function() {
+	  $state.transitionTo(type + '.endpoint', { key: key}); 
+	}
+  
   $scope.save = function(item) {
-    item.createdBy = "TODO: security for endpoint.js";
-    item.modifiedBy = "TODO: security for endpoint.js";
-    Endpoint.save(item,
-      function() {
-        notifications.pushForCurrentRoute("Endpoint successfully updated", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
-      },
-      function(response) {
-        notifications.pushForCurrentRoute(response.data, 'error');
-      });  
+    var success = function(data) {
+      notifications.pushForCurrentRoute("Endpoint successfully added", 'info');
+      $scope.editing = false; // close the form
+      endpoints.getList().then(function(response) {$scope.endpoints = response});
+      $scope.counts.endpoints++;
+      resetState(); // in case we have logged in
+    };
+    
+    var failure = function(response) {
+      notifications.pushForCurrentRoute(response.data, 'error');
+    };    
+    endpoints.post(item).then(success,failure);
   }
   
-  $scope.delete = function(endpoint) {
-    Endpoint.delete({endpointKey : endpoint.key},
+  $scope.delete = function(item) {
+    var ngItem = _.find($scope.endpoints, function(i) {
+      return item.key == i.key;
+    });
+    ngItem.remove().then(
       function() {
         notifications.pushForCurrentRoute("Endpoint successfully deleted", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
+        $scope.endpoints = _.without($scope.endpoints, ngItem);
+        $scope.counts.endpoints--;
+         $scope.editing = false; // close the form
+        resetState(); // in case we have logged in
       },
       function(response) {
         notifications.pushForCurrentRoute(response.data, 'error');
-      });  
-  
-  }
+      });
+  }  
 });

@@ -64,7 +64,7 @@ angular.module('dataset', [
     templateUrl: 'app/common/endpoint-list.tpl.html',
     controller: "EndpointCtrl",  
     context: 'dataset', // necessary for reusing the components
-    heading: 'Dataset contacts', // title for the sub pane     
+    heading: 'Dataset endpoints', // title for the sub pane     
   })
   .state('dataset.identifier', {  
     url: '/identifier',   

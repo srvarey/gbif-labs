@@ -1,64 +1,45 @@
 angular.module('machinetag', ['services.notifications'])
 
-.controller('MachinetagCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
-  // help provide context with a label to the user
-  var typeLabel = $state.current.context;
-  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
-
-  var Machinetag = $resource('../:type/:key/machinetag/:machinetagKey', {
-    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
-    key : $stateParams.key,  
-    machinetagKey : '@id'}
-  );
+.controller('MachinetagCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
+  var type = $state.current.context; // this context should be set in the parent statemachine (e.g. dataset)
+  var key = $stateParams.key; // the entity key (e.g. uuid of a dataset)
   
-  // loads the machinetags, and updates the scope
-  var refreshScope = function() {
-    Machinetag.query(function(data) {
-      $scope.machinetags = data;
-      $scope.counts.machinetag = data.length; // update parent counts
-    });
-  }
-  
-  refreshScope();
+  var machinetags = Restangular.one(type, key).all('machinetag');
+  machinetags.getList().then(function(response) {$scope.machinetags = response});
 
-  $scope.types = [
-    'SOURCE_ID',
-    'URL',
-    'LSID',
-    'HANDLER',
-    'DOI',
-    'UUID',
-    'FTP',
-    'URI',
-    'UNKNOWN',
-    'GBIF_PORTAL',
-    'GBIF_NODE',
-    'GBIF_PARTICIPANT'
-  ];	
+	var resetState = function() {
+	  $state.transitionTo(type + '.machinetag', { key: key}); 
+	}
   
   $scope.save = function(item) {
-    item.createdBy = "TODO: security for machinetag.js";
-    Machinetag.save(item,
+    var success = function(data) {
+      notifications.pushForCurrentRoute("MachineTag successfully added", 'info');
+      $scope.editing = false; // close the form
+      machinetags.getList().then(function(response) {$scope.machinetags = response});
+      $scope.counts.machinetags++;
+      resetState(); // in case we have logged in
+    };
+    
+    var failure = function(response) {
+      notifications.pushForCurrentRoute(response.data, 'error');
+    };    
+    machinetags.post(item).then(success,failure);
+  }
+  
+  $scope.delete = function(item) {
+    var ngItem = _.find($scope.machinetags, function(i) {
+      return item.key == i.key;
+    });
+    ngItem.remove().then(
       function() {
-        notifications.pushForCurrentRoute("Machinetag successfully updated", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
+        notifications.pushForCurrentRoute("MachineTag successfully deleted", 'info');
+        $scope.machinetags = _.without($scope.machinetags, ngItem);
+        $scope.counts.machinetags--;
+         $scope.editing = false; // close the form
+        resetState(); // in case we have logged in
       },
       function(response) {
         notifications.pushForCurrentRoute(response.data, 'error');
-      });  
-  }
-  
-  $scope.delete = function(machinetag) {
-    Machinetag.delete({machinetagKey : machinetag.key},
-      function() {
-        notifications.pushForCurrentRoute("Machinetag successfully deleted", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
-      },
-      function(response) {
-        notifications.pushForCurrentRoute(response.data, 'error');
-      });  
-  
-  }
+      });
+  }  
 });

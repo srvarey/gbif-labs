@@ -135,7 +135,7 @@ angular.module('organization', [
       $scope.counts.identifiers = _.size(organization.identifiers); 
       $scope.counts.tags = _.size(organization.tags); 
       $scope.counts.machinetags = _.size(organization.machinetags); 
-      $scope.counts.comment = _.size(organization.comments); 
+      $scope.counts.comments = _.size(organization.comments); 
       
       organization.getList('ownedDataset', {limit: DEFAULT_PAGE_SIZE})
         .then(function(response) {

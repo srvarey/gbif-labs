@@ -1,49 +1,45 @@
 angular.module('comment', ['services.notifications'])
 
-.controller('CommentCtrl', function ($scope, $state, $stateParams, $resource, notifications) {
-  // help provide context with a label to the user
-  var typeLabel = $state.current.context;
-  $scope.typeLabel = typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1);
-
-  var Comment = $resource('../:type/:key/comment/:commentKey', {
-    type : $state.current.context, // this context should be set in the parent statemachine (e.g. node)
-    key : $stateParams.key,  
-    commentKey : '@id'}
-  );
+.controller('CommentCtrl', function ($scope, $state, $stateParams, notifications, Restangular) {
+  var type = $state.current.context; // this context should be set in the parent statemachine (e.g. dataset)
+  var key = $stateParams.key; // the entity key (e.g. uuid of a dataset)
   
-  // loads the comments, and updates the scope
-  var refreshScope = function() {
-    Comment.query(function(data) {
-      $scope.comments = data;
-      $scope.counts.comment = data.length; // update parent counts
-    });
-  }
-  
-  refreshScope();
+  var comments = Restangular.one(type, key).all('comment');
+  comments.getList().then(function(response) {$scope.comments = response});
 
+	var resetState = function() {
+	  $state.transitionTo(type + '.comment', { key: key}); 
+	}
+  
   $scope.save = function(item) {
-    item.createdBy = "TODO: security for comment.js";
-    item.modifiedBy = "TODO: security for comment.js";
-    Comment.save(item,
-      function() {
-        notifications.pushForCurrentRoute("Comment successfully updated", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
-      },
-      function(response) {
-        notifications.pushForCurrentRoute(response.data, 'error');
-      });  
+    var success = function(data) {
+      notifications.pushForCurrentRoute("Comment successfully added", 'info');
+      $scope.editing = false; // close the form
+      comments.getList().then(function(response) {$scope.comments = response});
+      $scope.counts.comments++;
+      resetState(); // in case we have logged in
+    };
+    
+    var failure = function(response) {
+      notifications.pushForCurrentRoute(response.data, 'error');
+    };    
+    comments.post(item).then(success,failure);
   }
   
-  $scope.delete = function(comment) {
-    Comment.delete({commentKey : comment.key},
+  $scope.delete = function(item) {
+    var ngItem = _.find($scope.comments, function(i) {
+      return item.key == i.key;
+    });
+    ngItem.remove().then(
       function() {
         notifications.pushForCurrentRoute("Comment successfully deleted", 'info');
-        refreshScope();
-        $scope.editing = false; // close the form
+        $scope.comments = _.without($scope.comments, ngItem);
+        $scope.counts.comments--;
+         $scope.editing = false; // close the form
+        resetState(); // in case we have logged in
       },
       function(response) {
         notifications.pushForCurrentRoute(response.data, 'error');
       });
-  }
+  }  
 });
