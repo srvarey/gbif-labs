@@ -164,6 +164,10 @@ angular.module('dataset', [
     $scope.dataset = Dataset.get({ key: key });
     $scope.transitionTo("detail");
   }  
+  
+  $scope.crawl = function (dataset)  {
+    alert(dataset.key);
+  }
 })
 
 .controller('DatasetSearchCtrl', function ($scope, $state, Restangular, DEFAULT_PAGE_SIZE) {

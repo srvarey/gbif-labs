@@ -1,4 +1,5 @@
 <h4>Installation overview</h4>
+<button class="btn btn-small btn-primary pull-right" type="button" data-target="#syncConfirm" data-toggle="modal">Synchronize now</button>
 <p class="muted">This information appears on the installation profile, organization pages, search results, and beyond.</p>
 
 <div class="alert alert-block" ng-show="installation.deleted!=null" >
@@ -47,6 +48,19 @@
         <button class="btn btn-primary btn-danger" data-dismiss="modal" ng-click="restore(installation)">Yes, restore it!</button>
       </div>
     </div>
-  
-</div>            
+</div>    
+<div id="syncConfirm" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="title">Confirm?</h3>
+  </div>
+  <div class="modal-body">
+    <p><span class="label label-important">Important</span> <span class="text-error">This will trigger a metadata synchronization with the installation, which may update the registry<span></p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="btn btn-primary btn-danger" data-dismiss="modal" ng-click="synchronize(installation)">Yes, synchronize it!</button>
+  </div>
+</div>
+        
     
