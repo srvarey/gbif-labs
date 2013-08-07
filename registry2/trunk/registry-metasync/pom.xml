@@ -25,7 +25,7 @@
     <version>2.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>registy-metasync</artifactId>
+  <artifactId>registry-metasync</artifactId>
   <version>2.1-SNAPSHOT</version>
 
   <name>Registry :: Metadata Synchroniser</name>
