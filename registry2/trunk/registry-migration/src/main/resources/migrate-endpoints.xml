@@ -28,5 +28,7 @@
             UPDATE endpoint SET url = replace(url, ' ', '');
         </script>
     </query>
-
+    <script connection-id="new-registry">
+      UPDATE endpoint SET url = replace(url, ' ', '');
+    </script>
 </etl>
