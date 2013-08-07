@@ -18,8 +18,6 @@ import org.gbif.registry.utils.Requests;
 import org.gbif.registry.ws.util.LegacyResourceConstants;
 import org.gbif.utils.HttpUtil;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -79,7 +77,7 @@ public class LegacyEndpointResourceIT {
    * Last, the test validates that the endpoint was persisted correctly.
    */
   @Test
-  public void testRegisterLegacyEndpoint() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterLegacyEndpoint() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -122,7 +120,7 @@ public class LegacyEndpointResourceIT {
    * not authorized. The test must check that the server responds  with a 401 Unauthorized Response.
    */
   @Test
-  public void testRegisterLegacyEndpointButNotAuthorized() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterLegacyEndpointButNotAuthorized() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -156,7 +154,7 @@ public class LegacyEndpointResourceIT {
    * is missing. The test must check that the server responds  with a 400 BAD_REQUEST Response.
    */
   @Test
-  public void testRegisterLegacyEndpointWithNoType() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterLegacyEndpointWithNoType() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -202,7 +200,7 @@ public class LegacyEndpointResourceIT {
    * Last, the test validates that the endpoints were deleted correctly.
    */
   @Test
-  public void testDeleteAllDatasetEndpoints() throws IOException, URISyntaxException, SAXException {
+  public void testDeleteAllDatasetEndpoints() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -238,7 +236,7 @@ public class LegacyEndpointResourceIT {
    * the dataset key, endpoint key, endpoint type, and endpoint url.
    */
   @Test
-  public void testGetLegacyEndpointsForDatasetJSON() throws IOException, URISyntaxException, SAXException {
+  public void testGetLegacyEndpointsForDatasetJSON() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -272,7 +270,8 @@ public class LegacyEndpointResourceIT {
     assertEquals(String.valueOf(endpointKey), rootNode.get(0).get(LegacyResourceConstants.KEY_PARAM).getTextValue());
     assertEquals(datasetKey.toString(), rootNode.get(0).get(LegacyResourceConstants.RESOURCE_KEY_PARAM).getTextValue());
     assertEquals(endpoint.getType().toString(), rootNode.get(0).get(LegacyResourceConstants.TYPE_PARAM).getTextValue());
-    assertEquals(endpoint.getUrl(), rootNode.get(0).get(LegacyResourceConstants.ACCESS_POINT_URL_PARAM).getTextValue());
+    assertEquals(endpoint.getUrl().toASCIIString(),
+                 rootNode.get(0).get(LegacyResourceConstants.ACCESS_POINT_URL_PARAM).getTextValue());
     // simply empty values, but expected nonetheless
     assertNotNull(rootNode.get(0).get(LegacyResourceConstants.DESCRIPTION_LANGUAGE_PARAM).getTextValue());
     assertNotNull(rootNode.get(0).get(LegacyResourceConstants.TYPE_DESCRIPTION_PARAM).getTextValue());
@@ -283,7 +282,7 @@ public class LegacyEndpointResourceIT {
    * the dataset key, endpoint key, endpoint type, and endpoint url.
    */
   @Test
-  public void testGetLegacyEndpointsForDatasetXML() throws IOException, URISyntaxException, SAXException {
+  public void testGetLegacyEndpointsForDatasetXML() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -317,7 +316,7 @@ public class LegacyEndpointResourceIT {
     assertEquals(String.valueOf(endpointKey), Parsers.legacyEndpointResponseHandler.key);
     assertEquals(datasetKey.toString(), Parsers.legacyEndpointResponseHandler.resourceKey);
     assertEquals(endpoint.getType().name(), Parsers.legacyEndpointResponseHandler.type);
-    assertEquals(endpoint.getUrl(), Parsers.legacyEndpointResponseHandler.accessPointURL);
+    assertEquals(endpoint.getUrl().toASCIIString(), Parsers.legacyEndpointResponseHandler.accessPointURL);
     assertEquals(endpoint.getDescription(), Parsers.legacyEndpointResponseHandler.description);
     assertEquals("", Parsers.legacyEndpointResponseHandler.organisationKey);
     assertEquals("", Parsers.legacyEndpointResponseHandler.typeDescription);
@@ -329,7 +328,7 @@ public class LegacyEndpointResourceIT {
    * The JSON response having an error message, not a 404.
    */
   @Test
-  public void testGetLegacyEndpointsForDatasetNotFoundJSON() throws IOException, URISyntaxException, SAXException {
+  public void testGetLegacyEndpointsForDatasetNotFoundJSON() throws Exception {
     // construct request uri
     String uri = Requests.getRequestUri("/registry/service.json?resourceKey=" + UUID.randomUUID().toString());
 
@@ -361,7 +360,7 @@ public class LegacyEndpointResourceIT {
    * overviewURL, and key for each service in the list.
    */
   @Test
-  public void testGetServiceTypes() throws IOException, URISyntaxException, SAXException {
+  public void testGetServiceTypes() throws Exception {
 
     // construct request uri
     String uri = Requests.getRequestUri("/registry/service.json?op=types");

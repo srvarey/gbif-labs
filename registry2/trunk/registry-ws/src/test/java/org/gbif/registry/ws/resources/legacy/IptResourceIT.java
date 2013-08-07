@@ -24,15 +24,13 @@ import org.gbif.registry.utils.Requests;
 import org.gbif.registry.ws.util.LegacyResourceConstants;
 import org.gbif.utils.HttpUtil;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -72,7 +70,7 @@ public class IptResourceIT {
   private static final String IPT_PRIMARY_CONTACT_NAME = "Kyle Braak";
   private static final String IPT_PRIMARY_CONTACT_EMAIL = "kbraak@gbif.org";
   private static final String IPT_SERVICE_TYPE = "RSS";
-  private static final String IPT_SERVICE_URL = "http://ipt.gbif.org/rss.do";
+  private static final URI IPT_SERVICE_URL = URI.create("http://ipt.gbif.org/rss.do");
   private static final String IPT_WS_PASSWORD = "password";
 
   private static final String DATASET_SERVICE_TYPES = "EML|DWC-ARCHIVE-OCCURRENCE";
@@ -102,7 +100,7 @@ public class IptResourceIT {
    * Last, the test validates that the installation was persisted correctly.
    */
   @Test
-  public void testRegisterIpt() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterIpt() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -149,7 +147,7 @@ public class IptResourceIT {
    * resent once more, and the test validates that no duplicate installation, contact, or endpoint was created.
    */
   @Test
-  public void testUpdateIpt() throws IOException, URISyntaxException, SAXException {
+  public void testUpdateIpt() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -218,7 +216,7 @@ public class IptResourceIT {
    * with a 401 Unauthorized Response.
    */
   @Test
-  public void testUpdateIptButNotAuthorized() throws IOException, URISyntaxException, SAXException {
+  public void testUpdateIptButNotAuthorized() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -251,7 +249,7 @@ public class IptResourceIT {
    * Response.
    */
   @Test
-  public void testUpdateIptWithNoPrimaryContact() throws IOException, URISyntaxException, SAXException {
+  public void testUpdateIptWithNoPrimaryContact() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -292,7 +290,7 @@ public class IptResourceIT {
    * with a 401 Unauthorized Response.
    */
   @Test
-  public void testRegisterIptButNotAuthorized() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterIptButNotAuthorized() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
 
@@ -319,7 +317,7 @@ public class IptResourceIT {
    * Response.
    */
   @Test
-  public void testRegisterIptWithNoPrimaryContact() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterIptWithNoPrimaryContact() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
 
@@ -364,7 +362,7 @@ public class IptResourceIT {
    * Last, the test validates that the dataset was persisted correctly.
    */
   @Test
-  public void testRegisterIptDataset() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterIptDataset() throws Exception {
     // persist new organization (Dataset owning organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -408,7 +406,7 @@ public class IptResourceIT {
    * with a 401 Unauthorized Response.
    */
   @Test
-  public void testRegisterIptDatasetButNotAuthorized() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterIptDatasetButNotAuthorized() throws Exception {
     // persist new organization (Dataset owning organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -442,7 +440,7 @@ public class IptResourceIT {
    * Response.
    */
   @Test
-  public void testRegisterIptDatasetWithNoPrimaryContact() throws IOException, URISyntaxException, SAXException {
+  public void testRegisterIptDatasetWithNoPrimaryContact() throws Exception {
     // persist new organization (Dataset owning organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -496,7 +494,7 @@ public class IptResourceIT {
    * resent once more, and the test validates that no duplicate Dataset, contact, or endpoint was created.
    */
   @Test
-  public void testUpdateIptDataset() throws IOException, URISyntaxException, SAXException {
+  public void testUpdateIptDataset() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -574,7 +572,7 @@ public class IptResourceIT {
    * with a 401 Unauthorized Response.
    */
   @Test
-  public void testUpdateIptDatasetButNotAuthorized() throws IOException, URISyntaxException, SAXException {
+  public void testUpdateIptDatasetButNotAuthorized() throws Exception {
     // persist new organization (Dataset owning organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -611,7 +609,7 @@ public class IptResourceIT {
    * Response.
    */
   @Test
-  public void testUpdateIptDatasetWithNoPrimaryContact() throws IOException, URISyntaxException, SAXException {
+  public void testUpdateIptDatasetWithNoPrimaryContact() throws Exception {
     // persist new organization (Dataset owning organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -662,7 +660,7 @@ public class IptResourceIT {
    * Next, the test validates that the Dataset was deleted correctly.
    */
   @Test
-  public void testDeleteIptDataset() throws IOException, URISyntaxException, SAXException {
+  public void testDeleteIptDataset() throws Exception {
     // persist new organization (IPT hosting organization)
     Organization organization = Organizations.newPersistedInstance();
     UUID organizationKey = organization.getKey();
@@ -691,7 +689,7 @@ public class IptResourceIT {
 
   /**
    * Retrieve installation presumed already to exist, and make a series of assertions to ensure it is valid.
-   * 
+   *
    * @param installation installation
    * @param organizationKey hosting organization key
    */
@@ -711,7 +709,7 @@ public class IptResourceIT {
 
   /**
    * Retrieve dataset presumed already to exist, and make a series of assertions to ensure it is valid.
-   * 
+   *
    * @param dataset dataset
    * @param organizationKey owning organization key
    * @param installationKey installation key
@@ -742,7 +740,7 @@ public class IptResourceIT {
 
   /**
    * Retrieve persisted IPT installation, and make a series of assertions to ensure it has been properly persisted.
-   * 
+   *
    * @param installationKey installation key (UUID)
    * @param organizationKey installation hosting organization key
    * @return validated installation
@@ -788,7 +786,7 @@ public class IptResourceIT {
 
   /**
    * Retrieve persisted IPT dataset, and make a series of assertions to ensure it has been properly persisted.
-   * 
+   *
    * @param datasetKey installation key (UUID)
    * @param organizationKey installation owning organization key
    * @return validated installation
@@ -849,7 +847,7 @@ public class IptResourceIT {
    * Populate a list of name value pairs used in the common ws requests for IPT registrations and updates.
    * </br>
    * Basically a copy of the method in the IPT, to ensure the parameter names are identical.
-   * 
+   *
    * @param organizationKey organization key (UUID)
    * @return list of name value pairs, or an empty list if the IPT or organisation key were null
    */
@@ -867,7 +865,7 @@ public class IptResourceIT {
 
     // service/endpoint
     data.add(new BasicNameValuePair(LegacyResourceConstants.SERVICE_TYPES_PARAM, IPT_SERVICE_TYPE));
-    data.add(new BasicNameValuePair(LegacyResourceConstants.SERVICE_URLS_PARAM, IPT_SERVICE_URL));
+    data.add(new BasicNameValuePair(LegacyResourceConstants.SERVICE_URLS_PARAM, IPT_SERVICE_URL.toASCIIString()));
 
     // add IPT password used for updating the IPT's own metadata & issuing atomic updateURL operations
     data.add(new BasicNameValuePair(LegacyResourceConstants.WS_PASSWORD_PARAM, IPT_WS_PASSWORD));
@@ -879,7 +877,7 @@ public class IptResourceIT {
    * Populate a list of name value pairs used in the common ws requests for IPT dataset registrations and updates.
    * </br>
    * Basically a copy of the method in the IPT, to ensure the parameter names are identical.
-   * 
+   *
    * @param installationKey installation key
    * @return list of name value pairs, or an empty list if the dataset or organisation key were null
    */
