@@ -17,6 +17,8 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Installation;
 import org.gbif.api.service.registry.InstallationService;
+import org.gbif.common.messaging.api.MessagePublisher;
+import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.DatasetMapper;
@@ -26,6 +28,7 @@ import org.gbif.registry.persistence.mapper.InstallationMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -54,6 +57,12 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
   private static final Logger LOG = LoggerFactory.getLogger(InstallationResource.class);
   private final DatasetMapper datasetMapper;
   private final InstallationMapper installationMapper;
+
+  /**
+   * The messagePublisher can be optional, and optional is not supported in constructor injection.
+   */
+  @Inject(optional = true)
+  private final MessagePublisher messagePublisher = null;
 
   @Inject
   public InstallationResource(
@@ -125,6 +134,17 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
   @Path("{key}/synchronize")
   @RolesAllowed(ADMIN_ROLE)
   public void synchronize(@PathParam("key") UUID installationKey) {
-    LOG.info("Triggering a synchronization of the installation");
+    if (messagePublisher != null) {
+      LOG.info("Requesting synchronizing installation[{}]", installationKey);
+      try {
+        messagePublisher.send(new StartMetasyncMessage(installationKey));
+      } catch (IOException e) {
+        LOG.error("Unable to send message requesting synchronization", e);
+      }
+
+    } else {
+      LOG.warn("Registry is configured to run without messaging capabilities.  Unable to synchronize installation[{}]",
+        installationKey);
+    }
   }
 }

@@ -28,6 +28,8 @@ import org.gbif.api.service.registry.DatasetService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.MetadataType;
+import org.gbif.common.messaging.api.MessagePublisher;
+import org.gbif.common.messaging.api.messages.StartCrawlMessage;
 import org.gbif.registry.metadata.EMLWriter;
 import org.gbif.registry.metadata.parse.DatasetParser;
 import org.gbif.registry.persistence.WithMyBatis;
@@ -88,6 +90,12 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   private final MetadataMapper metadataMapper;
   private final DatasetMapper datasetMapper;
   private final ContactMapper contactMapper;
+
+  /**
+   * The messagePublisher can be optional, and optional is not supported in constructor injection.
+   */
+  @Inject(optional = true)
+  private final MessagePublisher messagePublisher = null;
 
   @Inject
   public DatasetResource(DatasetMapper datasetMapper, ContactMapper contactMapper, EndpointMapper endpointMapper,
@@ -481,8 +489,18 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @POST
   @Path("{key}/crawl")
   @RolesAllowed(ADMIN_ROLE)
-  public void synchronize(@PathParam("key") UUID datasetKey) {
-    LOG.info("Triggering a crawl of the dataset");
-  }
+  public void crawl(@PathParam("key") UUID datasetKey) {
+    if (messagePublisher != null) {
+      LOG.info("Requesting crawl of dataset[{}]", datasetKey);
+      try {
+        messagePublisher.send(new StartCrawlMessage(datasetKey));
+      } catch (IOException e) {
+        LOG.error("Unable to send message requesting crawl", e);
+      }
 
+    } else {
+      LOG.warn("Registry is configured to run without messaging capabilities.  Unable to crawl dataset[{}]",
+        datasetKey);
+    }
+  }
 }
