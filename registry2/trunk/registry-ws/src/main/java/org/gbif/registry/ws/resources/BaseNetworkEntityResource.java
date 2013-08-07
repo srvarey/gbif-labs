@@ -68,8 +68,6 @@ import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import org.apache.bval.guice.Validate;
 import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -91,8 +89,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BaseNetworkEntityResource<T extends NetworkEntity> implements NetworkEntityService<T> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BaseNetworkEntityResource.class);
-  private static final String ADMIN_ROLE = "ADMIN";
+  protected static final String ADMIN_ROLE = "ADMIN";
   private final BaseNetworkEntityMapper<T> mapper;
   private final CommentMapper commentMapper;
   private final MachineTagMapper machineTagMapper;

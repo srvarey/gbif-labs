@@ -166,7 +166,18 @@ angular.module('dataset', [
   }  
   
   $scope.crawl = function (dataset)  {
-    alert(dataset.key);
+		Restangular.one('dataset', key).one("crawl").post().then(
+		  function(response) {
+		    if ($state.includes('login')) 
+		      notifications.pushForNextRoute("Dataset crawling", 'info')
+		    else 
+		      notifications.pushForCurrentRoute("Dataset crawling", 'info')
+		    $scope.transitionTo("detail");
+		    
+		  },function(error) {
+		    notifications.pushForCurrentRoute(response.data, 'error');
+		  }
+		);
   }
 })
 

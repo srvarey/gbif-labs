@@ -44,7 +44,7 @@ angular.module('installation', [
     controller: 'InstallationCtrl',
   })
   .state('installation.detail', {  
-    url: '/',   
+    url: '',   
     templateUrl: 'app/installation/installation-overview.tpl.html',
   })
   .state('installation.edit', {
@@ -203,7 +203,18 @@ angular.module('installation', [
   }
   
   $scope.synchronize = function (installation)  {
-    alert(installation.key);
+		Restangular.one('installation', key).one("synchronize").post().then(
+		  function(response) {
+		    if ($state.includes('login')) 
+		      notifications.pushForNextRoute("Installation synchronizing", 'info');
+		    else 
+		      notifications.pushForCurrentRoute("Installation synchronizing", 'info');
+		    $scope.transitionTo("detail");
+		    
+		  },function(error) {
+		    notifications.pushForCurrentRoute(response.data, 'error');
+		  }
+		);
   }
 })
 

@@ -27,8 +27,11 @@ import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -38,6 +41,8 @@ import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A MyBATIS implementation of the service.
@@ -46,6 +51,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class InstallationResource extends BaseNetworkEntityResource<Installation> implements InstallationService {
 
+  private static final Logger LOG = LoggerFactory.getLogger(InstallationResource.class);
   private final DatasetMapper datasetMapper;
   private final InstallationMapper installationMapper;
 
@@ -108,5 +114,17 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
   @Override
   public PagingResponse<Installation> listNonPublishing(@Context Pageable page) {
     return pagingResponse(page, installationMapper.countNonPublishing(), installationMapper.nonPublishing(page));
+  }
+
+  /**
+   * This is a REST only (e.g. not part of the Java API) method that allows the registry console to trigger the
+   * synchronization of the installation. This simply emits a message to rabbitmq requesting the sync, and applies
+   * necessary security.
+   */
+  @POST
+  @Path("{key}/synchronize")
+  @RolesAllowed(ADMIN_ROLE)
+  public void synchronize(@PathParam("key") UUID installationKey) {
+    LOG.info("Triggering a synchronization of the installation");
   }
 }

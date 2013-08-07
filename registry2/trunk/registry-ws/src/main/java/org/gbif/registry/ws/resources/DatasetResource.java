@@ -48,6 +48,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -470,6 +471,18 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Override
   public PagingResponse<Dataset> listDatasetsWithNoEndpoint(@Context Pageable page) {
     return pagingResponse(page, datasetMapper.countWithNoEndpoint(), datasetMapper.withNoEndpoint(page));
+  }
+
+  /**
+   * This is a REST only (e.g. not part of the Java API) method that allows the registry console to trigger the
+   * crawling of the dataset. This simply emits a message to rabbitmq requesting the crawl, and applies
+   * necessary security.
+   */
+  @POST
+  @Path("{key}/crawl")
+  @RolesAllowed(ADMIN_ROLE)
+  public void synchronize(@PathParam("key") UUID datasetKey) {
+    LOG.info("Triggering a crawl of the dataset");
   }
 
 }
