@@ -149,7 +149,7 @@ angular.module('installation', [
   load();
   
   // populate the dropdowns
-  $scope.installationTypes = Restangular.all("enumeration/org.gbif.api.vocabulary.InstallationType").getList();
+  $scope.installationTypes = Restangular.all("enumeration/basic/InstallationType").getList();
   
 	// transitions to a new view, correctly setting up the path
   $scope.transitionTo = function (target) {
@@ -237,7 +237,7 @@ angular.module('installation', [
  * The create controller
  */
 .controller('InstallationCreateCtrl', function ($scope, $state, notifications, Restangular) {
-  $scope.installationTypes = Restangular.all("enumeration/org.gbif.api.vocabulary.InstallationType").getList();
+  $scope.installationTypes = Restangular.all("enumeration/basic/InstallationType").getList();
 
   $scope.save = function (installation) {
     // ignore empty forms
