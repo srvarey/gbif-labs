@@ -113,7 +113,6 @@ public class OrganizationIT extends NetworkEntityTest<Organization> {
     assertEquals("Paging is not returning the correct count", Long.valueOf(2),
       service.listByCountry(Country.ANGOLA, new PagingRequest()).getCount());
     assertResultsOfSize(service.listByCountry(Country.FRANCE, new PagingRequest()), 2);
-    assertResultsOfSize(service.listByCountry(Country.UNKNOWN, new PagingRequest()), 1);
     assertResultsOfSize(service.listByCountry(Country.GERMANY, new PagingRequest()), 0);
   }
 
