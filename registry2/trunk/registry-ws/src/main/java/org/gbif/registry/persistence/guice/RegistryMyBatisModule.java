@@ -32,6 +32,7 @@ import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.mybatis.type.CountryTypeHandler;
 import org.gbif.mybatis.type.LanguageTypeHandler;
 import org.gbif.mybatis.type.UriTypeHandler;
+import org.gbif.mybatis.type.UuidTypeHandler;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.DatasetMapper;
@@ -44,7 +45,6 @@ import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.NodeMapper;
 import org.gbif.registry.persistence.mapper.OrganizationMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
-import org.gbif.registry.persistence.mapper.handler.UuidTypeHandler;
 import org.gbif.service.guice.PrivateServiceModule;
 
 import java.net.URI;
