@@ -29,6 +29,8 @@ import org.gbif.api.model.registry.Tag;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.Language;
 import org.gbif.mybatis.guice.MyBatisModule;
+import org.gbif.mybatis.type.CountryTypeHandler;
+import org.gbif.mybatis.type.LanguageTypeHandler;
 import org.gbif.mybatis.type.UriTypeHandler;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
@@ -42,8 +44,6 @@ import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.NodeMapper;
 import org.gbif.registry.persistence.mapper.OrganizationMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
-import org.gbif.registry.persistence.mapper.handler.CountryTypeHandler;
-import org.gbif.registry.persistence.mapper.handler.LanguageTypeHandler;
 import org.gbif.registry.persistence.mapper.handler.UuidTypeHandler;
 import org.gbif.service.guice.PrivateServiceModule;
 
@@ -51,8 +51,8 @@ import java.net.URI;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.google.inject.name.Names;
-import org.apache.ibatis.logging.LogFactory;
+//import org.gbif.registry.persistence.mapper.handler.CountryTypeHandler;
+//import org.gbif.registry.persistence.mapper.handler.LanguageTypeHandler;
 
 /**
  * Sets up the persistence layer using the properties supplied.
@@ -96,15 +96,6 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     public InternalRegistryServiceMyBatisModule() {
       super(DATASOURCE_BINDING_NAME);
     }
-
-    @Override
-    protected void initialize() {
-      // makes things like logo_url map to logoUrl
-      bindConstant().annotatedWith(Names.named("mybatis.configuration.mapUnderscoreToCamelCase")).to(true);
-      LogFactory.useSlf4jLogging();
-      super.initialize();
-    }
-
 
     @Override
     protected void bindMappers() {

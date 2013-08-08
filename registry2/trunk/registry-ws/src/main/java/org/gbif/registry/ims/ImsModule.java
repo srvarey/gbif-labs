@@ -19,14 +19,14 @@ import org.gbif.api.model.registry.Contact;
 import org.gbif.api.model.registry.Endpoint;
 import org.gbif.api.model.registry.Node;
 import org.gbif.api.model.registry.Organization;
+import org.gbif.api.vocabulary.ContactType;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.Language;
-import org.gbif.api.vocabulary.ContactType;
 import org.gbif.api.vocabulary.ParticipationStatus;
 import org.gbif.mybatis.guice.MyBatisModule;
+import org.gbif.mybatis.type.CountryTypeHandler;
+import org.gbif.mybatis.type.LanguageTypeHandler;
 import org.gbif.mybatis.type.UriTypeHandler;
-import org.gbif.registry.persistence.mapper.handler.CountryTypeHandler;
-import org.gbif.registry.persistence.mapper.handler.LanguageTypeHandler;
 import org.gbif.registry.persistence.mapper.handler.UuidTypeHandler;
 import org.gbif.service.guice.PrivateServiceModule;
 
