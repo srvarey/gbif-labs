@@ -51,8 +51,8 @@ import java.net.URI;
 import java.util.Properties;
 import java.util.UUID;
 
-//import org.gbif.registry.persistence.mapper.handler.CountryTypeHandler;
-//import org.gbif.registry.persistence.mapper.handler.LanguageTypeHandler;
+import com.google.inject.name.Names;
+import org.apache.ibatis.logging.LogFactory;
 
 /**
  * Sets up the persistence layer using the properties supplied.
@@ -96,6 +96,15 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     public InternalRegistryServiceMyBatisModule() {
       super(DATASOURCE_BINDING_NAME);
     }
+
+    @Override
+    protected void initialize() {
+      // makes things like logo_url map to logoUrl
+      bindConstant().annotatedWith(Names.named("mybatis.configuration.mapUnderscoreToCamelCase")).to(true);
+      LogFactory.useSlf4jLogging();
+      super.initialize();
+    }
+
 
     @Override
     protected void bindMappers() {
