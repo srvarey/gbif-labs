@@ -27,7 +27,7 @@ import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.mybatis.type.CountryTypeHandler;
 import org.gbif.mybatis.type.LanguageTypeHandler;
 import org.gbif.mybatis.type.UriTypeHandler;
-import org.gbif.registry.persistence.mapper.handler.UuidTypeHandler;
+import org.gbif.mybatis.type.UuidTypeHandler;
 import org.gbif.service.guice.PrivateServiceModule;
 
 import java.net.URI;
