@@ -57,54 +57,70 @@ public class LegacyWsFilter implements ContainerRequestFilter {
 
   @Override
   public ContainerRequest filter(ContainerRequest request) {
-    String path = request.getPath();
-    // is it a legacy web service POST, PUT, DELETE request requiring authorization?
-    if (path.contains("registry/") && !"GET".equalsIgnoreCase(request.getMethod())) {
-      // legacy installation request
-      if (path.contains("/ipt")) {
-        // register installation?
-        if (path.endsWith("/register")) {
-          return authorizeOrganizationChange(request);
-        }
-        // update installation?
-        else if (path.contains("/update/")) {
-          UUID installationKey = retrieveKeyFromRequestPath(request);
-          return authorizeInstallationChange(request, installationKey);
-        }
-        // register dataset?
-        else if (path.endsWith("/resource")) {
-          return authorizeOrganizationChange(request);
-        }
-        // update dataset, delete dataset?
-        else if (path.contains("/resource/")) {
-          UUID datasetKey = retrieveKeyFromRequestPath(request);
-          return authorizeOrganizationDatasetChange(request, datasetKey);
+    String path = request.getPath().toLowerCase();
+    // is it a legacy web service request?
+    if (path.contains("registry/")) {
+      // is it a GET request requiring authorization?
+      if ("GET".equalsIgnoreCase(request.getMethod())) {
+
+        // E.g. validate organization request, identified by param op=login
+        if (request.getQueryParameters().getFirst("op") != null) {
+          if (request.getQueryParameters().getFirst("op").equalsIgnoreCase("login")) {
+            UUID organizationKey = retrieveKeyFromRequestPath(request);
+            return authorizeOrganizationChange(organizationKey, request);
+          }
         }
       }
-      // legacy dataset request
-      else if (path.contains("/resource")) {
-        // register dataset?
-        if (path.endsWith("/resource")) {
-          return authorizeOrganizationChange(request);
+      // is it a POST, PUT, DELETE request requiring authorization?
+      else if ("POST".equalsIgnoreCase(request.getMethod())
+               || "PUT".equalsIgnoreCase(request.getMethod())
+               || "DELETE".equalsIgnoreCase(request.getMethod())){
+        // legacy installation request
+        if (path.contains("/ipt")) {
+          // register installation?
+          if (path.endsWith("/register")) {
+            return authorizeOrganizationChange(request);
+          }
+          // update installation?
+          else if (path.contains("/update/")) {
+            UUID installationKey = retrieveKeyFromRequestPath(request);
+            return authorizeInstallationChange(request, installationKey);
+          }
+          // register dataset?
+          else if (path.endsWith("/resource")) {
+            return authorizeOrganizationChange(request);
+          }
+          // update dataset, delete dataset?
+          else if (path.contains("/resource/")) {
+            UUID datasetKey = retrieveKeyFromRequestPath(request);
+            return authorizeOrganizationDatasetChange(request, datasetKey);
+          }
         }
-        // update dataset, delete dataset?
-        else if (path.contains("/resource/")) {
-          UUID datasetKey = retrieveKeyFromRequestPath(request);
-          return authorizeOrganizationDatasetChange(request, datasetKey);
+        // legacy dataset request
+        else if (path.contains("/resource")) {
+          // register dataset?
+          if (path.endsWith("/resource")) {
+            return authorizeOrganizationChange(request);
+          }
+          // update dataset, delete dataset?
+          else if (path.contains("/resource/")) {
+            UUID datasetKey = retrieveKeyFromRequestPath(request);
+            return authorizeOrganizationDatasetChange(request, datasetKey);
+          }
         }
-      }
-      // legacy endpoint request
-      else if (path.endsWith("/service")) {
-         // add endpoint?
-         if (request.getQueryParameters().isEmpty()) {
-           UUID datasetKey = retrieveDatasetKeyFromFormParameters(request);
-           return authorizeOrganizationDatasetChange(request, datasetKey);
-         }
-         // delete all dataset's enpoints?
-         else if (uriInfo.getRequestUri().toString().contains("?resourceKey=")) {
-           UUID datasetKey = retrieveDatasetKeyFromQueryParameters(request);
-           return authorizeOrganizationDatasetChange(request, datasetKey);
-         }
+        // legacy endpoint request
+        else if (path.endsWith("/service")) {
+          // add endpoint?
+          if (request.getQueryParameters().isEmpty()) {
+            UUID datasetKey = retrieveDatasetKeyFromFormParameters(request);
+            return authorizeOrganizationDatasetChange(request, datasetKey);
+          }
+          // delete all dataset's enpoints?
+          else if (uriInfo.getRequestUri().toString().contains("?resourceKey=")) {
+            UUID datasetKey = retrieveDatasetKeyFromQueryParameters(request);
+            return authorizeOrganizationDatasetChange(request, datasetKey);
+          }
+        }
       }
     }
     // otherwise return request unchanged
@@ -124,6 +140,29 @@ public class LegacyWsFilter implements ContainerRequestFilter {
   private ContainerRequest authorizeOrganizationChange(ContainerRequest request) throws WebApplicationException {
     LegacyRequestAuthorization authorization = new LegacyRequestAuthorization(organizationService, httpContext);
     if (authorization.isAuthorizedToModifyOrganization()) {
+      request.setSecurityContext(authorizer);
+    } else {
+      LOG.error("Request to register not authorized!");
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    return request;
+  }
+
+  /**
+   * Authorize request can make a change to an organization, first extracting the organization key from the
+   * request path. If authorization is successful, the method sets the request security context specifying the
+   * principal provider. Called for example, when verifying the credentials are correct for an organization.
+   *
+   * @param organizationKey organization key
+   *
+   * @return request
+   *
+   * @throws WebApplicationException if request isn't authorized
+   */
+  private ContainerRequest authorizeOrganizationChange(UUID organizationKey, ContainerRequest request)
+    throws WebApplicationException {
+    LegacyRequestAuthorization authorization = new LegacyRequestAuthorization(organizationService, httpContext);
+    if (authorization.isAuthorizedToModifyOrganization(organizationKey)) {
       request.setSecurityContext(authorizer);
     } else {
       LOG.error("Request to register not authorized!");
@@ -179,6 +218,7 @@ public class LegacyWsFilter implements ContainerRequestFilter {
 
   /**
    * Retrieve key from request path, where the key is the last path segment, e.g. /registry/resource/{key}
+   * Ensure any trailing .json for example is removed.
    *
    * @param request request
    *
@@ -189,6 +229,9 @@ public class LegacyWsFilter implements ContainerRequestFilter {
   private UUID retrieveKeyFromRequestPath(ContainerRequest request) throws WebApplicationException {
     String path = request.getPath();
     String key = path.substring(path.lastIndexOf("/") + 1);
+    if (key.contains(".")) {
+      key = key.substring(0, key.lastIndexOf("."));
+    }
     try {
       return UUID.fromString(key);
     } catch (IllegalArgumentException e) {
