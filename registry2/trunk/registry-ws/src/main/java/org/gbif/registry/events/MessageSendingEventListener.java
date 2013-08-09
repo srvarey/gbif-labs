@@ -56,7 +56,7 @@ public class MessageSendingEventListener {
 
   @Subscribe
   public <T> void sendUpdatedEvent(UpdateEvent<T> event) {
-    Message message = new RegistryChangeMessage(RegistryChangeMessage.ChangeType.CREATED,
+    Message message = new RegistryChangeMessage(RegistryChangeMessage.ChangeType.UPDATED,
                                                 event.getObjectClass(),
                                                 event.getOldObject(),
                                                 event.getNewObject());
@@ -69,7 +69,7 @@ public class MessageSendingEventListener {
 
   @Subscribe
   public <T> void sendDeletedEvent(DeleteEvent<T> event) {
-    Message message = new RegistryChangeMessage(RegistryChangeMessage.ChangeType.CREATED,
+    Message message = new RegistryChangeMessage(RegistryChangeMessage.ChangeType.DELETED,
                                                 event.getObjectClass(),
                                                 event.getOldObject(),
                                                 null);
