@@ -12,8 +12,11 @@
  */
 package org.gbif.registry.ws.guice;
 
+import org.gbif.api.model.registry.Dataset;
+
 import java.lang.annotation.Annotation;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
@@ -30,11 +33,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An interceptor that will trim all possible strings of a bean.
- * Nested properties are not handled, only top level string properties.
+ * All top level string properties are handled, as are those of nested objects that are in the GBIF registry model
+ * package.
+ * This will recurse only 5 levels deep, to guard against potential circular looping.
  */
 public class StringTrimInterceptor implements MethodInterceptor {
 
   private static final Logger LOG = LoggerFactory.getLogger(StringTrimInterceptor.class);
+  private static final int MAX_RECURSION = 5; // only goes 5 levels deep to stop potential circular loops
+
 
   /**
    * Sets up method level interception for those methods annotated with {@link Trim}.
@@ -68,23 +75,41 @@ public class StringTrimInterceptor implements MethodInterceptor {
     return invocation.proceed();
   }
 
-  private void trimStringsOf(Object target) {
-    WrapDynaBean wrapped = new WrapDynaBean(target);
-    DynaClass dynaClass = wrapped.getDynaClass();
-    for (DynaProperty dynaProp : dynaClass.getDynaProperties()) {
-      // Only operate on strings
-      if (String.class.isAssignableFrom(dynaProp.getType())) {
-        String prop = dynaProp.getName();
-        String orig = (String) wrapped.get(prop);
-        if (orig != null) {
-          String trimmed = Strings.emptyToNull(orig.trim());
-          if (!Objects.equal(orig, trimmed)) {
-            LOG.debug("Overriding value of [{}] from [{}] to [{}]", prop, orig, trimmed);
-            wrapped.set(prop, trimmed);
+  @VisibleForTesting
+  void trimStringsOf(Object target) {
+    trimStringsOf(target, 0);
+  }
+
+  private void trimStringsOf(Object target, int level) {
+    if (target != null && level <= MAX_RECURSION) {
+      LOG.debug("Trimming class: {}", target.getClass());
+
+      WrapDynaBean wrapped = new WrapDynaBean(target);
+      DynaClass dynaClass = wrapped.getDynaClass();
+      for (DynaProperty dynaProp : dynaClass.getDynaProperties()) {
+        if (String.class.isAssignableFrom(dynaProp.getType())) {
+          String prop = dynaProp.getName();
+          String orig = (String) wrapped.get(prop);
+          if (orig != null) {
+            String trimmed = Strings.emptyToNull(orig.trim());
+            if (!Objects.equal(orig, trimmed)) {
+              LOG.debug("Overriding value of [{}] from [{}] to [{}]", prop, orig, trimmed);
+              wrapped.set(prop, trimmed);
+            }
+          }
+        } else {
+          try {
+            // trim everything in the registry model package (assume that Dataset resides in the correct package here)
+            Object property = wrapped.get(dynaProp.getName());
+            if (property != null && Dataset.class.getPackage() == property.getClass().getPackage()) {
+              trimStringsOf(property, level + 1);
+            }
+
+          } catch (IllegalArgumentException e) {
+            // expected for non accessible properties
           }
         }
       }
     }
   }
-
 }
