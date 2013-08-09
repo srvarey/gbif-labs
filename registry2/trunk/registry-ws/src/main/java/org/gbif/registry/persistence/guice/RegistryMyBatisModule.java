@@ -13,10 +13,13 @@
 package org.gbif.registry.persistence.guice;
 
 import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.occurrence.Download;
+import org.gbif.api.model.occurrence.predicate.Predicate;
 import org.gbif.api.model.registry.Citation;
 import org.gbif.api.model.registry.Comment;
 import org.gbif.api.model.registry.Contact;
 import org.gbif.api.model.registry.Dataset;
+import org.gbif.api.model.registry.DatasetOccurrenceDownloadUsage;
 import org.gbif.api.model.registry.Endpoint;
 import org.gbif.api.model.registry.Identifier;
 import org.gbif.api.model.registry.Installation;
@@ -36,6 +39,7 @@ import org.gbif.mybatis.type.UuidTypeHandler;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.DatasetMapper;
+import org.gbif.registry.persistence.mapper.DatasetOccurrenceDownloadMapper;
 import org.gbif.registry.persistence.mapper.EndpointMapper;
 import org.gbif.registry.persistence.mapper.IdentifierMapper;
 import org.gbif.registry.persistence.mapper.InstallationMapper;
@@ -43,8 +47,11 @@ import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.MetadataMapper;
 import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.NodeMapper;
+import org.gbif.registry.persistence.mapper.OccurrenceDownloadMapper;
 import org.gbif.registry.persistence.mapper.OrganizationMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
+import org.gbif.registry.persistence.mapper.handler.OccurrenceDownloadStatusTypeHandler;
+import org.gbif.registry.persistence.mapper.handler.PredicateTypeHandler;
 import org.gbif.service.guice.PrivateServiceModule;
 
 import java.net.URI;
@@ -55,6 +62,82 @@ import java.util.UUID;
  * Sets up the persistence layer using the properties supplied.
  */
 public class RegistryMyBatisModule extends PrivateServiceModule {
+
+  /**
+   * Sets up the MyBatis structure. Note that MyBatis Guice uses named injection parameters (e.g. JDBC.url), and they
+   * are filtered and bound in the enclosing class.
+   */
+  public static class InternalRegistryServiceMyBatisModule extends MyBatisModule {
+
+    public static final String DATASOURCE_BINDING_NAME = "registry";
+
+    public InternalRegistryServiceMyBatisModule() {
+      super(DATASOURCE_BINDING_NAME);
+    }
+
+    @Override
+    protected void bindManagers() {
+    }
+
+    @Override
+    protected void bindMappers() {
+      // network entities
+      addMapperClass(NodeMapper.class);
+      addMapperClass(OrganizationMapper.class);
+      addMapperClass(InstallationMapper.class);
+      addMapperClass(DatasetMapper.class);
+      addMapperClass(NetworkMapper.class);
+
+      // components
+      addMapperClass(ContactMapper.class);
+      addMapperClass(EndpointMapper.class);
+      addMapperClass(MachineTagMapper.class);
+      addMapperClass(TagMapper.class);
+      addMapperClass(IdentifierMapper.class);
+      addMapperClass(CommentMapper.class);
+      addMapperClass(MetadataMapper.class);
+      addMapperClass(OccurrenceDownloadMapper.class);
+      addMapperClass(DatasetOccurrenceDownloadMapper.class);
+
+      // reduce mapper verboseness with aliases
+      addAlias("Node").to(Node.class);
+      addAlias("Organization").to(Organization.class);
+      addAlias("Installation").to(Installation.class);
+      addAlias("Dataset").to(Dataset.class);
+      addAlias("Network").to(Network.class);
+
+      addAlias("Citation").to(Citation.class);
+      addAlias("Contact").to(Contact.class);
+      addAlias("Endpoint").to(Endpoint.class);
+      addAlias("MachineTag").to(MachineTag.class);
+      addAlias("Tag").to(Tag.class);
+      addAlias("Identifier").to(Identifier.class);
+      addAlias("Comment").to(Comment.class);
+      addAlias("Metadata").to(Metadata.class);
+      addAlias("Download").to(Download.class);
+      addAlias("DatasetOccurrenceDownload").to(DatasetOccurrenceDownloadUsage.class);
+
+      addAlias("Pageable").to(Pageable.class);
+      addAlias("UuidTypeHandler").to(UuidTypeHandler.class);
+      addAlias("UUID").to(UUID.class);
+      addAlias("Country").to(Country.class);
+      addAlias("Language").to(Language.class);
+      addAlias("LanguageTypeHandler").to(LanguageTypeHandler.class);
+      addAlias("CountryTypeHandler").to(CountryTypeHandler.class);
+      addAlias("DownloadStatusTypeHandler").to(OccurrenceDownloadStatusTypeHandler.class);
+      addAlias("PredicateTypeHandler").to(PredicateTypeHandler.class);
+    }
+
+    @Override
+    protected void bindTypeHandlers() {
+      handleType(UUID.class).with(UuidTypeHandler.class);
+      handleType(URI.class).with(UriTypeHandler.class);
+      handleType(Country.class).with(CountryTypeHandler.class);
+      handleType(Language.class).with(LanguageTypeHandler.class);
+      handleType(Download.Status.class).with(OccurrenceDownloadStatusTypeHandler.class);
+      handleType(Predicate.class).with(PredicateTypeHandler.class);
+    }
+  }
 
   private static final String PREFIX = "registry.db.";
 
@@ -80,73 +163,7 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     expose(IdentifierMapper.class);
     expose(CommentMapper.class);
     expose(MetadataMapper.class);
-  }
-
-  /**
-   * Sets up the MyBatis structure. Note that MyBatis Guice uses named injection parameters (e.g. JDBC.url), and they
-   * are filtered and bound in the enclosing class.
-   */
-  public static class InternalRegistryServiceMyBatisModule extends MyBatisModule {
-
-    public static final String DATASOURCE_BINDING_NAME = "registry";
-
-    public InternalRegistryServiceMyBatisModule() {
-      super(DATASOURCE_BINDING_NAME);
-    }
-
-    @Override
-    protected void bindMappers() {
-      // network entities
-      addMapperClass(NodeMapper.class);
-      addMapperClass(OrganizationMapper.class);
-      addMapperClass(InstallationMapper.class);
-      addMapperClass(DatasetMapper.class);
-      addMapperClass(NetworkMapper.class);
-
-      // components
-      addMapperClass(ContactMapper.class);
-      addMapperClass(EndpointMapper.class);
-      addMapperClass(MachineTagMapper.class);
-      addMapperClass(TagMapper.class);
-      addMapperClass(IdentifierMapper.class);
-      addMapperClass(CommentMapper.class);
-      addMapperClass(MetadataMapper.class);
-
-      // reduce mapper verboseness with aliases
-      addAlias("Node").to(Node.class);
-      addAlias("Organization").to(Organization.class);
-      addAlias("Installation").to(Installation.class);
-      addAlias("Dataset").to(Dataset.class);
-      addAlias("Network").to(Network.class);
-
-      addAlias("Citation").to(Citation.class);
-      addAlias("Contact").to(Contact.class);
-      addAlias("Endpoint").to(Endpoint.class);
-      addAlias("MachineTag").to(MachineTag.class);
-      addAlias("Tag").to(Tag.class);
-      addAlias("Identifier").to(Identifier.class);
-      addAlias("Comment").to(Comment.class);
-      addAlias("Metadata").to(Metadata.class);
-
-      addAlias("Pageable").to(Pageable.class);
-      addAlias("UuidTypeHandler").to(UuidTypeHandler.class);
-      addAlias("UUID").to(UUID.class);
-      addAlias("Country").to(Country.class);
-      addAlias("Language").to(Language.class);
-      addAlias("LanguageTypeHandler").to(LanguageTypeHandler.class);
-      addAlias("CountryTypeHandler").to(CountryTypeHandler.class);
-    }
-
-    @Override
-    protected void bindTypeHandlers() {
-      handleType(UUID.class).with(UuidTypeHandler.class);
-      handleType(URI.class).with(UriTypeHandler.class);
-      handleType(Country.class).with(CountryTypeHandler.class);
-      handleType(Language.class).with(LanguageTypeHandler.class);
-    }
-
-    @Override
-    protected void bindManagers() {
-    }
+    expose(OccurrenceDownloadMapper.class);
+    expose(DatasetOccurrenceDownloadMapper.class);
   }
 }

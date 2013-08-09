@@ -16,5 +16,6 @@
   <include file="liquibase/010-installation_password.xml" />
   <include file="liquibase/011-node_types.xml" />
   <include file="liquibase/012-validation-relax.xml" />
+  <include file="liquibase/013-downloads-metrics.xml" />
 
 </databaseChangeLog>

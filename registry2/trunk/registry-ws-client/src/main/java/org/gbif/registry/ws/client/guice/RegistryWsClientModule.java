@@ -12,17 +12,21 @@
  */
 package org.gbif.registry.ws.client.guice;
 
+import org.gbif.api.service.registry.DatasetOccurrenceDownloadUsageService;
 import org.gbif.api.service.registry.DatasetSearchService;
 import org.gbif.api.service.registry.DatasetService;
 import org.gbif.api.service.registry.InstallationService;
 import org.gbif.api.service.registry.NetworkService;
 import org.gbif.api.service.registry.NodeService;
+import org.gbif.api.service.registry.OccurrenceDownloadService;
 import org.gbif.api.service.registry.OrganizationService;
+import org.gbif.registry.ws.client.DatasetOccurrenceDownloadUsageWsClient;
 import org.gbif.registry.ws.client.DatasetSearchWsClient;
 import org.gbif.registry.ws.client.DatasetWsClient;
 import org.gbif.registry.ws.client.InstallationWsClient;
 import org.gbif.registry.ws.client.NetworkWsClient;
 import org.gbif.registry.ws.client.NodeWsClient;
+import org.gbif.registry.ws.client.OccurrenceDownloadWsClient;
 import org.gbif.registry.ws.client.OrganizationWsClient;
 import org.gbif.service.guice.PrivateServiceModule;
 import org.gbif.ws.client.guice.AnonymousAuthModule;
@@ -62,6 +66,8 @@ public class RegistryWsClientModule extends GbifWsClientModule {
     expose(DatasetService.class);
     expose(DatasetSearchService.class);
     expose(NetworkService.class);
+    expose(OccurrenceDownloadService.class);
+    expose(DatasetOccurrenceDownloadUsageService.class);
 
   }
 
@@ -84,6 +90,9 @@ public class RegistryWsClientModule extends GbifWsClientModule {
       bind(DatasetService.class).to(DatasetWsClient.class).in(Scopes.SINGLETON);
       bind(DatasetSearchService.class).to(DatasetSearchWsClient.class).in(Scopes.SINGLETON);
       bind(NetworkService.class).to(NetworkWsClient.class).in(Scopes.SINGLETON);
+      bind(OccurrenceDownloadService.class).to(OccurrenceDownloadWsClient.class).in(Scopes.SINGLETON);
+      bind(DatasetOccurrenceDownloadUsageService.class).to(DatasetOccurrenceDownloadUsageWsClient.class).in(
+        Scopes.SINGLETON);
 
       expose(NodeService.class);
       expose(OrganizationService.class);
@@ -91,6 +100,8 @@ public class RegistryWsClientModule extends GbifWsClientModule {
       expose(DatasetService.class);
       expose(DatasetSearchService.class);
       expose(NetworkService.class);
+      expose(OccurrenceDownloadService.class);
+      expose(DatasetOccurrenceDownloadUsageService.class);
     }
 
     @Provides

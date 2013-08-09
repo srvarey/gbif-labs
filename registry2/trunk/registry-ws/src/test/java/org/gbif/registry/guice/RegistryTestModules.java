@@ -25,13 +25,14 @@ import org.gbif.registry.ws.resources.NetworkResource;
 import org.gbif.registry.ws.resources.NodeResource;
 import org.gbif.registry.ws.resources.OrganizationResource;
 import org.gbif.registry.ws.resources.legacy.IptResource;
-import org.gbif.user.guice.DrupalMyBatisModule;
 import org.gbif.ws.client.guice.GbifApplicationAuthModule;
+import org.gbif.ws.client.guice.SingleUserAuthModule;
 
 import java.io.IOException;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
+
 import javax.sql.DataSource;
 
 import com.google.common.base.Throwables;
@@ -61,6 +62,7 @@ public class RegistryTestModules {
   // cache everything, for reuse in repeated calls (e.g. eclipse IDE test everything)
   private static Injector webservice;
   private static Injector webserviceClient;
+  private static Injector webserviceBasicAuthClient;
   private static Injector management;
   private static DataSource managementDatasource;
 
@@ -86,8 +88,7 @@ public class RegistryTestModules {
             }
           }, TestValidateInterceptor.newMethodInterceptingModule(),
             new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(p),
-            new ValidationModule(),
-            new DrupalMyBatisModule(p));
+            new ValidationModule());
       } catch (IOException e) {
         throw Throwables.propagate(e);
       }
@@ -107,6 +108,21 @@ public class RegistryTestModules {
       // Create authentication module, and set principal name, equal to a GBIF User unique account name
       GbifApplicationAuthModule auth = new GbifApplicationAuthModule(props);
       auth.setPrincipal("admin");
+      webserviceClient = Guice.createInjector(new RegistryWsClientModule(props), auth);
+    }
+    return webserviceClient;
+  }
+
+
+  /**
+   * @return An injector that is bound for the webservice client layer.
+   */
+  public static synchronized Injector webserviceBasicAuthClient(String username, String password) {
+    if (webserviceBasicAuthClient == null) {
+      Properties props = new Properties();
+      props.setProperty("registry.ws.url", "http://localhost:" + RegistryServer.getPort());
+      // Create authentication module, and set principal name, equal to a GBIF User unique account name
+      SingleUserAuthModule auth = new SingleUserAuthModule(username, password);
       webserviceClient = Guice.createInjector(new RegistryWsClientModule(props), auth);
     }
     return webserviceClient;

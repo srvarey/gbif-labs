@@ -12,6 +12,7 @@
  */
 package org.gbif.registry.guice;
 
+import org.gbif.api.service.common.UserService;
 import org.gbif.registry.events.EventModule;
 import org.gbif.registry.grizzly.RegistryServer;
 import org.gbif.registry.ims.ImsModule;
@@ -20,16 +21,17 @@ import org.gbif.registry.search.DatasetIndexUpdateListener;
 import org.gbif.registry.search.guice.RegistrySearchModule;
 import org.gbif.registry.ws.guice.StringTrimInterceptor;
 import org.gbif.registry.ws.servlet.LegacyWsFilter;
-import org.gbif.user.guice.DrupalMyBatisModule;
 import org.gbif.ws.server.guice.GbifServletListener;
 import org.gbif.ws.server.guice.WsAuthModule;
 import org.gbif.ws.util.PropertiesUtil;
 
 import java.util.List;
 import java.util.Properties;
+
 import javax.servlet.ServletContextEvent;
 
 import com.google.common.collect.Lists;
+import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
@@ -52,9 +54,9 @@ public class TestRegistryWsServletListener extends GbifServletListener {
   public final static List<Class<? extends ContainerRequestFilter>> requestFilters = Lists
     .<Class<? extends ContainerRequestFilter>>newArrayList(LegacyWsFilter.class);
 
-//  static {
-//    requestFilters.add(LegacyWsFilter.class);
-//  }
+// static {
+// requestFilters.add(LegacyWsFilter.class);
+// }
 
   public TestRegistryWsServletListener() {
     super(PropertiesUtil.readFromClasspath(APPLICATION_PROPERTIES),
@@ -69,7 +71,7 @@ public class TestRegistryWsServletListener extends GbifServletListener {
       new ValidationModule(),
       new EventModule(props),
       new RegistrySearchModule(props),
-      new DrupalMyBatisModule(props),
+      new UsersServiceModule(),
       new WsAuthModule(props));
   }
 
@@ -82,5 +84,15 @@ public class TestRegistryWsServletListener extends GbifServletListener {
     RegistryServer.INSTANCE
       .setSolrServer(getInjector().getInstance(Key.get(SolrServer.class, Names.named("Dataset"))));
     RegistryServer.INSTANCE.setDatasetUpdater(getInjector().getInstance(DatasetIndexUpdateListener.class));
+  }
+
+
+  private static class UsersServiceModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+      bind(UserService.class).to(MockUserService.class);
+    }
+
   }
 }
