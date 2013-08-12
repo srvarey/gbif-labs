@@ -107,7 +107,7 @@ public class EnumerationResource {
   /**
    * @return list of country informations based on our enum.
    */
-  @Path("countries")
+  @Path("country")
   @GET
   public List<Map<String, String>> listCountries() {
     return COUNTRIES;
