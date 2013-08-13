@@ -13,6 +13,7 @@
 package org.gbif.registry.ws.client;
 
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.crawler.DatasetProcessStatus;
 import org.gbif.api.model.occurrence.Download;
 import org.gbif.api.model.registry.Comment;
 import org.gbif.api.model.registry.Contact;
@@ -27,6 +28,7 @@ import org.gbif.api.model.registry.Network;
 import org.gbif.api.model.registry.Node;
 import org.gbif.api.model.registry.Organization;
 import org.gbif.api.model.registry.Tag;
+import org.gbif.api.model.registry.metasync.MetasyncHistory;
 import org.gbif.api.vocabulary.Country;
 
 import java.util.List;
@@ -71,8 +73,14 @@ class GenericTypes {
   public static final GenericType<PagingResponse<Download>> PAGING_OCCURRENCE_DOWNLOAD =
     new GenericType<PagingResponse<Download>>() {
     };
-  public static final GenericType<PagingResponse<DatasetOccurrenceDownloadUsage>> PAGING_DATSET_OCCURRENCE_DOWNLOAD =
+  public static final GenericType<PagingResponse<DatasetOccurrenceDownloadUsage>> PAGING_DATASET_OCCURRENCE_DOWNLOAD =
     new GenericType<PagingResponse<DatasetOccurrenceDownloadUsage>>() {
+    };
+  public static final GenericType<PagingResponse<DatasetProcessStatus>> PAGING_DATASET_PROCESS_STATUS =
+    new GenericType<PagingResponse<DatasetProcessStatus>>() {
+    };
+  public static final GenericType<PagingResponse<MetasyncHistory>> METASYNC_HISTORY =
+    new GenericType<PagingResponse<MetasyncHistory>>() {
     };
 
   private GenericTypes() {

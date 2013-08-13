@@ -34,7 +34,7 @@ public class DatasetOccurrenceDownloadUsageWsClient extends BaseWsGetClient<Down
 
   @Override
   public PagingResponse<DatasetOccurrenceDownloadUsage> listByDataset(UUID datasetKey, Pageable page) {
-    return get(GenericTypes.PAGING_DATSET_OCCURRENCE_DOWNLOAD, page, "dataset", String.valueOf(datasetKey));
+    return get(GenericTypes.PAGING_DATASET_OCCURRENCE_DOWNLOAD, page, "dataset", String.valueOf(datasetKey));
   }
 
 }
