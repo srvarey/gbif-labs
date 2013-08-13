@@ -576,3 +576,73 @@ CREATE TABLE metadata
   modified timestamp with time zone NOT NULL DEFAULT now()
 );
 CREATE INDEX metadata_dataset_key_idx ON metadata(dataset_key);
+
+-- 
+--  download
+-- 
+CREATE TYPE enum_downlad_status AS ENUM ('PREPARING', 'RUNNING', 'SUCCEEDED', 'KILLED', 'FAILED', 'SUSPENDED');	
+CREATE TABLE occurrence_download
+(
+  key varchar(255) NOT NULL PRIMARY KEY,
+  filter text,
+  status enum_downlad_status NOT NULL,
+  download_link text NOT NULL,
+  notification_addresses text,
+  created_by varchar(255) NOT NULL CHECK (assert_min_length(created_by, 3)),
+  created timestamp with time zone NOT NULL DEFAULT now(),	  
+ 	  modified timestamp with time zone NOT NULL DEFAULT now()
+);
+
+-- 
+--  download metrics
+-- 
+CREATE TABLE dataset_occurrence_download
+(
+  download_key varchar(255) NOT NULL  REFERENCES occurrence_download(key) ON DELETE CASCADE,
+  dataset_key uuid NOT NULL REFERENCES dataset(key) ON DELETE CASCADE,
+  number_records integer NOT NULL,
+  PRIMARY KEY (download_key,dataset_key)
+);
+
+CREATE TYPE finish_reason_type AS ENUM ('NORMAL', 'USER_ABORT', 'ABORT', 'UNKNOWN');
+   
+   -- 
+--  crawl_history
+-- 
+CREATE TABLE crawl_history (
+ dataset_key uuid NOT NULL REFERENCES dataset (key) ON DELETE CASCADE,
+ attempt integer NOT NULL,
+ target_url text,
+ endpoint_type enum_endpoint_type,
+ started_crawling timestamp with time zone,
+ finished_crawling timestamp with time zone,
+ finish_reason finish_reason_type,
+ pages_crawled integer,
+ pages_fragmented_successful integer,
+ pages_fragmented_error integer,
+ fragments_emitted integer,
+ fragments_received integer,
+ raw_occurrences_persisted_new integer,
+ raw_occurrences_persisted_updated integer,
+ raw_occurrences_persisted_unchanged integer,
+ raw_occurrences_persisted_error integer,
+ fragments_processed integer,
+ verbatim_occurrences_persisted_successful integer,
+ verbatim_occurrences_persisted_error integer,
+ interpreted_occurrences_persisted_successful integer,
+ interpreted_occurrences_persisted_error integer,
+ PRIMARY KEY (dataset_key, attempt)
+);
+
+
+CREATE TYPE metasync_result_type AS ENUM ('OK', 'IO_EXCEPTION', 'HTTP_ERROR', 'PROTOCOL_ERROR', 'OTHER_ERROR');	
+-- 
+--  metasync_history
+-- 
+CREATE TABLE metasync_history (
+ installation_key uuid NOT NULL REFERENCES installation(key) ON DELETE CASCADE,
+ sync_date timestamp with time zone NOT NULL,
+ result metasync_result_type,
+ details text,
+ PRIMARY KEY (installation_key, sync_date)
+};	
