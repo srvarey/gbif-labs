@@ -50,8 +50,7 @@ public class OccurrenceDownloadResource implements OccurrenceDownloadService {
   private SecurityContext securityContext;
 
   @Inject
-  public OccurrenceDownloadResource(OccurrenceDownloadMapper occurrenceDownloadMapper,
-    DatasetOccurrenceDownloadMapper datasetOccurrenceDownloadMapper) {
+  public OccurrenceDownloadResource(OccurrenceDownloadMapper occurrenceDownloadMapper) {
     this.occurrenceDownloadMapper = occurrenceDownloadMapper;
   }
 

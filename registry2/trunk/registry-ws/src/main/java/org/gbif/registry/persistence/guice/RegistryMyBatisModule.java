@@ -13,6 +13,8 @@
 package org.gbif.registry.persistence.guice;
 
 import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.crawler.CrawlJob;
+import org.gbif.api.model.crawler.DatasetProcessStatus;
 import org.gbif.api.model.occurrence.Download;
 import org.gbif.api.model.occurrence.predicate.Predicate;
 import org.gbif.api.model.registry.Citation;
@@ -29,6 +31,7 @@ import org.gbif.api.model.registry.Network;
 import org.gbif.api.model.registry.Node;
 import org.gbif.api.model.registry.Organization;
 import org.gbif.api.model.registry.Tag;
+import org.gbif.api.model.registry.metasync.MetasyncHistory;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.Language;
 import org.gbif.mybatis.guice.MyBatisModule;
@@ -40,11 +43,13 @@ import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.DatasetMapper;
 import org.gbif.registry.persistence.mapper.DatasetOccurrenceDownloadMapper;
+import org.gbif.registry.persistence.mapper.DatasetProcessStatusMapper;
 import org.gbif.registry.persistence.mapper.EndpointMapper;
 import org.gbif.registry.persistence.mapper.IdentifierMapper;
 import org.gbif.registry.persistence.mapper.InstallationMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.MetadataMapper;
+import org.gbif.registry.persistence.mapper.MetasyncHistoryMapper;
 import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.NodeMapper;
 import org.gbif.registry.persistence.mapper.OccurrenceDownloadMapper;
@@ -98,6 +103,8 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
       addMapperClass(MetadataMapper.class);
       addMapperClass(OccurrenceDownloadMapper.class);
       addMapperClass(DatasetOccurrenceDownloadMapper.class);
+      addMapperClass(DatasetProcessStatusMapper.class);
+      addMapperClass(MetasyncHistoryMapper.class);
 
       // reduce mapper verboseness with aliases
       addAlias("Node").to(Node.class);
@@ -116,6 +123,10 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
       addAlias("Metadata").to(Metadata.class);
       addAlias("Download").to(Download.class);
       addAlias("DatasetOccurrenceDownload").to(DatasetOccurrenceDownloadUsage.class);
+      addAlias("DatasetProcessStatus").to(DatasetProcessStatus.class);
+      addAlias("CrawlJob").to(CrawlJob.class);
+      addAlias("MetasyncHistory").to(MetasyncHistory.class);
+
 
       addAlias("Pageable").to(Pageable.class);
       addAlias("UuidTypeHandler").to(UuidTypeHandler.class);
@@ -165,5 +176,7 @@ public class RegistryMyBatisModule extends PrivateServiceModule {
     expose(MetadataMapper.class);
     expose(OccurrenceDownloadMapper.class);
     expose(DatasetOccurrenceDownloadMapper.class);
+    expose(DatasetProcessStatusMapper.class);
+    expose(MetasyncHistoryMapper.class);
   }
 }

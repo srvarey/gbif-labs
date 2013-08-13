@@ -15,7 +15,7 @@
   </sql>
   
   <!-- 
-    key, created and deleted are never changed
+    Only the status can be updated
    -->
   <sql id="OCCURRENCE_DOWNLOAD_UPDATE_STATUS">  	
     status = #{status,jdbcType=OTHER},   
