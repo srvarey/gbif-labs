@@ -421,4 +421,13 @@
     WHERE o.deleted IS NULL AND ds.key IS NULL
   </select>    
   
+  <select id="hostingInstallationsOf" resultMap="ORGANIZATION_MAP">
+    SELECT <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o JOIN installation i ON i.organization_key=o.key AND i.deleted IS NULL
+    WHERE o.deleted IS NULL AND i.type=#{type,jdbcType=OTHER}
+    <if test="georeferenced != null and georeferenced == true" >
+      AND o.latitude IS NOT NULL AND o.longitude IS NOT NULL
+    </if>
+  </select>    
+  
 </mapper>

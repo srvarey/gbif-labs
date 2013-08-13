@@ -15,6 +15,7 @@ package org.gbif.registry.persistence.mapper;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.registry.Organization;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.InstallationType;
 
 import java.util.List;
 import java.util.UUID;
@@ -77,4 +78,11 @@ public interface OrganizationMapper extends BaseNetworkEntityMapper<Organization
    * @return The organizations that publish no datasets
    */
   List<Organization> nonPublishing(@Param("page") Pageable page);
+
+  /**
+   * @return The organizations that have an installation of the given type, optionally filtered to be georeferenced
+   *         only
+   */
+  List<Organization> hostingInstallationsOf(@Param("type") InstallationType type,
+    @Nullable @Param("georeferenced") Boolean georeferencedOnly);
 }
