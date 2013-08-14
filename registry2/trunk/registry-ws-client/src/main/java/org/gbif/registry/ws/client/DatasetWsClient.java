@@ -122,7 +122,7 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
 
   @Override
   public DatasetProcessStatus getDatasetProcessStatus(UUID datasetKey, int attempt) {
-    Preconditions.checkNotNull(datasetKey, "Dataset jey is required");
+    Preconditions.checkNotNull(datasetKey, "Dataset key is required");
     return get(GenericTypes.DATASET_PROCESS_STATUS, datasetKey.toString(), "process", Integer.toString(attempt));
   }
 
