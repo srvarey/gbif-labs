@@ -30,6 +30,7 @@ import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.MetadataType;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.messages.StartCrawlMessage;
+import org.gbif.common.messaging.api.messages.StartCrawlMessage.Priority;
 import org.gbif.registry.metadata.EMLWriter;
 import org.gbif.registry.metadata.parse.DatasetParser;
 import org.gbif.registry.persistence.WithMyBatis;
@@ -493,7 +494,8 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     if (messagePublisher != null) {
       LOG.info("Requesting crawl of dataset[{}]", datasetKey);
       try {
-        messagePublisher.send(new StartCrawlMessage(datasetKey));
+        // we'll bump this to the top of the queue since it is a user initiated
+        messagePublisher.send(new StartCrawlMessage(datasetKey, Priority.CRITICAL));
       } catch (IOException e) {
         LOG.error("Unable to send message requesting crawl", e);
       }
