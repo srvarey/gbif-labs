@@ -99,6 +99,10 @@ angular.module('installation', [
     context: 'installation', 
     heading: 'Datasets served by the installation',
   })
+  .state('installation.sync', {  
+    url: '/sync',   
+    templateUrl: 'app/installation/installation-sync.tpl.html'
+  })
 }])
 
 .filter('prettifyType', function () {
@@ -139,6 +143,13 @@ angular.module('installation', [
         .then(function(response) {
           installation.datasets = response.results;
           $scope.counts.datasets = response.count;
+        });
+        
+      // syncs
+      installation.getList('metasync', {limit: DEFAULT_PAGE_SIZE})
+        .then(function(response) {
+          installation.syncs = response.results;
+          $scope.counts.syncs = response.count;
         });
         
       // the hosting organization
