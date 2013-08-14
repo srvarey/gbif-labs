@@ -47,18 +47,6 @@ public class DatasetOccurrenceDownloadUsageResource implements DatasetOccurrence
   }
 
 
-  @GET
-  @Path("/{datasetKey}")
-  @NullToNotFound
-  @RolesAllowed(ADMIN_ROLE)
-  @Override
-  public PagingResponse<DatasetOccurrenceDownloadUsage> listByDataset(
-    @PathParam("datasetKey") UUID datasetKey, @Context Pageable page) {
-    return new PagingResponse<DatasetOccurrenceDownloadUsage>(page,
-      (long) datasetOccurrenceDownloadMapper.countByDataset(datasetKey),
-      datasetOccurrenceDownloadMapper.listByDataset(datasetKey, page));
-  }
-
   @POST
   @Transactional
   @Validate(groups = {PrePersist.class, Default.class})
@@ -66,6 +54,17 @@ public class DatasetOccurrenceDownloadUsageResource implements DatasetOccurrence
   @Override
   public void create(@Valid @NotNull DatasetOccurrenceDownloadUsage downloadDataset) {
     datasetOccurrenceDownloadMapper.create(downloadDataset);
+  }
+
+  @GET
+  @Path("/{datasetKey}")
+  @NullToNotFound
+  @Override
+  public PagingResponse<DatasetOccurrenceDownloadUsage> listByDataset(
+    @PathParam("datasetKey") UUID datasetKey, @Context Pageable page) {
+    return new PagingResponse<DatasetOccurrenceDownloadUsage>(page,
+      (long) datasetOccurrenceDownloadMapper.countByDataset(datasetKey),
+      datasetOccurrenceDownloadMapper.listByDataset(datasetKey, page));
   }
 
 }
