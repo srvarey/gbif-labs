@@ -55,7 +55,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Parameterized.class)
 public class InstallationIT extends NetworkEntityTest<Installation> {
 
-  private final InstallationService service;
   private final OrganizationService organizationService;
   private final NodeService nodeService;
 
@@ -76,7 +75,6 @@ public class InstallationIT extends NetworkEntityTest<Installation> {
   public InstallationIT(InstallationService service, OrganizationService organizationService, NodeService nodeService,
     @Nullable SimplePrincipalProvider pp) {
     super(service, pp);
-    this.service = service;
     this.organizationService = organizationService;
     this.nodeService = nodeService;
   }
