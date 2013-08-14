@@ -8,6 +8,7 @@ import org.gbif.api.model.registry.Installation;
 import org.gbif.api.model.registry.MachineTag;
 import org.gbif.api.model.registry.Tag;
 import org.gbif.api.service.registry.DatasetService;
+import org.gbif.api.service.registry.MetasyncHistoryService;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.api.vocabulary.InstallationType;
@@ -46,10 +47,13 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RegistryUpdaterTest {
+
   private static TapirMetadataSynchroniser synchroniser;
 
   @Mock
   private DatasetService datasetService;
+  @Mock
+  private MetasyncHistoryService metasyncHistoryService;
   private RegistryUpdater updater;
   private Dataset dataset;
   private Installation installation;
@@ -63,8 +67,11 @@ public class RegistryUpdaterTest {
       prepareResponse(200, "tapir/capabilities1.xml"));
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(
       prepareResponse(200, "tapir/metadata1.xml"));
-    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz")))).thenReturn(
-      prepareResponse(200, "tapir/search1.xml"));
+    when(
+      client.execute(argThat(HttpGetMatcher
+        .matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz"))))
+      .thenReturn(
+        prepareResponse(200, "tapir/search1.xml"));
     synchroniser = new TapirMetadataSynchroniser(client);
   }
 
@@ -84,7 +91,7 @@ public class RegistryUpdaterTest {
     dataset = prepareDataset();
 
     // RegistryUpdater, using mocked web service client implementation
-    updater = new RegistryUpdater(datasetService);
+    updater = new RegistryUpdater(datasetService, metasyncHistoryService);
   }
 
   /**
@@ -96,7 +103,7 @@ public class RegistryUpdaterTest {
    * update, we can assume the service does its job correctly and just assert that the addContact() was called twice.
    */
   @Test
-  public void testSaveUpdatedDatasets() throws Exception{
+  public void testSaveUpdatedDatasets() throws Exception {
     // generate SyncResult, including a single updated Dataset
     SyncResult syncResult = synchroniser.syncInstallation(installation, Lists.newArrayList(dataset));
 
@@ -135,7 +142,7 @@ public class RegistryUpdaterTest {
    * The test verifies that the Dataset update was skipped, counting the number of web service method invocations.
    */
   @Test
-  public void testSaveUpdatedDatasetsSkipped() throws Exception{
+  public void testSaveUpdatedDatasetsSkipped() throws Exception {
     Endpoint dwca = new Endpoint();
     dwca.setKey(100);
     dwca.setType(EndpointType.DWC_ARCHIVE);

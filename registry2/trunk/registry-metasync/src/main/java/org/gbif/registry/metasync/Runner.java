@@ -13,6 +13,7 @@
 package org.gbif.registry.metasync;
 
 import org.gbif.api.service.registry.DatasetService;
+import org.gbif.api.service.registry.MetasyncHistoryService;
 import org.gbif.registry.metasync.api.SyncResult;
 import org.gbif.registry.metasync.protocols.biocase.BiocaseMetadataSynchroniser;
 import org.gbif.registry.metasync.protocols.digir.DigirMetadataSynchroniser;
@@ -70,7 +71,8 @@ public final class Runner {
     DebugHandler.processResults(syncResults);
 
     DatasetService datasetService = injector.getInstance(DatasetService.class);
-    RegistryUpdater updater = new RegistryUpdater(datasetService);
+    MetasyncHistoryService historyService = injector.getInstance(MetasyncHistoryService.class);
+    RegistryUpdater updater = new RegistryUpdater(datasetService, historyService);
     updater.saveSyncResultsToRegistry(syncResults);
   }
 

@@ -14,7 +14,7 @@
   
   <sql id="METASYNC_HISTORY_FIELDS_TYPES">
     #{installationKey,jdbcType=OTHER},
-    #{syncDate,jdbcType=DATE},
+    now(),
     #{result,jdbcType=OTHER},
     #{details,jdbcType=VARCHAR}
   </sql>  
