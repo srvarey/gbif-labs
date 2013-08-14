@@ -169,6 +169,10 @@ public class RegistryMigrationExecutor {
       statics = execute("src/main/resources/update-node-continents.xml", "continents");
       System.out.println("Node continents updated in " + statics.getTotalTime() + " milliseconds");
 
+      System.out.println("Starting adding node RSS feeds ...");
+      statics = execute("src/main/resources/add-node-endpoints.xml", "Node endpoints");
+      System.out.println("Node feeds added in " + statics.getTotalTime() + " milliseconds");
+
       System.out.println("Adding the full text search...");
       statics = execute("src/main/resources/fulltext-columns.xml", "fulltext");
       System.out.println("Full text added in " + statics.getTotalTime() + " milliseconds");
