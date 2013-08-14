@@ -10,11 +10,8 @@ import org.gbif.registry.metasync.api.MetadataException;
 import org.gbif.registry.metasync.api.MetadataProtocolHandler;
 import org.gbif.registry.metasync.api.MetadataSynchroniser;
 import org.gbif.registry.metasync.api.SyncResult;
-import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
-import org.gbif.ws.client.guice.AnonymousAuthModule;
 
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -27,8 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,11 +43,9 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
   private final InstallationService installationService;
   private final List<MetadataProtocolHandler> protocolHandlers = Lists.newArrayList();
 
-  public MetadataSynchroniserImpl() {
-    Properties props = new Properties();
-    props.setProperty("registry.ws.url", "http://localhost:8080");
-    Injector injector = Guice.createInjector(new RegistryWsClientModule(props), new AnonymousAuthModule());
-    installationService = injector.getInstance(InstallationService.class);
+  @Inject
+  public MetadataSynchroniserImpl(InstallationService installationService) {
+    this.installationService = installationService;
   }
 
   @Override
@@ -90,6 +84,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
       // TODO:Check for null result
       for (final Installation installation : results.getResults()) {
         completionService.submit(new Callable<SyncResult>() {
+
           @Override
           public SyncResult call() throws Exception {
             try {
@@ -140,7 +135,7 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
    */
   private SyncResult doSynchroniseInstallation(
     Installation installation, List<Dataset> hostedDatasets, MetadataProtocolHandler protocolHandler
-  ) {
+    ) {
     LOG.info("Syncing Installation [{}] of type [{}]", installation.getKey(), installation.getType());
     try {
       return protocolHandler.syncInstallation(installation, hostedDatasets);
@@ -167,9 +162,8 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
 
   /**
    * Gets all hosted datasets for an Installation.
-   *
+   * 
    * @param key of the Installation
-   *
    * @return list of Datasets for this Installation, might be empty but never null
    */
   private List<Dataset> getHostedDatasets(UUID key) {
