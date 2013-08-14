@@ -14,7 +14,7 @@
     INSERT INTO endpoint(type,url,description,created,modified,created_by,modified_by) VALUES('FEED','http://www.gbif.es/rss_en.php','News from GBIF Spain',now(),now(),'Kyle','Kyle');
     INSERT INTO node_endpoint(node_key, endpoint_key) VALUES ('1f94b3ca-9345-4d65-afe2-4bace93aa0fe',LASTVAL());
     <!-- FRANCE NODE FEED -->
-    INSERT INTO endpoint(type,url,description,created,modified,created_by,modified_by) VALUES('FEED','TODO-INSERT-VALUE-HERE','News from GBIF France',now(),now(),'Kyle','Kyle');
+    INSERT INTO endpoint(type,url,description,created,modified,created_by,modified_by) VALUES('FEED','http://www.gbif.fr/?feed=rss2','News from GBIF France',now(),now(),'Kyle','Kyle');
     INSERT INTO node_endpoint(node_key, endpoint_key) VALUES ('da44cd31-5901-4687-a106-6d1c7734ee3a',LASTVAL());
   </script>
 </etl>
