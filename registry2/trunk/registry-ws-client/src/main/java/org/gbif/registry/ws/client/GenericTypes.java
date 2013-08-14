@@ -70,6 +70,9 @@ class GenericTypes {
   };
   public static final GenericType<Metadata> METADATA = new GenericType<Metadata>() {
   };
+  public static final GenericType<DatasetProcessStatus> DATASET_PROCESS_STATUS =
+    new GenericType<DatasetProcessStatus>() {
+    };
   public static final GenericType<PagingResponse<Download>> PAGING_OCCURRENCE_DOWNLOAD =
     new GenericType<PagingResponse<Download>>() {
     };

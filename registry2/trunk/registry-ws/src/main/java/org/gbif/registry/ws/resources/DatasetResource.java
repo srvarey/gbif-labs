@@ -16,6 +16,7 @@ import org.gbif.api.exception.ServiceUnavailableException;
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.common.search.SearchResponse;
+import org.gbif.api.model.crawler.DatasetProcessStatus;
 import org.gbif.api.model.registry.Contact;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Metadata;
@@ -23,6 +24,7 @@ import org.gbif.api.model.registry.search.DatasetSearchParameter;
 import org.gbif.api.model.registry.search.DatasetSearchRequest;
 import org.gbif.api.model.registry.search.DatasetSearchResult;
 import org.gbif.api.model.registry.search.DatasetSuggestRequest;
+import org.gbif.api.service.registry.DatasetProcessStatusService;
 import org.gbif.api.service.registry.DatasetSearchService;
 import org.gbif.api.service.registry.DatasetService;
 import org.gbif.api.vocabulary.Country;
@@ -37,11 +39,13 @@ import org.gbif.registry.persistence.WithMyBatis;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.DatasetMapper;
+import org.gbif.registry.persistence.mapper.DatasetProcessStatusMapper;
 import org.gbif.registry.persistence.mapper.EndpointMapper;
 import org.gbif.registry.persistence.mapper.IdentifierMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.MetadataMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
+import org.gbif.registry.ws.guice.Trim;
 import org.gbif.ws.server.interceptor.NullToNotFound;
 
 import java.io.ByteArrayInputStream;
@@ -55,6 +59,8 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -74,8 +80,11 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A MyBATIS implementation of the service.
@@ -83,7 +92,7 @@ import org.slf4j.LoggerFactory;
 @Path("dataset")
 @Singleton
 public class DatasetResource extends BaseNetworkEntityResource<Dataset>
-  implements DatasetService, DatasetSearchService {
+  implements DatasetService, DatasetSearchService, DatasetProcessStatusService {
 
   private static final Logger LOG = LoggerFactory.getLogger(DatasetResource.class);
   private static final String ADMIN_ROLE = "ADMIN";
@@ -91,6 +100,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   private final MetadataMapper metadataMapper;
   private final DatasetMapper datasetMapper;
   private final ContactMapper contactMapper;
+  private final DatasetProcessStatusMapper datasetProcessStatusMapper;
 
   /**
    * The messagePublisher can be optional, and optional is not supported in constructor injection.
@@ -101,13 +111,15 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Inject
   public DatasetResource(DatasetMapper datasetMapper, ContactMapper contactMapper, EndpointMapper endpointMapper,
     MachineTagMapper machineTagMapper, TagMapper tagMapper, IdentifierMapper identifierMapper,
-    CommentMapper commentMapper, EventBus eventBus, DatasetSearchService searchService, MetadataMapper metadataMapper) {
+    CommentMapper commentMapper, EventBus eventBus, DatasetSearchService searchService, MetadataMapper metadataMapper,
+    DatasetProcessStatusMapper datasetProcessStatusMapper) {
     super(datasetMapper, commentMapper, contactMapper, endpointMapper, identifierMapper, machineTagMapper, tagMapper,
       Dataset.class, eventBus);
     this.searchService = searchService;
     this.metadataMapper = metadataMapper;
     this.datasetMapper = datasetMapper;
     this.contactMapper = contactMapper;
+    this.datasetProcessStatusMapper = datasetProcessStatusMapper;
   }
 
   @GET
@@ -504,5 +516,52 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
       LOG.warn("Registry is configured to run without messaging capabilities.  Unable to crawl dataset[{}]",
         datasetKey);
     }
+  }
+
+  @POST
+  @Path("{datasetKey}/process")
+  @Trim
+  @Transactional
+  @RolesAllowed(ADMIN_ROLE)
+  public void createDatasetProcessStatus(@PathParam("datasetKey") UUID datasetKey,
+    @Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
+    checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetUuid()),
+      "DatasetProcessStatus must have the same key as the dataset");
+    datasetProcessStatusMapper.create(datasetProcessStatus);
+  }
+
+  @Trim
+  @Transactional
+  @RolesAllowed(ADMIN_ROLE)
+  @Override
+  public void createDatasetProcessStatus(@Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
+    datasetProcessStatusMapper.create(datasetProcessStatus);
+  }
+
+  @GET
+  @Path("{datasetKey}/process/{attempt}")
+  @Nullable
+  @NullToNotFound
+  @Override
+  public DatasetProcessStatus getDatasetProcessStatus(@PathParam("datasetKey") UUID datasetKey,
+    @PathParam("attempt") int attempt) {
+    return datasetProcessStatusMapper.get(datasetKey, attempt);
+  }
+
+  @GET
+  @Path("process")
+  @Override
+  public PagingResponse<DatasetProcessStatus> listDatasetProcessStatus(@Context Pageable page) {
+    return new PagingResponse<DatasetProcessStatus>(page, (long) datasetProcessStatusMapper.count(),
+      datasetProcessStatusMapper.list(page));
+  }
+
+  @GET
+  @Path("{datasetKey}/process")
+  @Override
+  public PagingResponse<DatasetProcessStatus> listDatasetProcessStatus(@PathParam("datasetKey") UUID datasetKey,
+    @Context Pageable page) {
+    return new PagingResponse<DatasetProcessStatus>(page, (long) datasetProcessStatusMapper.countByDataset(datasetKey),
+      datasetProcessStatusMapper.listByDataset(datasetKey, page));
   }
 }
