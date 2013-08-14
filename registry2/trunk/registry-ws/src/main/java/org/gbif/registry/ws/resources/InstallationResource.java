@@ -17,7 +17,9 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Installation;
 import org.gbif.api.model.registry.Organization;
+import org.gbif.api.model.registry.metasync.MetasyncHistory;
 import org.gbif.api.service.registry.InstallationService;
+import org.gbif.api.service.registry.MetasyncHistoryService;
 import org.gbif.api.vocabulary.InstallationType;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
@@ -28,8 +30,10 @@ import org.gbif.registry.persistence.mapper.EndpointMapper;
 import org.gbif.registry.persistence.mapper.IdentifierMapper;
 import org.gbif.registry.persistence.mapper.InstallationMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
+import org.gbif.registry.persistence.mapper.MetasyncHistoryMapper;
 import org.gbif.registry.persistence.mapper.OrganizationMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
+import org.gbif.registry.ws.guice.Trim;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,6 +42,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -53,20 +59,27 @@ import com.google.inject.Singleton;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.Point;
+import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A MyBATIS implementation of the service.
  */
 @Path("installation")
 @Singleton
-public class InstallationResource extends BaseNetworkEntityResource<Installation> implements InstallationService {
+public class InstallationResource extends BaseNetworkEntityResource<Installation> implements InstallationService,
+  MetasyncHistoryService {
+
+  private static final String ADMIN_ROLE = "ADMIN";
 
   private static final Logger LOG = LoggerFactory.getLogger(InstallationResource.class);
   private final DatasetMapper datasetMapper;
   private final InstallationMapper installationMapper;
   private final OrganizationMapper organizationMapper;
+  private final MetasyncHistoryMapper metasyncHistoryMapper;
 
 
   /**
@@ -86,6 +99,7 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
     CommentMapper commentMapper,
     DatasetMapper datasetMapper,
     OrganizationMapper organizationMapper,
+    MetasyncHistoryMapper metasyncHistoryMapper,
     EventBus eventBus) {
     super(installationMapper,
       commentMapper,
@@ -99,6 +113,7 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
     this.datasetMapper = datasetMapper;
     this.installationMapper = installationMapper;
     this.organizationMapper = organizationMapper;
+    this.metasyncHistoryMapper = metasyncHistoryMapper;
   }
 
 
@@ -191,5 +206,43 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
       }
     }
     return fc;
+  }
+
+  @POST
+  @Path("{installationKey}/metasync")
+  @Trim
+  @Transactional
+  @RolesAllowed(ADMIN_ROLE)
+  public void createMetasync(@PathParam("installationKey") UUID installationKey,
+    @Valid @NotNull @Trim MetasyncHistory metasyncHistory) {
+    checkArgument(installationKey.equals(metasyncHistory.getInstallationKey()),
+      "Metasync must have the same key as the installation");
+    this.createMetasync(metasyncHistory);
+  }
+
+  @Trim
+  @Transactional
+  @RolesAllowed(ADMIN_ROLE)
+  @Override
+  public void createMetasync(@Valid @NotNull @Trim MetasyncHistory metasyncHistory) {
+    metasyncHistoryMapper.create(metasyncHistory);
+  }
+
+  @Path("metasync")
+  @GET
+  @Override
+  public PagingResponse<MetasyncHistory> listMetasync(@Context Pageable page) {
+    return new PagingResponse<MetasyncHistory>(page, (long) metasyncHistoryMapper.count(),
+      metasyncHistoryMapper.list(page));
+  }
+
+
+  @GET
+  @Path("{installationKey}/metasync")
+  @Override
+  public PagingResponse<MetasyncHistory> listMetasync(@PathParam("installationKey") UUID installationKey,
+    @Context Pageable page) {
+    return new PagingResponse<MetasyncHistory>(page, (long) metasyncHistoryMapper.countByInstallation(installationKey),
+      metasyncHistoryMapper.listByInstallation(installationKey, page));
   }
 }

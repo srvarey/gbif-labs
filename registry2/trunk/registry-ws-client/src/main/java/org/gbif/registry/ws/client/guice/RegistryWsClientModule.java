@@ -27,7 +27,6 @@ import org.gbif.registry.ws.client.DatasetProcessStatusWsClient;
 import org.gbif.registry.ws.client.DatasetSearchWsClient;
 import org.gbif.registry.ws.client.DatasetWsClient;
 import org.gbif.registry.ws.client.InstallationWsClient;
-import org.gbif.registry.ws.client.MetasyncHistoryWsClient;
 import org.gbif.registry.ws.client.NetworkWsClient;
 import org.gbif.registry.ws.client.NodeWsClient;
 import org.gbif.registry.ws.client.OccurrenceDownloadWsClient;
@@ -93,6 +92,7 @@ public class RegistryWsClientModule extends GbifWsClientModule {
       bind(NodeService.class).to(NodeWsClient.class).in(Scopes.SINGLETON);
       bind(OrganizationService.class).to(OrganizationWsClient.class).in(Scopes.SINGLETON);
       bind(InstallationService.class).to(InstallationWsClient.class).in(Scopes.SINGLETON);
+      bind(MetasyncHistoryService.class).to(InstallationWsClient.class).in(Scopes.SINGLETON);
       bind(DatasetService.class).to(DatasetWsClient.class).in(Scopes.SINGLETON);
       bind(DatasetSearchService.class).to(DatasetSearchWsClient.class).in(Scopes.SINGLETON);
       bind(NetworkService.class).to(NetworkWsClient.class).in(Scopes.SINGLETON);
@@ -100,8 +100,6 @@ public class RegistryWsClientModule extends GbifWsClientModule {
       bind(DatasetOccurrenceDownloadUsageService.class).to(DatasetOccurrenceDownloadUsageWsClient.class).in(
         Scopes.SINGLETON);
       bind(DatasetProcessStatusService.class).to(DatasetProcessStatusWsClient.class).in(
-        Scopes.SINGLETON);
-      bind(MetasyncHistoryService.class).to(MetasyncHistoryWsClient.class).in(
         Scopes.SINGLETON);
 
       expose(NodeService.class);

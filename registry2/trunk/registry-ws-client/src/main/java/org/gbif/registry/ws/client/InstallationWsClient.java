@@ -16,13 +16,16 @@ import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Installation;
+import org.gbif.api.model.registry.metasync.MetasyncHistory;
 import org.gbif.api.service.registry.InstallationService;
+import org.gbif.api.service.registry.MetasyncHistoryService;
 import org.gbif.registry.ws.client.guice.RegistryWs;
 
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
@@ -30,7 +33,8 @@ import com.sun.jersey.api.client.filter.ClientFilter;
 /**
  * Client-side implementation to the InstallationService.
  */
-public class InstallationWsClient extends BaseNetworkEntityClient<Installation> implements InstallationService {
+public class InstallationWsClient extends BaseNetworkEntityClient<Installation> implements InstallationService,
+  MetasyncHistoryService {
 
   @Inject
   public InstallationWsClient(@RegistryWs WebResource resource, @Nullable ClientFilter authFilter) {
@@ -50,5 +54,23 @@ public class InstallationWsClient extends BaseNetworkEntityClient<Installation> 
   @Override
   public PagingResponse<Installation> listNonPublishing(Pageable page) {
     return get(GenericTypes.PAGING_INSTALLATION, null, null, page, "nonPublishing");
+  }
+
+  @Override
+  public void createMetasync(MetasyncHistory metasyncHistory) {
+    Preconditions.checkNotNull(metasyncHistory.getInstallationKey(), "Metasync history needs an installation key");
+    post(metasyncHistory, metasyncHistory.getInstallationKey().toString(), "metasync");
+
+  }
+
+  @Override
+  public PagingResponse<MetasyncHistory> listMetasync(Pageable page) {
+    return get(GenericTypes.METASYNC_HISTORY, page, "metasync");
+  }
+
+  @Override
+  public PagingResponse<MetasyncHistory> listMetasync(UUID installationKey, Pageable page) {
+    Preconditions.checkNotNull(installationKey, "Listing metasync for an installation needs an installation key");
+    return get(GenericTypes.METASYNC_HISTORY, page, installationKey.toString(), "metasync");
   }
 }

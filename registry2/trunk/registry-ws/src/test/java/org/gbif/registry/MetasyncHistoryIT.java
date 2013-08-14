@@ -30,7 +30,6 @@ import org.gbif.registry.utils.Installations;
 import org.gbif.registry.utils.Nodes;
 import org.gbif.registry.utils.Organizations;
 import org.gbif.registry.ws.resources.InstallationResource;
-import org.gbif.registry.ws.resources.MetasyncHistoryResource;
 import org.gbif.registry.ws.resources.NodeResource;
 import org.gbif.registry.ws.resources.OrganizationResource;
 import org.gbif.ws.client.filter.SimplePrincipalProvider;
@@ -56,7 +55,6 @@ import static org.gbif.registry.guice.RegistryTestModules.webserviceClient;
  * Runs tests for the {@link MetasyncHistoryService} implementations.
  * This is parameterized to run the same test routines for the following:
  * <ol>
- * <li>The persistence layer</li>
  * <li>The WS service layer</li>
  * <li>The WS service client layer</li>
  * </ol>
@@ -101,7 +99,7 @@ public class MetasyncHistoryIT {
   public static Iterable<Object[]> data() {
     final Injector webservice = webservice();
     final Injector client = webserviceClient();
-    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(MetasyncHistoryResource.class),
+    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(InstallationResource.class),
       webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class),
       webservice.getInstance(InstallationResource.class), null},
       new Object[] {client.getInstance(MetasyncHistoryService.class),
@@ -124,9 +122,9 @@ public class MetasyncHistoryIT {
   @Test
   public void testCreateAndList() {
     MetasyncHistory metasyncHistory = getTestInstance();
-    metasyncHistoryService.create(metasyncHistory);
+    metasyncHistoryService.createMetasync(metasyncHistory);
     PagingResponse<MetasyncHistory> response =
-      metasyncHistoryService.list(new PagingRequest());
+      metasyncHistoryService.listMetasync(new PagingRequest());
     Assert.assertTrue("The list operation should return at least 1 record", response.getResults().size() > 0);
   }
 
@@ -138,9 +136,9 @@ public class MetasyncHistoryIT {
   @Test
   public void testListAndListByInstallation() {
     MetasyncHistory metasyncHistory = getTestInstance();
-    metasyncHistoryService.create(metasyncHistory);
+    metasyncHistoryService.createMetasync(metasyncHistory);
     PagingResponse<MetasyncHistory> response =
-      metasyncHistoryService.listByInstallation(metasyncHistory.getInstallationKey(), new PagingRequest());
+      metasyncHistoryService.listMetasync(metasyncHistory.getInstallationKey(), new PagingRequest());
     Assert.assertTrue("The list operation should return at least 1 record", response.getResults().size() > 0);
   }
 
