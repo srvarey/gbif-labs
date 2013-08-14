@@ -645,4 +645,4 @@ CREATE TABLE metasync_history (
  result metasync_result_type,
  details text,
  PRIMARY KEY (installation_key, sync_date)
-};	
+);	
