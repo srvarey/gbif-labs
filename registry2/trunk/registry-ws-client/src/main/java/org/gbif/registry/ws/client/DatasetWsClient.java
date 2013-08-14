@@ -14,8 +14,10 @@ package org.gbif.registry.ws.client;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.crawler.DatasetProcessStatus;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Metadata;
+import org.gbif.api.service.registry.DatasetProcessStatusService;
 import org.gbif.api.service.registry.DatasetService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.DatasetType;
@@ -31,6 +33,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
@@ -38,7 +41,8 @@ import com.sun.jersey.api.client.filter.ClientFilter;
 /**
  * Client-side implementation to the DatasetService.
  */
-public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements DatasetService {
+public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements DatasetService,
+  DatasetProcessStatusService {
 
   @Inject
   public DatasetWsClient(@RegistryWs WebResource resource, @Nullable ClientFilter authFilter) {
@@ -108,5 +112,28 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
   @Override
   public PagingResponse<Dataset> listDatasetsWithNoEndpoint(Pageable page) {
     return get(GenericTypes.PAGING_DATASET, null, null, page, "withNoEndpoint");
+  }
+
+  @Override
+  public void createDatasetProcessStatus(DatasetProcessStatus datasetProcessStatus) {
+    Preconditions.checkNotNull(datasetProcessStatus.getDatasetUuid(), "DatasetProcessStatus needs a dataset key");
+    post(datasetProcessStatus, datasetProcessStatus.getDatasetUuid().toString(), "process");
+  }
+
+  @Override
+  public DatasetProcessStatus getDatasetProcessStatus(UUID datasetKey, int attempt) {
+    Preconditions.checkNotNull(datasetKey, "Dataset jey is required");
+    return get(GenericTypes.DATASET_PROCESS_STATUS, datasetKey.toString(), "process", Integer.toString(attempt));
+  }
+
+  @Override
+  public PagingResponse<DatasetProcessStatus> listDatasetProcessStatus(Pageable page) {
+    return get(GenericTypes.PAGING_DATASET_PROCESS_STATUS, page, "process");
+  }
+
+  @Override
+  public PagingResponse<DatasetProcessStatus> listDatasetProcessStatus(UUID datasetKey, Pageable page) {
+    Preconditions.checkNotNull(datasetKey, "Dataset jey is required");
+    return get(GenericTypes.PAGING_DATASET_PROCESS_STATUS, page, datasetKey.toString(), "process");
   }
 }

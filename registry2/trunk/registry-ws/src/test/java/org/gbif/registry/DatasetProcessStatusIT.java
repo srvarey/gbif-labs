@@ -34,7 +34,6 @@ import org.gbif.registry.utils.Datasets;
 import org.gbif.registry.utils.Installations;
 import org.gbif.registry.utils.Nodes;
 import org.gbif.registry.utils.Organizations;
-import org.gbif.registry.ws.resources.DatasetProcessStatusResource;
 import org.gbif.registry.ws.resources.DatasetResource;
 import org.gbif.registry.ws.resources.InstallationResource;
 import org.gbif.registry.ws.resources.NodeResource;
@@ -113,7 +112,7 @@ public class DatasetProcessStatusIT {
   public static Iterable<Object[]> data() {
     final Injector webservice = webservice();
     final Injector client = webserviceClient();
-    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(DatasetProcessStatusResource.class),
+    return ImmutableList.<Object[]>of(new Object[] {webservice.getInstance(DatasetResource.class),
       webservice.getInstance(DatasetResource.class), webservice.getInstance(OrganizationResource.class),
       webservice.getInstance(NodeResource.class), webservice.getInstance(InstallationResource.class), null},
       new Object[] {client.getInstance(DatasetProcessStatusService.class), client.getInstance(DatasetService.class),
@@ -136,9 +135,10 @@ public class DatasetProcessStatusIT {
   @Test
   public void testCreateAndGet() {
     DatasetProcessStatus datasetProcessStatus = getTestInstance();
-    datasetProcessStatusService.create(datasetProcessStatus);
+    datasetProcessStatusService.createDatasetProcessStatus(datasetProcessStatus);
     DatasetProcessStatus datasetProcessStatus2 =
-      datasetProcessStatusService.get(datasetProcessStatus.getDatasetUuid(), datasetProcessStatus.getCrawlJob()
+      datasetProcessStatusService.getDatasetProcessStatus(datasetProcessStatus.getDatasetUuid(), datasetProcessStatus
+        .getCrawlJob()
         .getAttempt());
     Assert.assertNotNull(datasetProcessStatus2);
   }
@@ -150,12 +150,13 @@ public class DatasetProcessStatusIT {
   @Test
   public void testListAndListByDataset() {
     DatasetProcessStatus datasetProcessStatus = getTestInstance();
-    datasetProcessStatusService.create(datasetProcessStatus);
-    PagingResponse<DatasetProcessStatus> statuses = datasetProcessStatusService.list(new PagingRequest(0, 10));
+    datasetProcessStatusService.createDatasetProcessStatus(datasetProcessStatus);
+    PagingResponse<DatasetProcessStatus> statuses =
+      datasetProcessStatusService.listDatasetProcessStatus(new PagingRequest(0, 10));
     Assert.assertTrue("List operation should return at least 1 element", statuses.getResults().size() > 0);
 
     PagingResponse<DatasetProcessStatus> statusesByDataset =
-      datasetProcessStatusService.listByDataset(datasetProcessStatus.getDatasetUuid(), new PagingRequest());
+      datasetProcessStatusService.listDatasetProcessStatus(datasetProcessStatus.getDatasetUuid(), new PagingRequest());
     Assert.assertTrue("List operation should return at least 1 element", statusesByDataset.getResults().size() > 0);
 
   }
