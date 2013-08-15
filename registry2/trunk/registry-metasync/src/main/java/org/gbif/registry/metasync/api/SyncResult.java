@@ -30,7 +30,8 @@ public class SyncResult {
     Map<Dataset, Dataset> existingDatasets,
     List<Dataset> addedDatasets,
     List<Dataset> deletedDatasets,
-    Installation installation) {
+    Installation installation
+  ) {
     this.existingDatasets = existingDatasets;
     this.addedDatasets = addedDatasets;
     this.deletedDatasets = deletedDatasets;
@@ -51,31 +52,32 @@ public class SyncResult {
 
     if (exception != null) {
       history.setResult(buildCode(exception.getErrorCode()));
-      String message =
-        String
-          .format(
-            "Synchronization failed with error [%s].  %d datasets were updated.  %d datasets were added.  %d datasets were deleted.",
-            exception.getMessage(), sizeOf(existingDatasets), sizeOf(addedDatasets), sizeOf(deletedDatasets));
+      String message = String.format(
+        "Synchronization failed with error [%s]. %d datasets were updated. %d datasets were added. %d datasets were deleted.",
+        exception.getMessage(),
+        sizeOf(existingDatasets),
+        sizeOf(addedDatasets),
+        sizeOf(deletedDatasets));
       history.setDetails(message);
-
     } else {
       history.setResult(MetasyncResult.OK);
-      String message =
-        String.format(
-          "Synchronization succeeded.  %d datasets were updated.  %d datasets were added.  %d datasets were deleted.",
-          exception.getMessage(), sizeOf(existingDatasets), sizeOf(addedDatasets), sizeOf(deletedDatasets));
+      String message = String.format(
+        "Synchronization succeeded. %d datasets were updated. %d datasets were added. %d datasets were deleted.",
+        sizeOf(existingDatasets),
+        sizeOf(addedDatasets),
+        sizeOf(deletedDatasets));
       history.setDetails(message);
     }
     return history;
   }
 
   // NPE safe version
-  private Object sizeOf(Collection<?> collection) {
+  private int sizeOf(Collection<?> collection) {
     return collection == null ? 0 : collection.size();
   }
 
   // NPE safe version
-  private Object sizeOf(Map<?, ?> collection) {
+  private int sizeOf(Map<?, ?> collection) {
     return collection == null ? 0 : collection.size();
   }
 
