@@ -1,0 +1,76 @@
+<h4>Last crawled {{dataset.crawls[0].startedCrawling | timeAgo}}</strong></h4>
+  <small class="muted">which took {{[dataset.crawls[0].startedCrawling, dataset.crawls[0].finishedCrawling] | duration}} and finished with status {{dataset.crawls[0].finishReason}} </small>
+
+<hr/>    
+
+<ul class="unstyled list-hover">
+  <div data-ng-repeat="crawl in dataset.crawls">
+    <li>
+      <strong>Crawl attempt {{crawl.crawlJob.attempt}}</strong>
+      <small class="muted pull-right">Started {{crawl.startedCrawling | timeAgo}}</small>
+      <br/>
+
+      <strong>Finish reason: {{crawl.finishReason}}</strong>
+      <small class="muted pull-right">Finished {{crawl.finishedCrawling | timeAgo}}</small>
+      <br/>
+      
+      
+      
+
+<table class="table table-condensed table-bordered">
+  <tr>
+  <td>Crawling</td>
+  <td>2</td>
+  <td>1</td>
+  <td>2</td>
+  </tr>
+  <tr class="success">
+  <td>Frag'ing</td>
+  <td>2</td>
+  <td class="error">1</td>
+  <td>2</td>
+  </tr>
+  <tr>
+  <td>Saving</td>
+  <td>2</td>
+  <td>1</td>
+  <td>2</td>
+  </tr>
+  <tr>
+  <td>Proc'ing</td>
+  <td>2</td>
+  <td>1</td>
+  <td>2</td>
+  </tr>
+  <tr>
+  <td>Proc'ing</td>
+  <td>2</td>
+  <td>1</td>
+  <td>2</td>
+  </tr>
+</table>
+      
+pagesCrawled: {{crawl.pagesCrawled}}<br/>
+pagesFragmentedSuccessful: {{crawl.pagesFragmentedSuccessful}}<br/>
+pagesFragmentedError: {{crawl.pagesFragmentedError}}<br/>
+fragmentsEmitted: {{crawl.fragmentsEmitted}}<br/>
+fragmentsReceived: {{crawl.fragmentsReceived}}<br/>
+rawOccurrencesPersistedNew: {{crawl.rawOccurrencesPersistedNew}}<br/>
+rawOccurrencesPersistedUpdated: {{crawl.rawOccurrencesPersistedUpdated}}<br/>
+rawOccurrencesPersistedUnchanged: {{crawl.rawOccurrencesPersistedUnchanged}}<br/>
+rawOccurrencesPersistedError: {{crawl.rawOccurrencesPersistedError}}<br/>
+fragmentsProcessed: {{crawl.fragmentsProcessed}}<br/>
+verbatimOccurrencesPersistedSuccessful: {{crawl.verbatimOccurrencesPersistedSuccessful}}<br/>
+verbatimOccurrencesPersistedError: {{crawl.verbatimOccurrencesPersistedError}}<br/>
+interpretedOccurrencesPersistedSuccessful: {{crawl.interpretedOccurrencesPersistedSuccessful}}<br/>
+interpretedOccurrencesPersistedError: {{crawl.interpretedOccurrencesPersistedError}}      
+      
+      
+      
+    </li>
+   </div>
+   
+   <li><a href="">Attempt 2, finished 3 days ago with status Normal</a></li>
+   <li><a href="">Attempt 1, finished 7 days ago with status Normal</a></li>
+ </ul>
+ 

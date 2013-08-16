@@ -33,6 +33,8 @@ public interface DatasetProcessStatusMapper {
 
   void create(DatasetProcessStatus datasetProcessStatus);
 
+  void update(DatasetProcessStatus datasetProcessStatus);
+
   DatasetProcessStatus get(@Param("datasetKey") UUID datasetKey, @Param("attempt") int attempt);
 
   List<DatasetProcessStatus> list(@Nullable @Param("page") Pageable page);

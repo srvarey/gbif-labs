@@ -65,6 +65,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -536,6 +537,28 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Override
   public void createDatasetProcessStatus(@Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
     datasetProcessStatusMapper.create(datasetProcessStatus);
+  }
+
+  @PUT
+  @Path("{datasetKey}/process/{attempt}")
+  @Trim
+  @Transactional
+  @RolesAllowed(ADMIN_ROLE)
+  public void createDatasetProcessStatus(@PathParam("datasetKey") UUID datasetKey, @PathParam("attempt") int attempt,
+    @Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
+    checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetUuid()),
+      "DatasetProcessStatus must have the same key as the url");
+    checkArgument(attempt == datasetProcessStatus.getCrawlJob().getAttempt(),
+      "DatasetProcessStatus must have the same attempt as the url");
+    datasetProcessStatusMapper.update(datasetProcessStatus);
+  }
+
+  @Trim
+  @Transactional
+  @RolesAllowed(ADMIN_ROLE)
+  @Override
+  public void updateDatasetProcessStatus(@Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
+    datasetProcessStatusMapper.update(datasetProcessStatus);
   }
 
   @GET

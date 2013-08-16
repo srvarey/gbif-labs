@@ -545,10 +545,11 @@ CREATE TABLE network_comment
 -- 
 CREATE TABLE endpoint_machine_tag
 (
-  endpoint_key integer NOT NULL REFERENCES endpoint(key),
+  endpoint_key integer NOT NULL REFERENCES endpoint(key) ON DELETE CASCADE,
   machine_tag_key integer NOT NULL UNIQUE REFERENCES machine_tag(key) ON DELETE CASCADE,
   PRIMARY KEY (endpoint_key, machine_tag_key)
 );
+
 
 -- 
 --  dataset_network

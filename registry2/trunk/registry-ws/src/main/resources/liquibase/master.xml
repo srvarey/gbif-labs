@@ -18,5 +18,6 @@
   <include file="liquibase/012-validation-relax.xml" />
   <include file="liquibase/013-downloads-metrics.xml" />
   <include file="liquibase/014-crawl-metasync-history.xml" />
+  <include file="liquibase/015-endpoint-machine-tag-deletions.xml" />
 
 </databaseChangeLog>

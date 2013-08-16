@@ -20,6 +20,18 @@ angular.module('search', [
   }
 })
 
+// takes the start and end and returns a human readable length
+.filter('duration', function() {
+  return function(vals) {
+    if (vals.length==2 && vals[0] !== undefined && vals[1] !== undefined ) {
+      return moment(vals[1]).subtract(moment(vals[0])).duration().humanize();
+    } 
+    return "";
+      
+  }
+})
+
+
 // supports the functions of actions on the seach results
 .controller('SearchViewCtrl', function($scope, $location, $stateParams, $http) {
   $scope.q = $location.search().q;

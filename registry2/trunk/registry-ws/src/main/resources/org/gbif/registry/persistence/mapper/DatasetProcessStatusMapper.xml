@@ -48,7 +48,35 @@
     #{interpretedOccurrencesPersistedSuccessful,jdbcType=INTEGER}, 
     #{interpretedOccurrencesPersistedError,jdbcType=INTEGER}
   </sql>  
-    
+  
+  
+   <!--
+    key, created and deleted are never changed
+   -->
+  <sql id="DATASET_PROCESS_STATUS_UPDATE">    
+    target_url= #{crawlJob.targetUrl,jdbcType=VARCHAR},
+    endpoint_type =#{crawlJob.endpointType,jdbcType=OTHER},
+    started_crawling = #{startedCrawling,jdbcType=DATE},
+    finished_crawling =#{finishedCrawling,jdbcType=DATE},
+    finish_reason = #{finishReason,jdbcType=OTHER},
+    pages_crawled = #{pagesCrawled,jdbcType=INTEGER},
+    pages_fragmented_successful = #{pagesFragmentedSuccessful,jdbcType=INTEGER},
+    pages_fragmented_error = #{pagesFragmentedError,jdbcType=INTEGER},
+    fragments_emitted = #{fragmentsEmitted,jdbcType=INTEGER},
+    fragments_received = #{fragmentsReceived,jdbcType=INTEGER},
+    raw_occurrences_persisted_new = #{rawOccurrencesPersisted_new,jdbcType=INTEGER},
+    raw_occurrences_persisted_updated = #{rawOccurrencesPersistedUpdated,jdbcType=INTEGER},
+    raw_occurrences_persisted_unchanged = #{rawOccurrencesPersistedUnchanged,jdbcType=INTEGER},
+    raw_occurrences_persisted_error= #{rawOccurrencesPersistedError,jdbcType=INTEGER},
+    fragments_processed = #{fragmentsProcessed,jdbcType=INTEGER},
+    verbatim_occurrences_persisted_successful = #{verbatimOccurrencesPersistedSuccessful,jdbcType=INTEGER},
+    verbatim_occurrences_persisted_error = #{verbatimOccurrencesPersistedError,jdbcType=INTEGER},
+    interpreted_occurrences_persisted_successful = #{interpretedOccurrencesPersistedSuccessful,jdbcType=INTEGER}, 
+    interpreted_occurrences_persisted_error = #{interpretedOccurrencesPersistedError,jdbcType=INTEGER}
+  </sql>
+  
+  
+  <!--  Note: you can get entities which are deleted -->
   <select id="get" resultMap="DATASET_PROCESS_STATUS_MAP">
     SELECT <include refid="DATASET_PROCESS_STATUS_FIELDS"/>
     FROM crawl_history
@@ -60,6 +88,14 @@
     INSERT INTO crawl_history(<include refid="DATASET_PROCESS_STATUS_FIELDS"/>)
     VALUES(<include refid="DATASET_PROCESS_STATUS_FIELDS_TYPES"/>)
   </insert>
+  
+  <update id="update" parameterType="DatasetProcessStatus">
+    UPDATE crawl_history
+    SET <include refid="DATASET_PROCESS_STATUS_UPDATE"/>
+    WHERE dataset_key = #{datasetUuid,jdbcType=OTHER}
+     AND attempt = #{crawlJob.attempt,jdbcType=INTEGER}
+  </update> 
+  
   
   <select id="list" resultMap="DATASET_PROCESS_STATUS_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_PROCESS_STATUS_FIELDS"/>

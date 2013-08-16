@@ -14,6 +14,7 @@
     <li ng-class="{active: $state.includes('dataset.machinetag')}"><a href="" ng-click="transitionTo('machinetag')">Machine tags ({{counts.machinetags}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-class="{active: $state.includes('dataset.comment')}"><a href="" ng-click="transitionTo('comment')">Comments ({{counts.comments}}) <i class="icon-chevron-right"></i></a></li>
     <li ng-show="counts.subDatasets>0"><a href="#">Subdatasets ({{counts.subDatasets}}) <i class="icon-chevron-right"></i></a></li>
+    <li ng-class="{active: $state.includes('dataset.crawl')}"><a href=""  ng-click="transitionTo('crawl')">Crawl history ({{counts.crawls}}) <i class="icon-chevron-right"></i></a></li>
     <!--li><a href="#">Change history (12) <i class="icon-chevron-right"></i></a></li-->
   </ul>
 </div>

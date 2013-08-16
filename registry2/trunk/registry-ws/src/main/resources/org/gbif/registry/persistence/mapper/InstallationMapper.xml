@@ -229,7 +229,7 @@
     )
   </insert>
   
-  <select id="listEndpoints" resultType="Endpoint">
+  <select id="listEndpoints" resultMap="org.gbif.registry.persistence.mapper.EndpointMapper.ENDPOINT_MAP">
     SELECT <include refid="org.gbif.registry.persistence.mapper.EndpointMapper.ENDPOINT_FIELDS"/>
     FROM endpoint INNER JOIN installation_endpoint ON endpoint_key = key
     WHERE installation_key = #{targetEntityKey,jdbcType=OTHER}

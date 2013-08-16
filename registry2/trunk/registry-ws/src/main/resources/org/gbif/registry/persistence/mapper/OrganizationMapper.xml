@@ -266,7 +266,7 @@
     )
   </insert>
   
-  <select id="listEndpoints" resultType="Endpoint">
+  <select id="listEndpoints" resultMap="org.gbif.registry.persistence.mapper.EndpointMapper.ENDPOINT_MAP">
     SELECT <include refid="org.gbif.registry.persistence.mapper.EndpointMapper.ENDPOINT_FIELDS"/>
     FROM endpoint INNER JOIN organization_endpoint ON endpoint_key = key
     WHERE organization_key = #{targetEntityKey,jdbcType=OTHER}

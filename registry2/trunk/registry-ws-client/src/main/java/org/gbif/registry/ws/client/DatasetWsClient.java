@@ -121,6 +121,15 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
   }
 
   @Override
+  public void updateDatasetProcessStatus(DatasetProcessStatus datasetProcessStatus) {
+    Preconditions.checkNotNull(datasetProcessStatus.getDatasetUuid(), "DatasetProcessStatus needs a dataset key");
+    Preconditions.checkNotNull(datasetProcessStatus.getCrawlJob(), "DatasetProcessStatus needs a crawl job");
+    put(datasetProcessStatus, datasetProcessStatus.getDatasetUuid().toString(), "process",
+      String.valueOf(datasetProcessStatus
+        .getCrawlJob().getAttempt()));
+  }
+
+  @Override
   public DatasetProcessStatus getDatasetProcessStatus(UUID datasetKey, int attempt) {
     Preconditions.checkNotNull(datasetKey, "Dataset key is required");
     return get(GenericTypes.DATASET_PROCESS_STATUS, datasetKey.toString(), "process", Integer.toString(attempt));
