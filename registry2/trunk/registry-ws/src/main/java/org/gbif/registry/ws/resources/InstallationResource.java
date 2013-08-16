@@ -183,9 +183,9 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
    */
   @GET
   @Path("location/{type}")
-  public FeatureCollectionGeoJSON organizationsAsGeoJSON(@PathParam("type") InstallationType type) {
+  public TypedFeatureCollection organizationsAsGeoJSON(@PathParam("type") InstallationType type) {
     List<Organization> orgs = organizationMapper.hostingInstallationsOf(type, true);
-    FeatureCollection fc = new FeatureCollection();
+    TypedFeatureCollection fc = new TypedFeatureCollection();
 
     // to increment the count on duplicates
     Map<UUID, Feature> index = Maps.newHashMap();
@@ -205,21 +205,14 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
         fc.add(f);
       }
     }
-    return new FeatureCollectionGeoJSON(fc);
+
+    return fc;
   }
 
   // Needed only to serialize the FeaturedCollection correctly
-  public static class FeatureCollectionGeoJSON {
+  public static class TypedFeatureCollection extends FeatureCollection {
 
     private String type = "FeatureCollection";
-    private FeatureCollection features;
-
-    public FeatureCollectionGeoJSON(FeatureCollection features) {
-      this.features = features;
-    }
-
-    public FeatureCollectionGeoJSON() {
-    }
 
     public String getType() {
       return type;
@@ -227,14 +220,6 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
 
     public void setType(String type) {
       this.type = type;
-    }
-
-    public FeatureCollection getFeatures() {
-      return features;
-    }
-
-    public void setFeatures(FeatureCollection features) {
-      this.features = features;
     }
   }
 
