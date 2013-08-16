@@ -64,7 +64,7 @@
     pages_fragmented_error = #{pagesFragmentedError,jdbcType=INTEGER},
     fragments_emitted = #{fragmentsEmitted,jdbcType=INTEGER},
     fragments_received = #{fragmentsReceived,jdbcType=INTEGER},
-    raw_occurrences_persisted_new = #{rawOccurrencesPersisted_new,jdbcType=INTEGER},
+    raw_occurrences_persisted_new = #{rawOccurrencesPersistedNew,jdbcType=INTEGER},
     raw_occurrences_persisted_updated = #{rawOccurrencesPersistedUpdated,jdbcType=INTEGER},
     raw_occurrences_persisted_unchanged = #{rawOccurrencesPersistedUnchanged,jdbcType=INTEGER},
     raw_occurrences_persisted_error= #{rawOccurrencesPersistedError,jdbcType=INTEGER},
