@@ -101,6 +101,10 @@ angular.module('dataset', [
     context: 'dataset', 
     heading: 'Dataset comments', 
   })
+  .state('dataset.crawl', {  
+    url: '/crawl',   
+    templateUrl: 'app/dataset/dataset-crawl.tpl.html'
+  })
 }])
 
 /**
@@ -131,6 +135,18 @@ angular.module('dataset', [
           $scope.subDatasets = response.results;
           $scope.counts.subDatasets = response.count;
         });
+
+      dataset.getList('constituents', {limit: DEFAULT_PAGE_SIZE}).then(function(response) {
+          $scope.subDatasets = response.results;
+          $scope.counts.subDatasets = response.count;
+        });
+      
+      dataset.getList('process', {limit: DEFAULT_PAGE_SIZE})
+        .then(function(response) {
+          dataset.crawls = response.results;
+          $scope.counts.crawls = response.count;
+        });
+        
     });
   }
   load();  

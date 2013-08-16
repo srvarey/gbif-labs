@@ -40,6 +40,7 @@ public class EndpointTests {
     endpoints = service.listEndpoints(entity.getKey());
     assertNotNull(endpoints);
     assertEquals("2 endpoints have been added", 2, endpoints.size());
+    assertEquals("The endpoint should have 1 machine tag", 1, endpoints.get(0).getMachineTags().size());
 
     // test deletion, ensuring correct one is deleted
     service.deleteEndpoint(entity.getKey(), endpoints.get(0).getKey());

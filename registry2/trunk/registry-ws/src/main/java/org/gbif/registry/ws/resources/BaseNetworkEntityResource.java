@@ -497,7 +497,9 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
   @Validate(groups = {PrePersist.class, Default.class})
   @Override
   public int addEndpoint(UUID targetEntityKey, @Valid Endpoint endpoint) {
-    return WithMyBatis.addEndpoint(endpointMapper, mapper, targetEntityKey, endpoint);
+    // This WILL create machine tags if they exist as nested entities, which can safely be done since endpoint
+    // is immutable.
+    return WithMyBatis.addEndpoint(endpointMapper, mapper, targetEntityKey, endpoint, machineTagMapper);
   }
 
   /**

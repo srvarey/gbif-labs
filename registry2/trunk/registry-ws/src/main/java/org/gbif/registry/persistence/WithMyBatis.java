@@ -132,12 +132,31 @@ public class WithMyBatis {
 
   @Transactional
   public static int addEndpoint(
-    EndpointMapper endpointMapper, EndpointableMapper endpointableMapper, UUID targetEntityKey, Endpoint endpoint
+    EndpointMapper endpointMapper, EndpointableMapper endpointableMapper, UUID targetEntityKey, Endpoint endpoint,
+    MachineTagMapper machineTagMapper
     ) {
     checkArgument(endpoint.getKey() == null, "Unable to create an entity which already has a key");
     endpointMapper.createEndpoint(endpoint);
     endpointableMapper.addEndpoint(targetEntityKey, endpoint.getKey());
+
+    for (MachineTag machineTag : endpoint.getMachineTags()) {
+      machineTag.setCreatedBy(endpoint.getCreatedBy());
+      WithMyBatis.addMachineTag(machineTagMapper, endpointMapper, endpoint.getKey(), machineTag);
+    }
+
+    System.out.println("Endpoint persisted: " + endpoint);
     return endpoint.getKey();
+  }
+
+  /**
+   * Private scoped to avoid misuse. Endpoints break the general principle and DO persist nested entities, and can
+   * safely do so because they are immutable.
+   */
+  private static void addMachineTag(MachineTagMapper machineTagMapper, EndpointMapper endpointMapper,
+    Integer endpointKey,
+    MachineTag machineTag) {
+    machineTagMapper.createMachineTag(machineTag);
+    endpointMapper.addMachineTag(endpointKey, machineTag.getKey());
   }
 
   public static void deleteEndpoint(EndpointableMapper endpointableMapper, UUID targetEntityKey, int endpointKey) {
