@@ -183,7 +183,7 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
    */
   @GET
   @Path("location/{type}")
-  public FeatureCollection organizationsAsGeoJSON(@PathParam("type") InstallationType type) {
+  public FeatureCollectionGeoJSON organizationsAsGeoJSON(@PathParam("type") InstallationType type) {
     List<Organization> orgs = organizationMapper.hostingInstallationsOf(type, true);
     FeatureCollection fc = new FeatureCollection();
 
@@ -205,7 +205,37 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
         fc.add(f);
       }
     }
-    return fc;
+    return new FeatureCollectionGeoJSON(fc);
+  }
+
+  // Needed only to serialize the FeaturedCollection correctly
+  public static class FeatureCollectionGeoJSON {
+
+    private String type = "FeatureCollection";
+    private FeatureCollection features;
+
+    public FeatureCollectionGeoJSON(FeatureCollection features) {
+      this.features = features;
+    }
+
+    public FeatureCollectionGeoJSON() {
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public void setType(String type) {
+      this.type = type;
+    }
+
+    public FeatureCollection getFeatures() {
+      return features;
+    }
+
+    public void setFeatures(FeatureCollection features) {
+      this.features = features;
+    }
   }
 
   @POST
