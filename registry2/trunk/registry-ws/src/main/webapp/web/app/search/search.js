@@ -24,10 +24,9 @@ angular.module('search', [
 .filter('duration', function() {
   return function(vals) {
     if (vals.length==2 && vals[0] !== undefined && vals[1] !== undefined ) {
-      return moment(vals[1]).subtract(moment(vals[0])).duration().humanize();
+      return moment.duration(vals[1], vals[0]).humanize();
     } 
-    return "";
-      
+    return "an incalculable duration";      
   }
 })
 
