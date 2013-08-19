@@ -1,0 +1,6 @@
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: crawler
+  password: crawler
+registryWsUrl: http://crawler.gbif.org:8080/registry-ws

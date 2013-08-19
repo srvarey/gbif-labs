@@ -1,0 +1,17 @@
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: processor
+  password: processor
+zooKeeper:
+  connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
+  namespace: crawler
+ganglia:
+  gangliaHost: b5g2.gbif.org
+  gangliaPort: 8649
+msgPoolSize: 100
+hbasePoolSize: 100
+queueName: occurrence_verbatim
+occTable: prepop_crawler_occurrence
+counterTable: prepop_crawler_occurrence_counter
+lookupTable: prepop_crawler_occurrence_lookup

@@ -1,0 +1,5 @@
+wsUrl: http://crawler.gbif.org:8080/crawler-ws
+zooKeeper:
+  connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
+  namespace: crawler
+archiveDirectory: /home/crap/storage/results

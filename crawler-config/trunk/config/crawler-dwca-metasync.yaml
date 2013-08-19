@@ -1,0 +1,12 @@
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: crawler
+  password: crawler
+registry:
+  wsUrl: http://crawler.gbif.org:8080/registry-ws
+  user: markus
+  password: markus
+queueName: dwca-metasync
+poolSize: 10
+archiveRepository: /home/crap/storage/dwca

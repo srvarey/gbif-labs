@@ -1,0 +1,12 @@
+queueName: occurrence_indexing
+commitWithinMs: 30000
+poolSize: 10
+solrServer: http://crawler.gbif.org:8081/crawler-occurrence-solr/
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: processor
+  password: processor
+ganglia:
+  gangliaHost: b5g2.gbif.org
+  gangliaPort: 8649

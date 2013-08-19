@@ -1,0 +1,11 @@
+queueName: metrics_occurrence_cube
+cubeTable: prepop_crawler_occurrence_cube
+columnFamily: dc
+writeBatchSize: 10000
+poolSize: 50
+hbaseConfig: /home/crap/config/hbase-site.xml
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: metrics
+  password: metrics

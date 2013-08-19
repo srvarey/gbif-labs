@@ -1,0 +1,15 @@
+cubeTable: prepop_crawler_maps_cube
+columnFamily: dc
+# Larger batches:
+#  i. reduce load on HBase by merging tiles before writing
+#  ii. take longer to assemble and combine, and longer to write to HBase
+#  iii. reduce the time a change is propogated to the client
+writeBatchSize: 10000
+# All writes go through a singleton object controlled by datacube - increasing poolSize has no effect
+poolSize: 1
+hbaseConfig: /home/crap/config/hbase-site.xml
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: maps
+  password: maps

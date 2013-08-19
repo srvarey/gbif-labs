@@ -1,0 +1,11 @@
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: crawler
+  password: crawler
+zooKeeper:
+  connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
+  namespace: crawler
+poolSize: 50
+queueName: fragmenter
+crawlerWsUrl: http://crawler.gbif.org:8080/crawler-ws/
