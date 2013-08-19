@@ -9,6 +9,7 @@
     <collection property="tags" column="key" select="listTags"/>
     <collection property="identifiers" column="key" select="listIdentifiers"/>
     <collection property="comments" column="key" select="listComments"/>
+    <collection property="endpoints" column="key" select="listEndpoints"/>
   </resultMap>
 
   <sql id="NODE_FIELDS">
