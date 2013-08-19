@@ -36,9 +36,11 @@ import org.gbif.registry.persistence.mapper.TagMapper;
 import org.gbif.registry.ws.guice.Trim;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
@@ -51,14 +53,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
+import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.geojson.Feature;
-import org.geojson.FeatureCollection;
-import org.geojson.Point;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,44 +187,44 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
    */
   @GET
   @Path("location/{type}")
-  public TypedFeatureCollection organizationsAsGeoJSON(@PathParam("type") InstallationType type) {
+  public String organizationsAsGeoJSON(@PathParam("type") InstallationType type) {
     List<Organization> orgs = organizationMapper.hostingInstallationsOf(type, true);
-    TypedFeatureCollection fc = new TypedFeatureCollection();
 
     // to increment the count on duplicates
-    Map<UUID, Feature> index = Maps.newHashMap();
-
+    Map<Organization, AtomicInteger> counts = Maps.newHashMap();
     for (Organization o : orgs) {
-      Feature f = (index.containsKey(o.getKey())) ? index.get(o.getKey()) : new Feature();
-
-      if (index.containsKey(o.getKey())) {
-        f.setProperty("count", ((Integer) f.getProperty("count")) + 1);
+      if (counts.containsKey(o)) {
+        counts.get(o).incrementAndGet();
       } else {
-        f.setProperty("key", o.getKey());
-        f.setProperty("title", o.getTitle());
-        f.setProperty("count", Integer.valueOf(1));
-        // we ensured that georeferenced only orgs were returned above, so this should never throw NPE
-        f.setGeometry(new Point(o.getLatitude().doubleValue(), o.getLongitude().doubleValue()));
-        index.put(o.getKey(), f);
-        fc.add(f);
+        counts.put(o, new AtomicInteger(1));
       }
     }
 
-    return fc;
-  }
+    JSONObject featureCollection = new JSONObject();
+    try {
+      featureCollection.put("type", "FeatureCollection");
 
-  // Needed only to serialize the FeaturedCollection correctly
-  public static class TypedFeatureCollection extends FeatureCollection {
-
-    private String type = "FeatureCollection";
-
-    public String getType() {
-      return type;
+      List<JSONObject> features = Lists.newArrayList();
+      for (Organization o : counts.keySet()) {
+        JSONObject feature = new JSONObject();
+        feature.put("type", "Feature");
+        feature.put("properties", ImmutableMap.<String, Object>of(
+          "key", o.getKey(),
+          "title", o.getTitle(),
+          "count", counts.get(o).get()));
+        JSONObject geom = new JSONObject();
+        geom.put("type", "Point");
+        geom.put("coordinates", ImmutableList.<BigDecimal>of(
+          o.getLongitude(), o.getLatitude()));
+        feature.put("geometry", geom);
+        features.add(feature);
+      }
+      featureCollection.put("features", features);
+    } catch (JSONException e) {
+      LOG.error("Unable to build GeoJSON", e);
     }
 
-    public void setType(String type) {
-      this.type = type;
-    }
+    return featureCollection.toString();
   }
 
   @POST
