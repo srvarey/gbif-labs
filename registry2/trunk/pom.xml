@@ -130,7 +130,6 @@
     <httpclient.version>4.2.3</httpclient.version>
     <httpcore.version>4.2.3</httpcore.version>
     <jersey-server.version>1.17.1</jersey-server.version>
-    <geojson-jackson.version>1.0</geojson-jackson.version>
   </properties>
 
   <!--
@@ -500,12 +499,6 @@
         <artifactId>gbif-httputils</artifactId>
         <version>${httputils.version}</version>
       </dependency>
-      <dependency>
-        <groupId>de.grundid.opendatalab</groupId>
-        <artifactId>geojson-jackson</artifactId>
-        <version>${geojson-jackson.version}</version>
-      </dependency>    
-      
     </dependencies>
   </dependencyManagement>
 </project>
