@@ -1,0 +1,12 @@
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: crawler
+  password: crawler
+zooKeeper:
+  connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
+  namespace: crawler
+poolSize: 500
+minLockDelay: 500
+maxLockDelay: 2000
+responseArchive: /home/crap/storage/xml

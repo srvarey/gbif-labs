@@ -1,0 +1,6 @@
+priority: HIGH
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: crawler
+  password: crawler

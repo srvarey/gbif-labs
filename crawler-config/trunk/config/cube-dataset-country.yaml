@@ -1,0 +1,11 @@
+queueName: metrics_dataset_country_cube
+cubeTable: prepop_crawler_dataset_country_cube
+columnFamily: dc
+writeBatchSize: 1000
+poolSize: 50
+hbaseConfig: /home/crap/config/hbase-site.xml
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/dev
+  username: metrics
+  password: metrics
