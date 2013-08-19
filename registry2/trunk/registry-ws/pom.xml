@@ -257,10 +257,6 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
     </dependency>
-    <dependency>
-      <groupId>de.grundid.opendatalab</groupId>
-      <artifactId>geojson-jackson</artifactId>
-    </dependency>    
     <!-- test scope -->
     <dependency>
       <groupId>org.gbif</groupId>
