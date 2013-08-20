@@ -329,13 +329,13 @@
       organization_key = #{targetEntityKey,jdbcType=OTHER} AND comment_key = #{commentKey,jdbcType=INTEGER}
   </delete>  
   
-  <!-- Append safe ordering, omitting deleted entities -->
+  <!-- Append safe ordering (ordering done first by organization name, then created date), omitting deleted entities -->
   <select id="organizationsEndorsedBy" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
     SELECT <include refid="ORGANIZATION_FIELDS"/>
     FROM organization o
     INNER JOIN node n ON o.endorsing_node_key = n.key 
     WHERE o.deleted IS NULL AND n.deleted IS NULL AND n.key = #{nodeKey,jdbcType=OTHER} AND o.endorsement_approved = true 
-    ORDER BY o.created DESC, o.key
+    ORDER BY o.title, o.created DESC, o.key
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
