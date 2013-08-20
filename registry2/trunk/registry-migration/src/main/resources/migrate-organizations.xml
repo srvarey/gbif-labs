@@ -16,7 +16,7 @@
           CASE WHEN a.language IS NULL THEN 'en' WHEN char_length(trim(a.language))&lt;2 THEN 'en' ELSE a.language END AS language,
           CASE WHEN char_length(trim(a.email))&lt;5 THEN null ELSE a.email END AS email,
           CASE WHEN char_length(trim(a.phone))&lt;5 THEN null ELSE a.phone END AS phone,
-          trim(replace(a.homepage, ' ', '%20')) AS homepage,
+          CASE WHEN trim(replace(a.homepage, ' ', '%20')) NOT LIKE '%http%' THEN CONCAT('http://', trim(replace(a.homepage, ' ', '%20'))) ELSE trim(replace(a.homepage, ' ', '%20')) END AS homepage,
           trim(replace(a.logoURL, ' ', '%20')) as logo_url,          
           CASE WHEN char_length(trim(a.address))&lt;1 THEN null ELSE a.address END AS address,
           CASE WHEN char_length(trim(a.city))&lt;1 THEN null ELSE a.city END AS city,
