@@ -12,6 +12,6 @@ nohup java -Xms128M -Xmx128M -jar ../lib/metrics-cli.jar DensityCube --messaging
 nohup java -Xms128M -Xmx128M -jar ../lib/metrics-cli.jar DensityCube --messaging-queue-name density_map_z07 --zoom 7  --conf ../config/maps.yaml --log-config ../config/logback-maps.xml &> ../logs/maps_z7_stdout.log &
 nohup java -Xms128M -Xmx128M -jar ../lib/metrics-cli.jar DensityCube --messaging-queue-name density_map_z08 --zoom 8  --conf ../config/maps.yaml --log-config ../config/logback-maps.xml &> ../logs/maps_z8_stdout.log &
 sleep 1
-nohup java -Xms128M -Xmx128M -jar ../lib/metrics-cli.jar DensityCube --messaging-queue-name density_map_z09 --zoom 9  --conf ../config/maps.yaml --log-config ../config/logback-maps.xml &> ../logs/maps_z9_stdout.log &
+nohup java -Xms256M -Xmx256M -jar ../lib/metrics-cli.jar DensityCube --messaging-queue-name density_map_z09 --zoom 9  --write-batch-size 25000 --conf ../config/maps.yaml --log-config ../config/logback-maps.xml &> ../logs/maps_z9_stdout.log &
 nohup java -Xms256M -Xmx256M -jar ../lib/metrics-cli.jar DensityCube --messaging-queue-name density_map_z10 --zoom 10 --write-batch-size 25000 --conf ../config/maps.yaml --log-config ../config/logback-maps.xml &> ../logs/maps_z10_stdout.log &
 sleep 1
