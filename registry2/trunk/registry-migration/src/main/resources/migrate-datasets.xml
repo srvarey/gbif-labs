@@ -16,11 +16,15 @@
           a.alias AS alias,
           CASE WHEN char_length(trim(a.description))&lt;1 THEN null ELSE a.description END AS description,
           CASE WHEN a.language IS NULL THEN 'en' WHEN char_length(trim(a.language))!=2 THEN 'en' ELSE a.language END AS language,
-          CASE WHEN trim(a.homepage) NOT REGEXP '^[a-z0-9]{2,}://|^[a-z0-9]{2,}\\.' THEN IF(a.homepage REGEXP '`', REPLACE(a.homepage, '`',''), NULL ) 
-            WHEN trim(a.homepage) REGEXP '[[:space:]]' THEN REPLACE(a.homepage, ' ','')
-			ELSE trim(a.homepage) END AS homepage,
-          a.logoURL as logo_url,          
-          CASE WHEN char_length(trim(ep.citation_text))&lt;1 THEN null ELSE ep.citation_text END AS citation,
+          CASE WHEN trim(replace(a.homepage, ' ', '%20')) = '' THEN null
+               WHEN trim(a.homepage) NOT REGEXP '^[a-z0-9]{2,}://|^[a-z0-9]{2,}\\.' THEN IF(a.homepage REGEXP '`', REPLACE(a.homepage, '`',''), NULL )
+               WHEN trim(a.homepage) REGEXP '[[:space:]]' THEN REPLACE(a.homepage, ' ','')
+               WHEN trim(replace(a.homepage, ' ', '%20')) NOT LIKE '%http%' THEN CONCAT('http://', trim(replace(a.homepage, ' ', '%20')))
+			         ELSE trim(a.homepage) END AS homepage,
+          CASE WHEN trim(replace(a.logoURL, ' ', '%20')) = '' THEN null
+               WHEN trim(replace(a.logoURL, ' ', '%20')) NOT LIKE '%http%' THEN CONCAT('http://', trim(replace(a.logoURL, ' ', '%20')))
+               ELSE trim(replace(a.logoURL, ' ', '%20')) END AS logo_url,
+      CASE WHEN char_length(trim(ep.citation_text))&lt;1 THEN null ELSE ep.citation_text END AS citation,
           CASE WHEN char_length(trim(ep.citation_identifier))&lt;1 THEN null ELSE ep.citation_identifier END AS citation_identifier,
           CASE WHEN char_length(trim(ep.rights))&lt;1 THEN null ELSE ep.rights END AS rights,
           CASE WHEN a.admin_override IS NULL THEN FALSE ELSE a.admin_override END AS locked_for_auto_update,
