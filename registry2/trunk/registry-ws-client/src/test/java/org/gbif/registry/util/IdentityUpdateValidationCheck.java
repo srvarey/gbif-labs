@@ -12,6 +12,7 @@ import org.gbif.api.service.registry.NetworkService;
 import org.gbif.api.service.registry.NodeService;
 import org.gbif.api.service.registry.OrganizationService;
 import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
+import org.gbif.ws.client.guice.GbifApplicationAuthModule;
 
 import java.util.Properties;
 
@@ -31,12 +32,20 @@ public class IdentityUpdateValidationCheck {
   private static final Logger LOG = LoggerFactory.getLogger(IdentityUpdateValidationCheck.class);
 
   /**
+   * Runs the validation. To run, add the necessary properties as arguments. The key and password are
+   * authenticated by the web services, so check they match a key/password combination the web services' know of.
+   *
    * @param args Base url
    */
   public static void main(String[] args) {
     Properties p = new Properties();
     p.put("registry.ws.url", args[0]);
-    Injector injector = Guice.createInjector(new RegistryWsClientModule(p));
+    p.setProperty("application.key", args[1]);
+    p.setProperty("application.secret", args[2]);
+    // Create authentication module, and set principal name, equal to a GBIF User unique account name
+    GbifApplicationAuthModule auth = new GbifApplicationAuthModule(p);
+    auth.setPrincipal("admin");
+    Injector injector = Guice.createInjector(new RegistryWsClientModule(p), auth);
 
     LOG.info("Starting Node tests");
     int nodeErrorCount = verifyEntity(injector.getInstance(NodeService.class));
