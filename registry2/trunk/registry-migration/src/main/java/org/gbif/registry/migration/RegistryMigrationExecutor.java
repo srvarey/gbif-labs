@@ -173,6 +173,10 @@ public class RegistryMigrationExecutor {
       statics = execute("src/main/resources/add-node-endpoints.xml", "Node endpoints");
       System.out.println("Node feeds added in " + statics.getTotalTime() + " milliseconds");
 
+      System.out.println("Updating CoL constituents ...");
+      statics = execute("src/main/resources/update-col-constituents.xml", "CoL constituents");
+      System.out.println("CoL constituents updated in " + statics.getTotalTime() + " milliseconds");
+
       System.out.println("Starting adding organization logo URLs ...");
       statics = execute("src/main/resources/add-organization-logo-urls.xml", "Organization logo URLs");
       System.out.println("Organization logo URLs added in " + statics.getTotalTime() + " milliseconds");
