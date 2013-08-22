@@ -5,6 +5,7 @@ import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;
 import org.gbif.dwc.text.UnsupportedArchiveException;
 import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
+import org.gbif.ws.client.guice.SingleUserAuthModule;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -34,8 +35,8 @@ public class EmlPusher {
   private int failCounter;
   private DatasetService datasetService;
 
-  public void start(File rootDirectory, String registryUrl) throws UnsupportedArchiveException, IOException {
-    initClients(registryUrl);
+  public void start(File rootDirectory, String registryUrl, String user, String password) throws UnsupportedArchiveException, IOException {
+    initClients(registryUrl, user, password);
 
     pushCounter = 0;
     File[] archiveFiles = findArchives(rootDirectory);
@@ -47,10 +48,10 @@ public class EmlPusher {
     LOG.info("Done. {} metadata documents from {} archives pushed to registry, {} failed", pushCounter, archiveFiles.length, failCounter);
   }
 
-  private void initClients(String registryUrl) {
+  private void initClients(String registryUrl, String user, String password) {
     Properties p = new Properties();
     p.put("registry.ws.url", registryUrl);
-    Injector inj = Guice.createInjector(new RegistryWsClientModule(p));
+    Injector inj = Guice.createInjector(new RegistryWsClientModule(p), new SingleUserAuthModule(user, password));
     datasetService = inj.getInstance(DatasetService.class);
   }
 
@@ -109,9 +110,14 @@ public class EmlPusher {
   }
 
   public static void main(String[] args) {
+    if (args.length != 4) {
+      System.out.println("The EML pusher requires 4 commandline arguments: path-to-dwca-dir  registry-url  username  password");
+      System.exit(1);
+    }
+
     EmlPusher app = new EmlPusher();
     try {
-      app.start(new File(args[0]), args[1]);
+      app.start(new File(args[0]), args[1], args[2], args[3]);
 
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
