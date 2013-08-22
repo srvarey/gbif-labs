@@ -1,0 +1,112 @@
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1"
+         xmlns:dc="http://purl.org/dc/terms/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.0.2/eml.xsd"
+         packageId="http://taibif.org.tw/ipt/resource.do?id=taibnet_com_all/v1" system="http://gbif.org" scope="system"
+         xml:lang="eng">
+
+<dataset>
+  <title xml:lang="eng">The National Checklist of Taiwan</title>
+<creator>
+    <individualName>
+        <givenName>Kun-Chi</givenName>
+      <surName>Lai</surName>
+    </individualName>
+    <organizationName>Biodiversity Research Center, Academia Sinica</organizationName>
+    <positionName>Research Assistant</positionName>
+    <address>
+        <deliveryPoint>128 Sec 2, Academia Rd., Nangang Dist.</deliveryPoint>
+        <city>Taipei City</city>
+        <postalCode>115</postalCode>
+        <country>TW</country>
+    </address>
+    <phone>+886 2 27839161</phone>
+    <electronicMailAddress>east0122@gate.sinica.edu.tw</electronicMailAddress>
+    <onlineUrl>http://taibif.org.tw</onlineUrl>
+</creator>
+<metadataProvider>
+    <individualName>
+        <givenName>Kun-Chi</givenName>
+      <surName>Lai</surName>
+    </individualName>
+    <organizationName>Biodiversity Research Center, Academia Sinica</organizationName>
+    <positionName>Research Assistant</positionName>
+    <address>
+        <deliveryPoint>128 Sec 2, Academia Rd., Nangang Dist.</deliveryPoint>
+        <city>Taipei City</city>
+        <postalCode>115</postalCode>
+        <country>TW</country>
+    </address>
+    <phone>+886 2 27839161</phone>
+    <electronicMailAddress>east0122@gate.sinica.edu.tw</electronicMailAddress>
+    <onlineUrl>http://taibif.org.tw</onlineUrl>
+</metadataProvider>
+    <associatedParty>
+    <individualName>
+        <givenName>Jack</givenName>
+      <surName>Lin</surName>
+    </individualName>
+    <organizationName>Biodiversity Research Center, Academia Sinica</organizationName>
+    <positionName>Software Engineer</positionName>
+    <address>
+        <deliveryPoint>128 Sec 2, Academia Rd., Nangang Dist.</deliveryPoint>
+        <city>Taipei</city>
+        <postalCode>115</postalCode>
+        <country>TW</country>
+    </address>
+    <phone>+886 2 27899161</phone>
+    <electronicMailAddress>jacklin@gate.sinica.edu.tw</electronicMailAddress>
+    <onlineUrl>http://taibnet.sinica.edu.tw</onlineUrl>
+    <role>programmer</role>
+    </associatedParty>
+<pubDate>
+      	2012-11-05
+</pubDate>
+<language>eng</language>
+<abstract>
+  <para>The catalog of Taiwanese species is call &quot;TaiBNET&quot; and the national node of GBIF (Global Biodiversity Information Facility) in Taiwan is called &quot;TaiBIF&quot;. Currently, the websites have been established at Academia Sinica (http://taibnet.sinica.edu.tw and http://www.gbif.org.tw). Both of the Biodiversity Research Center and the Computing Center of Academia Sinica are in charge of the maintenance and the updating biodiversity related information and data.
+
+Through the node, the background of participating GBIF, related documents, news, upcoming conferences, name list of Taiwanese taxonomists, catalog of life in Taiwan, specimen database, biodiversity related organization, team research projects, independent biological databases, natural heritage, and local publications etc. can be accessed. Among them, &quot;Name list of Taiwanese taxonomists&quot; and &quot;Catalog of Life of Taiwan&quot; are one promoting project sponsored by the National Science Council. So far, 236 local taxonomists have included their titles, telephones, e-mail addresses, and the taxa that they are expertised. In the future, we hope to include all of the ecologists or the applied scientists in agriculture, forestry, fishery, and animal husbandry in the name list.
+
+The first phase of Catalog of Life in Taiwan will contain the following items of animals (including insects), plants, and fungi: species names, authors and year, suggested Chinese names, endemic in Taiwan or not, their classification hierarchy, the most authorized citation proving that particular species has occurred in Taiwan. Users can get the name list of one group of organisms through keywords search, species name searching, or image searching etc. Further information of each species can be obtained through the hyperlink to more than 18 well-known global databases or networks, such as Species2000 and ITIS etc. Right now, more than 30,000 species have been compiled, and we hope to collect more than 60,000 species by July 2004. Species checklist of the microorganisms will be included next year. We hope to get more funding and collaborators in the next phase to collect specimen or ecological photos (endemic species first), description (morphology, ecology and biology), geographical distribution, synonyms, literatures, as well as deposited specimen data for each species.
+
+Through this node, the most authorized information of high biodiversity and endemism of Taiwan can be exchanged and shared with other GBIF participants. This mission is also requested by both of the Convention on Biological Diversity and GBIF to each member because in such a way, education, research, and conservation of biodiversity in the world could be promoted effectively.</para>
+</abstract>
+  <coverage>
+      <geographicCoverage>
+          <geographicDescription>Taiwan island and adjacent islets.</geographicDescription>
+        <boundingCoordinates>
+          <westBoundingCoordinate>117.97</westBoundingCoordinate>
+          <eastBoundingCoordinate>124.08</eastBoundingCoordinate>
+          <northBoundingCoordinate>26.77</northBoundingCoordinate>
+          <southBoundingCoordinate>20.77</southBoundingCoordinate>
+        </boundingCoordinates>
+      </geographicCoverage>
+  </coverage>
+  <contact>
+    <individualName>
+        <givenName>Kwang-Tsao</givenName>
+      <surName>Shao</surName>
+    </individualName>
+    <organizationName>Biodiversity Research Center, Academia Sinica</organizationName>
+    <positionName>Research Fellow</positionName>
+    <address>
+        <deliveryPoint>128 Sec 2, Academia Rd., Nangang Dist.</deliveryPoint>
+        <city>Taipei City</city>
+        <postalCode>115</postalCode>
+        <country>TW</country>
+    </address>
+    <phone>+886 932152991</phone>
+    <electronicMailAddress>zoskt@gate.sinica.edu.tw</electronicMailAddress>
+    <onlineUrl>http://taibnet.sinica.edu.tw</onlineUrl>
+  </contact>
+</dataset>
+  <additionalMetadata>
+    <metadata>
+      <gbif>
+          <dateStamp>2011-08-11T02:47:01.769+08:00</dateStamp>
+          <hierarchyLevel>dataset</hierarchyLevel>
+      </gbif>
+    </metadata>
+  </additionalMetadata>
+</eml:eml>
