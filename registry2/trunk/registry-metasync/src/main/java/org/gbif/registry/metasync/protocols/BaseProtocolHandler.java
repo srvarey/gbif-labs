@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -61,10 +58,11 @@ public abstract class BaseProtocolHandler implements MetadataProtocolHandler {
   }
 
   /**
-   * Takes two collections of {@link Contact}s and tries to match the {@code newContacts} to the {@code
-   * existingContacts} and returns all Contacts that could <b>not</b> be matched (i.e. those are new Contacts that did
+   * Takes two collections of {@link Contact}s and tries to match the {@code newContacts} to the
+   * {@code existingContacts} and returns all Contacts that could <b>not</b> be matched (i.e. those are new Contacts
+   * that did
    * not previously exist).
-   *
+   * 
    * @return new Contacts that do not exist in the existing Contacts already
    */
   protected List<Contact> matchContacts(Iterable<Contact> existingContacts, Iterable<Contact> newContacts) {
@@ -89,13 +87,12 @@ public abstract class BaseProtocolHandler implements MetadataProtocolHandler {
 
   /**
    * Makes a HTTP request to the provided {@link URI} and uses the {@link Digester} to parse the response.
-   *
-   * @param uri      to issue request against
+   * 
+   * @param uri to issue request against
    * @param digester to parse response with
-   * @param <T>      type of Object to return
-   *
+   * @param <T> type of Object to return
    * @throws MetadataException in case anything goes wrong during the request, all underlying HTTP errors are mapped to
-   *                           the appropriate {@link ErrorCode}s.
+   *         the appropriate {@link ErrorCode}s.
    */
   protected <T> T doHttpRequest(URI uri, Digester digester) throws MetadataException {
     HttpUriRequest get = new HttpGet(uri);
@@ -111,7 +108,11 @@ public abstract class BaseProtocolHandler implements MetadataProtocolHandler {
 
     // Everything but HTTP status 200 is an error
     if (response.getStatusLine().getStatusCode() != 200) {
-      throw new MetadataException(ErrorCode.HTTP_ERROR);
+      LOG.debug("Received HTTP code[{}] cause[{}] for request: {}", response.getStatusLine().getStatusCode(),
+        response.getStatusLine().getReasonPhrase(), uri);
+      String cause = String.format("Received HTTP code[%d], phrase[%s]", response.getStatusLine().getStatusCode(),
+        response.getStatusLine().getReasonPhrase());
+      throw new MetadataException(cause, ErrorCode.HTTP_ERROR);
     }
 
     try {
@@ -135,6 +136,7 @@ public abstract class BaseProtocolHandler implements MetadataProtocolHandler {
    */
   protected Digester newDigester(final Class<?> clazz) {
     DigesterLoader loader = newLoader(new FromAnnotationsRuleModule() {
+
       @Override
       protected void configureRules() {
         bindRulesFrom(clazz);
