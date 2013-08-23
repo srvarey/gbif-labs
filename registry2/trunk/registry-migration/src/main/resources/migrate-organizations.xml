@@ -19,7 +19,8 @@
           CASE WHEN trim(replace(a.homepage, ' ', '%20')) = '' THEN null
                WHEN trim(replace(a.homepage, ' ', '%20')) NOT LIKE '%http%' THEN CONCAT('http://', trim(replace(a.homepage, ' ', '%20')))
                ELSE trim(replace(a.homepage, ' ', '%20')) END AS homepage,
-          trim(replace(a.logoURL, ' ', '%20')) as logo_url,          
+          CASE WHEN trim(replace(a.logoURL, ' ', '%20')) = '' THEN null
+               ELSE trim(replace(a.logoURL, ' ', '%20')) END as logo_url,
           CASE WHEN char_length(trim(a.address))&lt;1 THEN null ELSE a.address END AS address,
           CASE WHEN char_length(trim(a.city))&lt;1 THEN null ELSE a.city END AS city,
           CASE WHEN char_length(trim(a.iso_country_code))&lt;2 THEN null ELSE upper(a.iso_country_code) END AS country,
