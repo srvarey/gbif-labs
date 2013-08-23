@@ -1,0 +1,67 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+     
+    <query id="installations" connection-id="old-registry">
+        SELECT a.uuid AS uuid_key,
+          aHostingOrg.uuid AS organization_key,
+          CASE a.category WHEN 20000 THEN 'DIGIR_INSTALLATION' WHEN 20010 THEN 'TAPIR_INSTALLATION' WHEN 20020 THEN 'BIOCASE_INSTALLATION' WHEN 20030 THEN 'IPT_INSTALLATION' WHEN 20040 THEN 'HTTP_INSTALLATION' END AS type,
+          CASE WHEN a.name IS NULL THEN 'Unknown' WHEN char_length(trim(a.name))&lt;2 THEN 'Unknown' ELSE trim(a.name) END AS title,
+          CASE WHEN char_length(trim(a.description))&lt;1 THEN null ELSE a.description END AS description,
+          COALESCE(a.created, a.modified, now()) AS created,
+          COALESCE(a.modified, a.created, now()) AS modified,
+          a.deleted,
+          'ADMIN' AS created_by,
+          'ADMIN' AS modified_by,
+          a.ws_password AS password
+        FROM agent a
+        JOIN agent_relation arHostingOrg ON a.id=arHostingOrg.to_agent_id
+        JOIN agent aHostingOrg ON aHostingOrg.id=arHostingOrg.from_agent_id
+        WHERE a.type=14100 
+        AND arHostingOrg.relation_type_id=15040 
+        AND aHostingOrg.type=14010
+        AND a.name NOT IN('IPT_TEST', 'Test IPT','Test IPT','Test IPT','Test IPT','TEST IPT FROM K','TEST IPT FROM K #3', 'Test 2.0.2 Kyle', 'TEST IPT 204 Pre-release (edited 5)')
+        ORDER BY arHostingOrg.deleted
+        
+        <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
+        <script connection-id="new-registry">
+            INSERT INTO installation(key,organization_key,password,
+              type,title,description,created,modified,deleted,created_by,modified_by)
+            SELECT ?uuid_key::uuid,?organization_key::uuid,?password,
+              ?type::enum_installation_type,?title,?description,
+              ?created,?modified,?deleted,?created_by,?modified_by
+            WHERE EXISTS(SELECT * FROM organization WHERE key=?organization_key::uuid) AND 
+            NOT EXISTS(SELECT * FROM installation WHERE key=?uuid_key::uuid);
+        </script>
+    </query>
+
+    <!-- 
+    <query id="createInstallationsForOrphanDS" connection-id="old-registry">
+        SELECT UUID() as uuid_key, 
+          hostOrg.uuid as organization_key,
+          'HTTP_INSTALLATION' as type,
+          'HTTP_INSTALLATION' as title,
+          now() as created,
+          now() as modified, 
+          'ADMIN' as created_by,
+          'ADMIN' as modified_by 
+        FROM agent a 
+        JOIN agent_relation ar ON ar.to_agent_id=a.id
+        JOIN agent hostOrg ON hostOrg.id=ar.from_agent_id        
+        WHERE a.type=14020 AND ar.relation_type_id=15010 AND ar.deleted IS NULL 
+          AND hostOrg.deleted IS NULL AND a.id NOT IN
+          (SELECT to_agent_id FROM agent_relation ar WHERE ar.relation_type_id=15020)
+            
+        <script connection-id="new-registry">
+            INSERT INTO installation(key,organization_key,type,title,created,modified,created_by,modified_by)
+            VALUES(?uuid_key::uuid,?organization_key::uuid,
+              ?type::enum_installation_type,?title,
+              ?created,?modified,?created_by,?modified_by);
+        </script>
+    </query>
+     -->
+</etl>

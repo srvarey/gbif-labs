@@ -1,0 +1,58 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+    
+    <query id="networks" connection-id="old-registry">
+    	SELECT uuid AS uuid_key,
+    		name AS title,
+    		description,
+    		CASE 
+    			WHEN language IS NULL THEN 'en' 
+    			ELSE language 
+    		END AS language,
+    		CASE 
+    			WHEN char_length(trim(email))&lt;5 THEN NULL
+    			ELSE email
+    		END AS email,
+    		CASE
+    			WHEN char_length(trim(phone))&lt;5 THEN NULL
+    			ELSE phone
+    		END AS phone,
+    		trim(homepage),
+    		trim(logoURL) AS logo_url,
+    		CASE
+    			WHEN char_length(trim(address))&lt;1 THEN NULL
+    			ELSE address
+    		END AS address,
+    		CASE
+    			WHEN char_length(trim(city))&lt;1 THEN NULL
+    			ELSE city
+    		END AS city,
+    		CASE
+    			WHEN char_length(trim(iso_country_code))&lt;2 THEN NULL
+    			ELSE iso_country_code
+    		END AS country,
+    		CASE 
+    			WHEN char_length(trim(zip))&lt;1 THEN NULL
+    			ELSE zip
+    		END AS postal_code,
+            COALESCE(created, modified, now()) AS created,
+            COALESCE(modified, created, now()) AS modified,
+    		deleted
+    	FROM agent WHERE type = 14080 OR uuid = '7ddf754f-d193-4cc9-b351-99906754a03b'
+    		
+        <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
+        <script connection-id="new-registry">
+            INSERT INTO network(key,title,description,language,email,phone,homepage,logo_url,address,city,country,postal_code,
+              created,modified,deleted,created_by,modified_by)
+            VALUES(?uuid_key::uuid,?title,?description,?language,?email,?phone,?homepage,?logo_url,?address,?city,?country,?postal_code,
+              ?created,?modified,?deleted,?{"ADMIN"}, ?{"ADMIN"});
+        </script>
+         
+    </query>    
+    
+</etl>

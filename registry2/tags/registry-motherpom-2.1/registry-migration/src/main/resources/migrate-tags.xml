@@ -1,0 +1,22 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="tags" connection-id="old-registry">
+        SELECT id AS `key`, 
+        	trim(TRAILING ',' FROM name) AS value,
+        	'ADMIN' AS created_by,
+        	created
+        FROM tag
+        WHERE namespace_id IS NULL
+         			
+		<script connection-id="new-registry">
+		INSERT INTO tag(key, value, created_by, created)
+		VALUES (?key,?value,?created_by,?created);
+        </script>
+    </query>
+</etl>
