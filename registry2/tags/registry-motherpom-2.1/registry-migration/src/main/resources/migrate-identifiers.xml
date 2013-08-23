@@ -1,0 +1,34 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="identifiers" connection-id="old-registry">
+        SELECT id AS `key`, 
+        	CASE identifier_type
+        		WHEN 2007 THEN 'SOURCE_ID'
+				WHEN 2000 THEN 'URL'
+				WHEN 2001 THEN 'LSID'
+				WHEN 2003 THEN 'HANDLER'
+				WHEN 2002 THEN 'DOI'
+				WHEN 2004 THEN 'UUID'
+				WHEN 2005 THEN 'FTP'
+				WHEN 2006 THEN 'URI'
+				WHEN 2008 THEN 'UNKNOWN'
+				WHEN 2009 THEN 'GBIF_PORTAL'
+				WHEN 2012 THEN 'GBIF_NODE'
+			END AS type,
+			identifier,
+			'ADMIN' AS created_by,
+			created 
+        FROM identifier WHERE deleted IS NULL
+                 			
+		<script connection-id="new-registry">
+		INSERT INTO identifier(key, type, identifier, created_by,created)
+		VALUES (?key,?type::enum_identifier_type,?identifier,?created_by,?created);
+        </script>
+    </query>
+</etl>
