@@ -37,7 +37,7 @@
     <slf4j.version>1.7.5</slf4j.version>
     <junit.version>4.11</junit.version>
     <dwca-reader.version>1.14</dwca-reader.version>
-    <registry-client.version>2.0-SNAPSHOT</registry-client.version>
+    <registry-client.version>2.1</registry-client.version>
   </properties>
 
   <scm>
