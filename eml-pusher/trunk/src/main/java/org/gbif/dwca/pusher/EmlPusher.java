@@ -1,10 +1,10 @@
 package org.gbif.dwca.pusher;
 
-import org.gbif.api.service.registry2.DatasetService;
+import org.gbif.api.service.registry.DatasetService;
 import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;
 import org.gbif.dwc.text.UnsupportedArchiveException;
-import org.gbif.registry2.ws.client.guice.RegistryWsClientModule;
+import org.gbif.registry.ws.client.guice.RegistryWsClientModule;
 import org.gbif.ws.client.guice.SingleUserAuthModule;
 
 import java.io.File;
@@ -22,7 +22,6 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * A utility that will inspect a crawling filesystem and push all metadata documents found into the registry.
@@ -51,7 +50,7 @@ public class EmlPusher {
   private void initClients(String registryUrl, String user, String password) {
     Properties p = new Properties();
     p.put("registry.ws.url", registryUrl);
-    Injector inj = Guice.createInjector(new RegistryWsClientModule(p), new SingleUserAuthModule(user, password));
+    Injector inj = Guice.createInjector(new SingleUserAuthModule(user, password), new RegistryWsClientModule(p));
     datasetService = inj.getInstance(DatasetService.class);
   }
 
