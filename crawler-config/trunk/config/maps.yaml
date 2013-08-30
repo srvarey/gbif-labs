@@ -1,15 +1,26 @@
-cubeTable: prepop_crawler_maps_cube
-columnFamily: dc
-# Larger batches:
-#  i. reduce load on HBase by merging tiles before writing
-#  ii. take longer to assemble and combine, and longer to write to HBase
-#  iii. reduce the time a change is propogated to the client
-writeBatchSize: 10000
-# All writes go through a singleton object controlled by datacube - increasing poolSize has no effect
-poolSize: 1
+###
+##
+## The 3 variables controlling the flow are:
+##  a) messageConsumerThreads: how many threads are reading from rabbit, and computing mutations
+##  b) batchSize: how large a batch from a) needs to be before handed over to the flush thread
+##  c) batchFlushThreads: how many threads are flushing to HBase (increments like many concurrent)
+## Be aware that b) and c) dictate the memory requirements
+##
+## This is in incrementing cube, which means that HBase column increment is used.  Testing on HBase 
+## suggests large concurrency increases throughput significantly, so a large number of flushing threads
+## are used.  This lends itself well to large batching (up to 300 mutations per record).  The consuming
+## threads are tuned to saturate the flushing threads, by monitoring the backOffMeter and setting to 
+## a level high enough but ensuring we don't go into backoff mode.
+####
 hbaseConfig: /home/crap/config/hbase-site.xml
 messaging:
   host: mq.gbif.org
   virtualHost: /crawler/dev
-  username: maps
-  password: maps
+  username: metrics
+  password: metrics
+cubeTable: prepop_crawler_maps_cube
+columnFamily: dc
+messageConsumerThreads: 10
+batchSize: 10000
+batchFlushThreads: 1
+pixelsPerCluster: 1
