@@ -1,11 +1,28 @@
-queueName: metrics_dataset_country_cube
-cubeTable: prepop_crawler_dataset_country_cube
-columnFamily: dc
-writeBatchSize: 1000
-poolSize: 50
+###
+##
+## The 3 variables controlling the flow are:
+##  a) messageConsumerThreads: how many threads are reading from rabbit, and computing mutations
+##  b) batchSize: how large a batch from a) needs to be before handed over to the flush thread
+##  c) batchFlushThreads: how many threads are flushing to HBase (increments like many concurrent)
+## Be aware that b) and c) dictate the memory requirements
+##
+## This uses a consume, merge, check and put to HBase.  Thus, the balance we are looking for is 
+## enough queue consumers to match the HBase queues, but as little competition in the HBase flushers
+## as possible, as they will go into retry loops in the check and put.  Ideally, one batch is produed
+## handed to a flush thread, and while that flushes, a second batch is prepared and handed to a flush
+## thread when the first finishes.  This compacts really small, so we use smaller batches - depending
+## on traffic this will often just flush due to age (e.g. a single dataset in a single country merges
+## to 1 mutation, so we never hit the batch size, and it will flush on age)
+###
 hbaseConfig: /home/crap/config/hbase-site.xml
 messaging:
   host: mq.gbif.org
   virtualHost: /crawler/dev
   username: metrics
   password: metrics
+queueName: metrics_dataset_country_cube
+cubeTable: prepop_crawler_dataset_country_cube
+columnFamily: dc
+messageConsumerThreads: 2
+batchSize: 100
+batchFlushThreads: 1
