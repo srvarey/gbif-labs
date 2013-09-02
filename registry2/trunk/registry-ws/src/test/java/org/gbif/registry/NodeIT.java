@@ -41,12 +41,10 @@ import org.gbif.ws.client.filter.SimplePrincipalProvider;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -108,7 +106,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     this.datasetService = datasetService;
   }
 
-  @Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
+  //@Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   public void testGetByCountry() {
     initCountryNodes();
@@ -140,7 +138,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     }
   }
 
-  @Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
+  //@Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   public void testCountries() {
     initCountryNodes();
@@ -178,7 +176,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
     assertEquals(d2Key, resp.getResults().get(0).getKey());
   }
 
-  @Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
+  //@Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   /**
    * A test that requires a configured IMS with real spanish data.
@@ -189,11 +187,12 @@ public class NodeIT extends NetworkEntityTest<Node> {
     Node es = nodeService.getByCountry(Country.SPAIN);
     assertEquals((Integer) 2001, es.getParticipantSince());
     assertEquals(ParticipationStatus.VOTING, es.getParticipationStatus());
+    // this is no real data, it comes from the test inserts above
     assertEquals(GbifRegion.AFRICA, es.getGbifRegion());
     assertEquals("GBIF.ES", es.getAbbreviation());
     assertEquals("Madrid", es.getCity());
-    assertEquals("28014", es.getPostalCode());
-    assertEquals("Real Jardín Botánico de Madrid (CSIC)", es.getInstitution());
+    assertEquals("E-28014", es.getPostalCode());
+    assertEquals("Real Jardín Botánico - CSIC", es.getInstitution());
     assertNotNull(es.getAddress());
     assertTrue(es.getContacts().size() > 5);
 

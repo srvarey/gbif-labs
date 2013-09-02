@@ -17,7 +17,7 @@
 
   <select id="get" resultType="Node" resultMap="NODE_MAP">
 SELECT p."__kp_ID" AS imsId, c.ISO2 AS country, n.Name_Full AS title, n.Name_Acronym AS abbreviation, n.URL AS homepage,
-  p.Member_AsOf AS participantSince,
+  p.Member_AsOf AS participantSince, p.PublicDescription AS description,
   p.zz__Modified_Timestamp__lxm AS modified,
   i.Name AS institution, i.Address AS address, i.City AS city, i.ZipCode AS postalCode, i.State AS province, i.Telephone AS phone, i.Email AS email,
   p.GBIFmembership, r.Region
@@ -52,7 +52,7 @@ WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country 
         LEFT JOIN "__Grouprole" gr ON pc."_kf_GrouproleID" = gr."__kp_ID"
         LEFT JOIN "__Country" ca ON c."_kf_CountryID_Address" = ca."__kp_ID"
         LEFT JOIN "__Institution" i ON c."_kf_InstitutionID" = i."__kp_ID"
-      WHERE pc.Active!=0 AND gr."_kf_GroupID" in (11,12,13,31) AND n."_kf_ParticipantID" = #{imsId}
+      WHERE pc.Active!=0 AND (c.OnTheWeb is null OR c.OnTheWeb!=0) AND gr."_kf_GroupID" in (11,12,13,31) AND n."_kf_ParticipantID" = #{imsId}
       ORDER BY 7,1
   </select>
 

@@ -29,6 +29,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 public class ParticipantSinceTypeHandler implements TypeHandler<Integer> {
+  private static Pattern YEAR = Pattern.compile("[0-9]{4}");
 
   @Override
   public void setParameter(PreparedStatement ps, int i, Integer parameter, JdbcType jdbcType) throws SQLException {
@@ -55,7 +56,6 @@ public class ParticipantSinceTypeHandler implements TypeHandler<Integer> {
    */
   @VisibleForTesting
   protected Integer lookup(String val) {
-    Pattern YEAR = Pattern.compile("[0-9]{4}");
     if (!Strings.isNullOrEmpty(val)) {
       Matcher m = YEAR.matcher(val);
       if (m.find()) {

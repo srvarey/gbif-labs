@@ -70,8 +70,8 @@
   <modules>
     <module>registry-metadata</module>
     <module>registry-metasync</module>
-    <module>registry-ws-client</module>
     <module>registry-ws</module>
+    <module>registry-ws-client</module>
   </modules>
 
   <!--
