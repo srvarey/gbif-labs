@@ -1,3 +1,4 @@
+
 package org.gbif.registry.migration;
 
 import java.io.File;
