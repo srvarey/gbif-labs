@@ -60,6 +60,7 @@ public class ImsModule extends PrivateServiceModule {
     // is any real IMS database configured?
     if (!imsConnectionWorking()) {
       // no, use an empty module that injects mocks
+      LOG.warn("Cannot connect to Filemaker IMS at {}. Continue without IMS", getVerbatimProperties().getProperty("ims.db.JDBC.url"));
       install( new ImsEmptyModule() );
 
     } else {
@@ -76,7 +77,7 @@ public class ImsModule extends PrivateServiceModule {
    * @return true if we can connect to the IMS
    */
   private boolean imsConnectionWorking() {
-    if (getVerbatimProperties().getProperty("ims.db.JDBC.url").startsWith("$")) {
+    if (getVerbatimProperties().getProperty("ims.db.JDBC.url").startsWith("$") || getVerbatimProperties().getProperty("ims.db.JDBC.password").startsWith("$")) {
       LOG.info("IMS not configured");
       return false;
     }
