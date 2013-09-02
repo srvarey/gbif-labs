@@ -1,16 +1,11 @@
 ###
+## Concurrent writing improves throughput to HBase significantly.
+## The maps are batched into flushThread x batchSize and then partitioned and handed over to the flush threads
+## By pre batching before partitioning, flush threads are guaranteed to get unique HBase ops so there is no 
+## competition.
 ##
-## The 3 variables controlling the flow are:
-##  a) messageConsumerThreads: how many threads are reading from rabbit, and computing mutations
-##  b) batchSize: how large a batch from a) needs to be before handed over to the flush thread
-##  c) batchFlushThreads: how many threads are flushing to HBase (increments like many concurrent)
-## Be aware that b) and c) dictate the memory requirements
+## The message consumers are thread safe but will lock each other, thus consumer threads > 1 makes little sense. 
 ##
-## This is in incrementing cube, which means that HBase column increment is used.  Testing on HBase 
-## suggests large concurrency increases throughput significantly, so a large number of flushing threads
-## are used.  This lends itself well to large batching (up to 300 mutations per record).  The consuming
-## threads are tuned to saturate the flushing threads, by monitoring the backOffMeter and setting to 
-## a level high enough but ensuring we don't go into backoff mode.
 ####
 hbaseConfig: /home/crap/config/hbase-site.xml
 messaging:
@@ -20,7 +15,7 @@ messaging:
   password: metrics
 cubeTable: prepop_crawler_maps_cube
 columnFamily: dc
-messageConsumerThreads: 10
-batchSize: 10000
-batchFlushThreads: 1
+messageConsumerThreads: 1
+batchSize: 1000
+batchFlushThreads: 25
 pixelsPerCluster: 1
