@@ -22,9 +22,14 @@
       <id>gbif-thirdparty</id>
       <url>http://repository.gbif.org/content/repositories/thirdparty/</url>
     </repository>
+    <repository>
+      <id>gbif-public</id>
+      <url>http://repository.gbif.org/content/groups/public/</url>
+    </repository>
   </repositories>
 
   <build>
+    <defaultGoal>jetty:run</defaultGoal>
     <resources>
       <resource>
         <directory>src/main/resources</directory>

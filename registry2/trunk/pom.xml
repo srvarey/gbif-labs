@@ -507,4 +507,42 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+
+    <!--
+      A staging profile missing the following passwords:
+
+       <registry2.db.password></registry2.db.password>
+       <registry2-it.db.password></registry2-it.db.password>
+       <ims.db.password></ims.db.password>
+       <drupal.db.password></drupal.db.password>
+    -->
+    <profile>
+      <id>staging</id>
+      <properties>
+        <registry2.db.url>jdbc:postgresql://staging.gbif.org/registry</registry2.db.url>
+        <registry2.db.username>registry</registry2.db.username>
+        <!-- integration tests -->
+        <registry2-it.db.url>jdbc:postgresql://builds.gbif.org/registry-IT</registry2-it.db.url>
+        <registry2-it.db.username>registry</registry2-it.db.username>
+        <registry.messaging.hostname>mq.gbif.org</registry.messaging.hostname>
+        <registry.messaging.port>5672</registry.messaging.port>
+        <registry.messaging.virtualhost>/staging/registry2</registry.messaging.virtualhost>
+        <registry.messaging.username>staging-registry2</registry.messaging.username>
+        <registry.messaging.password>staging-registry2</registry.messaging.password>
+        <!-- The application keys used by the staging server when it deploys -->
+        <appkeys.file>/usr/share/tomcat7/conf/appkeys.properties</appkeys.file>
+        <!-- CMS credentials are used for the authentication so can be a read only account -->
+        <drupal.db.driver>com.mysql.jdbc.Driver</drupal.db.driver>
+        <drupal.db.url>jdbc:mysql://nerf.gbif.org:3306/drupal_devel?useUnicode=true&amp;characterEncoding=UTF8&amp;characterSetResults=UTF8</drupal.db.url>
+        <drupal.db.username>drupal_devel</drupal.db.username>
+        <!-- uses main IMS -->
+        <ims.db.url>jdbc:filemaker://filemaker.gbif.org/IMS_NG</ims.db.url>
+        <ims.db.username>portal</ims.db.username>
+      </properties>
+    </profile>
+
+  </profiles>
+
 </project>
