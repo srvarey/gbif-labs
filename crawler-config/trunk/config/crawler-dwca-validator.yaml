@@ -11,5 +11,5 @@ zooKeeper:
   connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
   namespace: crawler
 queueName: validator
-poolSize: 1
+poolSize: 3
 archiveRepository: /home/crap/storage/dwca
