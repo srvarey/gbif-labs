@@ -12,7 +12,7 @@ CREATE TABLE node
   type enum_node_type NOT NULL,
   participation_status enum_node_participation_status NOT NULL,
   gbif_region enum_node_gbif_region,
-  continent enum_node_continent NOT NULL,
+  continent enum_node_continent,
   title varchar(255) NOT NULL CHECK (assert_min_length(title, 2)),
   country char(2) CHECK (assert_min_length(country, 2)),
   created_by varchar(255) NOT NULL CHECK (assert_min_length(created_by, 3)),
