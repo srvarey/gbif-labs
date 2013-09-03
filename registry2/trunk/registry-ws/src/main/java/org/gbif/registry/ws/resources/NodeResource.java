@@ -165,6 +165,13 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
   }
 
   @GET
+  @Path("activeCountries")
+  @Override
+  public List<Country> listActiveCountries() {
+    return nodeMapper.listActiveCountries();
+  }
+
+  @GET
   @Override
   @Path("{key}/dataset")
   public PagingResponse<Dataset> endorsedDatasets(@PathParam("key") UUID nodeKey, @Context Pageable page) {
