@@ -27,6 +27,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -61,6 +63,11 @@ public class NodeWsClient extends BaseNetworkEntityClient<Node> implements NodeS
   @Override
   public List<Country> listNodeCountries() {
     return get(GenericTypes.LIST_COUNTRY, "country");
+  }
+
+  @Override
+  public List<Country> listActiveCountries() {
+    return get(GenericTypes.LIST_COUNTRY, "activeCountries");
   }
 
   @Override

@@ -31,6 +31,8 @@ public interface NodeMapper extends BaseNetworkEntityMapper<Node> {
 
   List<Country> listNodeCountries();
 
+  List<Country> listActiveCountries();
+
   Node getByCountry(@Param("country") Country country);
 
   /**
