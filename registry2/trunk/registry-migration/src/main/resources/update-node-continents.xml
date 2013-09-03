@@ -45,6 +45,7 @@
     update node set continent='ASIA', gbif_region='ASIA' WHERE country='TJ';
     update node set continent='ASIA', gbif_region='ASIA' WHERE country='TM';
     update node set continent='ASIA', gbif_region='ASIA' WHERE country='UZ';
+    update node set continent='ASIA', gbif_region='ASIA' WHERE country='KR';
     update node set continent='AFRICA', gbif_region='AFRICA' WHERE country='BI';
     update node set continent='AFRICA', gbif_region='AFRICA' WHERE country='DJ';
     update node set continent='AFRICA', gbif_region='AFRICA' WHERE country='ER';
