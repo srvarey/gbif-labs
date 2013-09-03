@@ -58,6 +58,11 @@
       <artifactId>postgresql</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.filemaker</groupId>
+      <artifactId>jdbc</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-core</artifactId>
     </dependency>

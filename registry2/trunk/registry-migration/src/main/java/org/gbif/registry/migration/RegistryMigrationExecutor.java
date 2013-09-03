@@ -15,7 +15,7 @@ public class RegistryMigrationExecutor {
     return EtlExecutor.newExecutor(new File(scriptFile)).execute(new ConsoleProgressIndicator(consoleIndicator));
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws ClassNotFoundException {
     try {
       SLF4JBridgeHandler.removeHandlersForRootLogger();
       SLF4JBridgeHandler.install();
@@ -26,6 +26,22 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting nodes creation...");
       statics = execute("src/main/resources/migrate-nodes.xml", "Registry node");
       System.out.println("Nodes created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting node IMS identifiers creation...");
+      statics = execute("src/main/resources/add-ims-identifiers.xml", "IMS identifier");
+      System.out.println("IMS Identifiers created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Update nodes with IMS information ...");
+      statics = execute("src/main/resources/update-nodes-ims.xml", "IMS update");
+      System.out.println("IMS update done in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Update nodes with manual fixes...");
+      statics = execute("src/main/resources/update-nodes-manually.xml", "Node manual fixes");
+      System.out.println("Node manual update done in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting adding node RSS feeds ...");
+      statics = execute("src/main/resources/add-node-endpoints.xml", "Node endpoints");
+      System.out.println("Node feeds added in " + statics.getTotalTime() + " milliseconds");
 
       System.out.println("Starting organizations creation...");
       statics = execute("src/main/resources/migrate-organizations.xml", "Registry organization");
@@ -161,18 +177,6 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting pg sequence udpates...");
       statics = execute("src/main/resources/reset-sequences.xml", "Reset pg sequences");
       System.out.println("Postgres sequences updated in " + statics.getTotalTime() + " milliseconds");
-
-      System.out.println("Starting node IMS identifiers creation...");
-      statics = execute("src/main/resources/add-ims-identifiers.xml", "IMS identifier");
-      System.out.println("IMS Identifiers created in " + statics.getTotalTime() + " milliseconds");
-
-      System.out.println("Starting updating node continents ...");
-      statics = execute("src/main/resources/update-node-continents.xml", "continents");
-      System.out.println("Node continents updated in " + statics.getTotalTime() + " milliseconds");
-
-      System.out.println("Starting adding node RSS feeds ...");
-      statics = execute("src/main/resources/add-node-endpoints.xml", "Node endpoints");
-      System.out.println("Node feeds added in " + statics.getTotalTime() + " milliseconds");
 
       System.out.println("Updating CoL constituents ...");
       statics = execute("src/main/resources/update-col-constituents.xml", "CoL constituents");
