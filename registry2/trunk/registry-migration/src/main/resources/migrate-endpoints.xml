@@ -15,8 +15,8 @@
         CASE WHEN char_length(trim(description))&lt;1 THEN null ELSE description END AS description,
         COALESCE(created, modified, now()) AS created,
         COALESCE(modified, created, now()) AS modified,
-        'ADMIN' AS created_by,
-        'ADMIN' AS modified_by     
+        'registry-migration.gbif.org' AS created_by,
+        'registry-migration.gbif.org' AS modified_by
         FROM service
         WHERE deleted IS NULL
         

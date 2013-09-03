@@ -31,8 +31,8 @@
           COALESCE(a.created, a.modified, now()) AS created,
           COALESCE(a.modified, a.created, now()) AS modified,
           a.deleted,
-          'ADMIN' AS created_by,
-          'ADMIN' AS modified_by
+          'registry-migration.gbif.org' AS created_by,
+          'registry-migration.gbif.org' AS modified_by
         FROM agent a
         JOIN agent_relation arOwning ON a.id=arOwning.to_agent_id
         JOIN agent_relation arHosting ON a.id=arHosting.to_agent_id

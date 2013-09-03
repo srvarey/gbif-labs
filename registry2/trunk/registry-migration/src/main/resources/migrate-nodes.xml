@@ -15,10 +15,10 @@
           deleted,
           CASE WHEN char_length(trim(iso_country_code))=2 THEN 'COUNTRY' ELSE 'OTHER' END AS type,
           CASE WHEN char_length(trim(iso_country_code))=2 THEN 'ASSOCIATE' ELSE 'ASSOCIATE' END AS participation_status,
+          NULL AS continent,
           <!-- hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
-          'AFRICA' AS continent,
-          'ADMIN' AS created_by,
-          'ADMIN' AS modified_by     
+          'registry-migration.gbif.org' AS created_by,
+          'registry-migration.gbif.org' AS modified_by
         FROM agent WHERE type=14000
         <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
         <script connection-id="new-registry">

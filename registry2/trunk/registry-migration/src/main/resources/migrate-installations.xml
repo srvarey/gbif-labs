@@ -15,8 +15,8 @@
           COALESCE(a.created, a.modified, now()) AS created,
           COALESCE(a.modified, a.created, now()) AS modified,
           a.deleted,
-          'ADMIN' AS created_by,
-          'ADMIN' AS modified_by,
+          'registry-migration.gbif.org' AS created_by,
+          'registry-migration.gbif.org' AS modified_by,
           a.ws_password AS password
         FROM agent a
         JOIN agent_relation arHostingOrg ON a.id=arHostingOrg.to_agent_id
@@ -47,8 +47,8 @@
           'HTTP_INSTALLATION' as title,
           now() as created,
           now() as modified, 
-          'ADMIN' as created_by,
-          'ADMIN' as modified_by 
+          'registry-migration.gbif.org' as created_by,
+          'registry-migration.gbif.org' as modified_by
         FROM agent a 
         JOIN agent_relation ar ON ar.to_agent_id=a.id
         JOIN agent hostOrg ON hostOrg.id=ar.from_agent_id        

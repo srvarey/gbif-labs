@@ -22,7 +22,7 @@
 				WHEN 2012 THEN 'GBIF_NODE'
 			END AS type,
 			identifier,
-			'ADMIN' AS created_by,
+			'registry-migration.gbif.org' AS created_by,
 			created 
         FROM identifier WHERE deleted IS NULL
                  			
