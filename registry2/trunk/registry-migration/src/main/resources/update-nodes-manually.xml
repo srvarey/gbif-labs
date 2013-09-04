@@ -20,6 +20,7 @@
     <!-- country nodes -->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='8618c64a-93e0-4300-b546-7249e5148ed2'; <!-- US -->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='8f83fc96-c966-4126-83f7-bf044dc49efa'; <!-- CA -->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='b324e8e9-9a4c-44fa-8f1a-7f39ea7ab576'; <!-- MX -->
     <!-- non country nodes -->
     UPDATE node SET continent='AFRICA' WHERE key='90a939d3-e99c-4f6d-915f-2616423b3735'; <!-- Albertine Rift Conservation Society (ARCOS)-->
     UPDATE node SET continent='AFRICA' WHERE key='9e5d504a-879e-446e-bab0-1816dce12e41'; <!-- Endangered Wildlife Trust (EWT)-->
@@ -44,8 +45,8 @@
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='f74f8534-a357-49ae-82b1-b1d39616a0b1'; <!-- Discover Life-->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='58ef3cd5-e76a-4073-8ecd-744e137e9bc9'; <!-- Encyclopedia of Life (EOL)-->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='c13e0e4a-bb5b-4bd8-8fa9-aa0dba71698a'; <!-- Finding Species-->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d'; <!-- Inter-American Biodiversity Information Network (IABIN)-->
     UPDATE node SET continent='SOUTH_AMERICA' WHERE key='4297e544-201c-491f-a98c-cab92a98de0c'; <!-- BioNET-AndinoNET-->
-    UPDATE node SET continent='SOUTH_AMERICA' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d'; <!-- Inter-American Biodiversity Information Network (IABIN)-->
     UPDATE node SET continent='OCEANIA' WHERE key='3b9510fc-5943-45d3-b08d-5b4e1e7c385e'; <!-- Pacific Biodiversity Information Forum (PBIF)-->
   </script>
 </etl>
