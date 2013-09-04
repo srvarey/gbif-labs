@@ -17,6 +17,9 @@
     UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='dd6b757b-ce91-4e58-951b-989cea8166bf';
     UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='ed988a18-81f8-4d5f-a88d-f93ef592b2f2';
     UPDATE node SET type='OTHER', participation_status='OBSERVER' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d';
+    <!-- country nodes -->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='8618c64a-93e0-4300-b546-7249e5148ed2'; <!-- US -->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='8f83fc96-c966-4126-83f7-bf044dc49efa'; <!-- CA -->
     <!-- non country nodes -->
     UPDATE node SET continent='AFRICA' WHERE key='90a939d3-e99c-4f6d-915f-2616423b3735'; <!-- Albertine Rift Conservation Society (ARCOS)-->
     UPDATE node SET continent='AFRICA' WHERE key='9e5d504a-879e-446e-bab0-1816dce12e41'; <!-- Endangered Wildlife Trust (EWT)-->
