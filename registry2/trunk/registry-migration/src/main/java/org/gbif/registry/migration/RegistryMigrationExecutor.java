@@ -1,4 +1,3 @@
-
 package org.gbif.registry.migration;
 
 import java.io.File;
@@ -26,22 +25,6 @@ public class RegistryMigrationExecutor {
       System.out.println("Starting nodes creation...");
       statics = execute("src/main/resources/migrate-nodes.xml", "Registry node");
       System.out.println("Nodes created in " + statics.getTotalTime() + " milliseconds");
-
-      System.out.println("Starting node IMS identifiers creation...");
-      statics = execute("src/main/resources/add-ims-identifiers.xml", "IMS identifier");
-      System.out.println("IMS Identifiers created in " + statics.getTotalTime() + " milliseconds");
-
-      System.out.println("Update nodes with IMS information ...");
-      statics = execute("src/main/resources/update-nodes-ims.xml", "IMS update");
-      System.out.println("IMS update done in " + statics.getTotalTime() + " milliseconds");
-
-      System.out.println("Update nodes with manual fixes...");
-      statics = execute("src/main/resources/update-nodes-manually.xml", "Node manual fixes");
-      System.out.println("Node manual update done in " + statics.getTotalTime() + " milliseconds");
-
-      System.out.println("Starting adding node RSS feeds ...");
-      statics = execute("src/main/resources/add-node-endpoints.xml", "Node endpoints");
-      System.out.println("Node feeds added in " + statics.getTotalTime() + " milliseconds");
 
       System.out.println("Starting organizations creation...");
       statics = execute("src/main/resources/migrate-organizations.xml", "Registry organization");
@@ -189,6 +172,23 @@ public class RegistryMigrationExecutor {
       System.out.println("Adding the full text search...");
       statics = execute("src/main/resources/fulltext-columns.xml", "fulltext");
       System.out.println("Full text added in " + statics.getTotalTime() + " milliseconds");
+
+      // IMS updates must come at the end to avoid PK collisions
+      System.out.println("Starting node IMS identifiers creation...");
+      statics = execute("src/main/resources/add-ims-identifiers.xml", "IMS identifier");
+      System.out.println("IMS Identifiers created in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Update nodes with IMS information ...");
+      statics = execute("src/main/resources/update-nodes-ims.xml", "IMS update");
+      System.out.println("IMS update done in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Update nodes with manual fixes...");
+      statics = execute("src/main/resources/update-nodes-manually.xml", "Node manual fixes");
+      System.out.println("Node manual update done in " + statics.getTotalTime() + " milliseconds");
+
+      System.out.println("Starting adding node RSS feeds ...");
+      statics = execute("src/main/resources/add-node-endpoints.xml", "Node endpoints");
+      System.out.println("Node feeds added in " + statics.getTotalTime() + " milliseconds");
 
     } catch (EtlExecutorException e) {
       e.printStackTrace();
