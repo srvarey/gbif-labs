@@ -26,6 +26,7 @@ import org.gbif.api.service.registry.OrganizationService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.GbifRegion;
 import org.gbif.api.vocabulary.IdentifierType;
+import org.gbif.api.vocabulary.NodeType;
 import org.gbif.api.vocabulary.ParticipationStatus;
 import org.gbif.registry.guice.RegistryTestModules;
 import org.gbif.registry.utils.Datasets;
@@ -125,6 +126,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
       Node n = newEntity();
       n.setCountry(c);
       n.setTitle("GBIF Node " + c.getTitle());
+      n.setType(NodeType.COUNTRY);
       n.setParticipationStatus(ParticipationStatus.VOTING);
       n.setGbifRegion(GbifRegion.AFRICA);
       n = create(n, count + 1);

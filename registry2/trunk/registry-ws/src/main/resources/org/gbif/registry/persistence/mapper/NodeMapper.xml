@@ -67,7 +67,7 @@
   <select id="getByCountry" resultType="Node" resultMap="NODE_MAP">
     SELECT <include refid="NODE_FIELDS"/>
     FROM node
-    WHERE country = #{country,jdbcType=OTHER} AND deleted IS NULL
+    WHERE country = #{country,jdbcType=OTHER} AND deleted IS NULL AND type='COUNTRY'
   </select>
 
   <insert id="create" parameterType="Node">
