@@ -74,6 +74,11 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
   }
 
   @Override
+  public PagingResponse<Dataset> listConstituents(Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, page, "constituents");
+  }
+
+  @Override
   public List<Metadata> listMetadata(UUID datasetKey, @Nullable MetadataType type) {
     return get(GenericTypes.LIST_METADATA, QueryParamBuilder.create("type", type).build(), datasetKey.toString(),
       "metadata");
@@ -102,11 +107,6 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
   @Override
   public PagingResponse<Dataset> listDuplicates(Pageable page) {
     return get(GenericTypes.PAGING_DATASET, null, null, page, "duplicate");
-  }
-
-  @Override
-  public PagingResponse<Dataset> listSubdatasets(Pageable page) {
-    return get(GenericTypes.PAGING_DATASET, null, null, page, "subDataset");
   }
 
   @Override

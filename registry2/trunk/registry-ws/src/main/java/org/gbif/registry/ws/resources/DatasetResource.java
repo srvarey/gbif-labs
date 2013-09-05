@@ -437,6 +437,13 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
       datasetMapper.listConstituents(datasetKey, page));
   }
 
+  @GET
+  @Path("constituents")
+  @Override
+  public PagingResponse<Dataset> listConstituents(@Context Pageable page) {
+    return pagingResponse(page, datasetMapper.countSubdatasets(), datasetMapper.subdatasets(page));
+  }
+
   @Path("{key}/metadata")
   @GET
   @Override
@@ -479,13 +486,6 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @Override
   public PagingResponse<Dataset> listDuplicates(@Context Pageable page) {
     return pagingResponse(page, datasetMapper.countDuplicates(), datasetMapper.duplicates(page));
-  }
-
-  @GET
-  @Path("subDataset")
-  @Override
-  public PagingResponse<Dataset> listSubdatasets(@Context Pageable page) {
-    return pagingResponse(page, datasetMapper.countSubdatasets(), datasetMapper.subdatasets(page));
   }
 
   @GET

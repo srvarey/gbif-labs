@@ -17,6 +17,16 @@ package org.gbif.registry.persistence.mapper;
 
 import org.gbif.api.model.registry.Network;
 
+import java.util.UUID;
+
+import org.apache.ibatis.annotations.Param;
+
 public interface NetworkMapper extends BaseNetworkEntityMapper<Network> {
+
+  int countDatasetsInNetwork(@Param("networkKey") UUID networkKey);
+
+  void addDatasetConstituent(@Param("networkKey") UUID networkKey, @Param("datasetKey") UUID datasetKey);
+
+  void deleteDatasetConstituent(@Param("networkKey") UUID networkKey, @Param("datasetKey") UUID datasetKey);
 
 }

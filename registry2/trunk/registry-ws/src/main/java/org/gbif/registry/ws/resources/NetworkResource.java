@@ -17,19 +17,26 @@ package org.gbif.registry.ws.resources;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Network;
 import org.gbif.api.service.registry.NetworkService;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
+import org.gbif.registry.persistence.mapper.DatasetMapper;
 import org.gbif.registry.persistence.mapper.EndpointMapper;
 import org.gbif.registry.persistence.mapper.IdentifierMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
 
+import java.util.UUID;
 import javax.annotation.Nullable;
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
@@ -44,6 +51,8 @@ import com.google.inject.Singleton;
 @Path("network")
 @Singleton
 public class NetworkResource extends BaseNetworkEntityResource<Network> implements NetworkService {
+  private final DatasetMapper datasetMapper;
+  private final NetworkMapper networkMapper;
 
   @Inject
   public NetworkResource(
@@ -54,6 +63,7 @@ public class NetworkResource extends BaseNetworkEntityResource<Network> implemen
     MachineTagMapper machineTagMapper,
     TagMapper tagMapper,
     CommentMapper commentMapper,
+    DatasetMapper datasetMapper,
     EventBus eventBus) {
     super(networkMapper,
           commentMapper,
@@ -64,6 +74,8 @@ public class NetworkResource extends BaseNetworkEntityResource<Network> implemen
           tagMapper,
           Network.class,
           eventBus);
+    this.datasetMapper = datasetMapper;
+    this.networkMapper = networkMapper;
   }
 
 
@@ -79,6 +91,31 @@ public class NetworkResource extends BaseNetworkEntityResource<Network> implemen
     } else {
       return search(query, page);
     }
+  }
+
+  @Path("{key}/constituents")
+  @GET
+  @Override
+  public PagingResponse<Dataset> listConstituents(@PathParam("key") UUID networkKey, @Context Pageable page) {
+    return pagingResponse(page, (long) networkMapper.countDatasetsInNetwork(networkKey),
+      datasetMapper.listDatasetsInNetwork(networkKey, page));
+  }
+
+  @Path("{key}/constituents/{datasetKey}")
+  @POST
+  @RolesAllowed(ADMIN_ROLE)
+  @Override
+  public void addConstituent(@PathParam("key") UUID networkKey, @PathParam("datasetKey") UUID datasetKey) {
+    networkMapper.addDatasetConstituent(networkKey, datasetKey);
+  }
+
+
+  @Path("{key}/constituents/{datasetKey}")
+  @DELETE
+  @RolesAllowed(ADMIN_ROLE)
+  @Override
+  public void removeConstituent(@PathParam("key") UUID networkKey, @PathParam("datasetKey") UUID datasetKey) {
+    networkMapper.deleteDatasetConstituent(networkKey, datasetKey);
   }
 
 }
