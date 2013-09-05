@@ -12,11 +12,21 @@
  */
 package org.gbif.registry.ws.client;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
+import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Network;
 import org.gbif.api.service.registry.NetworkService;
 import org.gbif.registry.ws.client.guice.RegistryWs;
 
+import java.util.UUID;
 import javax.annotation.Nullable;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
@@ -32,4 +42,19 @@ public class NetworkWsClient extends BaseNetworkEntityClient<Network> implements
     super(Network.class, resource.path("network"), authFilter, GenericTypes.PAGING_NETWORK);
   }
 
+
+  @Override
+  public PagingResponse<Dataset> listConstituents(UUID networkKey, @Nullable Pageable page) {
+    return get(GenericTypes.PAGING_DATASET, page, networkKey.toString(), "constituents");
+  }
+
+  @Override
+  public void addConstituent(UUID networkKey, UUID datasetKey) {
+    post("", networkKey.toString(), "constituents", datasetKey.toString());
+  }
+
+  @Override
+  public void removeConstituent(UUID networkKey, UUID datasetKey) {
+    delete(networkKey.toString(), "constituents", datasetKey.toString());
+  }
 }

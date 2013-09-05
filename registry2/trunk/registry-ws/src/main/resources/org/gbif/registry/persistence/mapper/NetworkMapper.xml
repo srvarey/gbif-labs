@@ -5,6 +5,7 @@
   <!-- Auto-mapping and eager loading of sub resources  -->
   <resultMap id="NETWORK_MAP" type="Network" autoMapping="true">
     <id property="key" column="key"/>
+    <association property="numConstituents" column="key" select="countConstituents" />
     <collection property="contacts" column="key" select="listContacts"/>
     <collection property="endpoints" column="key" select="listEndpoints"/>
     <collection property="machineTags" column="key" select="listMachineTags"/>
@@ -80,7 +81,11 @@
     now(), <!-- modified -->    
     #{createdBy}
   </sql>
-  
+
+  <select id="countDatasetsInNetwork" resultType="int">
+    SELECT COUNT(*) AS num_constituents FROM dataset_network WHERE network_key = #{networkKey,jdbcType=OTHER}
+  </select>
+
   <!--  Note: you can get entities which are deleted -->
   <select id="get" resultMap="NETWORK_MAP">
     SELECT <include refid="NETWORK_FIELDS"/>
@@ -309,4 +314,22 @@
       comment_key = comment.key AND 
       network_key = #{targetEntityKey,jdbcType=OTHER} AND comment_key = #{commentKey,jdbcType=INTEGER}
   </delete>
+
+
+  <!-- DATASET CONSTITUENTS -->
+  <insert id="addDatasetConstituent">
+    INSERT INTO dataset_network(dataset_key,network_key)
+    VALUES(
+     #{datasetKey,jdbcType=OTHER},
+     #{networkKey,jdbcType=OTHER}
+    )
+  </insert>
+
+  <delete id="deleteDatasetConstituent">
+    DELETE FROM dataset_network
+    WHERE
+      dataset_key = #{datasetKey,jdbcType=OTHER} AND
+      network_key = #{networkKey,jdbcType=OTHER}
+  </delete>
+
 </mapper>
