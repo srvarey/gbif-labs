@@ -13,6 +13,9 @@
 ## a level high enough but ensuring we don't go into backoff mode.
 ####
 hbaseConfig: /home/crap/config/hbase-site.xml
+ganglia:
+  gangliaHost: b5g2.gbif.org
+  gangliaPort: 8649
 messaging:
   host: mq.gbif.org
   virtualHost: /crawler/dev

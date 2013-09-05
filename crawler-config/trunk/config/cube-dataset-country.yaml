@@ -15,6 +15,9 @@
 ## to 1 mutation, so we never hit the batch size, and it will flush on age)
 ###
 hbaseConfig: /home/crap/config/hbase-site.xml
+ganglia:
+  gangliaHost: b5g2.gbif.org
+  gangliaPort: 8649
 messaging:
   host: mq.gbif.org
   virtualHost: /crawler/dev
