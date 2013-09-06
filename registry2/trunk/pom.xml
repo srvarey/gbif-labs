@@ -86,13 +86,13 @@
     <commons-beanutils.version>1.8.3</commons-beanutils.version>
     <commons-digester.version>3.2</commons-digester.version>
     <gbif-api.version>0.6-SNAPSHOT</gbif-api.version>
-    <gbif-common.version>0.11</gbif-common.version>
+    <gbif-common.version>0.13</gbif-common.version>
     <gbif-common-ws.version>0.10-SNAPSHOT</gbif-common-ws.version>
     <gbif-common.version>0.11</gbif-common.version>
     <gbif-common-mybatis.version>0.7</gbif-common-mybatis.version>
     <gbif-common-test.version>0.5</gbif-common-test.version>
     <gbif-common-service.version>0.5</gbif-common-service.version>
-    <gbif-common-search.version>0.8</gbif-common-search.version>
+    <gbif-common-search.version>0.10-SNAPSHOT</gbif-common-search.version>
     <gbif-parsers.version>0.4</gbif-parsers.version>
     <gbif-postal-service.version>0.5</gbif-postal-service.version>
     <filemaker.version>12.2.94</filemaker.version>
@@ -119,7 +119,7 @@
     <validation-api.version>1.1.0.Final</validation-api.version>
     <junit.version>4.11</junit.version>
     <bval.version>0.5</bval.version>
-    <solr.version>4.3.1</solr.version>
+    <solr.version>4.4.0</solr.version>
     <grizzly-servlet-webserver.version>1.9.58</grizzly-servlet-webserver.version>
     <liquibase.version>3.0.1</liquibase.version>
     <commons-lang3.version>3.1</commons-lang3.version>
@@ -211,18 +211,6 @@
         <groupId>org.gbif</groupId>
         <artifactId>gbif-common-search</artifactId>
         <version>${gbif-common-search.version}</version>
-        <exclusions>
-          <!-- We want the latest, but common is slower to update (for good reason as it has
-               other downstream dependencies) -->
-          <exclusion>
-            <artifactId>solr-solrj</artifactId>
-            <groupId>org.apache.solr</groupId>
-          </exclusion>
-          <exclusion>
-            <artifactId>solr-core</artifactId>
-            <groupId>org.apache.solr</groupId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
