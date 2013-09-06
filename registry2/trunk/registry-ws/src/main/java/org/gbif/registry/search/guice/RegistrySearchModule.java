@@ -17,11 +17,9 @@ import org.gbif.registry.ws.resources.OrganizationResource;
 import org.gbif.service.guice.PrivateServiceModule;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 import com.google.inject.Exposed;
 import com.google.inject.Provides;
@@ -95,11 +93,7 @@ public class RegistrySearchModule extends PrivateServiceModule {
   public SolrServer datasetSolr() throws URISyntaxException {
     File solrDir = new File(Resources.getResource("solr").toURI());
     File conf = new File(solrDir, "solr.xml");
-    try {
-      EmbeddedSolrServer solr = new EmbeddedSolrServer(new CoreContainer(solrDir.getAbsolutePath(), conf), "dataset");
-      return solr;
-    } catch (FileNotFoundException e) {
-      throw Throwables.propagate(e);
-    }
+    EmbeddedSolrServer solr = new EmbeddedSolrServer(CoreContainer.createAndLoad(solrDir.getAbsolutePath(), conf), "dataset");
+    return solr;
   }
 }
