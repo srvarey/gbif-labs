@@ -24,6 +24,6 @@ messaging:
 queueName: metrics_occurrence_cube
 cubeTable: prepop_crawler_occurrence_cube
 columnFamily: dc
-messageConsumerThreads: 10
-batchSize: 10000
+messageConsumerThreads: 1
+batchSize: 1000000
 batchFlushThreads: 100
