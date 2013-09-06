@@ -22,7 +22,7 @@
     			WHEN char_length(trim(phone))&lt;5 THEN NULL
     			ELSE phone
     		END AS phone,
-    		trim(homepage),
+    		trim(homepage) AS homepage,
     		trim(logoURL) AS logo_url,
     		CASE
     			WHEN char_length(trim(address))&lt;1 THEN NULL
