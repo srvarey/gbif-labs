@@ -332,4 +332,13 @@
       network_key = #{networkKey,jdbcType=OTHER}
   </delete>
 
+  <!-- Append safe ordering, omitting deleted entities -->
+  <select id="listByDataset" resultType="Network"  resultMap="NETWORK_MAP">
+    SELECT <include refid="NETWORK_FIELDS"/>
+    FROM dataset_network dn
+      JOIN network n ON dn.network_key = n.key
+    WHERE n.deleted IS NULL AND dn.dataset_key = #{datasetKey,jdbcType=OTHER}
+    ORDER BY n.created DESC, n.key
+  </select>
+
 </mapper>

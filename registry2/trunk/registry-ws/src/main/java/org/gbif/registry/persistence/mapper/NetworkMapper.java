@@ -17,6 +17,7 @@ package org.gbif.registry.persistence.mapper;
 
 import org.gbif.api.model.registry.Network;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.ibatis.annotations.Param;
@@ -29,4 +30,8 @@ public interface NetworkMapper extends BaseNetworkEntityMapper<Network> {
 
   void deleteDatasetConstituent(@Param("networkKey") UUID networkKey, @Param("datasetKey") UUID datasetKey);
 
+  /**
+   * @return the list of networks a dataset is a constituent of
+   */
+  List<Network> listByDataset(@Param("datasetKey") UUID datasetKey);
 }

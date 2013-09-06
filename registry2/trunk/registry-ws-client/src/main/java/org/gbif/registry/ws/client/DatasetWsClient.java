@@ -17,6 +17,7 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.crawler.DatasetProcessStatus;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Metadata;
+import org.gbif.api.model.registry.Network;
 import org.gbif.api.service.registry.DatasetProcessStatusService;
 import org.gbif.api.service.registry.DatasetService;
 import org.gbif.api.vocabulary.Country;
@@ -31,10 +32,14 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
 
@@ -145,4 +150,10 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
     Preconditions.checkNotNull(datasetKey, "Dataset jey is required");
     return get(GenericTypes.PAGING_DATASET_PROCESS_STATUS, page, datasetKey.toString(), "process");
   }
+
+  @Override
+  public List<Network> listNetworks(UUID datasetKey) {
+    return get(GenericTypes.LIST_NETWORK, datasetKey.toString(), "networks");
+  }
+
 }

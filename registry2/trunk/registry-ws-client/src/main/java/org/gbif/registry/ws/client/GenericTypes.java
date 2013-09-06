@@ -52,6 +52,8 @@ class GenericTypes {
   };
   public static final GenericType<PagingResponse<Network>> PAGING_NETWORK = new GenericType<PagingResponse<Network>>() {
   };
+  public static final GenericType<List<Network>> LIST_NETWORK = new GenericType<List<Network>>() {
+  };
   public static final GenericType<List<Contact>> LIST_CONTACT = new GenericType<List<Contact>>() {
   };
   public static final GenericType<List<Endpoint>> LIST_ENDPOINT = new GenericType<List<Endpoint>>() {

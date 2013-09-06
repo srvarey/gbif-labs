@@ -20,6 +20,7 @@ import org.gbif.api.model.crawler.DatasetProcessStatus;
 import org.gbif.api.model.registry.Contact;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Metadata;
+import org.gbif.api.model.registry.Network;
 import org.gbif.api.model.registry.search.DatasetSearchParameter;
 import org.gbif.api.model.registry.search.DatasetSearchRequest;
 import org.gbif.api.model.registry.search.DatasetSearchResult;
@@ -44,6 +45,7 @@ import org.gbif.registry.persistence.mapper.EndpointMapper;
 import org.gbif.registry.persistence.mapper.IdentifierMapper;
 import org.gbif.registry.persistence.mapper.MachineTagMapper;
 import org.gbif.registry.persistence.mapper.MetadataMapper;
+import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
 import org.gbif.registry.ws.guice.Trim;
 import org.gbif.ws.server.interceptor.NullToNotFound;
@@ -101,6 +103,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   private final MetadataMapper metadataMapper;
   private final DatasetMapper datasetMapper;
   private final ContactMapper contactMapper;
+  private final NetworkMapper networkMapper;
   private final DatasetProcessStatusMapper datasetProcessStatusMapper;
 
   /**
@@ -113,7 +116,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   public DatasetResource(DatasetMapper datasetMapper, ContactMapper contactMapper, EndpointMapper endpointMapper,
     MachineTagMapper machineTagMapper, TagMapper tagMapper, IdentifierMapper identifierMapper,
     CommentMapper commentMapper, EventBus eventBus, DatasetSearchService searchService, MetadataMapper metadataMapper,
-    DatasetProcessStatusMapper datasetProcessStatusMapper) {
+    DatasetProcessStatusMapper datasetProcessStatusMapper, NetworkMapper networkMapper) {
     super(datasetMapper, commentMapper, contactMapper, endpointMapper, identifierMapper, machineTagMapper, tagMapper,
       Dataset.class, eventBus);
     this.searchService = searchService;
@@ -121,6 +124,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     this.datasetMapper = datasetMapper;
     this.contactMapper = contactMapper;
     this.datasetProcessStatusMapper = datasetProcessStatusMapper;
+    this.networkMapper = networkMapper;
   }
 
   @GET
@@ -435,6 +439,13 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   public PagingResponse<Dataset> listConstituents(@PathParam("key") UUID datasetKey, @Context Pageable page) {
     return pagingResponse(page, (long) datasetMapper.countConstituents(datasetKey),
       datasetMapper.listConstituents(datasetKey, page));
+  }
+
+  @Path("{key}/networks")
+  @GET
+  @Override
+  public List<Network> listNetworks(@PathParam("key") UUID datasetKey) {
+    return networkMapper.listByDataset(datasetKey);
   }
 
   @GET
