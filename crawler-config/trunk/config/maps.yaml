@@ -1,9 +1,6 @@
 ###
 ## Concurrent writing improves throughput to HBase significantly.
-## The maps are batched into flushThread x batchSize and then partitioned and handed over to the flush threads
-## By pre batching before partitioning, flush threads are guaranteed to get unique HBase ops so there is no 
-## competition.
-##
+## 
 ## The message consumers are thread safe but will lock each other, thus consumer threads > 1 makes little sense. 
 ##
 ####
@@ -16,6 +13,6 @@ messaging:
 cubeTable: prepop_crawler_maps_cube
 columnFamily: dc
 messageConsumerThreads: 1
-batchSize: 1000
-batchFlushThreads: 25
+batchSize: 10000
+batchFlushThreads: 10
 pixelsPerCluster: 1
