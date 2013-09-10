@@ -1,0 +1,23 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="organization_endpoints" connection-id="old-registry">
+        SELECT a.uuid AS organization_key, 
+        	s.id AS endpoint_key 
+        FROM service s, agent a
+        WHERE a.id = s.agent_id AND a.type = 14010 AND a.deleted IS NULL AND s.deleted IS NULL
+        AND a.name NOT IN('Name', 'UPDATE', 'UPDATED NAME', 'Test Name', 'IPT Test Organisation','GBIF Prod Reg Test1',
+         'GBIF Production Registry Test','GBIF Production Registry Test','TestNewOrganization','Thematic Networks','US GBIF mirror')
+        
+         			
+		<script connection-id="new-registry">
+		INSERT INTO organization_endpoint(organization_key, endpoint_key)
+		VALUES (?organization_key::uuid,?endpoint_key);
+        </script>
+    </query>
+</etl>
