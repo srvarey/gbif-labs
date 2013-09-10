@@ -1,0 +1,20 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+  <properties>
+    <include href="conf.properties"/>
+  </properties>
+  <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>
+
+  <!-- creates new Node identifier records for IMS participant identifiers -->
+  <script connection-id="new-registry">
+    <!-- AUSTRALIA NODE FEED -->
+    INSERT INTO endpoint(type,url,description,created,modified,created_by,modified_by) VALUES('FEED','http://www.ala.org.au/feed/','News from GBIF Australia',now(),now(),'Kyle','Kyle');
+    INSERT INTO node_endpoint(node_key, endpoint_key) VALUES ('4a6f1b71-969e-4fc5-a693-282b05e1220c',LASTVAL());
+    <!-- SPAIN NODE FEED -->
+    INSERT INTO endpoint(type,url,description,created,modified,created_by,modified_by) VALUES('FEED','http://www.gbif.es/rss_en.php','News from GBIF Spain',now(),now(),'Kyle','Kyle');
+    INSERT INTO node_endpoint(node_key, endpoint_key) VALUES ('1f94b3ca-9345-4d65-afe2-4bace93aa0fe',LASTVAL());
+    <!-- FRANCE NODE FEED -->
+    INSERT INTO endpoint(type,url,description,created,modified,created_by,modified_by) VALUES('FEED','http://www.gbif.fr/?feed=rss2','News from GBIF France',now(),now(),'Kyle','Kyle');
+    INSERT INTO node_endpoint(node_key, endpoint_key) VALUES ('da44cd31-5901-4687-a106-6d1c7734ee3a',LASTVAL());
+  </script>
+</etl>

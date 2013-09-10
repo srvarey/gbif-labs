@@ -1,0 +1,20 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="installation_machine_tags" connection-id="old-registry">
+        SELECT a.uuid AS installation_key, 
+        	t.id AS machine_tag_key 
+        FROM agent a, mtags t
+        WHERE a.id = t.agent_id AND a.type = 14100 AND a.deleted IS NULL <!--AND t.namespace_id IS NOT NULL-->
+         			
+		<script connection-id="new-registry">
+		INSERT INTO installation_machine_tag(installation_key, machine_tag_key)
+		VALUES (?installation_key::uuid,?machine_tag_key);
+        </script>
+    </query>
+</etl>
