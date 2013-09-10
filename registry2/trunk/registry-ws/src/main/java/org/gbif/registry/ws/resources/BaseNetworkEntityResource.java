@@ -25,6 +25,7 @@ import org.gbif.api.model.registry.PostPersist;
 import org.gbif.api.model.registry.PrePersist;
 import org.gbif.api.model.registry.Tag;
 import org.gbif.api.service.registry.NetworkEntityService;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.registry.events.CreateEvent;
 import org.gbif.registry.events.DeleteEvent;
 import org.gbif.registry.events.UpdateEvent;
@@ -193,6 +194,18 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
     page = page == null ? new PagingRequest() : page;
     return WithMyBatis.list(mapper, page);
   }
+
+  @Override
+  public PagingResponse<T> listByIdentifier(IdentifierType type, String identifier, @Nullable Pageable page) {
+    page = page == null ? new PagingRequest() : page;
+    return WithMyBatis.listByIdentifier(mapper, type, identifier, page);
+  }
+
+  @Override
+  public PagingResponse<T> listByIdentifier(String identifier, @Nullable Pageable page) {
+    return listByIdentifier(null, identifier, page);
+  }
+
 
   /**
    * This method ensures that the path variable for the key matches the entity's key, ensures that the caller is
@@ -585,5 +598,4 @@ public class BaseNetworkEntityResource<T extends NetworkEntity> implements Netwo
     }
     return new PagingResponse<T>(page, count, result);
   }
-
 }

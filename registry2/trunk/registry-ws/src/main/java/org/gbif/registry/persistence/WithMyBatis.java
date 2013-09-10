@@ -9,6 +9,7 @@ import org.gbif.api.model.registry.Identifier;
 import org.gbif.api.model.registry.MachineTag;
 import org.gbif.api.model.registry.NetworkEntity;
 import org.gbif.api.model.registry.Tag;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.CommentableMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
@@ -25,6 +26,8 @@ import org.gbif.registry.persistence.mapper.TaggableMapper;
 
 import java.util.List;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 import org.mybatis.guice.transactional.Transactional;
@@ -90,6 +93,16 @@ public class WithMyBatis {
     long total = mapper.count(query);
     return new PagingResponse<T>(page.getOffset(), page.getLimit(), total, mapper.search(query, page));
   }
+
+  public static <T extends NetworkEntity> PagingResponse<T> listByIdentifier(NetworkEntityMapper<T> mapper,
+    @Nullable IdentifierType type, String identifier, @Nullable Pageable page) {
+    Preconditions.checkNotNull(page, "To list by identifier you must supply a page");
+    Preconditions.checkNotNull(identifier, "To list by identifier you must supply an identifier");
+    long total = mapper.countByIdentifier(type, identifier);
+    return new PagingResponse<T>(page.getOffset(), page.getLimit(), total, mapper.listByIdentifier(type, identifier,
+      page));
+  }
+
 
   @Transactional
   public static int addContact(

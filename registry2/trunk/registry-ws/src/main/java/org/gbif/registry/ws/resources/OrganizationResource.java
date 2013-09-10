@@ -19,6 +19,7 @@ import org.gbif.api.model.registry.Installation;
 import org.gbif.api.model.registry.Organization;
 import org.gbif.api.service.registry.OrganizationService;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.DatasetMapper;
@@ -30,6 +31,7 @@ import org.gbif.registry.persistence.mapper.OrganizationMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -87,9 +89,17 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
    */
   @GET
   public PagingResponse<Organization> list(@Nullable @QueryParam("country") Country country,
-    @Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
+    @Nullable @QueryParam("identifierType") IdentifierType identifierType,
+    @Nullable @QueryParam("identifier") String identifier,
+    @Nullable @QueryParam("q") String query,
+    @Nullable @Context Pageable page) {
+    // This is getting messy: http://dev.gbif.org/issues/browse/REG-426
     if (country != null) {
       return listByCountry(country, page);
+    } else if (identifierType != null && identifier != null) {
+      return listByIdentifier(identifierType, identifier, page);
+    } else if (identifier != null) {
+      return listByIdentifier(identifier, page);
     } else if (!Strings.isNullOrEmpty(query)) {
       return search(query, page);
     } else {

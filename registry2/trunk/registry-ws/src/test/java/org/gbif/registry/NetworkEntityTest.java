@@ -22,6 +22,7 @@ import org.gbif.api.model.registry.Commentable;
 import org.gbif.api.model.registry.Contactable;
 import org.gbif.api.model.registry.Endpointable;
 import org.gbif.api.model.registry.Identifiable;
+import org.gbif.api.model.registry.Identifier;
 import org.gbif.api.model.registry.LenientEquals;
 import org.gbif.api.model.registry.MachineTaggable;
 import org.gbif.api.model.registry.NetworkEntity;
@@ -33,6 +34,7 @@ import org.gbif.api.service.registry.IdentifierService;
 import org.gbif.api.service.registry.MachineTagService;
 import org.gbif.api.service.registry.NetworkEntityService;
 import org.gbif.api.service.registry.TagService;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.registry.database.DatabaseInitializer;
 import org.gbif.registry.database.LiquibaseInitializer;
 import org.gbif.registry.grizzly.RegistryServer;
@@ -42,6 +44,7 @@ import org.gbif.ws.client.filter.SimplePrincipalProvider;
 import java.security.AccessControlException;
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.validation.ValidationException;
 
@@ -332,9 +335,47 @@ public abstract class NetworkEntityTest<T extends NetworkEntity & Contactable & 
   }
 
   @Test
-  public void testIdentifiers() {
+  public void testIdentifierCRUD() {
     T entity = create(newEntity(), 1);
-    IdentifierTests.testAddDelete(identifierService, entity);
+    IdentifierTests.testAddDelete(identifierService, service, entity);
+  }
+
+  @Test
+  public void testIdentifierSearch() {
+    T entity1 = create(newEntity(), 1);
+    T entity2 = create(newEntity(), 2);
+
+    identifierService.addIdentifier(entity1.getKey(), new Identifier(IdentifierType.DOI, "doi:1"));
+    identifierService.addIdentifier(entity1.getKey(), new Identifier(IdentifierType.DOI, "doi:1"));
+    identifierService.addIdentifier(entity1.getKey(), new Identifier(IdentifierType.DOI, "doi:2"));
+    identifierService.addIdentifier(entity2.getKey(), new Identifier(IdentifierType.DOI, "doi:2"));
+
+    PagingResponse<T> res = service.listByIdentifier(IdentifierType.DOI, "doi:2", null);
+    assertEquals(Long.valueOf(2), res.getCount());
+    assertEquals(2, res.getResults().size());
+    res = service.listByIdentifier("doi:2", null);
+    assertEquals(Long.valueOf(2), res.getCount());
+    assertEquals(2, res.getResults().size());
+
+    res = service.listByIdentifier(IdentifierType.DOI, "doi:1", null);
+    assertEquals(Long.valueOf(1), res.getCount());
+    assertEquals(1, res.getResults().size());
+
+    res = service.listByIdentifier(IdentifierType.DOI, "doi:XXX", null);
+    assertEquals(Long.valueOf(0), res.getCount());
+
+    res = service.listByIdentifier(IdentifierType.GBIF_PORTAL, "doi:1", null);
+    assertEquals(Long.valueOf(0), res.getCount());
+
+    res = service.listByIdentifier(IdentifierType.DOI, "doi:2", new PagingRequest(0, 1));
+    assertEquals(Long.valueOf(2), res.getCount());
+    assertEquals(1, res.getResults().size());
+    res = service.listByIdentifier(IdentifierType.DOI, "doi:2", new PagingRequest(1, 1));
+    assertEquals(Long.valueOf(2), res.getCount());
+    assertEquals(1, res.getResults().size());
+    res = service.listByIdentifier(IdentifierType.DOI, "doi:2", new PagingRequest(2, 1));
+    assertEquals(Long.valueOf(2), res.getCount());
+    assertEquals(0, res.getResults().size());
   }
 
   /**

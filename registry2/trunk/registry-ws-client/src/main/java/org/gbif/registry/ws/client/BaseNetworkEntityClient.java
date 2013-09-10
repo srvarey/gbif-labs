@@ -10,6 +10,7 @@ import org.gbif.api.model.registry.MachineTag;
 import org.gbif.api.model.registry.NetworkEntity;
 import org.gbif.api.model.registry.Tag;
 import org.gbif.api.service.registry.NetworkEntityService;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.ws.client.BaseWsGetClient;
 import org.gbif.ws.client.QueryParamBuilder;
 
@@ -31,8 +32,7 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
   private final GenericType<PagingResponse<T>> pagingType;
 
   public BaseNetworkEntityClient(Class<T> resourceClass, WebResource resource, @Nullable ClientFilter authFilter,
-    GenericType<PagingResponse<T>> pagingType
-  ) {
+    GenericType<PagingResponse<T>> pagingType) {
     super(resourceClass, resource, authFilter);
     this.pagingType = pagingType;
   }
@@ -195,5 +195,17 @@ public class BaseNetworkEntityClient<T extends NetworkEntity> extends BaseWsGetC
     return get(GenericTypes.LIST_IDENTIFIER, null, null,
       // TODO: identifier type
       (Pageable) null, targetEntityKey.toString(), "identifier");
+  }
+
+  @Override
+  public PagingResponse<T> listByIdentifier(IdentifierType type, String identifier, Pageable page) {
+    return get(pagingType, null, QueryParamBuilder.create("identifier", identifier, "identifierType", type).build(),
+      page);
+  }
+
+  @Override
+  public PagingResponse<T> listByIdentifier(String identifier, Pageable page) {
+    return get(pagingType, null, QueryParamBuilder.create("identifier", identifier).build(),
+      page);
   }
 }

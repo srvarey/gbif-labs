@@ -13,6 +13,11 @@
   </resultMap>
 
   <sql id="NODE_FIELDS">
+    n.key,n.type,n.title,n.participation_status,n.gbif_region,n.continent,n.country,
+    n.created,n.created_by,n.modified,n.modified_by,n.deleted
+  </sql>
+
+  <sql id="WRITABLE_NODE_FIELDS">
     key,type,title,participation_status,gbif_region,continent,country,
     created,created_by,modified,modified_by,deleted
   </sql>
@@ -60,18 +65,18 @@
   <!--  Note: you can get entities which are deleted -->
   <select id="get" resultType="Node" resultMap="NODE_MAP">
     SELECT <include refid="NODE_FIELDS"/>
-    FROM node 
+    FROM node n
     WHERE key = #{key,jdbcType=OTHER}
   </select>  
   
   <select id="getByCountry" resultType="Node" resultMap="NODE_MAP">
     SELECT <include refid="NODE_FIELDS"/>
-    FROM node
+    FROM node n
     WHERE country = #{country,jdbcType=OTHER} AND deleted IS NULL AND type='COUNTRY'
   </select>
 
   <insert id="create" parameterType="Node">
-    INSERT INTO node(<include refid="NODE_FIELDS"/>)
+    INSERT INTO node(<include refid="WRITABLE_NODE_FIELDS"/>)
     VALUES(<include refid="NODE_FIELD_TYPES"/>)
   </insert>  
   
@@ -91,7 +96,7 @@
   <!-- Append safe ordering, omitting deleted entities -->
   <select id="list" resultMap="NODE_MAP">
     SELECT <include refid="NODE_FIELDS"/>
-    FROM node 
+    FROM node n
     WHERE deleted IS NULL
     ORDER BY created DESC, key
     <if test="page != null" >
@@ -102,7 +107,7 @@
   <!-- Basic paging search functionality -->
   <select id="search" resultMap="NODE_MAP">
     SELECT <include refid="NODE_FIELDS"/>
-    FROM node 
+    FROM node n
     WHERE deleted IS NULL
     <if test="query != null" >
       <include refid="SIMPLE_SEARCH"/>
@@ -256,4 +261,28 @@
     ORDER BY country
   </select>
 
+  <select id="listByIdentifier" resultMap="NODE_MAP" parameterType="Pageable">
+    SELECT DISTINCT ON (n.key) <include refid="NODE_FIELDS"/>
+    FROM node n
+    INNER JOIN node_identifier ON node_key = n.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+    ORDER BY n.key, n.created DESC
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countByIdentifier" resultType="Long">
+    SELECT count(DISTINCT n.key)
+    FROM node n
+    INNER JOIN node_identifier ON node_key = n.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+  </select> 
 </mapper>

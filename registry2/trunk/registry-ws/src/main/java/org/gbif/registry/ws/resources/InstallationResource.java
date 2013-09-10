@@ -20,6 +20,7 @@ import org.gbif.api.model.registry.Organization;
 import org.gbif.api.model.registry.metasync.MetasyncHistory;
 import org.gbif.api.service.registry.InstallationService;
 import org.gbif.api.service.registry.MetasyncHistoryService;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.api.vocabulary.InstallationType;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
@@ -127,8 +128,16 @@ public class InstallationResource extends BaseNetworkEntityResource<Installation
    * additionally be supported, such as dataset search.
    */
   @GET
-  public PagingResponse<Installation> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
-    if (Strings.isNullOrEmpty(query)) {
+  public PagingResponse<Installation> list(@Nullable @QueryParam("q") String query,
+    @Nullable @QueryParam("identifierType") IdentifierType identifierType,
+    @Nullable @QueryParam("identifier") String identifier,
+    @Nullable @Context Pageable page) {
+    // This is getting messy: http://dev.gbif.org/issues/browse/REG-426
+    if (identifierType != null && identifier != null) {
+      return listByIdentifier(identifierType, identifier, page);
+    } else if (identifier != null) {
+      return listByIdentifier(identifier, page);
+    } else if (Strings.isNullOrEmpty(query)) {
       return list(page);
     } else {
       return search(query, page);

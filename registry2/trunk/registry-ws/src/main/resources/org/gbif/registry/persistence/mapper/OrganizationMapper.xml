@@ -430,4 +430,28 @@
     </if>
   </select>    
   
+  <select id="listByIdentifier" resultMap="ORGANIZATION_MAP" parameterType="Pageable">
+    SELECT DISTINCT ON (o.key) <include refid="ORGANIZATION_FIELDS"/>
+    FROM organization o
+    INNER JOIN organization_identifier ON organization_key = o.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+    ORDER BY o.key, o.created DESC
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countByIdentifier" resultType="Long">
+    SELECT count(DISTINCT o.key)
+    FROM organization o
+    INNER JOIN organization_identifier ON organization_key = o.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+  </select>  
 </mapper>

@@ -539,5 +539,28 @@
     WHERE de.dataset_key IS NULL AND d.deleted IS NULL AND d.external IS false AND d.parent_dataset_key IS NULL
   </select>    
   
-  
+  <select id="listByIdentifier" resultMap="DATASET_MAP" parameterType="Pageable">
+    SELECT DISTINCT ON (d.key) <include refid="DATASET_FIELDS"/>
+    FROM dataset d LEFT JOIN organization o ON o.key = d.owning_organization_key
+    INNER JOIN dataset_identifier ON dataset_key = d.key
+    INNER JOIN identifier i ON identifier_key = i.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND i.type=#{type,jdbcType=OTHER}
+    </if>
+    ORDER BY d.key, d.created DESC
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countByIdentifier" resultType="Long">
+    SELECT count(DISTINCT d.key)
+    FROM dataset d 
+    INNER JOIN dataset_identifier ON dataset_key = d.key
+    INNER JOIN identifier i ON identifier_key = i.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND i.type=#{type,jdbcType=OTHER}
+    </if>
+  </select>      
 </mapper>

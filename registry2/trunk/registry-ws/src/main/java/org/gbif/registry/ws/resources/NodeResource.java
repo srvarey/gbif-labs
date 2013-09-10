@@ -21,6 +21,7 @@ import org.gbif.api.model.registry.Node;
 import org.gbif.api.model.registry.Organization;
 import org.gbif.api.service.registry.NodeService;
 import org.gbif.api.vocabulary.Country;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.registry.ims.Augmenter;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
@@ -37,6 +38,7 @@ import org.gbif.ws.server.interceptor.NullToNotFound;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -102,8 +104,16 @@ public class NodeResource extends BaseNetworkEntityResource<Node> implements Nod
    * additionally be supported, such as dataset search.
    */
   @GET
-  public PagingResponse<Node> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
-    if (Strings.isNullOrEmpty(query)) {
+  public PagingResponse<Node> list(@Nullable @QueryParam("q") String query,
+    @Nullable @QueryParam("identifierType") IdentifierType identifierType,
+    @Nullable @QueryParam("identifier") String identifier,
+    @Nullable @Context Pageable page) {
+    // This is getting messy: http://dev.gbif.org/issues/browse/REG-426
+    if (identifierType != null && identifier != null) {
+      return listByIdentifier(identifierType, identifier, page);
+    } else if (identifier != null) {
+      return listByIdentifier(identifier, page);
+    } else if (Strings.isNullOrEmpty(query)) {
       return list(page);
     } else {
       return search(query, page);
