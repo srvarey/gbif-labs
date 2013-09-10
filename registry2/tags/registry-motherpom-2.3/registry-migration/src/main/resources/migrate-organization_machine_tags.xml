@@ -1,0 +1,23 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="organization_machine_tags" connection-id="old-registry">
+        SELECT a.uuid AS organization_key, 
+        	t.id AS machine_tag_key 
+        FROM agent a, mtags t
+        WHERE a.id = t.agent_id AND a.type = 14010 AND a.deleted IS NULL <!--AND t.namespace_id IS NOT NULL-->
+        AND a.name NOT IN('Name', 'UPDATE', 'UPDATED NAME', 'Test Name', 'IPT Test Organisation','GBIF Prod Reg Test1',
+         'GBIF Production Registry Test','GBIF Production Registry Test','TestNewOrganization','Thematic Networks','US GBIF mirror')
+        
+         			
+		<script connection-id="new-registry">
+		INSERT INTO organization_machine_tag(organization_key, machine_tag_key)
+		VALUES (?organization_key::uuid,?machine_tag_key);
+        </script>
+    </query>
+</etl>

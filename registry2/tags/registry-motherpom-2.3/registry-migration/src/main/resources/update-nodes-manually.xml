@@ -1,0 +1,52 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>
+
+  <!-- finally update a few former and observer participants as we cannot distinguish between them in the IMS -->
+  <script connection-id="new-registry">
+    UPDATE node SET type='COUNTRY', participation_status='FORMER' WHERE key='767a5cb4-f2f0-41b3-b0ec-21e4751e2927';
+    UPDATE node SET type='COUNTRY', participation_status='FORMER' WHERE key='8dae0f8c-12bc-444d-b889-6b177550a8b2';
+    UPDATE node SET type='COUNTRY', participation_status='OBSERVER' WHERE key='69b43123-c06e-4f83-a5e3-651c34c0b97a';
+    UPDATE node SET type='COUNTRY', participation_status='OBSERVER' WHERE key='a3ceb6dd-0a65-4f30-a385-30f6937c2096';
+    UPDATE node SET type='COUNTRY', participation_status='OBSERVER' WHERE key='cfe0cad9-2bf4-4d16-ae33-c3dfb0da1ed9';
+    UPDATE node SET type='COUNTRY', participation_status='VOTING' WHERE key='8df8d012-8e64-4c8a-886e-521a3bdfa623';
+    UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='7f017f1c-d33e-480a-99ed-547ff9bf7abe';
+    UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='dd6b757b-ce91-4e58-951b-989cea8166bf';
+    UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='ed988a18-81f8-4d5f-a88d-f93ef592b2f2';
+    UPDATE node SET type='OTHER', participation_status='OBSERVER' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d';
+    <!-- country nodes -->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='8618c64a-93e0-4300-b546-7249e5148ed2'; <!-- US -->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='8f83fc96-c966-4126-83f7-bf044dc49efa'; <!-- CA -->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='b324e8e9-9a4c-44fa-8f1a-7f39ea7ab576'; <!-- MX -->
+    <!-- non country nodes -->
+    UPDATE node SET continent='AFRICA' WHERE key='90a939d3-e99c-4f6d-915f-2616423b3735'; <!-- Albertine Rift Conservation Society (ARCOS)-->
+    UPDATE node SET continent='AFRICA' WHERE key='9e5d504a-879e-446e-bab0-1816dce12e41'; <!-- Endangered Wildlife Trust (EWT)-->
+    UPDATE node SET continent='AFRICA' WHERE key='0e0181bf-9c78-4676-bdc3-54765e661bb8'; <!-- BIONET-International-->
+    UPDATE node SET continent='AFRICA' WHERE key='41d4686c-f6b7-42ec-aa54-a5792700e784'; <!-- BioNET-SAFRINET-->
+    UPDATE node SET continent='AFRICA' WHERE key='b9628650-eeb8-44e3-80b8-ea6626956793'; <!-- International Centre for Insect Physiology and Ecology-->
+    UPDATE node SET continent='ASIA' WHERE key='b35cf8f1-748d-467a-adca-4f9170f20a4e'; <!-- International Centre for Integrated Mountain Development (ICIMOD)-->
+    UPDATE node SET continent='ASIA' WHERE key='af2a0fa1-4c8e-4bdc-8954-b1a55e32b0f1'; <!-- ASEAN Centre for Biodiversity (ACB)-->
+    UPDATE node SET continent='ASIA' WHERE key='dd6b757b-ce91-4e58-951b-989cea8166bf'; <!-- BioNET-ASEANET-->
+    UPDATE node SET continent='ASIA' WHERE key='7f017f1c-d33e-480a-99ed-547ff9bf7abe'; <!-- BioNET-EASIANET-->
+    UPDATE node SET continent='EUROPE' WHERE key='b8a5be24-9225-4ba5-b664-159308a4b537'; <!-- Bioversity International-->
+    UPDATE node SET continent='EUROPE' WHERE key='844f7db8-d78e-4f9a-98ba-2008b1f1461e'; <!-- Botanic Gardens Conservation International (BGCI)-->
+    UPDATE node SET continent='EUROPE' WHERE key='ed988a18-81f8-4d5f-a88d-f93ef592b2f2'; <!-- CABI Bioscience-->
+    UPDATE node SET continent='EUROPE' WHERE key='dbecf582-c93c-4a6a-8991-0327bdf7fd49'; <!-- Ciencia y Tecnología para el Desarrollo (CYTED)-->
+    UPDATE node SET continent='EUROPE' WHERE key='d8bbf693-a180-4995-94fe-6130795dcf2f'; <!-- Consortium of European Taxonomic Facilities (CETAF)-->
+    UPDATE node SET continent='EUROPE' WHERE key='f6b3dbc6-4e21-49aa-a7c6-61d778e19ec0'; <!-- DIVERSITAS-->
+    UPDATE node SET continent='EUROPE' WHERE key='4be1ac47-75ae-44f6-917a-f095306f4450'; <!-- ETI Bioinformatics-->
+    UPDATE node SET continent='EUROPE' WHERE key='86b37808-0fa3-489a-af1f-53e72b2d75ce'; <!-- Freshwater Biological Association - FreshwaterLife-->
+    UPDATE node SET continent='EUROPE' WHERE key='02c40d2a-1cba-4633-90b7-e36e5e97aba8'; <!-- GBIF_TEMP_NODE-->
+    UPDATE node SET continent='EUROPE' WHERE key='ecc358f9-a1ad-4cca-aba3-70265c630c23'; <!-- International Commission on Zoological Nomenclature (ICZN)-->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='2ca6cc46-3461-4fc1-b6fb-2781a3974649'; <!-- Consortium for the Barcode of Life (CBOL)-->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='f74f8534-a357-49ae-82b1-b1d39616a0b1'; <!-- Discover Life-->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='58ef3cd5-e76a-4073-8ecd-744e137e9bc9'; <!-- Encyclopedia of Life (EOL)-->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='c13e0e4a-bb5b-4bd8-8fa9-aa0dba71698a'; <!-- Finding Species-->
+    UPDATE node SET continent='NORTH_AMERICA' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d'; <!-- Inter-American Biodiversity Information Network (IABIN)-->
+    UPDATE node SET continent='SOUTH_AMERICA' WHERE key='4297e544-201c-491f-a98c-cab92a98de0c'; <!-- BioNET-AndinoNET-->
+    UPDATE node SET continent='OCEANIA' WHERE key='3b9510fc-5943-45d3-b08d-5b4e1e7c385e'; <!-- Pacific Biodiversity Information Forum (PBIF)-->
+  </script>
+</etl>
