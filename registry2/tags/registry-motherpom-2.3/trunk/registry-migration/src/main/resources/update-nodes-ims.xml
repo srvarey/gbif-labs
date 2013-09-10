@@ -1,0 +1,54 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="ims" url="${ims.url}" user="${ims.user}" password="${ims.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="nodes" connection-id="ims">
+        SELECT p."__kp_ID" AS imsId,
+          lower(trim(p.GBIFmembership)) AS pstatus,
+          trim(n.Name_Full) AS title,
+          upper(trim(c.ISO2)) AS country,
+          upper(trim(a.Area)) AS continent,
+          upper(trim(ga.GBIFarea)) AS gbifRegion
+        FROM "__Node" n
+          JOIN "__Participant" p ON n."_kf_ParticipantID" = p."__kp_ID"
+          JOIN "__Region" r ON p."_kf_RegionID" = r."__kp_ID"
+          JOIN "__Country" c ON p."_kf_CountryID" = c."__kp_ID"
+          LEFT JOIN "__Area" a ON r."_kf_AreaID" = a."__kp_ID"
+          LEFT JOIN "__GBIFarea" ga ON r."_kf_GBIFareaID" = ga."__kp_ID"
+        <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
+        <script connection-id="new-registry">
+          UPDATE node
+          SET (modified_by,title,country,participation_status,type,continent,gbif_region)
+            = ('ims-updater.gbif.org',?title,?country,
+          CASE ?pstatus
+              WHEN 'voting participant' THEN 'VOTING'
+              WHEN 'associate country participant' THEN 'ASSOCIATE'
+              WHEN 'former participant' THEN 'FORMER'
+              WHEN 'observer' THEN 'OBSERVER'
+              WHEN 'other associate participant' THEN 'ASSOCIATE'
+              ELSE 'ASSOCIATE' END :: enum_node_participation_status,
+          CASE ?pstatus
+              WHEN 'voting participant' THEN 'COUNTRY'
+              WHEN 'associate country participant' THEN 'COUNTRY'
+              WHEN 'former participant' THEN 'OTHER'
+              WHEN 'observer' THEN 'COUNTRY'
+              WHEN 'other associate participant' THEN 'OTHER'
+              ELSE 'OTHER' END :: enum_node_type,
+          CASE ?continent
+              WHEN 'AMERICAS' THEN 'SOUTH_AMERICA'
+              ELSE ?continent END :: enum_node_continent,
+          CASE ?gbifRegion
+              WHEN 'LATIN AMERICA' THEN 'LATIN_AMERICA'
+              WHEN 'NORTH AMERICA' THEN 'NORTH_AMERICA'
+              ELSE ?gbifRegion END :: enum_node_gbif_region
+          )
+          FROM node_identifier ni, identifier i
+          WHERE ni.node_key=node.key AND ni.identifier_key=i.key AND i.identifier=(?imsId::int)::text;
+        </script>
+    </query>
+
+</etl>

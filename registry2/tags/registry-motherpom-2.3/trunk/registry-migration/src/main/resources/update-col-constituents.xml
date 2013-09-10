@@ -1,0 +1,16 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>
+
+  <!--
+  This identifies all datasets owned by the CoL partnership and makes them a checklist constituent
+  of the main CoL checklist dataset
+  -->
+  <script connection-id="new-registry">
+UPDATE dataset SET type='CHECKLIST', parent_dataset_key='7ddf754f-d193-4cc9-b351-99906754a03b'
+WHERE owning_organization_key='f4ce3c03-7b38-445e-86e6-5f6b04b649d4' AND key!='7ddf754f-d193-4cc9-b351-99906754a03b';
+  </script>
+</etl>
