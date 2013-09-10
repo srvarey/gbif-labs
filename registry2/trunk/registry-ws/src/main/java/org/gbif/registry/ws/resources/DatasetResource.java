@@ -30,6 +30,7 @@ import org.gbif.api.service.registry.DatasetSearchService;
 import org.gbif.api.service.registry.DatasetService;
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.api.vocabulary.MetadataType;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.messages.StartCrawlMessage;
@@ -162,13 +163,20 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
    */
   @GET
   public PagingResponse<Dataset> list(@Nullable @QueryParam("country") Country country,
-    @Nullable @QueryParam("type") DatasetType type,
+    @Nullable @QueryParam("type") DatasetType datasetType,
+    @Nullable @QueryParam("identifierType") IdentifierType identifierType,
+    @Nullable @QueryParam("identifier") String identifier,
     @Nullable @QueryParam("q") String query,
     @Nullable @Context Pageable page) {
-    if (country == null && type != null) {
-      return listByType(type, page);
+    // This is getting messy: http://dev.gbif.org/issues/browse/REG-426
+    if (country == null && datasetType != null) {
+      return listByType(datasetType, page);
     } else if (country != null) {
-      return listByCountry(country, type, page);
+      return listByCountry(country, datasetType, page);
+    } else if (identifierType != null && identifier != null) {
+      return listByIdentifier(identifierType, identifier, page);
+    } else if (identifier != null) {
+      return listByIdentifier(identifier, page);
     } else if (!Strings.isNullOrEmpty(query)) {
       return search(query, page);
     } else {

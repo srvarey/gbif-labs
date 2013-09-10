@@ -361,5 +361,29 @@
     LEFT JOIN dataset ds ON ds.installation_key = i.key
     WHERE ds.key IS NULL 
   </select>
-  
+
+  <select id="listByIdentifier" resultMap="INSTALLATION_MAP" parameterType="Pageable">
+    SELECT DISTINCT ON (i.key) <include refid="INSTALLATION_FIELDS"/>
+    FROM installation i
+    INNER JOIN installation_identifier ON installation_key = i.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+    ORDER BY i.key, i.created DESC
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countByIdentifier" resultType="Long">
+    SELECT count(DISTINCT i.key)
+    FROM installation i
+    INNER JOIN installation_identifier ON installation_key = i.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+  </select>  
 </mapper>

@@ -341,4 +341,28 @@
     ORDER BY n.created DESC, n.key
   </select>
 
+  <select id="listByIdentifier" resultMap="NETWORK_MAP" parameterType="Pageable">
+    SELECT DISTINCT ON (n.key) <include refid="NETWORK_FIELDS"/>
+    FROM network n
+    INNER JOIN network_identifier ON network_key = n.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+    ORDER BY n.key, n.created DESC
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>  
+  <select id="countByIdentifier" resultType="Long">
+    SELECT count(DISTINCT n.key)
+    FROM network n
+    INNER JOIN network_identifier ON network_key = n.key
+    INNER JOIN identifier ide ON identifier_key = ide.key
+    WHERE identifier = #{identifier,jdbcType=VARCHAR}
+    <if test="type != null" >
+      AND ide.type=#{type,jdbcType=OTHER}
+    </if>
+  </select> 
 </mapper>

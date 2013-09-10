@@ -12,9 +12,11 @@
  */
 package org.gbif.registry;
 
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry.Identifier;
 import org.gbif.api.model.registry.NetworkEntity;
 import org.gbif.api.service.registry.IdentifierService;
+import org.gbif.api.service.registry.NetworkEntityService;
 import org.gbif.registry.utils.Identifiers;
 
 import java.util.List;
@@ -27,7 +29,8 @@ import static org.junit.Assert.assertTrue;
 
 public class IdentifierTests {
 
-  public static <T extends NetworkEntity> void testAddDelete(IdentifierService service, T entity) {
+  public static <T extends NetworkEntity> void testAddDelete(IdentifierService service,
+    NetworkEntityService<T> networkEntityService, T entity) {
 
     // check there are none on a newly created entity
     List<Identifier> identifiers = service.listIdentifiers(entity.getKey());
@@ -41,6 +44,16 @@ public class IdentifierTests {
     assertNotNull(identifiers);
     assertEquals("2 identifiers have been added", 2, identifiers.size());
 
+    // ensure the search works for this test. One entity with 2 duplicate identifiers is still one entity
+    Identifier identifier = Identifiers.newInstance();
+    PagingResponse<T> entities =
+      networkEntityService.listByIdentifier(identifier.getType(), identifier.getIdentifier(), null);
+    assertEquals("Only one entity should have the identifier", (Long) 1L, entities.getCount());
+    entities =
+      networkEntityService.listByIdentifier(identifier.getIdentifier(), null);
+    assertEquals("Only one entity should have the identifier", (Long) 1L, entities.getCount());
+
+
     // test deletion, ensuring correct one is deleted
     service.deleteIdentifier(entity.getKey(), identifiers.get(0).getKey());
     identifiers = service.listIdentifiers(entity.getKey());
@@ -50,5 +63,4 @@ public class IdentifierTests {
     Identifier created = identifiers.get(0);
     assertLenientEquals("Created identifier does not read as expected", expected, created);
   }
-
 }

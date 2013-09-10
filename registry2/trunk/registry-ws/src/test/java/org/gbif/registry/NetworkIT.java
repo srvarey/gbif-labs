@@ -49,21 +49,18 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class NetworkIT extends NetworkEntityTest<Network> {
 
-  private final NetworkService service;
-
   @Parameters
   public static Iterable<Object[]> data() {
     return ImmutableList.<Object[]>of(new Object[] {
       RegistryTestModules.webservice().getInstance(NetworkResource.class),
       null},
       new Object[] {
-      RegistryTestModules.webserviceClient().getInstance(NetworkService.class),
-      RegistryTestModules.webserviceClient().getInstance(SimplePrincipalProvider.class)});
+        RegistryTestModules.webserviceClient().getInstance(NetworkService.class),
+        RegistryTestModules.webserviceClient().getInstance(SimplePrincipalProvider.class)});
   }
 
   public NetworkIT(NetworkService service, @Nullable SimplePrincipalProvider pp) {
     super(service, pp);
-    this.service = service;
   }
 
   @Override

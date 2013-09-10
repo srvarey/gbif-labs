@@ -14,6 +14,7 @@ package org.gbif.registry.persistence.mapper;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.registry.NetworkEntity;
+import org.gbif.api.vocabulary.IdentifierType;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,4 +50,8 @@ public interface NetworkEntityMapper<T extends NetworkEntity> {
 
   int count(@Nullable @Param("query") String query);
 
+  long countByIdentifier(@Nullable @Param("type") IdentifierType type, @Param("identifier") String identifier);
+
+  List<T> listByIdentifier(@Nullable @Param("type") IdentifierType type, @Param("identifier") String identifier,
+    @Param("page") Pageable page);
 }

@@ -16,12 +16,14 @@ import org.gbif.api.service.registry.DatasetService;
 import org.gbif.api.service.registry.InstallationService;
 import org.gbif.api.service.registry.NetworkEntityService;
 import org.gbif.api.service.registry.OrganizationService;
+import org.gbif.api.vocabulary.IdentifierType;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
@@ -97,7 +99,7 @@ public class DatasetIndexBuilder {
 
   /**
    * A lightweight cache to help improve performance of the builder.
-   *
+   * 
    * @param <T> The type of entity being wrapped
    */
   private static class CachingNetworkEntityService<T> implements NetworkEntityService<T> {
@@ -267,6 +269,16 @@ public class DatasetIndexBuilder {
 
     @Override
     public List<Tag> listTags(@NotNull UUID taggedEntityKey, @Nullable String owner) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public PagingResponse<T> listByIdentifier(IdentifierType type, String identifier, Pageable page) {
+      throw new IllegalStateException("Method not supported in caching service");
+    }
+
+    @Override
+    public PagingResponse<T> listByIdentifier(String identifier, Pageable page) {
       throw new IllegalStateException("Method not supported in caching service");
     }
   }

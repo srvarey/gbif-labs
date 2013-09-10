@@ -1,12 +1,9 @@
 /*
  * Copyright 2013 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +17,7 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Network;
 import org.gbif.api.service.registry.NetworkService;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.registry.persistence.mapper.CommentMapper;
 import org.gbif.registry.persistence.mapper.ContactMapper;
 import org.gbif.registry.persistence.mapper.DatasetMapper;
@@ -30,6 +28,7 @@ import org.gbif.registry.persistence.mapper.NetworkMapper;
 import org.gbif.registry.persistence.mapper.TagMapper;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -51,6 +50,7 @@ import com.google.inject.Singleton;
 @Path("network")
 @Singleton
 public class NetworkResource extends BaseNetworkEntityResource<Network> implements NetworkService {
+
   private final DatasetMapper datasetMapper;
   private final NetworkMapper networkMapper;
 
@@ -66,14 +66,14 @@ public class NetworkResource extends BaseNetworkEntityResource<Network> implemen
     DatasetMapper datasetMapper,
     EventBus eventBus) {
     super(networkMapper,
-          commentMapper,
-          contactMapper,
-          endpointMapper,
-          identifierMapper,
-          machineTagMapper,
-          tagMapper,
-          Network.class,
-          eventBus);
+      commentMapper,
+      contactMapper,
+      endpointMapper,
+      identifierMapper,
+      machineTagMapper,
+      tagMapper,
+      Network.class,
+      eventBus);
     this.datasetMapper = datasetMapper;
     this.networkMapper = networkMapper;
   }
@@ -85,8 +85,16 @@ public class NetworkResource extends BaseNetworkEntityResource<Network> implemen
    * additionally be supported, such as dataset search.
    */
   @GET
-  public PagingResponse<Network> list(@Nullable @QueryParam("q") String query, @Nullable @Context Pageable page) {
-    if (Strings.isNullOrEmpty(query)) {
+  public PagingResponse<Network> list(@Nullable @QueryParam("q") String query,
+    @Nullable @QueryParam("identifierType") IdentifierType identifierType,
+    @Nullable @QueryParam("identifier") String identifier,
+    @Nullable @Context Pageable page) {
+    // This is getting messy: http://dev.gbif.org/issues/browse/REG-426
+    if (identifierType != null && identifier != null) {
+      return listByIdentifier(identifierType, identifier, page);
+    } else if (identifier != null) {
+      return listByIdentifier(identifier, page);
+    } else if (Strings.isNullOrEmpty(query)) {
       return list(page);
     } else {
       return search(query, page);
