@@ -89,6 +89,26 @@ public class InstallationIT extends NetworkEntityTest<Installation> {
     return i;
   }
 
+  /**
+   * Tests that we can successfully disable and undisable an installation.
+   */
+  @Test
+  public void disableInstallation() {
+    Installation e = newEntity();
+    UUID key = getService().create(e);
+    e = getService().get(key);
+    assertEquals("Should not be disabled to start", false, e.isDisabled());
+    e.setDisabled(true);
+    getService().update(e);
+    e = getService().get(e.getKey());
+    assertEquals("We just disabled it", true, e.isDisabled());
+    e.setDisabled(false);
+    getService().update(e);
+    e = getService().get(e.getKey());
+    assertEquals("We just un-disabled it", false, e.isDisabled());
+
+  }
+
   // Easier to test this here than other places due to our utility factory
   @Test
   public void testHostedByInstallationList() {
