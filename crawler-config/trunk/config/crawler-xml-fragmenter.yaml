@@ -8,4 +8,4 @@ zooKeeper:
   namespace: crawler
 poolSize: 50
 queueName: fragmenter
-crawlerWsUrl: http://crawler.gbif.org:8080/crawler-ws/
+crawlerWsUrl: http://b11g9.gbif.org:8080/crawler-ws/

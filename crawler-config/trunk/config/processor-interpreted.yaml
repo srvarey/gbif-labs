@@ -9,8 +9,8 @@ zooKeeper:
 ganglia:
   gangliaHost: b5g2.gbif.org
   gangliaPort: 8649
-msgPoolSize: 100
-hbasePoolSize: 100
+msgPoolSize: 50
+hbasePoolSize: 50
 queueName: occurrence_interp
 occTable: prepop_crawler_occurrence
 counterTable: prepop_crawler_occurrence_counter

@@ -4,4 +4,4 @@ messaging:
   virtualHost: /crawler/dev
   username: crawler
   password: crawler
-registryWsUrl: http://crawler.gbif.org:8080/registry-ws
+registryWsUrl: http://b11g9.gbif.org:8080/registry-ws
