@@ -13,7 +13,6 @@
   
    <!-- Partial auto-mapping -->
   <resultMap id="DATASET_PROCESS_STATUS_MAP" type="DatasetProcessStatus" autoMapping="true">  	
-  	<id property="datasetUuid" column="dataset_key"/>
     <association property="crawlJob" resultMap="CRAWL_JOB_MAP"/>
   </resultMap>
   
