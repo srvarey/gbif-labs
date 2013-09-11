@@ -89,6 +89,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A MyBATIS implementation of the service.
@@ -547,7 +548,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     @Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
     checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetUuid()),
       "DatasetProcessStatus must have the same key as the dataset");
-    datasetProcessStatusMapper.create(datasetProcessStatus);
+    this.createDatasetProcessStatus(datasetProcessStatus);
   }
 
   @Trim
@@ -555,6 +556,15 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @RolesAllowed(ADMIN_ROLE)
   @Override
   public void createDatasetProcessStatus(@Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
+    checkNotNull(datasetProcessStatus.getDatasetUuid(),
+      "DatasetProcessStatus must have the dataset key");
+    checkNotNull(datasetProcessStatus.getCrawlJob(),
+      "DatasetProcessStatus must have the crawl job with an attempt number");
+    DatasetProcessStatus existing =
+      datasetProcessStatusMapper.get(datasetProcessStatus.getDatasetUuid(), datasetProcessStatus.getCrawlJob()
+        .getAttempt());
+    checkArgument(existing == null, "Cannot create dataset[%s] process status for attempt[%s] as one already exists",
+      datasetProcessStatus.getDatasetUuid(), datasetProcessStatus.getCrawlJob().getAttempt());
     datasetProcessStatusMapper.create(datasetProcessStatus);
   }
 
@@ -569,7 +579,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
       "DatasetProcessStatus must have the same key as the url");
     checkArgument(attempt == datasetProcessStatus.getCrawlJob().getAttempt(),
       "DatasetProcessStatus must have the same attempt as the url");
-    datasetProcessStatusMapper.update(datasetProcessStatus);
+    this.createDatasetProcessStatus(datasetProcessStatus);
   }
 
   @Trim
