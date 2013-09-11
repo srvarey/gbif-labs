@@ -205,10 +205,10 @@ public class DatasetProcessStatusIT {
   /**
    * Builds a new sample process status for the given dataset and attempt number.
    */
-  private DatasetProcessStatus buildProcessStatus(Dataset dataset, int attmept) {
+  private DatasetProcessStatus buildProcessStatus(Dataset dataset, int attempt) {
     DatasetProcessStatus.Builder builder = new DatasetProcessStatus.Builder();
     CrawlJob crawlJob =
-      new CrawlJob(dataset.getKey(), EndpointType.DIGIR, URI.create("http://gbif.org.test"), attmept, null);
+      new CrawlJob(dataset.getKey(), EndpointType.DIGIR, URI.create("http://gbif.org.test"), attempt, null);
     builder.crawlJob(crawlJob);
     builder.crawlContext("testcontext");
     builder.startedCrawling(new Date());
