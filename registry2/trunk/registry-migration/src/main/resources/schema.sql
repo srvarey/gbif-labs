@@ -68,6 +68,7 @@ CREATE TABLE installation
   description text CHECK (assert_min_length(description, 1)),
   created_by varchar(255) NOT NULL CHECK (assert_min_length(created_by, 3)),
   modified_by varchar(255) NOT NULL CHECK (assert_min_length(modified_by, 3)),
+  disabled boolean NOT NULL DEFAULT false,
   created timestamp with time zone NOT NULL DEFAULT now(),
   modified timestamp with time zone NOT NULL DEFAULT now(),
   deleted timestamp with time zone
@@ -581,7 +582,7 @@ CREATE INDEX metadata_dataset_key_idx ON metadata(dataset_key);
 -- 
 --  download
 -- 
-CREATE TYPE enum_downlad_status AS ENUM ('PREPARING', 'RUNNING', 'SUCCEEDED', 'KILLED', 'FAILED', 'SUSPENDED');	
+CREATE TYPE enum_downlad_status AS ENUM ('PREPARING', 'RUNNING', 'SUCCEEDED', 'KILLED', 'FAILED', 'SUSPENDED');    
 CREATE TABLE occurrence_download
 (
   key varchar(255) NOT NULL PRIMARY KEY,
@@ -590,8 +591,8 @@ CREATE TABLE occurrence_download
   download_link text NOT NULL,
   notification_addresses text,
   created_by varchar(255) NOT NULL CHECK (assert_min_length(created_by, 3)),
-  created timestamp with time zone NOT NULL DEFAULT now(),	  
- 	  modified timestamp with time zone NOT NULL DEFAULT now()
+  created timestamp with time zone NOT NULL DEFAULT now(),      
+       modified timestamp with time zone NOT NULL DEFAULT now()
 );
 
 -- 
@@ -636,7 +637,7 @@ CREATE TABLE crawl_history (
 );
 
 
-CREATE TYPE metasync_result_type AS ENUM ('OK', 'IO_EXCEPTION', 'HTTP_ERROR', 'PROTOCOL_ERROR', 'OTHER_ERROR');	
+CREATE TYPE metasync_result_type AS ENUM ('OK', 'IO_EXCEPTION', 'HTTP_ERROR', 'PROTOCOL_ERROR', 'OTHER_ERROR');    
 -- 
 --  metasync_history
 -- 
@@ -646,4 +647,4 @@ CREATE TABLE metasync_history (
  result metasync_result_type,
  details text,
  PRIMARY KEY (installation_key, sync_date)
-);	
+);    

@@ -20,4 +20,5 @@
   <include file="liquibase/014-crawl-metasync-history.xml" />
   <include file="liquibase/015-endpoint-machine-tag-deletions.xml" />
   <include file="liquibase/016-continent-nullable.xml" />
+  <include file="liquibase/017-disable-installation.xml" />
 </databaseChangeLog>

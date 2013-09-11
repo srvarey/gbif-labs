@@ -6,6 +6,9 @@
   <strong>Important</strong>: This installation was deleted {{installation.deleted | timeAgo}} by {{installation.modifiedBy}}<br/>
   <small class="muted">{{installation.deleted}}</small></br>
 </div>
+<div class="alert alert-block" ng-show="installation.disabled" >
+  <strong>Important</strong>: This installation is disabled and no auto updates will occur<br/>
+</div>
 <hr/>
 
 <dl class="dl-horizontal spaced-list">

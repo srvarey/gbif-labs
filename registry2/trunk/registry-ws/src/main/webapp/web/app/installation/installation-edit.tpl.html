@@ -34,6 +34,15 @@
       <p class="muted"><small>When changing this, verify all services are also updated for the installation, and every dataset served.  Most likley you do not want to change this field, but rather create a new installation of the correct type, and migrate datasets.  
       Use this with extreme caution</small></p>
     </div>
+
+    <label class='control-label' for='disabled'>Disabled</label>
+    <div class='controls'>
+      <label class="checkbox">
+        <input type="checkbox" id="disabled" value="{{installation.disabled}}" ng-checked="installation.disabled" ng-model="installation.disabled">
+        <small class='muted'>Indicates that the installation is disabled and no metasync or crawling of associated datasets will occur</small>
+      </label>
+    </div>
+    
     </span>
       
     <div class="form-actions">
