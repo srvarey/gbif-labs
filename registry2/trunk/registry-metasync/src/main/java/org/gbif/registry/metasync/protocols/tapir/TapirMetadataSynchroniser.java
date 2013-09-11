@@ -36,7 +36,6 @@ import org.gbif.registry.metasync.util.Constants;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -244,10 +243,23 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
     endpoint.setUrl(metadata.getAccessPoint());
     dataset.addEndpoint(endpoint);
 
-    for (Schema schema : capabilities.getSchemas()) {
-      dataset.addMachineTag(MachineTag.newInstance(METADATA_NAMESPACE,
-                                                   Constants.CONCEPTUAL_SCHEMA,
-                                                   schema.getNamespace().toASCIIString()));
+    // This makes sure that we only save one content namespace/conceptual schema to the machine tags. This is done
+    // by picking the first match from the ORDERED_TEMPLATE_MAPPING
+    boolean found = false;
+    for (Map.Entry<String, String> entry : ORDERED_TEMPLATE_MAPPING.entries()) {
+      if (found) break;
+      for (Schema schema : capabilities.getSchemas()) {
+        if (schema.getNamespace().toASCIIString().equalsIgnoreCase(entry.getKey())) {
+          dataset.addMachineTag(MachineTag.newInstance(METADATA_NAMESPACE,
+                                                       Constants.CONCEPTUAL_SCHEMA,
+                                                       schema.getNamespace().toASCIIString()));
+          found = true;
+          break;
+        }
+      }
+    }
+    if (!found) {
+      LOG.warn("Could not find a supported conceptual schema");
     }
 
     // if search response brought back the number of records, add corresponding tag
@@ -348,11 +360,9 @@ public class TapirMetadataSynchroniser extends BaseProtocolHandler {
    *
    * @throws MetadataException if no preferred output model template was found
    */
-  private String getPreferredOutputModelTemplate(List<Schema> schemas) throws MetadataException {
+  private String getPreferredOutputModelTemplate(Iterable<Schema> schemas) throws MetadataException {
     // iterate through ordered namespace -> output model mappings
-    Iterator<Map.Entry<String, String>> iterator = ORDERED_TEMPLATE_MAPPING.entries().iterator();
-    while (iterator.hasNext()) {
-      Map.Entry<String, String> entry = iterator.next();
+    for (Map.Entry<String, String> entry : ORDERED_TEMPLATE_MAPPING.entries()) {
       // was this namespace listed in the capabilities?
       for (Schema schema : schemas) {
         if (entry.getKey().equalsIgnoreCase(schema.getNamespace().toString())) {
