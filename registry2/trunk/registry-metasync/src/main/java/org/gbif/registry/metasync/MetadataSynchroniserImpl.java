@@ -150,8 +150,13 @@ public class MetadataSynchroniserImpl implements MetadataSynchroniser {
    */
   private Installation validateInstallation(UUID key) {
     Installation installation = installationService.get(key);
+
     if (installation == null) {
       throw new IllegalArgumentException("Installation with key [" + key + "] does not exist");
+    }
+
+    if (installation.getDeleted() != null) {
+      throw new IllegalArgumentException("Installation with key [" + key +"] is deleted");
     }
 
     if (installation.getEndpoints() == null || installation.getEndpoints().isEmpty()) {
