@@ -1,6 +1,6 @@
-wsUrl: http://crawler.gbif.org:8080/crawler-ws
+wsUrl: http://b11g9.gbif.org:8080/crawler-ws
 registry:
-  wsUrl: http://crawler.gbif.org:8080/registry-ws
+  wsUrl: http://b11g9.gbif.org:8080/registry-ws
   user: markus
   password: markus
 zooKeeper:

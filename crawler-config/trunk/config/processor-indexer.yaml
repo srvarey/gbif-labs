@@ -1,7 +1,8 @@
-queueName: occurrence_indexing
+updatesQueueName: occurrence_index_updates
+deletionsQueueName: occurrence_index_deletions
 commitWithinMs: 30000
 poolSize: 10
-solrServer: http://crawler.gbif.org:8081/crawler-occurrence-solr/
+solrServer: http://b11g9.gbif.org:8081/crawler-occurrence-solr/
 messaging:
   host: mq.gbif.org
   virtualHost: /crawler/dev

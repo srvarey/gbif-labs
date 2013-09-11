@@ -4,7 +4,7 @@ messaging:
   username: crawler
   password: crawler
 registry:
-  wsUrl: http://crawler.gbif.org:8080/registry-ws
+  wsUrl: http://b11g9.gbif.org:8080/registry-ws
   user: markus
   password: markus
 zooKeeper:
