@@ -1,0 +1,17 @@
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/test
+  username: mutator
+  password: mutator
+zooKeeper:
+  connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
+  namespace: minicrawler
+ganglia:
+  gangliaHost: b5g2.gbif.org
+  gangliaPort: 8649
+msgPoolSize: 20
+hbasePoolSize: 20
+queueName: occurrence_deleter
+occTable: minicrawler_occurrence
+counterTable: minicrawler_occurrence_counter
+lookupTable: minicrawler_occurrence_lookup
