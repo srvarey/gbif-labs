@@ -548,7 +548,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     @Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
     checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetUuid()),
       "DatasetProcessStatus must have the same key as the dataset");
-    this.createDatasetProcessStatus(datasetProcessStatus);
+    createDatasetProcessStatus(datasetProcessStatus);
   }
 
   @Trim
@@ -579,7 +579,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
       "DatasetProcessStatus must have the same key as the url");
     checkArgument(attempt == datasetProcessStatus.getCrawlJob().getAttempt(),
       "DatasetProcessStatus must have the same attempt as the url");
-    this.createDatasetProcessStatus(datasetProcessStatus);
+    createDatasetProcessStatus(datasetProcessStatus);
   }
 
   @Trim
