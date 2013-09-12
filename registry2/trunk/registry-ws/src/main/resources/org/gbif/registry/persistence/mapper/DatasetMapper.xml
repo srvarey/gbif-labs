@@ -395,8 +395,8 @@
   <select id="listDatasetsEndorsedBy" resultMap="DATASET_MAP" parameterType="Pageable">
     SELECT <include refid="DATASET_FIELDS"/>
     FROM dataset d 
-    INNER JOIN organization o ON d.owning_organization_key = o.key
-    WHERE o.endorsing_node_key = #{nodeKey,jdbcType=OTHER}
+    INNER JOIN organization o ON d.owning_organization_key = o.key AND o.deleted IS NULL AND o.endorsement_approved=true
+    WHERE o.endorsing_node_key = #{nodeKey,jdbcType=OTHER} and o.endorsement_approved=true
     AND d.deleted IS NULL
     ORDER BY d.created DESC, d.key
     <if test="page != null" >
