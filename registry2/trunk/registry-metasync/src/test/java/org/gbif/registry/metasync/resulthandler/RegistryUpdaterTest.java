@@ -113,9 +113,9 @@ public class RegistryUpdaterTest {
     // update dataset 1 time
     verify(updater.getDatasetService(), times(1)).update(any(Dataset.class));
 
-    // delete 1 existing machine tag, add 4 new
+    // delete 1 existing machine tag, add 2 new
     verify(updater.getDatasetService(), times(1)).deleteMachineTag(any(UUID.class), anyInt());
-    verify(updater.getDatasetService(), times(4)).addMachineTag(any(UUID.class), any(MachineTag.class));
+    verify(updater.getDatasetService(), times(2)).addMachineTag(any(UUID.class), any(MachineTag.class));
 
     // delete 1 existing contact, add 2 new
     verify(updater.getDatasetService(), times(1)).deleteContact(any(UUID.class), anyInt());
