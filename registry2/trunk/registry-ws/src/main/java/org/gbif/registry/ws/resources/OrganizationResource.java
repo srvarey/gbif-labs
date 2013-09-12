@@ -123,6 +123,16 @@ public class OrganizationResource extends BaseNetworkEntityResource<Organization
       datasetMapper.listDatasetsOwnedBy(organizationKey, page));
   }
 
+  /**
+   * This is an HTTP only method to provide the count for the homepage of the portal. The homepage count excludes
+   * non publishing an non endorsed datasets.
+   */
+  @GET
+  @Path("count")
+  public int countOrganizations() {
+    return organizationMapper.countPublishing();
+  }
+
   @Override
   public PagingResponse<Organization> listByCountry(Country country, @Nullable Pageable page) {
     return pagingResponse(page, organizationMapper.countOrganizationsByCountry(country),
