@@ -68,18 +68,21 @@ public class TapirMetadataSynchroniserTest {
       prepareResponse(200, "tapir/capabilities1.xml"));
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(
       prepareResponse(200, "tapir/metadata1.xml"));
-    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz")))).thenReturn(
-      prepareResponse(200,  "tapir/search1.xml"));
+    when(
+      client.execute(argThat(HttpGetMatcher
+        .matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz"))))
+      .thenReturn(
+        prepareResponse(200, "tapir/search1.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, new ArrayList<Dataset>());
     assertThat(syncResult.deletedDatasets).isEmpty();
     assertThat(syncResult.existingDatasets).isEmpty();
     assertThat(syncResult.addedDatasets).hasSize(1);
     assertThat(syncResult.addedDatasets.get(0).getContacts()).hasSize(2);
-    assertThat(syncResult.addedDatasets.get(0).getMachineTags()).hasSize(4);
+    assertThat(syncResult.addedDatasets.get(0).getMachineTags()).hasSize(2);
 
     // Assert the declared record count machine tag was found, and that its value was 167348
     MachineTag count = null;
-    for (MachineTag tag: syncResult.addedDatasets.get(0).getMachineTags()) {
+    for (MachineTag tag : syncResult.addedDatasets.get(0).getMachineTags()) {
       if (tag.getName().equalsIgnoreCase(Constants.DECLARED_COUNT)) {
         count = tag;
       }
@@ -97,8 +100,11 @@ public class TapirMetadataSynchroniserTest {
       prepareResponse(200, "tapir/capabilities1.xml"));
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(
       prepareResponse(200, "tapir/metadata1.xml"));
-    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz")))).thenReturn(
-      prepareResponse(200,  "tapir/search1.xml"));
+    when(
+      client.execute(argThat(HttpGetMatcher
+        .matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz"))))
+      .thenReturn(
+        prepareResponse(200, "tapir/search1.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, Lists.newArrayList(dataset));
     assertThat(syncResult.deletedDatasets).hasSize(1);
     assertThat(syncResult.existingDatasets).isEmpty();
@@ -119,8 +125,11 @@ public class TapirMetadataSynchroniserTest {
       prepareResponse(200, "tapir/capabilities1.xml"));
     when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr")))).thenReturn(
       prepareResponse(200, "tapir/metadata1.xml"));
-    when(client.execute(argThat(HttpGetMatcher.matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz")))).thenReturn(
-      prepareResponse(200,  "tapir/search1.xml"));
+    when(
+      client.execute(argThat(HttpGetMatcher
+        .matchUrl("http://localhost/nmr?op=s&t=http%3A%2F%2Frs.gbif.org%2Ftemplates%2Ftapir%2Fdwc%2F1.4%2Fsci_name_range.xml&count=true&start=0&limit=1&lower=AAA&upper=zzz"))))
+      .thenReturn(
+        prepareResponse(200, "tapir/search1.xml"));
 
     SyncResult syncResult = synchroniser.syncInstallation(installation, Lists.newArrayList(dataset));
     assertThat(syncResult.deletedDatasets).describedAs("Deleted datasets").isEmpty();
@@ -128,8 +137,8 @@ public class TapirMetadataSynchroniserTest {
     assertThat(syncResult.addedDatasets).isEmpty();
 
     assertThat(syncResult.existingDatasets
-                 .get(dataset)
-                 .getTitle()).isEqualTo("ENGLISHNatural History Museum Rotterdam");
+      .get(dataset)
+      .getTitle()).isEqualTo("ENGLISHNatural History Museum Rotterdam");
   }
 
   public HttpResponse prepareResponse(int responseStatus, String fileName) throws IOException {
