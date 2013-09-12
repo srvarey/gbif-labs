@@ -420,6 +420,12 @@
     LEFT JOIN dataset ds ON o.key = ds.owning_organization_key 
     WHERE o.deleted IS NULL AND ds.key IS NULL
   </select>    
+  <select id="countPublishing" resultType="Integer">
+    SELECT count(DISTINCT o.key)
+    FROM organization o
+    INNER JOIN dataset ds ON o.key = ds.owning_organization_key 
+    WHERE o.deleted IS NULL AND ds.deleted IS NULL AND o.endorsement_approved=true
+  </select>    
   
   <select id="hostingInstallationsOf" resultMap="ORGANIZATION_MAP">
     SELECT <include refid="ORGANIZATION_FIELDS"/>

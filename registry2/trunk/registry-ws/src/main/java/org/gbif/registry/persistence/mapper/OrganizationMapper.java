@@ -85,4 +85,9 @@ public interface OrganizationMapper extends BaseNetworkEntityMapper<Organization
    */
   List<Organization> hostingInstallationsOf(@Param("type") InstallationType type,
     @Nullable @Param("georeferenced") Boolean georeferencedOnly);
+
+  /**
+   * @return a count of endorsed, non deleted organizations that publish data.
+   */
+  int countPublishing();
 }
