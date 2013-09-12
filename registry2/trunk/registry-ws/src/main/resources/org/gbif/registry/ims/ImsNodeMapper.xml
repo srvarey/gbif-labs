@@ -41,7 +41,7 @@ WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country 
   <select id="listContacts" resultType="Contact" resultMap="CONTACT_MAP">
       SELECT pc."_kf_ContactID" AS cid, gr."_kf_GroupID", pc."_kf_ParticipantID", pc."_kf_NodeID",
            c.Name_First AS first_name, c.Name_Last AS last_name, gr.Name AS type,
-           c.Address, c.City, c.ZipCode, ca.Name AS country, i.Name_Full__lct AS organization,
+           c.Address, c.City, c.ZipCode, ca.ISO2 AS country, i.Name_Full__lct AS organization,
            c.Email AS email, c.Fax, c.Phone_And_Phone__lct AS phone, c.URL AS homepage,
            c.Job_Position AS job_position, c.Job_Description AS description,
            c."zz__Created_Account__lxt" AS created_by, c."zz__Created_Timestamp__lxm" AS created,
