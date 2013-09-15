@@ -20,14 +20,15 @@ SELECT p."__kp_ID" AS imsId, c.ISO2 AS country, n.Name_Full AS title, n.Name_Acr
   p.Member_AsOf AS participantSince, p.PublicDescription AS description,
   p.zz__Modified_Timestamp__lxm AS modified,
   i.Name AS institution, i.Address AS address, i.City AS city, i.ZipCode AS postalCode, i.State AS province, i.Telephone AS phone, i.Email AS email,
-  p.GBIFmembership, r.Region
+  p.GBIFmembership, r.Region, p.MOU2012_Date AS dateSignedMOU
+
 FROM "__Node" n
   JOIN "__Participant" p ON n."_kf_ParticipantID" = p."__kp_ID"
   JOIN "__Region" r ON p."_kf_RegionID" = r."__kp_ID"
   JOIN "__Country" c ON p."_kf_CountryID" = c."__kp_ID"
   JOIN "__Institution" i ON p."_kf_InstitutionID" = i."__kp_ID"
 
-WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country Participant') AND p."__kp_ID" = #{imsId}
+WHERE p."__kp_ID" = #{imsId}
   </select>
 
   <!--
@@ -49,10 +50,12 @@ WHERE (GBIFmembership='Voting Participant' OR GBIFmembership='Associate Country 
       FROM "__Node" n
       JOIN "__ContactGrouproleNodeParticipant" pc ON (n."_kf_ParticipantID" = pc."_kf_ParticipantID" OR n."__kp_ID" = pc."_kf_NodeID")
         JOIN "__Contact" c ON pc."_kf_ContactID" = c."__kp_ID"
-        LEFT JOIN "__Grouprole" gr ON pc."_kf_GrouproleID" = gr."__kp_ID"
+        JOIN "__Grouprole" gr ON pc."_kf_GrouproleID" = gr."__kp_ID"
+        <!-- expose only contacts related to all Participant groups and the Nodes Staff group (31) -->
+        JOIN "__Group" g ON gr."_kf_GroupID" = g."__kp_ID" AND (g."RelatesTo_Selection" = 'Participant' OR gr."_kf_GroupID" = 31)
         LEFT JOIN "__Country" ca ON c."_kf_CountryID_Address" = ca."__kp_ID"
         LEFT JOIN "__Institution" i ON c."_kf_InstitutionID" = i."__kp_ID"
-      WHERE pc.Active!=0 AND (c.OnTheWeb is null OR c.OnTheWeb!=0) AND gr."_kf_GroupID" in (11,12,13,31) AND n."_kf_ParticipantID" = #{imsId}
+      WHERE pc.Active!=0 AND (c.OnTheWeb is null OR c.OnTheWeb!=0) AND n."_kf_ParticipantID" = #{imsId}
       ORDER BY 7,1
   </select>
 
