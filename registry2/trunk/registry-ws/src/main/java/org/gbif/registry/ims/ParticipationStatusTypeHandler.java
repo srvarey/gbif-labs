@@ -25,6 +25,10 @@ public class ParticipationStatusTypeHandler extends EnumDictTypeHandler<Particip
   private static final Map<String, ParticipationStatus> DICT = ImmutableMap.<String, ParticipationStatus>builder()
     .put("voting participant", ParticipationStatus.VOTING)
     .put("associate country participant", ParticipationStatus.ASSOCIATE)
+    .put("former participant", ParticipationStatus.FORMER)
+    .put("observer", ParticipationStatus.OBSERVER)
+    .put("other associate participant", ParticipationStatus.ASSOCIATE)
+
     .build();
 
   public ParticipationStatusTypeHandler() {

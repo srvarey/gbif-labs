@@ -23,7 +23,12 @@ import com.google.common.collect.ImmutableMap;
 
 public class ContactTypeHandler extends EnumDictTypeHandler<ContactType> {
   private static final Map<String, ContactType> DICT = ImmutableMap.<String, ContactType>builder()
+    .put("node manager", ContactType.NODE_MANAGER)
     .put("nodes staff", ContactType.NODE_STAFF)
+    .put("head of delegation", ContactType.HEAD_OF_DELEGATION)
+    .put("temporary head of delegation", ContactType.TEMPORARY_HEAD_OF_DELEGATION)
+    .put("additional delegate", ContactType.ADDITIONAL_DELEGATE)
+    .put("temporary delegate", ContactType.TEMPORARY_DELEGATE)
     .build();
 
   public ContactTypeHandler() {
