@@ -24,7 +24,7 @@ messaging:
   username: metrics
   password: metrics
 queueName: metrics_dataset_country_cube
-cubeTable: prepop_crawler_dataset_country_cube
+cubeTable: crawler_dataset_country_cube
 columnFamily: dc
 messageConsumerThreads: 2
 batchSize: 100

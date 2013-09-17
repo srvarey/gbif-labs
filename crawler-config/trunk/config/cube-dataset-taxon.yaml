@@ -22,7 +22,7 @@ messaging:
   username: metrics
   password: metrics
 queueName: metrics_dataset_taxon_cube
-cubeTable: prepop_crawler_dataset_taxon_cube
+cubeTable: crawler_dataset_taxon_cube
 columnFamily: dc
 messageConsumerThreads: 2
 batchSize: 1000

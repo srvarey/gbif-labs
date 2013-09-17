@@ -10,6 +10,6 @@ registry:
 zooKeeper:
   connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
   namespace: crawler
-queueName: dwcafragmenter
+queueName: dwca-fragmenter
 poolSize: 1
 archiveRepository: /home/crap/storage/dwca

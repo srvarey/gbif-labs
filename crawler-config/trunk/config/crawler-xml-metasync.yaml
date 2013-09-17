@@ -7,5 +7,5 @@ registry:
   wsUrl: http://b11g9.gbif.org:8080/registry-ws
   user: markus
   password: markus
-queueName: metasync
+queueName: xml-metasync
 threadCount: 30
