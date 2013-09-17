@@ -5,3 +5,6 @@
 sleep 1
 ./start-processor-indexer.sh
 sleep 1
+./start-occurrence-deleter.sh
+./start-occurrence-mutator.sh
+sleep 1
