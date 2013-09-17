@@ -6,8 +6,8 @@
 sleep 2
 ./start-dwca-fragmenter.sh
 ./start-dwca-metasync.sh
-# validator running on b7g5 for now
-#./start-dwca-validator.sh
+sleep 1
+./start-dwca-validator.sh
 ./start-dwca-downloader.sh
 sleep 2
 ./start-coordinator.sh
