@@ -12,6 +12,6 @@ ganglia:
 msgPoolSize: 50
 hbasePoolSize: 50
 queueName: occurrence_interp
-occTable: prepop_crawler_occurrence
-counterTable: prepop_crawler_occurrence_counter
-lookupTable: prepop_crawler_occurrence_lookup
+occTable: crawler_occurrence
+counterTable: crawler_occurrence_counter
+lookupTable: crawler_occurrence_lookup

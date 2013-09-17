@@ -10,7 +10,7 @@ messaging:
   virtualHost: /crawler/dev
   username: metrics
   password: metrics
-cubeTable: prepop_crawler_maps_cube
+cubeTable: crawler_maps_cube
 columnFamily: dc
 messageConsumerThreads: 1
 batchSize: 10000

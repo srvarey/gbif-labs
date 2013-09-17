@@ -10,6 +10,6 @@ registry:
 zooKeeper:
   connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
   namespace: crawler
-queueName: validator
+queueName: dwca-validator
 poolSize: 3
 archiveRepository: /home/crap/storage/dwca

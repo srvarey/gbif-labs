@@ -7,5 +7,5 @@ zooKeeper:
   connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
   namespace: crawler
 poolSize: 50
-queueName: fragmenter
+queueName: xml-fragmenter
 crawlerWsUrl: http://b11g9.gbif.org:8080/crawler-ws/

@@ -22,7 +22,7 @@ messaging:
   username: metrics
   password: metrics
 queueName: metrics_occurrence_cube
-cubeTable: prepop_crawler_occurrence_cube
+cubeTable: crawler_occurrence_cube
 columnFamily: dc
 messageConsumerThreads: 1
 batchSize: 1000000
