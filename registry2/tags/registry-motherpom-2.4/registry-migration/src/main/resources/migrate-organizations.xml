@@ -1,0 +1,51 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+     
+    <query id="organizations" connection-id="old-registry">
+        SELECT a.uuid AS uuid_key,
+          CASE WHEN aNode.uuid IS NULL THEN a.uuid ELSE aNode.uuid END AS endorsing_node_key,
+          ar.has_accepted AS endorsement_approved,
+          a.ws_password AS password,
+          a.name AS title,
+          CASE WHEN char_length(trim(a.description))&lt;1 THEN null ELSE a.description END AS description,
+          CASE WHEN a.language IS NULL THEN 'en' WHEN char_length(trim(a.language))&lt;2 THEN 'en' ELSE a.language END AS language,
+          CASE WHEN char_length(trim(a.email))&lt;5 THEN null ELSE a.email END AS email,
+          CASE WHEN char_length(trim(a.phone))&lt;5 THEN null ELSE a.phone END AS phone,
+          CASE WHEN trim(replace(a.homepage, ' ', '%20')) = '' THEN null
+               WHEN trim(replace(a.homepage, ' ', '%20')) NOT LIKE '%http%' THEN CONCAT('http://', trim(replace(a.homepage, ' ', '%20')))
+               ELSE trim(replace(a.homepage, ' ', '%20')) END AS homepage,
+          CASE WHEN trim(replace(a.logoURL, ' ', '%20')) = '' THEN null
+               ELSE trim(replace(a.logoURL, ' ', '%20')) END as logo_url,
+          CASE WHEN char_length(trim(a.address))&lt;1 THEN null ELSE a.address END AS address,
+          CASE WHEN char_length(trim(a.city))&lt;1 THEN null ELSE a.city END AS city,
+          CASE WHEN char_length(trim(a.iso_country_code))&lt;2 THEN null ELSE upper(a.iso_country_code) END AS country,
+          CASE WHEN char_length(trim(a.zip))&lt;1 THEN null ELSE a.zip END AS postal_code,
+          a.decimal_latitude AS latitude,
+          a.decimal_longitude AS longitude,
+          COALESCE(a.created, a.modified, now()) AS created,
+          COALESCE(a.modified, a.created, now()) AS modified,
+          a.deleted 
+        FROM agent a
+        JOIN agent_relation ar ON a.id=ar.to_agent_id
+        JOIN agent aNode ON aNode.id=ar.from_agent_id
+        WHERE a.type=14010 AND ar.deleted IS NULL 
+        AND a.name NOT IN('Name', 'UPDATE', 'UPDATED NAME', 'Test Name', 'IPT Test Organisation','GBIF Prod Reg Test1',
+         'GBIF Production Registry Test','GBIF Production Registry Test','TestNewOrganization','Thematic Networks','US GBIF mirror')
+        
+        
+        <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
+        <script connection-id="new-registry">
+            INSERT INTO organization(key,endorsing_node_key,endorsement_approved,password,
+              title,description,language,email,phone,homepage,logo_url,address,city,country,postal_code,
+              latitude,longitude,created,modified,deleted,created_by,modified_by)
+            VALUES(?uuid_key::uuid,?endorsing_node_key::uuid,?endorsement_approved::boolean,?password,
+              ?title,?description,UPPER(?language),?email,?phone,?homepage,?logo_url,?address,?city,upper(?country),?postal_code,
+              ?latitude,?longitude,?created,?modified,?deleted,?{"ADMIN"}, ?{"ADMIN"});
+        </script>
+    </query>
+</etl>
