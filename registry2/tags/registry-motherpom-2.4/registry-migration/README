@@ -1,0 +1,30 @@
+=== DESCRIPTION ===
+This is a head start for migrating the current live registry at gbrds.gbif.org to a new DB following the new design.
+The project consists of a RegistryMigrationExecutor file 
+
+This file calls individually each ETL that is responsible for migrating each network entity (nodes, organizations, installations,
+datasets, networks). 
+
+The startup.xml is the one responsible for initializing the DB.
+
+=== CONFIGURATION ====
+
+conf.properties has all the information necessary to connect to the old registry DB and to the new registry DB.
+
+=== KNOWN PROBLEMS ===
+1. When running the startup.xml ETL, the 2 functions have been commented out at schemav.sql because
+for some reason they are not being parsed successfully by the scriptella processor.
+Therefore these 2 functions have to be created separately when newly creating the registry DB on postgres, before running the
+RegistryMigrationExecutor file.
+(I ran out of time to investigate why was this happening)
+Once you create those two functions, just run RegistryMigrationExecutor and things will go smoothly.
+
+2. Datasets are not migrating the subcategory attribute. This hasn't been done yet.
+
+3. On the live registry, there are several datasets which are being served by multiple technical installations, therefore the
+installation_key attribute on the dataset table does not allow several installations. Consider creating a new intermediate table?
+
+=== RECOMMENDATIONS ===
+It is recommended to code a query (via scriptella) which checks the final product of all processes and compares if the migration was done
+correctly (e.g. compare registry_old.agent vs registry_new.dataset to see if everything matches)
+
