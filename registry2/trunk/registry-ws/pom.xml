@@ -152,10 +152,6 @@
       <artifactId>mybatis-ehcache</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>drupal-mybatis</artifactId>
-    </dependency>
-    <dependency>
       <!-- dependency:analyze reports a false positive here -->
       <groupId>com.google.inject.extensions</groupId>
       <artifactId>guice-servlet</artifactId>
@@ -175,10 +171,6 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.filemaker</groupId>
-      <artifactId>jdbc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.gbif</groupId>
