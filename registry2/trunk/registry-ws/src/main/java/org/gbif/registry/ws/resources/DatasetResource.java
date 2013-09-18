@@ -250,7 +250,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
    * <ul>
    * <li>If the target is null, then the supplementary dataset object itself is returned - not a copy</li>
    * <li>These objects are all mutable, and care should be taken that the returned object may be one or the other of the
-   * supplied, thus you need to <code>Dataset result = merge(Dataset emlView, Dataset dbView);</code></li>
+   * supplied, thus you need to {@code Dataset result = merge(Dataset emlView, Dataset dbView);}</li>
    * </ul>
    * 
    * @param target that will be modified with persitable values from the supplementary
@@ -347,7 +347,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     }
 
     // first keep document as byte array so we can analyze it as much as we want and store it later
-    final byte[] data;
+    byte[] data;
     try {
       data = ByteStreams.toByteArray(document);
     } catch (IOException e) {
@@ -379,7 +379,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     for (Metadata exist : listMetadata(datasetKey, type)) {
       deleteMetadata(exist.getKey());
     }
-    final int metaKey = metadataMapper.create(metadata, data);
+    int metaKey = metadataMapper.create(metadata, data);
     metadata.setKey(metaKey);
 
     // check if we should update our registered base information
@@ -563,7 +563,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
     DatasetProcessStatus existing =
       datasetProcessStatusMapper.get(datasetProcessStatus.getDatasetUuid(), datasetProcessStatus.getCrawlJob()
         .getAttempt());
-    checkArgument(existing == null, "Cannot create dataset[%s] process status for attempt[%s] as one already exists",
+    checkArgument(existing == null, "Cannot create dataset process status [%s] for attempt[%s] as one already exists",
       datasetProcessStatus.getDatasetUuid(), datasetProcessStatus.getCrawlJob().getAttempt());
     datasetProcessStatusMapper.create(datasetProcessStatus);
   }
@@ -579,7 +579,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
       "DatasetProcessStatus must have the same key as the url");
     checkArgument(attempt == datasetProcessStatus.getCrawlJob().getAttempt(),
       "DatasetProcessStatus must have the same attempt as the url");
-    createDatasetProcessStatus(datasetProcessStatus);
+    updateDatasetProcessStatus(datasetProcessStatus);
   }
 
   @Trim
