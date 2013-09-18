@@ -85,15 +85,15 @@
     <bonecp.version>0.7.1.RELEASE</bonecp.version>
     <commons-beanutils.version>1.8.3</commons-beanutils.version>
     <commons-digester.version>3.2</commons-digester.version>
-    <gbif-api.version>0.8-SNAPSHOT</gbif-api.version>
+    <gbif-api.version>0.8</gbif-api.version>
     <gbif-common.version>0.13</gbif-common.version>
     <gbif-common-ws.version>0.10</gbif-common-ws.version>
-    <gbif-common-mybatis.version>0.8-SNAPSHOT</gbif-common-mybatis.version>
+    <gbif-common-mybatis.version>0.7</gbif-common-mybatis.version>
     <gbif-common-test.version>0.5</gbif-common-test.version>
     <gbif-common-service.version>0.6</gbif-common-service.version>
-    <gbif-common-search.version>0.10</gbif-common-search.version>
+    <gbif-common-search.version>0.11</gbif-common-search.version>
     <gbif-parsers.version>0.4</gbif-parsers.version>
-    <gbif-postal-service.version>0.6</gbif-postal-service.version>
+    <gbif-postal-service.version>0.7</gbif-postal-service.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
     <freemarker.version>2.3.20</freemarker.version>
     <guava.version>14.0.1</guava.version>
@@ -107,13 +107,11 @@
     <mybatis.version>3.2.2</mybatis.version>
     <mybatis-guice.version>3.3</mybatis-guice.version>
     <mybatis-ehcache.version>1.0.0</mybatis-ehcache.version>
-    <drupal-mybatis.version>0.7-SNAPSHOT</drupal-mybatis.version>
+    <drupal-mybatis.version>0.7</drupal-mybatis.version>
     <postgresql.version>9.2-1003-jdbc4</postgresql.version>
     <powermock-mockito.version>1.5.1</powermock-mockito.version>
     <slf4j.version>1.7.5</slf4j.version>
     <servlet-api.version>2.5</servlet-api.version>
-    <!-- TODO:Why use the new version? -->
-    <!--<validation-api.version>1.0.0.GA</validation-api.version>-->
     <validation-api.version>1.1.0.Final</validation-api.version>
     <junit.version>4.11</junit.version>
     <bval.version>0.5</bval.version>
