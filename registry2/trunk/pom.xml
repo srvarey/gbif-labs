@@ -94,7 +94,6 @@
     <gbif-common-search.version>0.10</gbif-common-search.version>
     <gbif-parsers.version>0.4</gbif-parsers.version>
     <gbif-postal-service.version>0.6</gbif-postal-service.version>
-    <filemaker.version>12.2.94</filemaker.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
     <freemarker.version>2.3.20</freemarker.version>
     <guava.version>14.0.1</guava.version>
@@ -341,12 +340,6 @@
         <scope>runtime</scope>
       </dependency>
       <dependency>
-        <groupId>com.filemaker</groupId>
-        <artifactId>jdbc</artifactId>
-        <version>${filemaker.version}</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
@@ -502,7 +495,6 @@
 
        <registry2.db.password></registry2.db.password>
        <registry2-it.db.password></registry2-it.db.password>
-       <ims.db.password></ims.db.password>
        <drupal.db.password></drupal.db.password>
     -->
     <profile>
