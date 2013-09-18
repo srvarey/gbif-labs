@@ -195,7 +195,6 @@ public class NodeIT extends NetworkEntityTest<Node> {
     assertEquals("Madrid", es.getCity());
     assertEquals("E-28014", es.getPostalCode());
     assertEquals("Real Jardín Botánico - CSIC", es.getInstitution());
-    assertNotNull(es.getAddress());
     assertTrue(es.getContacts().size() > 5);
 
     Node notInIms = nodeService.getByCountry(Country.AFGHANISTAN);

@@ -79,6 +79,7 @@ public class RegistryTestModules {
 
             @Override
             protected void configure() {
+              bind(DrupalMockModule.class);
               bind(NodeResource.class);
               bind(OrganizationResource.class);
               bind(InstallationResource.class);
@@ -87,8 +88,8 @@ public class RegistryTestModules {
               bind(IptResource.class);
             }
           }, TestValidateInterceptor.newMethodInterceptingModule(),
-            new RegistryMyBatisModule(p), new ImsModule(p), new RegistrySearchModule(p), new EventModule(p),
-            new ValidationModule());
+            new DrupalMockModule(), new RegistryMyBatisModule(p), new ImsModule(), new RegistrySearchModule(p),
+            new EventModule(p), new ValidationModule());
       } catch (IOException e) {
         throw Throwables.propagate(e);
       }

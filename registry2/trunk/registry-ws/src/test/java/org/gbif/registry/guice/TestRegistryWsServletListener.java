@@ -12,7 +12,6 @@
  */
 package org.gbif.registry.guice;
 
-import org.gbif.api.service.common.UserService;
 import org.gbif.registry.events.EventModule;
 import org.gbif.registry.grizzly.RegistryServer;
 import org.gbif.registry.ims.ImsModule;
@@ -27,11 +26,9 @@ import org.gbif.ws.util.PropertiesUtil;
 
 import java.util.List;
 import java.util.Properties;
-
 import javax.servlet.ServletContextEvent;
 
 import com.google.common.collect.Lists;
-import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
@@ -66,12 +63,12 @@ public class TestRegistryWsServletListener extends GbifServletListener {
   @Override
   protected List<Module> getModules(Properties props) {
     return Lists.<Module>newArrayList(new RegistryMyBatisModule(props),
-      new ImsModule(props),
+      new DrupalMockModule(),
+      new ImsModule(),
       StringTrimInterceptor.newMethodInterceptingModule(),
       new ValidationModule(),
       new EventModule(props),
       new RegistrySearchModule(props),
-      new UsersServiceModule(),
       new WsAuthModule(props));
   }
 
@@ -87,12 +84,4 @@ public class TestRegistryWsServletListener extends GbifServletListener {
   }
 
 
-  private static class UsersServiceModule extends AbstractModule {
-
-    @Override
-    protected void configure() {
-      bind(UserService.class).to(MockUserService.class);
-    }
-
-  }
 }
