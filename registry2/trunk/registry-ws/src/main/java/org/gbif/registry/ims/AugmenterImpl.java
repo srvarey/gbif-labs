@@ -3,6 +3,7 @@ package org.gbif.registry.ims;
 import org.gbif.api.model.registry.Identifier;
 import org.gbif.api.model.registry.Node;
 import org.gbif.api.vocabulary.IdentifierType;
+import org.gbif.drupal.mybatis.ImsNodeMapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

@@ -18,7 +18,7 @@ import org.gbif.registry.persistence.guice.RegistryMyBatisModule;
 import org.gbif.registry.search.guice.RegistrySearchModule;
 import org.gbif.registry.ws.servlet.LegacyWsFilter;
 import org.gbif.registry.ws.util.AuthResponseCodeOverwriteFilter;
-import org.gbif.user.guice.DrupalMyBatisModule;
+import org.gbif.drupal.guice.DrupalMyBatisModule;
 import org.gbif.ws.server.guice.GbifServletListener;
 import org.gbif.ws.server.guice.WsAuthModule;
 import org.gbif.ws.util.PropertiesUtil;
@@ -63,12 +63,12 @@ public class RegistryWsServletListener extends GbifServletListener {
   @Override
   protected List<Module> getModules(Properties properties) {
     return Lists.newArrayList(new RegistryMyBatisModule(properties),
-                              new ImsModule(properties),
+                              new DrupalMyBatisModule(properties),
+                              new ImsModule(),
                               StringTrimInterceptor.newMethodInterceptingModule(),
                               new ValidationModule(),
                               new EventModule(properties),
                               new RegistrySearchModule(properties),
-                              new DrupalMyBatisModule(properties),
                               new WsAuthModule(properties));
   }
 
