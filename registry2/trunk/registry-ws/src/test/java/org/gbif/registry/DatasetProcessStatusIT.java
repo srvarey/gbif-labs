@@ -238,7 +238,7 @@ public class DatasetProcessStatusIT {
     builder.rawOccurrencesPersistedUpdated(0);
     builder.verbatimOccurrencesPersistedError(0);
     builder.verbatimOccurrencesPersistedSuccessful(144);
-    builder.datasetUuid(crawlJob.getDatasetKey());
+    builder.datasetKey(crawlJob.getDatasetKey());
     return builder.build();
   }
 }
