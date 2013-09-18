@@ -25,7 +25,7 @@
   </sql>  
   
   <sql id="DATASET_PROCESS_STATUS_FIELDS_TYPES">
-    #{datasetUuid,jdbcType=OTHER},
+    #{datasetKey,jdbcType=OTHER},
     #{crawlJob.attempt,jdbcType=INTEGER},
     #{crawlJob.targetUrl,jdbcType=VARCHAR},
     #{crawlJob.endpointType,jdbcType=OTHER},
@@ -91,7 +91,7 @@
   <update id="update" parameterType="DatasetProcessStatus">
     UPDATE crawl_history
     SET <include refid="DATASET_PROCESS_STATUS_UPDATE"/>
-    WHERE dataset_key = #{datasetUuid,jdbcType=OTHER}
+    WHERE dataset_key = #{datasetKey,jdbcType=OTHER}
      AND attempt = #{crawlJob.attempt,jdbcType=INTEGER}
   </update> 
   

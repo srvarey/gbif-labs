@@ -32,14 +32,10 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
 
@@ -121,15 +117,16 @@ public class DatasetWsClient extends BaseNetworkEntityClient<Dataset> implements
 
   @Override
   public void createDatasetProcessStatus(DatasetProcessStatus datasetProcessStatus) {
-    Preconditions.checkNotNull(datasetProcessStatus.getDatasetUuid(), "DatasetProcessStatus needs a dataset key");
-    post(datasetProcessStatus, datasetProcessStatus.getDatasetUuid().toString(), "process");
+    Preconditions.checkNotNull(datasetProcessStatus.getDatasetKey(), "DatasetProcessStatus needs a dataset key");
+    post(datasetProcessStatus, datasetProcessStatus.getDatasetKey().toString(), "process");
   }
 
   @Override
   public void updateDatasetProcessStatus(DatasetProcessStatus datasetProcessStatus) {
-    Preconditions.checkNotNull(datasetProcessStatus.getDatasetUuid(), "DatasetProcessStatus needs a dataset key");
     Preconditions.checkNotNull(datasetProcessStatus.getCrawlJob(), "DatasetProcessStatus needs a crawl job");
-    put(datasetProcessStatus, datasetProcessStatus.getDatasetUuid().toString(), "process",
+    Preconditions.checkNotNull(datasetProcessStatus.getDatasetKey(), "DatasetProcessStatus needs a dataset key");
+
+    put(datasetProcessStatus, datasetProcessStatus.getDatasetKey().toString(), "process",
       String.valueOf(datasetProcessStatus
         .getCrawlJob().getAttempt()));
   }

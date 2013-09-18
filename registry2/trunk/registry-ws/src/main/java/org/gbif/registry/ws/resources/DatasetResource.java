@@ -546,7 +546,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @RolesAllowed(ADMIN_ROLE)
   public void createDatasetProcessStatus(@PathParam("datasetKey") UUID datasetKey,
     @Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
-    checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetUuid()),
+    checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetKey()),
       "DatasetProcessStatus must have the same key as the dataset");
     createDatasetProcessStatus(datasetProcessStatus);
   }
@@ -556,15 +556,15 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @RolesAllowed(ADMIN_ROLE)
   @Override
   public void createDatasetProcessStatus(@Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
-    checkNotNull(datasetProcessStatus.getDatasetUuid(),
+    checkNotNull(datasetProcessStatus.getDatasetKey(),
       "DatasetProcessStatus must have the dataset key");
     checkNotNull(datasetProcessStatus.getCrawlJob(),
       "DatasetProcessStatus must have the crawl job with an attempt number");
     DatasetProcessStatus existing =
-      datasetProcessStatusMapper.get(datasetProcessStatus.getDatasetUuid(), datasetProcessStatus.getCrawlJob()
+      datasetProcessStatusMapper.get(datasetProcessStatus.getDatasetKey(), datasetProcessStatus.getCrawlJob()
         .getAttempt());
     checkArgument(existing == null, "Cannot create dataset process status [%s] for attempt[%s] as one already exists",
-      datasetProcessStatus.getDatasetUuid(), datasetProcessStatus.getCrawlJob().getAttempt());
+      datasetProcessStatus.getDatasetKey(), datasetProcessStatus.getCrawlJob().getAttempt());
     datasetProcessStatusMapper.create(datasetProcessStatus);
   }
 
@@ -575,7 +575,7 @@ public class DatasetResource extends BaseNetworkEntityResource<Dataset>
   @RolesAllowed(ADMIN_ROLE)
   public void createDatasetProcessStatus(@PathParam("datasetKey") UUID datasetKey, @PathParam("attempt") int attempt,
     @Valid @NotNull @Trim DatasetProcessStatus datasetProcessStatus) {
-    checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetUuid()),
+    checkArgument(datasetKey.equals(datasetProcessStatus.getDatasetKey()),
       "DatasetProcessStatus must have the same key as the url");
     checkArgument(attempt == datasetProcessStatus.getCrawlJob().getAttempt(),
       "DatasetProcessStatus must have the same attempt as the url");

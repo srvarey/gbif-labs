@@ -110,8 +110,7 @@ public class DatasetProcessStatusIT {
     OrganizationService organizationService,
     NodeService nodeService,
     InstallationService installationService,
-    SimplePrincipalProvider simplePrincipalProvider
-  ) {
+    SimplePrincipalProvider simplePrincipalProvider) {
     this.datasetProcessStatusService = datasetProcessStatusService;
     this.datasetService = datasetService;
     this.organizationService = organizationService;
@@ -136,7 +135,7 @@ public class DatasetProcessStatusIT {
     DatasetProcessStatus datasetProcessStatus = buildProcessStatus(createTestDataset(), 1);
     datasetProcessStatusService.createDatasetProcessStatus(datasetProcessStatus);
     DatasetProcessStatus datasetProcessStatus2 = datasetProcessStatusService.getDatasetProcessStatus(
-      datasetProcessStatus.getDatasetUuid(),
+      datasetProcessStatus.getDatasetKey(),
       datasetProcessStatus.getCrawlJob().getAttempt());
     Assert.assertNotNull(datasetProcessStatus2);
   }
@@ -186,7 +185,8 @@ public class DatasetProcessStatusIT {
     DatasetProcessStatus orig = buildProcessStatus(createTestDataset(), 1);
     datasetProcessStatusService.createDatasetProcessStatus(orig);
     DatasetProcessStatus written =
-      datasetProcessStatusService.getDatasetProcessStatus(orig.getDatasetUuid(), orig.getCrawlJob().getAttempt());
+      datasetProcessStatusService.getDatasetProcessStatus(orig.getDatasetKey(), orig.getCrawlJob().getAttempt());
+    assertEquals(orig.getDatasetKey(), written.getDatasetKey());
     assertEquals(orig.getCrawlJob().getAttempt(), written.getCrawlJob().getAttempt());
     written.setFinishReason(FinishReason.ABORT);
     datasetProcessStatusService.updateDatasetProcessStatus(written);
@@ -238,7 +238,7 @@ public class DatasetProcessStatusIT {
     builder.rawOccurrencesPersistedUpdated(0);
     builder.verbatimOccurrencesPersistedError(0);
     builder.verbatimOccurrencesPersistedSuccessful(144);
-    builder.datasetUuid(crawlJob.getDatasetUuid());
+    builder.datasetUuid(crawlJob.getDatasetKey());
     return builder.build();
   }
 }
