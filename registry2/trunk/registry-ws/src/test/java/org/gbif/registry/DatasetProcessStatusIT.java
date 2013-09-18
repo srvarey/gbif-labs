@@ -58,6 +58,8 @@ import org.junit.runners.Parameterized.Parameters;
 import static org.gbif.registry.guice.RegistryTestModules.webservice;
 import static org.gbif.registry.guice.RegistryTestModules.webserviceClient;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Runs tests for the {@link DatasetProcessStatusService} implementations.
  * This is parameterized to run the same test routines for the following:
@@ -72,56 +74,50 @@ public class DatasetProcessStatusIT {
 
   // Flushes the database on each run
   @ClassRule
-  public static final LiquibaseInitializer liquibaseRule = new LiquibaseInitializer(RegistryTestModules.database());
-
+  public static final LiquibaseInitializer LIQUIBASE_RULE = new LiquibaseInitializer(RegistryTestModules.database());
   @ClassRule
-  public static final RegistryServer registryServer = RegistryServer.INSTANCE;
-
+  public static final RegistryServer REGISTRY_SERVER = RegistryServer.INSTANCE;
   // Tests user
-  private static String TEST_USER = "admin";
-
+  private static final String TEST_USER = "admin";
   @Rule
   public final DatabaseInitializer databaseRule = new DatabaseInitializer(RegistryTestModules.database());
-
   private final DatasetProcessStatusService datasetProcessStatusService;
-
   private final SimplePrincipalProvider simplePrincipalProvider;
-
   // The following services are required to create dataset instances
   private final DatasetService datasetService;
-
   private final OrganizationService organizationService;
   private final NodeService nodeService;
   private final InstallationService installationService;
 
+  @Parameters
+  public static Iterable<Object[]> data() {
+    Injector webservice = webservice();
+    Injector client = webserviceClient();
+    return ImmutableList.<Object[]>of(
+      // WS
+      new Object[] {webservice.getInstance(DatasetResource.class), webservice.getInstance(DatasetResource.class),
+        webservice.getInstance(OrganizationResource.class), webservice.getInstance(NodeResource.class),
+        webservice.getInstance(InstallationResource.class), null},
+      // WS-client
+      new Object[] {client.getInstance(DatasetProcessStatusService.class), client.getInstance(DatasetService.class),
+        client.getInstance(OrganizationService.class), client.getInstance(NodeService.class),
+        client.getInstance(InstallationService.class), client.getInstance(SimplePrincipalProvider.class)});
+  }
+
   public DatasetProcessStatusIT(
     DatasetProcessStatusService datasetProcessStatusService,
     DatasetService datasetService,
-    OrganizationService organizationService, NodeService nodeService,
+    OrganizationService organizationService,
+    NodeService nodeService,
     InstallationService installationService,
-    SimplePrincipalProvider simplePrincipalProvider) {
+    SimplePrincipalProvider simplePrincipalProvider
+  ) {
     this.datasetProcessStatusService = datasetProcessStatusService;
     this.datasetService = datasetService;
     this.organizationService = organizationService;
     this.nodeService = nodeService;
     this.installationService = installationService;
     this.simplePrincipalProvider = simplePrincipalProvider;
-  }
-
-  @Parameters
-  public static Iterable<Object[]> data() {
-    final Injector webservice = webservice();
-    final Injector client = webserviceClient();
-    return ImmutableList.<Object[]>of(
-      // WS
-      new Object[] {webservice.getInstance(DatasetResource.class),
-        webservice.getInstance(DatasetResource.class), webservice.getInstance(OrganizationResource.class),
-        webservice.getInstance(NodeResource.class), webservice.getInstance(InstallationResource.class), null},
-      // WS-client
-      new Object[] {client.getInstance(DatasetProcessStatusService.class), client.getInstance(DatasetService.class),
-        client.getInstance(OrganizationService.class), client.getInstance(NodeService.class),
-        client.getInstance(InstallationService.class), client.getInstance(SimplePrincipalProvider.class)}
-      );
   }
 
   @Before
@@ -139,16 +135,15 @@ public class DatasetProcessStatusIT {
   public void testCreateAndGet() {
     DatasetProcessStatus datasetProcessStatus = buildProcessStatus(createTestDataset(), 1);
     datasetProcessStatusService.createDatasetProcessStatus(datasetProcessStatus);
-    DatasetProcessStatus datasetProcessStatus2 =
-      datasetProcessStatusService.getDatasetProcessStatus(datasetProcessStatus.getDatasetUuid(), datasetProcessStatus
-        .getCrawlJob()
-        .getAttempt());
+    DatasetProcessStatus datasetProcessStatus2 = datasetProcessStatusService.getDatasetProcessStatus(
+      datasetProcessStatus.getDatasetUuid(),
+      datasetProcessStatus.getCrawlJob().getAttempt());
     Assert.assertNotNull(datasetProcessStatus2);
   }
 
-
   /**
-   * Tests the {@link DatasetProcessStatusService#list(org.gbif.api.model.common.paging.Pageable)} operation.
+   * Tests the {@link DatasetProcessStatusService#listDatasetProcessStatus(org.gbif.api.model.common.paging.Pageable)}
+   * operation.
    */
   @Test
   public void testListAndListByDataset() {
@@ -161,13 +156,13 @@ public class DatasetProcessStatusIT {
 
     PagingResponse<DatasetProcessStatus> statuses =
       datasetProcessStatusService.listDatasetProcessStatus(new PagingRequest(0, 10));
-    Assert.assertEquals("There have been 3 crawl attempts", Long.valueOf(3), statuses.getCount());
-    Assert.assertEquals("There have been 3 crawl attempts", 3, statuses.getResults().size());
+    assertEquals("There have been 3 crawl attempts", Long.valueOf(3), statuses.getCount());
+    assertEquals("There have been 3 crawl attempts", 3, statuses.getResults().size());
 
     PagingResponse<DatasetProcessStatus> statusesByDataset =
       datasetProcessStatusService.listDatasetProcessStatus(dataset.getKey(), new PagingRequest());
-    Assert.assertEquals("The dataset has had 2 crawl attempts", Long.valueOf(2), statusesByDataset.getCount());
-    Assert.assertEquals("The dataset has had 2 crawl attempts", 2, statusesByDataset.getResults().size());
+    assertEquals("The dataset has had 2 crawl attempts", Long.valueOf(2), statusesByDataset.getCount());
+    assertEquals("The dataset has had 2 crawl attempts", 2, statusesByDataset.getResults().size());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -181,6 +176,21 @@ public class DatasetProcessStatusIT {
     datasetProcessStatusService.updateDatasetProcessStatus(status);
     // illegal to create the same attempt ID
     datasetProcessStatusService.createDatasetProcessStatus(buildProcessStatus(dataset, 1));
+  }
+
+  /**
+   * Tests a create, get, update
+   */
+  @Test
+  public void testUpdate() {
+    DatasetProcessStatus orig = buildProcessStatus(createTestDataset(), 1);
+    datasetProcessStatusService.createDatasetProcessStatus(orig);
+    DatasetProcessStatus written =
+      datasetProcessStatusService.getDatasetProcessStatus(orig.getDatasetUuid(), orig.getCrawlJob().getAttempt());
+    assertEquals(orig.getCrawlJob().getAttempt(), written.getCrawlJob().getAttempt());
+    written.setFinishReason(FinishReason.ABORT);
+    datasetProcessStatusService.updateDatasetProcessStatus(written);
+    assertEquals(orig.getCrawlJob().getAttempt(), written.getCrawlJob().getAttempt());
   }
 
   /**
