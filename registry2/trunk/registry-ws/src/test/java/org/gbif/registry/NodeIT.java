@@ -71,6 +71,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
   private final OrganizationService organizationService;
   private final InstallationService installationService;
   private final DatasetService datasetService;
+  private int count;
 
   private static final Map<Country, Integer> TEST_COUNTRIES = ImmutableMap.<Country, Integer>builder()
     .put(Country.AFGHANISTAN, 6)
@@ -110,7 +111,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
   //@Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   public void testGetByCountry() {
-    initCountryNodes();
+    initVotingCountryNodes();
     Node n = nodeService.getByCountry(Country.ANGOLA);
     assertNull(n);
 
@@ -120,35 +121,58 @@ public class NodeIT extends NetworkEntityTest<Node> {
     }
   }
 
-  private void initCountryNodes() {
-    int count = 0;
+  private void initVotingCountryNodes() {
+    count = 0;
     for (Country c : TEST_COUNTRIES.keySet()) {
+      insertTestNode(c, ParticipationStatus.VOTING);
+    }
+  }
+
+  private void insertTestNode(Country c, ParticipationStatus status) {
       Node n = newEntity();
       n.setCountry(c);
       n.setTitle("GBIF Node " + c.getTitle());
       n.setType(NodeType.COUNTRY);
-      n.setParticipationStatus(ParticipationStatus.VOTING);
+      n.setParticipationStatus(status);
       n.setGbifRegion(GbifRegion.AFRICA);
       n = create(n, count + 1);
       count++;
 
-      // create IMS identifiers
-      Identifier id = new Identifier();
-      id.setType(IdentifierType.GBIF_PARTICIPANT);
-      id.setIdentifier(TEST_COUNTRIES.get(c).toString());
-      nodeService.addIdentifier(n.getKey(), id);
-    }
+      if (TEST_COUNTRIES.containsKey(c)) {
+        // create IMS identifiers
+        Identifier id = new Identifier();
+        id.setType(IdentifierType.GBIF_PARTICIPANT);
+        id.setIdentifier(TEST_COUNTRIES.get(c).toString());
+        nodeService.addIdentifier(n.getKey(), id);
+      }
   }
 
   //@Ignore("Problems with IMS connection. See issue: http://dev.gbif.org/issues/browse/REG-407")
   @Test
   public void testCountries() {
-    initCountryNodes();
+    initVotingCountryNodes();
     List<Country> countries = nodeService.listNodeCountries();
     assertEquals(TEST_COUNTRIES.size(), countries.size());
     for (Country c : countries) {
       assertTrue("Unexpected node country" + c, TEST_COUNTRIES.containsKey(c));
     }
+  }
+
+  @Test
+  public void testActiveCountries() {
+    initVotingCountryNodes();
+    List<Country> countries = nodeService.listActiveCountries();
+    assertEquals(TEST_COUNTRIES.size(), countries.size());
+    for (Country c : countries) {
+      assertTrue("Unexpected node country" + c, TEST_COUNTRIES.containsKey(c));
+    }
+
+    // insert extra observer nodes and make sure we get the same list
+    insertTestNode(Country.BOTSWANA, ParticipationStatus.OBSERVER);
+    insertTestNode(Country.HONG_KONG, ParticipationStatus.FORMER);
+
+    List<Country> countries2 = nodeService.listActiveCountries();
+    assertEquals(countries, countries2);
   }
 
   @Test
@@ -185,7 +209,7 @@ public class NodeIT extends NetworkEntityTest<Node> {
    * Jenkins is configured for this, so we activate this test to make sure IMS connections are working!
    */
   public void testIms() throws Exception {
-    initCountryNodes();
+    initVotingCountryNodes();
     Node es = nodeService.getByCountry(Country.SPAIN);
     assertEquals((Integer) 2001, es.getParticipantSince());
     assertEquals(ParticipationStatus.VOTING, es.getParticipationStatus());

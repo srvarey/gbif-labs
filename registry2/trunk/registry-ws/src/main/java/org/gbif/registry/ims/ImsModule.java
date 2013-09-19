@@ -15,16 +15,8 @@
  */
 package org.gbif.registry.ims;
 
-import org.gbif.api.model.registry.Node;
-import org.gbif.service.guice.PrivateServiceModule;
-import org.gbif.drupal.guice.DrupalMyBatisModule;
-
-import java.util.Properties;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Sets up the persistence layer using the properties supplied.
