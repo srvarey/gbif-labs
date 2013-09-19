@@ -1,0 +1,66 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <query id="contact" connection-id="old-registry">
+    SELECT id AS `key`,
+    	CASE
+    		WHEN char_length(trim(first_name))&lt;1 THEN NULL
+    		ELSE trim(first_name)
+    	END AS first_name,
+      CASE
+     		WHEN char_length(trim(last_name))&lt;1 THEN NULL
+     		ELSE trim(last_name)
+     	END AS last_name,
+    	CASE
+    		WHEN char_length(trim(description))&lt;1 THEN NULL
+    		ELSE description
+    	END AS description,
+    	CASE
+    		WHEN char_length(trim(position))&lt;2 THEN NULL
+    		ELSE position
+    	END AS position,
+    	CASE 
+    		WHEN char_length(trim(email))&lt;5 THEN null 
+    		ELSE email 
+    	END AS email,
+        CASE 
+        	WHEN char_length(trim(phone))&lt;5 THEN null 
+        	ELSE phone 
+        END AS phone,
+        NULL AS organization,	<!-- hardcoded value. Column usage is uncertain -->   
+    	CASE
+    		WHEN char_length (trim(address))&lt;1 THEN NULL
+    		ELSE address
+    	END AS address,
+    	CASE
+    		WHEN char_length (trim(city))&lt;1 THEN NULL
+    		ELSE city
+    	END AS city,
+    	CASE
+    		WHEN char_length (trim(province))&lt;1 THEN NULL
+    		ELSE province
+    	END AS province,
+    	CASE
+    		WHEN char_length (trim(country))&lt;1 THEN NULL
+    		ELSE country
+    	END AS country,
+    	NULL AS postal_code,	<!-- hardcoded value. Column usage is uncertain -->
+		COALESCE(created, modified, now()) AS created,
+        COALESCE(modified, created, now()) AS modified
+    FROM contact WHERE deleted IS NULL  	
+    		 
+    <!-- In here we have some hardcoded values, because they are NOT NULL and these fields don't exist in the live registry -->
+    <script connection-id="new-registry">
+    INSERT INTO contact(key,first_name,last_name,description,position,email,phone,organization,address,city,province,country,postal_code,
+    	created_by,modified_by,created,modified)
+    VALUES(?key,?first_name,?last_name,?description,?position,?email,?phone,?organization,?address,?city,?province,?country,?postal_code,
+    	?{"registry-migration.gbif.org"},?{"registry-migration.gbif.org"},?created,?modified);
+        
+        </script>
+    </query>
+</etl>

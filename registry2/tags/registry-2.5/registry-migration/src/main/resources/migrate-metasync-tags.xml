@@ -1,0 +1,93 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>    
+    <properties>
+        <include href="conf.properties"/>
+    </properties>
+    <connection id="old-registry" url="${old.registry.url}" user="${old.registry.user}" password="${old.registry.pwd}"/>
+    <connection id="new-registry" url="${new.registry.url}" user="${new.registry.user}" password="${new.registry.pwd}"/>        
+
+    <!-- 
+      This creates machine tags required for the metasync / crawler as follows:
+      
+      From service table:
+        If service type is DiGIR remote_id_at_url becomes a machine tag metasync.gbif.org : code : <remote_id_at_url>
+        If service type is TAPIR remote_id_at_url becomes a machine tag metasync.gbif.org : localId : <remote_id_at_url>
+        If service type is BioCASe remote_id_at_url becomes a machine tag metasync.gbif.org : datasetTitle : <remote_id_at_url>
+
+      From extended_property table
+        record_count column becomes a machine tag metasync.gbif.org : declaredCount : <record_count>
+        basis_of_record column becomes a machine tag metasync.gbif.org : basisOfRecord : <basis_of_record>
+
+      THE FOLLOWING ARE NOT DONE, AND ARE UNDER DISCUSSION WITH LARS AS TO WHETHER THEY ARE WORTHWHILE
+      
+      From metadata_property table
+        Each name:value pair will become a machine tag in the form metasync.gbif.org : <name> : <value>
+        An example:
+          metasync.gbif.org : contentNamespace : http://www.tdwg.org/schemas/abcd/2.06
+        There are 19 different "name" values in the metadata_property table, counted as follows:
+          +_____________________________+__________+
+          | name                        | count(*) |
+          +_____________________________+__________+
+          | contentNamespace            |    10737 |
+          | schemaLocation              |     7741 |
+          | conceptualSchema            |     7741 |
+          | dateLastUpdated             |     7725 |
+          | maxInventoryResponseRecords |     7593 |
+          | maxSearchResponseRecords    |     7593 |
+          | minQueryTermLength          |      974 |
+          | isTitleSearchable           |      367 |
+          | created                     |      315 |   (IGNORE?)
+          | modified                    |      309 |   (IGNORE?)
+          | maxElementLevels            |      286 |
+          | maxElementRepetitions       |      286 |
+          | OrganisationName            |      246 |
+          | OwnerURL                    |      108 |
+          | frequency                   |       89 |
+          | startTime                   |       76 |
+          | maxDuration                 |       76 |
+          | TermsOfUse                  |       32 |
+          | IPRDeclaration              |        1 |
+          +_____________________________+__________+
+    -->
+    <query id="metatags" connection-id="old-registry">
+        
+        <!-- 
+          Service type enum:
+            DiGIR: 16100 
+            DiGIR Manis: 16110 (treated like DiGIR)
+            TAPIR: 16120
+            BioCASe: 16130
+          Agent type enum:
+            Dataset: 14020 
+        -->
+        SELECT 
+          agent.uuid AS dataset_key,
+          CASE service_type_id 
+            WHEN 16100 THEN 'code'
+            WHEN 16110 THEN 'code'
+            WHEN 16120 THEN 'localId'
+            WHEN 16130 THEN 'datasetTitle'  
+          END AS name,
+          trim(remote_id_at_url) AS value
+        FROM 
+          service JOIN agent ON agent_id=agent.id 
+        WHERE service_type_id IN(16100,16110,16120,16130) AND service.deleted IS NULL       
+          AND remote_id_at_url IS NOT NULL AND length(trim(remote_id_at_url)) > 0
+          AND agent.type=14020 AND agent.deleted IS NULL;            
+          
+		<script connection-id="new-registry">
+		  INSERT INTO machine_tag(namespace, name, value, created, created_by)
+		  VALUES ('metasync.gbif.org', ?name, ?value, now(), 'metasync-migration');
+        </script>
+
+		  <query id="pk" connection-id="new-registry">
+		    SELECT max(key) AS machine_tag_key FROM machine_tag;
+		    
+		    <script connection-id="new-registry">
+    		  INSERT INTO dataset_machine_tag(dataset_key, machine_tag_key)
+	    	  VALUES (?dataset_key::uuid, ?machine_tag_key);			    
+		    </script>
+		  </query>
+        
+    </query>
+</etl>
