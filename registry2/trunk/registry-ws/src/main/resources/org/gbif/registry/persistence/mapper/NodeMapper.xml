@@ -257,7 +257,7 @@
   <select id="listActiveCountries" resultType="Country">
     SELECT country
     FROM node
-    WHERE type='COUNTRY' AND country IS NOT NULL AND participationStatus IN ('VOTING', 'ASSOCIATE')
+    WHERE type='COUNTRY' AND country IS NOT NULL AND participation_status IN ('VOTING', 'ASSOCIATE')
     ORDER BY country
   </select>
 
