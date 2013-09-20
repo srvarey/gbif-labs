@@ -34,7 +34,7 @@
 
   <appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
     <remoteHost>b6g8.gbif.org</remoteHost>
-    <port>10800</port>
+    <port>10817</port>
     <reconnectionDelay>10000</reconnectionDelay>
     <includeCallerData>false</includeCallerData>
   </appender>
@@ -44,7 +44,7 @@
   <logger name="com.netflix.curator.framework" level="WARN"/>
   <logger name="com.google.inject.internal.ProxyFactory" level="ERROR"/>
 
-  <root level="INFO">
+  <root level="DEBUG">
     <!--appender-ref ref="CONSOLE"/-->
     <appender-ref ref="FILE"/>
     <appender-ref ref="SOCKET"/>
