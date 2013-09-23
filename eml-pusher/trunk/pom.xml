@@ -37,7 +37,7 @@
     <slf4j.version>1.7.5</slf4j.version>
     <junit.version>4.11</junit.version>
     <dwca-reader.version>1.14</dwca-reader.version>
-    <registry-client.version>2.1</registry-client.version>
+    <registry-client.version>2.4</registry-client.version>
   </properties>
 
   <scm>
@@ -75,7 +75,7 @@
     <defaultGoal>assembly:single</defaultGoal>
     <plugins>
       <!--
-        To build jar with all dependencies: mvn assembly:single
+        To build jar with all dependencies: mvn install assembly:single
       -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
