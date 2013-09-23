@@ -17,6 +17,7 @@
     UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='dd6b757b-ce91-4e58-951b-989cea8166bf';
     UPDATE node SET type='OTHER', participation_status='FORMER' WHERE key='ed988a18-81f8-4d5f-a88d-f93ef592b2f2';
     UPDATE node SET type='OTHER', participation_status='OBSERVER' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d';
+    
     <!-- country nodes -->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='8618c64a-93e0-4300-b546-7249e5148ed2'; <!-- US -->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='8f83fc96-c966-4126-83f7-bf044dc49efa'; <!-- CA -->
@@ -48,5 +49,6 @@
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d'; <!-- Inter-American Biodiversity Information Network (IABIN)-->
     UPDATE node SET continent='SOUTH_AMERICA' WHERE key='4297e544-201c-491f-a98c-cab92a98de0c'; <!-- BioNET-AndinoNET-->
     UPDATE node SET continent='OCEANIA' WHERE key='3b9510fc-5943-45d3-b08d-5b4e1e7c385e'; <!-- Pacific Biodiversity Information Forum (PBIF)-->
+    UPDATE node SET type='OTHER', continent='EUROPE' WHERE key='844d4915-35d0-4bf7-ae86-dcfcd1a81026'; <!-- EEA -->    
   </script>
 </etl>
