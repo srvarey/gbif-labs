@@ -49,9 +49,10 @@
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='c13e0e4a-bb5b-4bd8-8fa9-aa0dba71698a'; <!-- Finding Species-->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='69f8ea9e-b2a6-4e5a-896f-3bf8fc23cc8d'; <!-- Inter-American Biodiversity Information Network (IABIN)-->
     UPDATE node SET continent='SOUTH_AMERICA' WHERE key='4297e544-201c-491f-a98c-cab92a98de0c'; <!-- BioNET-AndinoNET-->
-    UPDATE node SET continent='OCEANIA' WHERE key='3b9510fc-5943-45d3-b08d-5b4e1e7c385e'; <!-- Pacific Biodiversity Information Forum (PBIF)-->
-    UPDATE node SET type='OTHER', continent='EUROPE' WHERE key='844d4915-35d0-4bf7-ae86-dcfcd1a81026'; <!-- EEA -->
-    UPDATE node SET type='OTHER', continent='NORTH_AMERICA' WHERE key='d205def7-82c3-472a-be4b-31d11dcd51fd'; <!-- VertNet -->
+    UPDATE node SET continent='OCEANIA', gbif_region='OCEANIA' WHERE key='3b9510fc-5943-45d3-b08d-5b4e1e7c385e'; <!-- Pacific Biodiversity Information Forum (PBIF)-->
+    UPDATE node SET type='OTHER', continent='EUROPE', gbif_region='EUROPE' WHERE key='844d4915-35d0-4bf7-ae86-dcfcd1a81026'; <!-- EEA -->
+    UPDATE node SET type='OTHER', continent=NULL WHERE key='d205def7-82c3-472a-be4b-31d11dcd51fd'; <!-- VertNet -->
+    UPDATE node SET continent='EUROPE' WHERE key='0e0181bf-9c78-4676-bdc3-54765e661bb8'; <!-- BioNET-International -->
     
        
   </script>
