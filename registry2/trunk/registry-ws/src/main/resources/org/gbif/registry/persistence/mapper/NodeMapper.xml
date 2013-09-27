@@ -254,11 +254,16 @@
     ORDER BY country
   </select>
 
+  <!--
+   Includes a manual hack to include Taiwan as an active country!
+  -->
   <select id="listActiveCountries" resultType="Country">
+    SELECT 'TW'
+  UNION
     SELECT country
     FROM node
     WHERE type='COUNTRY' AND country IS NOT NULL AND participation_status IN ('VOTING', 'ASSOCIATE')
-    ORDER BY country
+    ORDER BY 1
   </select>
 
   <select id="listByIdentifier" resultMap="NODE_MAP" parameterType="Pageable">
