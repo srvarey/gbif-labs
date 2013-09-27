@@ -91,7 +91,7 @@
     <gbif-common-mybatis.version>0.7</gbif-common-mybatis.version>
     <gbif-common-test.version>0.5</gbif-common-test.version>
     <gbif-common-service.version>0.6</gbif-common-service.version>
-    <gbif-common-search.version>0.11</gbif-common-search.version>
+    <gbif-common-search.version>0.12-SNAPSHOT</gbif-common-search.version>
     <gbif-parsers.version>0.4</gbif-parsers.version>
     <gbif-postal-service.version>0.7</gbif-postal-service.version>
     <findbugs-jsr305.version>2.0.1</findbugs-jsr305.version>
