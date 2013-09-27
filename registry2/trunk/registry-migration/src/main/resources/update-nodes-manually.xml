@@ -55,6 +55,41 @@
     UPDATE node SET type='OTHER', continent=NULL WHERE key='d205def7-82c3-472a-be4b-31d11dcd51fd'; <!-- VertNet -->
     UPDATE node SET continent='EUROPE' WHERE key='0e0181bf-9c78-4676-bdc3-54765e661bb8'; <!-- BioNET-International -->
     
-       
+<!-- Set some coordinates for the IPT organizations -->
+UPDATE ORGANIZATION SET latitude='50.8311498', longitude='4.5184922' where key='575c52b0-a742-11db-a6ff-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='29.6359063', longitude='-82.3704033' where key='8483a1f0-1032-11db-ae00-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='23.785187', longitude='90.401558' where key='d44af9a3-e779-40c0-a186-79e7717c6d2b';
+UPDATE ORGANIZATION SET latitude='38.7252993', longitude='-9.1500364' where key='315127e0-d7bb-11db-9885-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='53.5252491', longitude='-113.5255474' where key='03cb9700-6cee-11d8-922d-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='41.8077414', longitude='-72.2539805' where key='1ef55060-54da-11dd-9d47-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='43.6677886', longitude='-79.394508' where key='ff418020-1d67-11d9-8435-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='39.1099551', longitude='-84.5375844' where key='1afc3a83-38f8-4282-90ae-d377ded4b628';
+UPDATE ORGANIZATION SET latitude='59.9201373', longitude='10.770986' where key='f314b0b0-e3dc-11d9-8d81-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='-22.9035393', longitude='-43.2095869' where key='838537fc-4aeb-4980-8b58-97fbdcd1d91a';
+UPDATE ORGANIZATION SET latitude='37.769979', longitude='-122.466288' where key='66522820-055c-11d8-b84e-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='27.64645', longitude='85.3234759' where key='d33a9c4e-e33c-4311-a2fe-88dbdff7b4b9';
+UPDATE ORGANIZATION SET latitude='38.6998654', longitude='-9.1845917' where key='9fdb5a90-a5a6-11dd-8d5f-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='40.2795185', longitude='-111.7206631' where key='4b37eb40-10e6-11db-939a-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='39.9570875', longitude='-75.1711435' where key='f9b67ad0-9c9b-11d9-b9db-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='3.8008893', longitude='-76.6412712' where key='1ee0beb6-8a8c-4390-9f2b-f76259dd911a';
+UPDATE ORGANIZATION SET latitude='55.7024678', longitude='12.5594786' where key='e196c8d6-f795-463c-80c4-310dd14ee50b';
+UPDATE ORGANIZATION SET latitude='49.609584', longitude='6.1356412' where key='75642970-f855-11dd-8235-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='44.0430135', longitude='-123.0680805' where key='0ba220e1-77cf-487a-8d91-494167240f5d';
+UPDATE ORGANIZATION SET latitude='40.0069184', longitude='-105.2727543' where key='4cadac10-3e7b-11d9-8439-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='60.1713223', longitude='24.9314907' where key='e5585950-488e-11db-a1c2-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='42.3788792', longitude='-71.1156919' where key='b4640710-8e03-11d8-b956-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='7.0084714', longitude='100.4962349' where key='80c3ad34-82b5-457d-bb9b-1d6e1b84fae6';
+UPDATE ORGANIZATION SET latitude='-25.74955', longitude='28.18641' where key='c5f7ef70-e233-11d9-a4d6-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='4.5948007', longitude='-74.0710178' where key='478a9e81-e716-42dc-a68d-03487953a32e';
+UPDATE ORGANIZATION SET latitude='41.866261', longitude='-87.6169805' where key='7b8aff00-a9f8-11d8-944b-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='41.3159985', longitude='-72.921115' where key='2e167bb0-4441-11db-9ba2-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='35.1947289', longitude='-97.4490718' where key='609765e0-4ce8-11db-b80e-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='44.9886089', longitude='-85.198334' where key='a30d7f59-d3d4-4e89-97dc-de9cf837f591';
+UPDATE ORGANIZATION SET latitude='-34.9086583', longitude='-57.9265531' where key='610414e0-8040-11d9-8294-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='30.283938', longitude='77.9745788' where key='4a19e429-8f13-478e-86d7-93adb7534524';
+UPDATE ORGANIZATION SET latitude='-4.2061131', longitude='-69.943309' where key='9d77fdeb-100f-4b29-98ad-4effdd824457';
+UPDATE ORGANIZATION SET latitude='10.4894375', longitude='-66.89307' where key='3eeffcbd-0e84-4223-ac65-3d32e7cc8511';
+UPDATE ORGANIZATION SET latitude='44.5628484', longitude='-123.2789936' where key='ac5e8480-3714-11da-bc2e-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude=null, longitude=null where latitude=0.0 and longitude=0.0;       
   </script>
 </etl>
