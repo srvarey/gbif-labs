@@ -90,6 +90,12 @@ UPDATE ORGANIZATION SET latitude='30.283938', longitude='77.9745788' where key='
 UPDATE ORGANIZATION SET latitude='-4.2061131', longitude='-69.943309' where key='9d77fdeb-100f-4b29-98ad-4effdd824457';
 UPDATE ORGANIZATION SET latitude='10.4894375', longitude='-66.89307' where key='3eeffcbd-0e84-4223-ac65-3d32e7cc8511';
 UPDATE ORGANIZATION SET latitude='44.5628484', longitude='-123.2789936' where key='ac5e8480-3714-11da-bc2e-b8a03c50a862';
+UPDATE ORGANIZATION SET latitude='-6.777645', longitude='39.23495290000005' where key='76905ca0-1e21-11de-9ca0-cd203b273f5d';
+UPDATE ORGANIZATION SET latitude='3.866', longitude='11.516666' where key='14c9828d-3f1f-4be2-8598-cd0861d69081';
+UPDATE ORGANIZATION SET latitude='6.35459', longitude='2.40821' where key='b2db85d5-c5fe-4125-9e36-590a5f651829';
+UPDATE ORGANIZATION SET latitude='50.3666694', longitude='-4.144077299999935' where key='f6b48504-1651-4a49-a88d-c2bc6178694d';
+UPDATE ORGANIZATION SET latitude='52.1010895', longitude='-0.24644050000006246' where key='c71f0513-c95a-4e98-abad-0c222b87ec66';
+UPDATE ORGANIZATION SET latitude='50.3666694', longitude='-4.144077299999935' where key='09b17aee-d3fb-48ca-a30b-303d671a8155';
 UPDATE ORGANIZATION SET latitude=null, longitude=null where latitude=0.0 and longitude=0.0;       
   </script>
 </etl>
