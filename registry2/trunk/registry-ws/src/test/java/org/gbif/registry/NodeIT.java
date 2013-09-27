@@ -162,10 +162,11 @@ public class NodeIT extends NetworkEntityTest<Node> {
   public void testActiveCountries() {
     initVotingCountryNodes();
     List<Country> countries = nodeService.listActiveCountries();
-    assertEquals(TEST_COUNTRIES.size(), countries.size());
+    assertEquals(TEST_COUNTRIES.size() + 1, countries.size());
     for (Country c : countries) {
-      assertTrue("Unexpected node country" + c, TEST_COUNTRIES.containsKey(c));
+      assertTrue("Unexpected node country" + c, Country.TAIWAN == c || TEST_COUNTRIES.containsKey(c));
     }
+    assertTrue("Taiwan missing", countries.contains(Country.TAIWAN));
 
     // insert extra observer nodes and make sure we get the same list
     insertTestNode(Country.BOTSWANA, ParticipationStatus.OBSERVER);
