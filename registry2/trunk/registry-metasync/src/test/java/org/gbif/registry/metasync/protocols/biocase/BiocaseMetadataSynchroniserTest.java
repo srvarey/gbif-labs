@@ -77,8 +77,7 @@ public class BiocaseMetadataSynchroniserTest {
    */
   @Test
   public void testAddedDataset1() throws Exception {
-    when(client.execute(any(HttpGet.class)))
-      .thenReturn(prepareResponse(200, "biocase/capabilities1.xml"))
+    when(client.execute(any(HttpGet.class))).thenReturn(prepareResponse(200, "biocase/capabilities1.xml"))
       .thenReturn(prepareResponse(200, "biocase/inventory1.xml"))
       .thenReturn(prepareResponse(200, "biocase/dataset1.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, new ArrayList<Dataset>());
@@ -100,8 +99,7 @@ public class BiocaseMetadataSynchroniserTest {
    */
   @Test
   public void testAddedDataset2() throws Exception {
-    when(client.execute(any(HttpGet.class)))
-      .thenReturn(prepareResponse(200, "biocase/capabilities2.xml"))
+    when(client.execute(any(HttpGet.class))).thenReturn(prepareResponse(200, "biocase/capabilities2.xml"))
       .thenReturn(prepareResponse(200, "biocase/inventory2.xml"))
       .thenReturn(prepareResponse(200, "biocase/dataset2.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, new ArrayList<Dataset>());
@@ -112,7 +110,31 @@ public class BiocaseMetadataSynchroniserTest {
 
     Dataset dataset = syncResult.addedDatasets.get(0);
     assertThat(dataset.getTitle()).isEqualTo("Collections of Phytoplankton at BGBM");
-    assertThat(dataset.getCitation().getText()).isEqualTo("Jahn, R. (Ed.) 2013+ (continuously updated): Collections of Phytoplankton at BGBM");
+    assertThat(dataset.getCitation().getText()).isEqualTo(
+      "Jahn, R. (Ed.) 2013+ (continuously updated): Collections of Phytoplankton at BGBM");
+    // endpoints
+    assertThat(dataset.getEndpoints().size()).isEqualTo(1);
+    assertThat(dataset.getEndpoints().get(0).getType()).isEqualTo(EndpointType.BIOCASE);
+  }
+
+  /**
+   * This tests a BioCASe endpoint that supports the old style inventory and ABCD 1.2
+   */
+  @Test
+  public void testAddedDataset3() throws Exception {
+    when(client.execute(any(HttpGet.class))).thenReturn(prepareResponse(200, "biocase/capabilities3.xml"))
+      .thenReturn(prepareResponse(200, "biocase/inventory3.xml"))
+      .thenReturn(prepareResponse(200, "biocase/dataset3.xml"));
+    SyncResult syncResult = synchroniser.syncInstallation(installation, new ArrayList<Dataset>());
+    assertThat(syncResult.exception).isNull();
+    assertThat(syncResult.deletedDatasets).isEmpty();
+    assertThat(syncResult.existingDatasets).isEmpty();
+    assertThat(syncResult.addedDatasets).hasSize(4);
+
+    Dataset dataset = syncResult.addedDatasets.get(0);
+    assertThat(dataset.getTitle()).isEqualTo("Mammals housed at MHNG, Geneva");
+    assertThat(dataset.getCitation().getText()).isEqualTo(
+      "Ruedi M. Mammals housed at MHNG, Geneva. Muséum d'histoire naturelle de la Ville de Genève");
     // endpoints
     assertThat(dataset.getEndpoints().size()).isEqualTo(1);
     assertThat(dataset.getEndpoints().get(0).getType()).isEqualTo(EndpointType.BIOCASE);
@@ -123,8 +145,7 @@ public class BiocaseMetadataSynchroniserTest {
     Dataset dataset = new Dataset();
     dataset.setTitle("Foobar");
 
-    when(client.execute(any(HttpGet.class)))
-      .thenReturn(prepareResponse(200, "biocase/capabilities1.xml"))
+    when(client.execute(any(HttpGet.class))).thenReturn(prepareResponse(200, "biocase/capabilities1.xml"))
       .thenReturn(prepareResponse(200, "biocase/inventory1.xml"))
       .thenReturn(prepareResponse(200, "biocase/dataset1.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, Lists.newArrayList(dataset));
@@ -140,8 +161,7 @@ public class BiocaseMetadataSynchroniserTest {
     Dataset dataset = new Dataset();
     dataset.setTitle("Pontaurus");
 
-    when(client.execute(any(HttpGet.class)))
-      .thenReturn(prepareResponse(200, "biocase/capabilities1.xml"))
+    when(client.execute(any(HttpGet.class))).thenReturn(prepareResponse(200, "biocase/capabilities1.xml"))
       .thenReturn(prepareResponse(200, "biocase/inventory1.xml"))
       .thenReturn(prepareResponse(200, "biocase/dataset1.xml"));
     SyncResult syncResult = synchroniser.syncInstallation(installation, Lists.newArrayList(dataset));
@@ -149,8 +169,7 @@ public class BiocaseMetadataSynchroniserTest {
     assertThat(syncResult.existingDatasets).hasSize(1);
     assertThat(syncResult.addedDatasets).isEmpty();
 
-    assertThat(syncResult.existingDatasets.get(dataset).getTitle()).isEqualTo(
-      "Pontaurus");
+    assertThat(syncResult.existingDatasets.get(dataset).getTitle()).isEqualTo("Pontaurus");
   }
 
   /**
