@@ -192,6 +192,7 @@ public class BiocaseMetadataSynchroniser extends BaseProtocolHandler {
     URI uri = buildUri(endpoint.getUrl(), "inventory", "1");
     NewDatasetInventory inventory = doHttpRequest(uri, newDigester(NewDatasetInventory.class));
     List<String> datasets = Lists.newArrayList();
+    if (inventory == null) return datasets;
     for (InventoryDataset inventoryDataset : inventory.getDatasets()) {
       datasets.add(inventoryDataset.getTitle());
     }
