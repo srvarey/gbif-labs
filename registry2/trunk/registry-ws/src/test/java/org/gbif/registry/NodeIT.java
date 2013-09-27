@@ -112,6 +112,8 @@ public class NodeIT extends NetworkEntityTest<Node> {
   @Test
   public void testGetByCountry() {
     initVotingCountryNodes();
+    insertTestNode(Country.TAIWAN, ParticipationStatus.ASSOCIATE, NodeType.OTHER);
+
     Node n = nodeService.getByCountry(Country.ANGOLA);
     assertNull(n);
 
@@ -119,20 +121,25 @@ public class NodeIT extends NetworkEntityTest<Node> {
       n = nodeService.getByCountry(c);
       assertEquals(c, n.getCountry());
     }
+
+    // test taiwan hack
+    n = nodeService.getByCountry(Country.TAIWAN);
+    assertEquals(Country.TAIWAN, n.getCountry());
+
   }
 
   private void initVotingCountryNodes() {
     count = 0;
     for (Country c : TEST_COUNTRIES.keySet()) {
-      insertTestNode(c, ParticipationStatus.VOTING);
+      insertTestNode(c, ParticipationStatus.VOTING, NodeType.COUNTRY);
     }
   }
 
-  private void insertTestNode(Country c, ParticipationStatus status) {
+  private void insertTestNode(Country c, ParticipationStatus status, NodeType nodeType) {
       Node n = newEntity();
       n.setCountry(c);
       n.setTitle("GBIF Node " + c.getTitle());
-      n.setType(NodeType.COUNTRY);
+      n.setType(nodeType);
       n.setParticipationStatus(status);
       n.setGbifRegion(GbifRegion.AFRICA);
       n = create(n, count + 1);
@@ -169,8 +176,8 @@ public class NodeIT extends NetworkEntityTest<Node> {
     assertTrue("Taiwan missing", countries.contains(Country.TAIWAN));
 
     // insert extra observer nodes and make sure we get the same list
-    insertTestNode(Country.BOTSWANA, ParticipationStatus.OBSERVER);
-    insertTestNode(Country.HONG_KONG, ParticipationStatus.FORMER);
+    insertTestNode(Country.BOTSWANA, ParticipationStatus.OBSERVER, NodeType.COUNTRY);
+    insertTestNode(Country.HONG_KONG, ParticipationStatus.FORMER, NodeType.COUNTRY);
 
     List<Country> countries2 = nodeService.listActiveCountries();
     assertEquals(countries, countries2);
