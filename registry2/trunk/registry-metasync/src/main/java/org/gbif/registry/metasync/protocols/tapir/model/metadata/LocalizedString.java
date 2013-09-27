@@ -2,6 +2,8 @@ package org.gbif.registry.metasync.protocols.tapir.model.metadata;
 
 import org.gbif.api.vocabulary.Language;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -24,11 +26,11 @@ public class LocalizedString {
       return "";
     }
 
-    StringBuilder sb = new StringBuilder();
-    for (Map.Entry<Language, String> entry : values.entrySet()) {
-      sb.append(entry.getKey());
-      sb.append(entry.getValue());
+    if (values.containsKey(Language.ENGLISH)) {
+      return values.get(Language.ENGLISH);
     }
-    return sb.toString();
+
+    List<Language> languages = new ArrayList<Language>(values.keySet());
+    return values.get(languages.get(0));
   }
 }
