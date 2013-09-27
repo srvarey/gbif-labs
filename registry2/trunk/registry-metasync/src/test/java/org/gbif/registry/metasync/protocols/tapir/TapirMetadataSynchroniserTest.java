@@ -138,7 +138,7 @@ public class TapirMetadataSynchroniserTest {
 
     assertThat(syncResult.existingDatasets
       .get(dataset)
-      .getTitle()).isEqualTo("ENGLISHNatural History Museum Rotterdam");
+      .getTitle()).isEqualTo("Natural History Museum Rotterdam");
   }
 
   public HttpResponse prepareResponse(int responseStatus, String fileName) throws IOException {
