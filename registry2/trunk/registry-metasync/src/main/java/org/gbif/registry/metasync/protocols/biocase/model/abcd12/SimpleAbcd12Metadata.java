@@ -18,7 +18,7 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 @ObjectCreate(pattern = "response/content/DataSets/DataSet")
 public class SimpleAbcd12Metadata {
 
-  private static final String BASE_PATH = "response/content/DataSets/DataSet";
+  private static final String BASE_PATH = "response/content/DataSets/DataSet/";
   private final List<String> termsOfUses = Lists.newArrayList();
   private final List<String> iprDeclarations = Lists.newArrayList();
   private final List<String> rightsUrls = Lists.newArrayList();
