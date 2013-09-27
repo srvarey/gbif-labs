@@ -22,7 +22,7 @@
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='8618c64a-93e0-4300-b546-7249e5148ed2'; <!-- US -->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='8f83fc96-c966-4126-83f7-bf044dc49efa'; <!-- CA -->
     UPDATE node SET continent='NORTH_AMERICA' WHERE key='b324e8e9-9a4c-44fa-8f1a-7f39ea7ab576'; <!-- MX -->
-    UPDATE node SET participation_status='FORMER', continent='AFRICA', gbif_region='AFRICA' WHERE key='2970c4c9-9169-41b6-91b7-a3a176e66946'; <!-- GQ -->
+    UPDATE node SET participation_status='FORMER', continent='AFRICA', gbif_region=NULL WHERE key='2970c4c9-9169-41b6-91b7-a3a176e66946'; <!-- GQ -->
         
     <!-- non country nodes -->
     UPDATE node SET continent='AFRICA' WHERE key='90a939d3-e99c-4f6d-915f-2616423b3735'; <!-- Albertine Rift Conservation Society (ARCOS)-->
