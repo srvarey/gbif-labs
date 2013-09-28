@@ -87,7 +87,9 @@ class SolrAnnotatedDatasetBuilder {
 
     if (owner != null) {
       sad.setOwningOrganizationTitle(owner.getTitle());
-      sad.setPublishingCountry(owner.getCountry());
+      if (owner.getCountry() != null) {
+        sad.setPublishingCountry(owner.getCountry().getIso2LetterCode());
+      }
     } else {
       sad.setPublishingCountry(Country.UNKNOWN);
     }

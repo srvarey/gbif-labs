@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import com.google.common.base.Strings;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
@@ -31,7 +32,22 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class PredicateTypeHandler implements TypeHandler<Predicate> {
 
-  private ObjectMapper objectMapper = new ObjectMapper().configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+  private final ObjectMapper objectMapper = new ObjectMapper().configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+  @Override
+  public Predicate getResult(CallableStatement cs, int columnIndex) throws SQLException {
+    return fromJSON(cs.getString(columnIndex));
+  }
+
+  @Override
+  public Predicate getResult(ResultSet rs, int columnIndex) throws SQLException {
+    return fromJSON(rs.getString(columnIndex));
+  }
+
+  @Override
+  public Predicate getResult(ResultSet rs, String columnName) throws SQLException {
+    return fromJSON(rs.getString(columnName));
+  }
 
   @Override
   public void setParameter(PreparedStatement ps, int i, Predicate parameter, JdbcType jdbcType) throws SQLException {
@@ -42,30 +58,14 @@ public class PredicateTypeHandler implements TypeHandler<Predicate> {
     }
   }
 
-  @Override
-  public Predicate getResult(ResultSet rs, String columnName) throws SQLException {
-    return fromJSON(rs.getString(columnName));
-  }
-
-  @Override
-  public Predicate getResult(ResultSet rs, int columnIndex) throws SQLException {
-    return fromJSON(rs.getString(columnIndex));
-  }
-
-  @Override
-  public Predicate getResult(CallableStatement cs, int columnIndex) throws SQLException {
-    return fromJSON(cs.getString(columnIndex));
-  }
-
   /**
    * Deserialize a {@link Predicate} object from a JSON string.
    */
   private Predicate fromJSON(String jsonAsString) throws SQLException {
     try {
-      return objectMapper.readValue(jsonAsString, Predicate.class);
+      return Strings.isNullOrEmpty(jsonAsString) ? null : objectMapper.readValue(jsonAsString, Predicate.class);
     } catch (Exception e) {
       throw new SQLException(e);
     }
   }
-
 }
