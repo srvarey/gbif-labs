@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.base.Optional;
+
+import com.google.common.base.Enums;
+
 import com.google.common.collect.Sets;
 import org.apache.solr.client.solrj.beans.Field;
 
@@ -65,7 +69,9 @@ public class SolrAnnotatedDataset extends DatasetSearchResult {
   public void setPublishingCountry(String iso) {
     Country c = Country.fromIsoCode(iso);
     if (c == null) {
-      c = Country.UNKNOWN;
+      //tries parse the country by name
+      Optional<Country> optCountry = Enums.getIfPresent(Country.class, iso);
+      c = optCountry.isPresent()? optCountry.get() : Country.UNKNOWN;
     }
     super.setPublishingCountry(c);
   }
