@@ -108,6 +108,11 @@ public class EmlPusher {
     return rootDirectory.listFiles((FileFilter) new SuffixFileFilter(dwcaSuffix, IOCase.INSENSITIVE));
   }
 
+  public static void mainLocal(String[] args) throws IOException {
+    EmlPusher app = new EmlPusher();
+    app.start(new File("/Users/mdoering/Desktop/emls"), "http://staging.gbif.org:8080/registry2-ws", "eml-pusher@gbif.org", "");
+  }
+
   public static void main(String[] args) {
     if (args.length != 4) {
       System.out.println("The EML pusher requires 4 commandline arguments: path-to-dwca-dir  registry-url  username  password");
