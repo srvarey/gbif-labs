@@ -54,20 +54,24 @@ public class EmlPusher {
     datasetService = inj.getInstance(DatasetService.class);
   }
 
+  private void pushEMl(UUID key, File eml) throws IOException {
+    InputStream in = new FileInputStream(eml);
+      try {
+        datasetService.insertMetadata(key, in);
+        LOG.info("Pushed metadata document for dataset {} into registry", key);
+        pushCounter++;
+      } finally {
+        in.close();
+      }
+  }
+
   private void push(File archiveFile) {
     UUID key = getDatasetKey(archiveFile);
     try {
       Archive arch = open(archiveFile);
       File eml = arch.getMetadataLocationFile();
       if (eml != null && eml.exists()) {
-        InputStream in = new FileInputStream(eml);
-        try {
-          datasetService.insertMetadata(key, in);
-          LOG.info("Pushed metadata document for dataset {} into registry", key);
-          pushCounter++;
-        } finally {
-          in.close();
-        }
+        pushEMl(key, eml);
       }
     } catch (UnsupportedArchiveException e) {
       LOG.warn("Skipping archive {} because of error[{}]", key, e.getMessage());
@@ -113,7 +117,15 @@ public class EmlPusher {
     app.start(new File("/Users/mdoering/Desktop/emls"), "http://staging.gbif.org:8080/registry2-ws", "eml-pusher@gbif.org", "");
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    EmlPusher app = new EmlPusher();
+    app.initClients("http://jawa.gbif.org:8080/registry2-ws", "eml-pusher@gbif.org", "");
+    app.pushEMl(UUID.fromString("7ddf754f-d193-4cc9-b351-99906754a03b"), new File("/Users/mdoering/Desktop/emls/col.xml"));
+  }
+
+
+
+  public static void main2(String[] args) {
     if (args.length != 4) {
       System.out.println("The EML pusher requires 4 commandline arguments: path-to-dwca-dir  registry-url  username  password");
       System.exit(1);
