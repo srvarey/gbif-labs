@@ -7,4 +7,5 @@ sleep 1
 sleep 1
 ./start-occurrence-deleter.sh
 ./start-occurrence-mutator.sh
+./start-registry-listener.sh
 sleep 1
