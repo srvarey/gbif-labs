@@ -1,0 +1,7 @@
+messaging:
+  host: mq.gbif.org
+  virtualHost: /crawler/test
+  username: registry-change
+  password: registry-change
+registryChangeQueueName: registry-change
+registryWsUrl: http://minicrawler.gbif.org:8080/registry-ws
