@@ -2,10 +2,13 @@ updatesQueueName: occurrence_index_updates
 deletionsQueueName: occurrence_index_deletions
 commitWithinMs: 30000
 poolSize: 10
-solrServer: http://b11g9.gbif.org:8081/crawler-occurrence-solr/
+#solrServer: http://jawa.gbif.org:8081/occurrence-solr/
+solrServer: c1n10.gbif.org:2181,c1n9.gbif.org:2181,c1n8.gbif.org:2181/solr
+solrServerType: CLOUD
+solrCollection: prod_occurrence
 messaging:
   host: mq.gbif.org
-  virtualHost: /crawler/dev
+  virtualHost: /production
   username: processor
   password: processor
 ganglia:
