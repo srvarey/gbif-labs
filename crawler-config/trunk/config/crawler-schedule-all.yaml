@@ -1,7 +1,7 @@
 priority: HIGH
 messaging:
   host: mq.gbif.org
-  virtualHost: /crawler/dev
+  virtualHost: /production
   username: crawler
   password: crawler
-registryWsUrl: http://b11g9.gbif.org:8080/registry-ws
+registryWsUrl: http://jawa.gbif.org:8080/b_registry-ws
