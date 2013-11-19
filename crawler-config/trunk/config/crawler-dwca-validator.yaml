@@ -1,12 +1,12 @@
 messaging:
   host: mq.gbif.org
-  virtualHost: /crawler/dev
+  virtualHost: /production
   username: crawler
   password: crawler
 registry:
-  wsUrl: http://b11g9.gbif.org:8080/registry-ws
-  user: markus
-  password: markus
+  wsUrl: http://jawa.gbif.org:8080/b_registry-ws
+  user: crawler.gbif.org
+  password: A3z3]w]%9M?426UN
 zooKeeper:
   connectionString: c1n8.gbif.org,c1n9.gbif.org,c1n10.gbif.org
   namespace: crawler

@@ -1,6 +1,6 @@
 messaging:
   host: mq.gbif.org
-  virtualHost: /crawler/dev
+  virtualHost: /production
   username: crawler
   password: crawler
 zooKeeper:
@@ -8,4 +8,4 @@ zooKeeper:
   namespace: crawler
 poolSize: 50
 queueName: xml-fragmenter
-crawlerWsUrl: http://b11g9.gbif.org:8080/crawler-ws/
+crawlerWsUrl: http://crawler.gbif.org:8080/crawler-ws/
