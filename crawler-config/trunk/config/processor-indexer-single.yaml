@@ -1,0 +1,17 @@
+updatesQueueName: occurrence_index_single_updates
+deletionsQueueName: occurrence_index_single_deletions
+commitWithinMs: 30000
+poolSize: 10
+solrServer: http://jawa.gbif.org:8081/occurrence-solr/
+solrServerType: HTTP
+#solrServer: c1n10.gbif.org:2181,c1n9.gbif.org:2181,c1n8.gbif.org:2181/solr
+#solrServerType: CLOUD
+#solrCollection: prod_occurrence
+messaging:
+  host: mq.gbif.org
+  virtualHost: /production
+  username: processor
+  password: processor
+ganglia:
+  gangliaHost: b5g2.gbif.org
+  gangliaPort: 8649

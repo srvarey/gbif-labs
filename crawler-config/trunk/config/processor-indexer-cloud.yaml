@@ -1,5 +1,5 @@
-updatesQueueName: occurrence_index_updates
-deletionsQueueName: occurrence_index_deletions
+updatesQueueName: occurrence_index_cloud_updates
+deletionsQueueName: occurrence_index_cloud_deletions
 commitWithinMs: 30000
 poolSize: 10
 #solrServer: http://jawa.gbif.org:8081/occurrence-solr/
