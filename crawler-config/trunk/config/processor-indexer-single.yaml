@@ -4,6 +4,7 @@ commitWithinMs: 30000
 poolSize: 10
 solrServer: http://jawa.gbif.org:8081/occurrence-solr/
 solrServerType: HTTP
+solrCollection: occurrenceCore
 #solrServer: c1n10.gbif.org:2181,c1n9.gbif.org:2181,c1n8.gbif.org:2181/solr
 #solrServerType: CLOUD
 #solrCollection: prod_occurrence
