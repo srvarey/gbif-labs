@@ -12,6 +12,8 @@ ganglia:
 msgPoolSize: 20
 hbasePoolSize: 20
 deleteDatasetQueueName: occurrence_delete_dataset
+parseDatasetQueueName: occurrence_parse_dataset
+interpretDatasetQueueName: occurrence_interpret_dataset
 occTable: crawler_occurrence
 counterTable: crawler_occurrence_counter
 lookupTable: crawler_occurrence_lookup

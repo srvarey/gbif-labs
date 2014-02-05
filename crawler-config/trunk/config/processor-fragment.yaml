@@ -11,7 +11,7 @@ ganglia:
   gangliaPort: 8649
 msgPoolSize: 100
 hbasePoolSize: 100
-queueName: occurrence_fragment
+primaryQueueName: occurrence_fragment
 occTable: crawler_occurrence
 counterTable: crawler_occurrence_counter
 lookupTable: crawler_occurrence_lookup

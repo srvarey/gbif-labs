@@ -11,7 +11,8 @@ ganglia:
   gangliaPort: 8649
 msgPoolSize: 50
 hbasePoolSize: 50
-queueName: occurrence_interp
+primaryQueueName: occurrence_interp
+secondaryQueueName: occurrence_interp_direct
 occTable: crawler_occurrence
 counterTable: crawler_occurrence_counter
 lookupTable: crawler_occurrence_lookup

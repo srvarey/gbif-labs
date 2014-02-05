@@ -11,7 +11,8 @@ ganglia:
   gangliaPort: 8649
 msgPoolSize: 100
 hbasePoolSize: 100
-queueName: occurrence_verbatim
+primaryQueueName: occurrence_verbatim
+secondaryQueueName: occurrence_verbatim_direct
 occTable: crawler_occurrence
 counterTable: crawler_occurrence_counter
 lookupTable: crawler_occurrence_lookup
