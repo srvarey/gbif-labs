@@ -50,7 +50,7 @@ public class ZookeeperCleanupFromFile {
     ZookeeperCleaner zkCleaner = new ZookeeperCleaner();
     for (String key : keys) {
       LOG.debug("Deleting [{}]", path + key);
-      zkCleaner.clean(path + key);
+      zkCleaner.clean(path + key, false);
     }
 
     LOG.debug("ZookeeperCleanupFromFile finished");
