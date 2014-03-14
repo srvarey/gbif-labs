@@ -39,16 +39,27 @@ public class ZookeeperCleaner implements Watcher {
   /**
    * Recursively delete the node at the given path from ZooKeeper.
    */
-  public void clean(String path) throws InterruptedException {
+  public void clean(String path, boolean onlyChildren) throws InterruptedException {
+    List<String> paths = null;
     try {
-      recursiveDelete(path, zk.getChildren(path, false));
+      paths = zk.getChildren(path, false);
     } catch (KeeperException e) {
-      LOG.warn("Could not delete node at [{}]", path, e);
+      LOG.warn("path [{}] has no children, which is strange. Trying for delete anyway.", path);
+    }
+    recursiveDelete(path, paths);
+    if (!onlyChildren) {
+      try {
+        zk.delete(path, -1);
+      } catch (KeeperException e) {
+        LOG.warn("Could not delete node at [{}]", path, e);
+      }
     }
   }
 
   public void recursiveDelete(String parentPath, List<String> paths) throws InterruptedException {
-    if (paths.isEmpty()) return;
+    if (paths == null || paths.isEmpty()) {
+      return;
+    }
 
     for (String path : paths) {
       try {

@@ -23,7 +23,7 @@ public class ZookeeperCleanup {
   public static void main(String[] args) throws IOException, KeeperException, InterruptedException {
     LOG.debug("ZookeeperCleanup starting");
     ZookeeperCleaner zkCleaner = new ZookeeperCleaner();
-    zkCleaner.clean(args[0]);
+    zkCleaner.clean(args[0], true);
     LOG.debug("ZookeeperCleanup finished");
   }
 }
