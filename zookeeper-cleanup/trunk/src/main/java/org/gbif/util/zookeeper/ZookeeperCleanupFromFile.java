@@ -15,7 +15,7 @@ public class ZookeeperCleanupFromFile {
   private static final String PROD = "prod";
   private static final String UAT = "uat";
   private static final String DEV = "dev";
-  private static final String PROD_PATH = "/crawler/crawls/";
+  private static final String PROD_PATH = "/prod_crawler/crawls/";
   private static final String UAT_PATH = "/uat_crawler/crawls/";
   private static final String DEV_PATH = "/dev_crawler/crawls/";
 
