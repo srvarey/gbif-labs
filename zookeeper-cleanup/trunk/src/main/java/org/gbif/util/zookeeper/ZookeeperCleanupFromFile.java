@@ -18,27 +18,33 @@ public class ZookeeperCleanupFromFile {
   private static final String PROD_PATH = "/prod_crawler/crawls/";
   private static final String UAT_PATH = "/uat_crawler/crawls/";
   private static final String DEV_PATH = "/dev_crawler/crawls/";
+  private static final String PROD_ZK = "c1n8.gbif.org:2181,c1n9.gbif.org:2181,c1n10.gbif.org:2181";
+  private static final String DEV_ZK = "c1n1.gbif.org:2181,c1n2.gbif.org:2181,c1n3.gbif.org:2181";
 
   private ZookeeperCleanupFromFile() {
   }
 
   /**
-   * First and only arg needs to be the node whose content should be deleted, e.g. "/hbase".
+   * Delete crawls specified in file from given environment
    */
   public static void main(String[] args) throws IOException, KeeperException, InterruptedException {
     LOG.debug("ZookeeperCleanupFromFile starting");
-    if (args.length != 2) {
+    if (args.length != 3) {
       LOG.error("Usage: ZookeeperCleanupFromFile <filename> <environment: prod, uat, or dev>");
       System.exit(1);
     }
 
     String path = null;
+    String zkPath = null;
     if (args[1].equals(PROD)) {
       path = PROD_PATH;
+      zkPath = PROD_ZK;
     } else if (args[1].equals(UAT)) {
       path = UAT_PATH;
+      zkPath = PROD_ZK;
     } else if (args[1].equals(DEV)) {
       path = DEV_PATH;
+      zkPath = DEV_ZK;
     }
 
     if (path == null) {
@@ -47,7 +53,7 @@ public class ZookeeperCleanupFromFile {
     }
 
     List<String> keys = HueCsvReader.readKeys(args[0]);
-    ZookeeperCleaner zkCleaner = new ZookeeperCleaner();
+    ZookeeperCleaner zkCleaner = new ZookeeperCleaner(zkPath);
     for (String key : keys) {
       LOG.debug("Deleting [{}]", path + key);
       zkCleaner.clean(path + key, false);
