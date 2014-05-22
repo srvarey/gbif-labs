@@ -12,19 +12,20 @@ import org.slf4j.LoggerFactory;
 
 public class ZookeeperCleaner implements Watcher {
 
-  private static final String ZK_HOST = "c1n8.gbif.org:2181,c1n9.gbif.org:2181,c1n10.gbif.org:2181";
+  private final String zkHost;
   //  private static final String ZK_HOST = "localhost:2181";
   private static final Logger LOG = LoggerFactory.getLogger(ZookeeperCleanup.class);
 
   private ZooKeeper zk;
 
-  public ZookeeperCleaner() throws IOException {
+  public ZookeeperCleaner(String zkHost) throws IOException {
+    this.zkHost = zkHost;
     init();
   }
 
   private void init() throws IOException {
     LOG.debug("Initiating ZooKeeper connection");
-    zk = new ZooKeeper(ZK_HOST, 3000, this);
+    zk = new ZooKeeper(zkHost, 3000, this);
     // wait for zk to fully connect
     while (!zk.getState().isAlive()) {
       try {
